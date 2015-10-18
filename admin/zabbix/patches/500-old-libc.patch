@@ -1,0 +1,12 @@
+--- a/src/libs/zbxcomms/comms.c
++++ b/src/libs/zbxcomms/comms.c
+@@ -31,9 +31,7 @@
+ #	define ZBX_SOCKLEN_T socklen_t
+ #endif
+ 
+-#if !defined(SOCK_CLOEXEC)
+ #	define SOCK_CLOEXEC 0	/* SOCK_CLOEXEC is Linux-specific, available since 2.6.23 */
+-#endif
+ 
+ /******************************************************************************
+  *                                                                            *

@@ -1,0 +1,43 @@
+--- a/conf/nginx.conf	2011-06-27 19:47:51.000000000 +0400
++++ b/conf/nginx.conf	2012-07-18 00:22:18.000000000 +0400
+@@ -1,16 +1,16 @@
+ 
+-#user  nobody;
++user  nobody;
+ worker_processes  1;
+ 
+-#error_log  logs/error.log;
+-#error_log  logs/error.log  notice;
+-#error_log  logs/error.log  info;
++#error_log  /opt/var/log/nginx/error.log;
++#error_log  /opt/var/log/nginx/error.log  notice;
++#error_log  /opt/var/log/nginx/error.log  info;
+ 
+-#pid        logs/nginx.pid;
++#pid        /opt/var/run/nginx.pid;
+ 
+ 
+ events {
+-    worker_connections  1024;
++    worker_connections  64;
+ }
+ 
+ 
+@@ -22,7 +22,7 @@
+     #                  '$status $body_bytes_sent "$http_referer" '
+     #                  '"$http_user_agent" "$http_x_forwarded_for"';
+ 
+-    #access_log  logs/access.log  main;
++    #access_log  /opt/var/log/nginx/access.log;
+ 
+     sendfile        on;
+     #tcp_nopush     on;
+@@ -38,7 +38,7 @@
+ 
+         #charset koi8-r;
+ 
+-        #access_log  logs/host.access.log  main;
++        #access_log  /opt/var/log/nginx/host.access.log;
+ 
+         location / {
+             root   html;

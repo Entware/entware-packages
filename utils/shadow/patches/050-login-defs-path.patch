@@ -1,0 +1,137 @@
+--- a/lib/getdef.c
++++ b/lib/getdef.c
+@@ -139,7 +139,7 @@
+ };
+ 
+ #ifndef LOGINDEFS
+-#define LOGINDEFS "/etc/login.defs"
++#define LOGINDEFS "/opt/etc/login.defs"
+ #endif
+ 
+ static char def_fname[] = LOGINDEFS;	/* login config defs file       */
+--- a/etc/login.defs
++++ b/etc/login.defs
+@@ -1,5 +1,5 @@
+ #
+-# /etc/login.defs - Configuration control definitions for the shadow package.
++# /opt/etc/login.defs - Configuration control definitions for the shadow package.
+ #
+ #	$Id$
+ #
+@@ -27,7 +27,7 @@
+ LOG_OK_LOGINS		no
+ 
+ #
+-# Enable logging and display of /var/log/lastlog login(1) time info.
++# Enable logging and display of /opt/var/log/lastlog login(1) time info.
+ #
+ LASTLOG_ENAB		yes
+ 
+@@ -66,44 +66,44 @@
+ # a ":" delimited list of device names.  Root logins will be allowed only
+ # from these devices.
+ #
+-CONSOLE		/etc/securetty
++CONSOLE		/opt/etc/securetty
+ #CONSOLE	console:tty01:tty02:tty03:tty04
+ 
+ #
+ # If defined, all su(1) activity is logged to this file.
+ #
+-#SULOG_FILE	/var/log/sulog
++SULOG_FILE	/opt/var/log/sulog
+ 
+ #
+ # If defined, ":" delimited list of "message of the day" files to
+ # be displayed upon login.
+ #
+-MOTD_FILE	/etc/motd
+-#MOTD_FILE	/etc/motd:/usr/lib/news/news-motd
++#MOTD_FILE	/opt/etc/motd
++#MOTD_FILE	/opt/etc/motd:/opt/lib/news/news-motd
+ 
+ #
+ # If defined, this file will be output before each login(1) prompt.
+ #
+-#ISSUE_FILE	/etc/issue
++#ISSUE_FILE	/opt/etc/issue
+ 
+ #
+ # If defined, file which maps tty line to TERM environment parameter.
+ # Each line of the file is in a format similar to "vt100  tty01".
+ #
+-#TTYTYPE_FILE	/etc/ttytype
++#TTYTYPE_FILE	/opt/etc/ttytype
+ 
+ #
+ # If defined, login(1) failures will be logged here in a utmp format.
+ # last(1), when invoked as lastb(1), will read /var/log/btmp, so...
+ #
+-FTMP_FILE	/var/log/btmp
++FTMP_FILE	/opt/var/log/btmp
+ 
+ #
+ # If defined, name of file whose presence will inhibit non-root
+ # logins.  The content of this file should be a message indicating
+ # why logins are inhibited.
+ #
+-NOLOGINS_FILE	/etc/nologin
++#NOLOGINS_FILE	/opt/etc/nologin
+ 
+ #
+ # If defined, the command name to display when running "su -".  For
+@@ -118,7 +118,7 @@
+ #   Directory where mailboxes reside, _or_ name of file, relative to the
+ #   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
+ #
+-MAIL_DIR	/var/spool/mail
++MAIL_DIR	/opt/var/spool/mail
+ #MAIL_FILE	.mail
+ 
+ #
+@@ -127,8 +127,8 @@
+ # user's name or shell are found in the file.  If not a full pathname, then
+ # hushed mode will be enabled if the file exists in the user's home directory.
+ #
+-HUSHLOGIN_FILE	.hushlogin
+-#HUSHLOGIN_FILE	/etc/hushlogins
++#HUSHLOGIN_FILE	.hushlogin
++#HUSHLOGIN_FILE	/opt/etc/hushlogins
+ 
+ #
+ # If defined, either a TZ environment parameter spec or the
+@@ -149,7 +149,7 @@
+ # *REQUIRED*  The default PATH settings, for superuser and normal users.
+ #
+ # (they are minimal, add the rest in the shell startup files)
+-ENV_SUPATH	PATH=/sbin:/bin:/usr/sbin:/usr/bin
++ENV_SUPATH	PATH=/sbin:/bin:/usr/sbin:/usr/bin:/opt/bin:/opt/sbin
+ ENV_PATH	PATH=/bin:/usr/bin
+ 
+ #
+@@ -216,7 +216,7 @@
+ #
+ # If compiled with cracklib support, sets the path to the dictionaries
+ #
+-CRACKLIB_DICTPATH	/var/cache/cracklib/cracklib_dict
++CRACKLIB_DICTPATH	/opt/var/cache/cracklib/cracklib_dict
+ 
+ #
+ # Min/max values for automatic uid selection in useradd(8)
+@@ -356,14 +356,14 @@
+ # If this file exists and is readable, login environment will be
+ # read from it.  Every line should be in the form name=value.
+ #
+-ENVIRON_FILE	/etc/environment
++ENVIRON_FILE	/opt/etc/environment
+ 
+ #
+ # If defined, this command is run when removing a user.
+ # It should remove any at/cron/print jobs etc. owned by
+ # the user to be removed (passed as the first argument).
+ #
+-#USERDEL_CMD	/usr/sbin/userdel_local
++#USERDEL_CMD	/opt/sbin/userdel_local
+ 
+ #
+ # Enable setting of the umask group bits to be the same as owner bits

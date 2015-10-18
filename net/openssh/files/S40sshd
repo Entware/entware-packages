@@ -1,0 +1,39 @@
+#!/bin/sh
+
+prefix="/opt"
+PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+
+start() {
+        echo "starting sshd..."
+        /opt/sbin/sshd
+        }
+
+stop() {
+        echo "stopping sshd..."
+        killall sshd
+        }
+status() {
+        echo "PID of sshd is `pidof sshd`"
+        }
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                sleep 3
+                start
+                ;;
+        status) status
+                ;;
+        *)
+                echo "Usage: $0 (start|stop|restart|status)"
+                exit 1
+                ;;
+esac
+
+exit 0

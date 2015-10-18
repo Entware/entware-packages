@@ -1,0 +1,27 @@
+--- a/makedefs
++++ b/makedefs
+@@ -190,9 +190,9 @@ error() {
+ 
+ case $# in
+  # Officially supported usage.
+- 0) SYSTEM=`(uname -s) 2>/dev/null`
+-    RELEASE=`(uname -r) 2>/dev/null`
+-    VERSION=`(uname -v) 2>/dev/null`
++ 0) SYSTEM="Linux"
++    RELEASE="2.6.22"
++    VERSION="OpenWRT"
+     case "$VERSION" in
+      dcosx*) SYSTEM=$VERSION;;
+     esac;;
+@@ -522,9 +522,9 @@ EOF
+ 		esac
+ 		for name in nsl resolv
+ 		do
+-		    for lib in /usr/lib64 /lib64 /usr/lib /usr/lib/* /lib /lib/*
++		    for lib in /usr/lib64 /usr/lib64/* /usr/lib /usr/lib/* /lib /lib/*
+ 		    do
+-			test -e $lib/lib$name.a -o -e $lib/lib$name.so && {
++			test -e $STAGING_DIR/$lib/lib$name.a -o -e $STAGING_DIR/$lib/lib$name.so && {
+ 			    SYSLIBS="$SYSLIBS -l$name"
+ 			    break
+ 			}

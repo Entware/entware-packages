@@ -1,0 +1,12 @@
+--- a/configure
++++ b/configure
+@@ -5456,9 +5456,6 @@ fi
+ 
+ 
+ 
+-# Add additional cflags since some distros bury panel.h
+-CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses"
+-
+ termcontrol="none";
+ 
+ if test "$wantclient" = "yes"; then

@@ -1,0 +1,24 @@
+--- a/src/starter/klips.c
++++ b/src/starter/klips.c
+@@ -30,7 +30,7 @@
+ 		/* ipsec module makes the pf_key proc interface visible */
+ 		if (stat(PROC_MODULES, &stb) == 0)
+ 		{
+-			ignore_result(system("modprobe -qv ipsec"));
++			ignore_result(system("insmod ipsec"));
+ 		}
+ 
+ 		/* now test again */
+@@ -42,9 +42,9 @@
+ 	}
+ 
+ 	/* load crypto algorithm modules */
+-	ignore_result(system("modprobe -qv ipsec_aes"));
+-	ignore_result(system("modprobe -qv ipsec_blowfish"));
+-	ignore_result(system("modprobe -qv ipsec_sha2"));
++	ignore_result(system("insmod ipsec_aes"));
++	ignore_result(system("insmod ipsec_blowfish"));
++	ignore_result(system("insmod ipsec_sha2"));
+ 
+ 	DBG2(DBG_APP, "found KLIPS IPsec stack");
+ 	return TRUE;

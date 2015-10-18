@@ -1,0 +1,57 @@
+#
+# Copyright (C) 2005-2008 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
+include $(TOPDIR)/rules.mk
+
+PKG_NAME:=libtasn1
+PKG_VERSION:=4.4
+PKG_RELEASE:=1
+
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=ftp://ftp.gnu.org/gnu/libtasn1
+PKG_MD5SUM:=c26d76d1309dd339365c563076599912
+
+#PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
+
+include $(INCLUDE_DIR)/package.mk
+
+define Package/libtasn1
+  SECTION:=libs
+  CATEGORY:=Libraries
+  TITLE:=An ASN.1 and DER structures manipulation library
+  MAINTAINER:=Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
+  URL:=ftp://ftp.gnu.org/gnu/libtasn1/
+endef
+
+define Package/libtasn1/description
+ This is a library for Abstract Syntax Notation One (ASN.1) and
+ Distinguish Encoding Rules (DER) manipulation.
+endef
+
+TARGET_CFLAGS += $(FPIC)
+
+CONFIGURE_ARGS += \
+		--enable-shared \
+		--enable-static
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libtasn1.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtasn1.{a,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libtasn1*.pc $(1)/opt/lib/pkgconfig/
+endef
+
+define Package/libtasn1/install
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtasn1.so.* $(1)/opt/lib/
+endef
+
+$(eval $(call BuildPackage,libtasn1))

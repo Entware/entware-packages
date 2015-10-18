@@ -1,0 +1,10 @@
+NAME=ntpd
+CONFIG=/opt/etc/ntp.conf
+COMMAND=/opt/sbin/$NAME
+
+[ "$ACTION" = "ifup" -a "$INTERFACE" = "wan" ] && {
+        [ -x $COMMAND ] && [ -r $CONFIG ] && {
+		killall ntpd
+		/opt/etc/init.d/S77ntpd start
+        } &
+}

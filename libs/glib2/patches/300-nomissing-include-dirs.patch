@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -3537,7 +3537,7 @@
+    -Wall -Wstrict-prototypes -Werror=declaration-after-statement \
+    -Werror=missing-prototypes -Werror=implicit-function-declaration \
+    -Werror=pointer-arith -Werror=init-self -Werror=format-security \
+-   -Werror=format=2 -Werror=missing-include-dirs])
++   -Werror=format=2])
+ ])
+ AC_SUBST(GLIB_WARN_CFLAGS)
+ 
