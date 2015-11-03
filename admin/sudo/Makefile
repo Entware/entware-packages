@@ -29,7 +29,6 @@ define Package/sudo
   TITLE:=Delegate authority to run commands
   URL:=http://www.sudo.ws/
   MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
-  DEPENDS:=+libssp
 endef
 
 define Package/sudo/description

@@ -63,7 +63,7 @@ $(call Package/ruby/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= (shared library)
-  DEPENDS+= +libpthread +librt +libgmp +libssp
+  DEPENDS+= +libpthread +librt +libgmp
 endef
 
 define Package/ruby-stdlib
