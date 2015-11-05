@@ -61,7 +61,7 @@ define Package/perl
   CATEGORY:=Languages
   TITLE:=The Perl intepreter
   URL:=http://www.perl.com/
-  DEPENDS:=+USE_GLIBC:libbsd +PERL_THREADS:libpthread
+  DEPENDS:=+PERL_THREADS:libpthread
 endef
 
 define Package/perl/description
