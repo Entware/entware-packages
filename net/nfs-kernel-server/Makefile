@@ -7,9 +7,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nfs-kernel-server
-PKG_VERSION:=1.3.2
-PKG_RELEASE:=4
-PKG_MD5SUM:=1e2f3c1ed468dee02d00c534c002ea10
+PKG_VERSION:=1.3.3
+PKG_RELEASE:=1
+#PKG_MD5SUM:=1e2f3c1ed468dee02d00c534c002ea10
 
 PKG_SOURCE_URL:=@SF/nfs
 PKG_SOURCE:=nfs-utils-$(PKG_VERSION).tar.bz2
@@ -60,7 +60,6 @@ define Package/nfs-utils
   $(call Package/nfs-kernel-server/Default)
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS+= +libevent
   TITLE:=updated mount utility (includes nfs4)
 endef
 
@@ -68,10 +67,8 @@ define Package/nfs-utils/description
   Updated mount.nfs command - allows mounting nfs4 volumes
 endef
 
-TARGET_CFLAGS += -I$(PKG_BUILD_DIR)/lib -I$(STAGING_DIR)/opt/include/libevent \
-		 -I$(STAGING_DIR)/opt/include/ -Drpc_uint=uint
-TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/opt/lib \
-		  -L$(STAGING_DIR)/opt/lib/libevent
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include/ -Drpc_uint=uint
+TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/opt/lib
 
 CONFIGURE_ARGS += \
 	--disable-gss \
