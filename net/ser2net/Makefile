@@ -41,7 +41,7 @@ define Package/ser2net/conffiles
 endef
 
 
-# По непонятным причинам gcc не находит include файлы из папки тулчейна, если задана переменная STAGING_DIR! Что за....
+# GCC can't find includes from toolchain folder when STAGING_DIR is set.
 
 define Build/Compile
 	$(SED) 's,^COMPILE = ,COMPILE = STAGING_DIR="" ,g' $(PKG_BUILD_DIR)/Makefile
