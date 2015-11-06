@@ -115,28 +115,15 @@ define perlmod/Compile
 		install
 endef
 
-
-# Dirty trick to check /opt or /opt ---- just temporary
-
 define perlmod/Install/NoStrip
 	$(INSTALL_DIR) $(strip $(1))$(PERL_SITELIB)
-	if [ -d $(PKG_INSTALL_DIR) ]; then \
-		(cd $(PKG_INSTALL_DIR)$(PERL_SITELIB) && \
-		rsync --relative -rlHp --itemize-changes \
-			--exclude=\*.pod \
-			--exclude=.packlist \
-			$(addprefix --exclude=/,$(strip $(3))) \
-			--prune-empty-dirs \
-			$(strip $(2)) $(strip $(1))$(PERL_SITELIB)) \
-	else \
-	    (cd $(PKG_INSTALL_DIR)$(PERL_SITELIB) && \
-	    rsync --relative -rlHp --itemize-changes \
+	(cd $(PKG_INSTALL_DIR)$(PERL_SITELIB) && \
+	rsync --relative -rlHp --itemize-changes \
 		--exclude=\*.pod \
 		--exclude=.packlist \
 		$(addprefix --exclude=/,$(strip $(3))) \
 		--prune-empty-dirs \
-		$(strip $(2)) $(strip $(1))$(PERL_SITELIB)) \
-	fi
+		$(strip $(2)) $(strip $(1))$(PERL_SITELIB))
 
 	chmod -R u+w $(strip $(1))$(PERL_SITELIB)
 endef
