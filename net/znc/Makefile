@@ -270,15 +270,10 @@ PKG_CONFIG_DEPENDS := $(patsubst %,CONFIG_PACKAGE_%,$(ZNC_MODULES))
 
 include $(INCLUDE_DIR)/package.mk
 
-DYNLINK=ld-linux.so.2
-ifeq ($(ARCH),arm)
-  DYNLINK:=ld-linux.so.3
-endif
-
 CONFIGURE_VARS += \
 	CXXFLAGS="$(TARGET_CFLAGS) -fno-builtin -fno-rtti" \
 	CPPFLAGS="-I$(STAGING_DIR)/opt/include -I$(STAGING_DIR)/include" \
-	LDFLAGS="-nodefaultlibs -lc -L$(STAGING_DIR)/opt/lib -L$(STAGING_DIR)/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINK) -Wl,-rpath,/opt/lib" \
+	LDFLAGS="$(TARGET_LDFLAGS) -nodefaultlibs -lc" \
 	LIBS="-lstdc++ -lm -lssl -lcrypto $(LIBGCC_S) -lc"
 
 CONFIGURE_ARGS += \
