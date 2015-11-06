@@ -43,10 +43,10 @@ CONFIGURE_ARGS += \
 	--enable-static \
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libev.{a,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/include/libev
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/libev/
+	$(INSTALL_DIR) $(1)/opt/lib/libev
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libev.{a,so*} $(1)/opt/lib/libev/
 endef
 
 define Package/libev/install
