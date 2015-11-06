@@ -104,9 +104,9 @@ endef
 
 define Package/libsasl2/install
 	$(INSTALL_DIR) $(1)/opt/lib/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsasl2.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsasl2.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/sasl2
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/sasl2/lib*.so.* $(1)/opt/lib/sasl2/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/sasl2/lib*.so* $(1)/opt/lib/sasl2/
 endef
 
 $(eval $(call BuildPackage,libsasl2))
