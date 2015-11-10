@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 # Make sure to also update the dbus-x package
 PKG_NAME:=dbus
 PKG_VERSION:=1.9.20
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dbus.freedesktop.org/releases/dbus/
@@ -95,6 +95,7 @@ CONFIGURE_ARGS += \
 	--disable-xml-docs \
 	--with-xml="expat" \
 	--with-dbus-user=root \
+	--with-session-socket-dir="/opt/tmp" \
 	--with-dbus-daemondir="/opt/sbin" \
 	--with-system-socket="/opt/var/run/dbus/system_bus_socket" \
 	--with-system-pid-file="/opt/var/run/dbus.pid" \
@@ -153,8 +154,8 @@ define Build/InstallDev
 endef
 
 define Package/dbus/conffiles
-/opt/etc/dbus-1/session.conf
-/opt/etc/dbus-1/system.conf
+/opt/share/dbus-1/session.conf
+/opt/share/dbus-1/system.conf
 endef
 
 define Package/libdbus/install
@@ -165,10 +166,10 @@ define Package/libdbus/install
 endef
 
 define Package/dbus/install
-	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DIR) $(1)/opt/share
 	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/etc/dbus-1 \
-		$(1)/opt/etc/
+		$(PKG_INSTALL_DIR)/opt/share/dbus-1 \
+		$(1)/opt/share/
 
 	$(INSTALL_DIR) $(1)/opt/lib/dbus-1
 	$(INSTALL_BIN) \
