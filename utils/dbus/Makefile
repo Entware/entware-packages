@@ -194,6 +194,7 @@ define Package/dbus/install
 		$(1)/opt/bin/
 
 	$(INSTALL_DIR) $(1)/opt/var/run/dbus
+	$(INSTALL_DIR) $(1)/opt/etc/dbus-1/{system,session}.d
 
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) \
