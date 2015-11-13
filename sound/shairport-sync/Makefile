@@ -70,6 +70,7 @@ define Package/shairport-sync/default/description
   Ensure Kernel Modules > Sound Support > kmod-sound-core is selected.
   Also select kmod-usb-audio if you want to use USB-connected sound cards.
 endef
+
 Package/shairport-sync-openssl/description = $(Package/shairport-sync/default/description)
 Package/shairport-sync-polarssl/description = $(Package/shairport-sync/default/description)
 
@@ -98,7 +99,7 @@ else
 endif
 
 define Package/shairport-sync/default/conffiles
-/etc/shairport-sync.conf
+/opt/etc/shairport-sync.conf
 endef
 
 Package/shairport-sync-openssl/conffiles = $(Package/shairport-sync/default/conffiles)
@@ -109,10 +110,10 @@ define Package/shairport-sync/default/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/shairport-sync $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-        $(INSTALL_BIN) ./files/S50shairport-sync $(1)/opt/etc/init.d
-        $(INSTALL_DIR) $(1)/opt/etc/config
-        $(INSTALL_DATA) ./files/shairport-sync $(1)/opt/etc/config/
-        $(INSTALL_DATA) ./files/asound.conf $(1)/opt/etc/
+	$(INSTALL_BIN) ./files/S50shairport-sync $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/config
+	$(INSTALL_DATA) ./files/shairport-sync $(1)/opt/etc/config/
+	$(INSTALL_DATA) ./files/asound.conf $(1)/opt/etc/
 endef
 
 Package/shairport-sync-openssl/install = $(Package/shairport-sync/default/install)
