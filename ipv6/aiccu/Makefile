@@ -26,7 +26,7 @@ define Package/aiccu/Default
   SECTION:=net
   CATEGORY:=Network
   VARIANT:=$(2)
-  DEPENDS:=+libpthread +ip +kmod-sit +kmod-tun $(3)
+  DEPENDS:=+libpthread
   URL:=http://www.sixxs.net/tools/aiccu/
   MAINTAINER:=Ondrej Caletka <ondrej@caletka.cz>
 endef
