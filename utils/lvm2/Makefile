@@ -26,7 +26,7 @@ define Package/libdevmapper
   CATEGORY:=Libraries
   TITLE:=The Linux Kernel Device Mapper userspace library
   URL:=http://sourceware.org/dm/
-  DEPENDS:=+libpthread
+  DEPENDS:=+libpthread +librt
 endef
 
 define Package/libdevmapper/description
