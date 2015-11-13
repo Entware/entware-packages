@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zabbix
 PKG_VERSION:=2.4.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/zabbix
@@ -94,7 +94,7 @@ endef
 
 define Package/zabbix-extra-network/description
 An extra package for zabbix-agentd that adds a discovery rule for openwrt network interfaces.
-The idea here is to discover only interfaces listed in /opt/etc/config/network (discover br-lan and not eth0.1 and wlan0)
+The idea here is to discover only interfaces listed in /etc/config/network (discover br-lan and not eth0.1 and wlan0)
 See http://wiki.openwrt.org/doc/howto/zabbix for ready to use zabbix templates.
 endef
 

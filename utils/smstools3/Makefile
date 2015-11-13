@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smstools3
 PKG_VERSION:=3.1.15
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Gérald Kerma <dreagle@doukki.net>
 PKG_LICENSE:=GPL-2.0

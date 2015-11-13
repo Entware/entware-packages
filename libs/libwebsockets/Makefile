@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libwebsockets
-PKG_VERSION:=1.4-chrome43-firefox-36
+PKG_VERSION:=1.5-chrome47-firefox41
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -27,7 +27,7 @@ CMAKE_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-CMAKE_OPTIONS += $(if $(CONFIG_PACKAGE_kmod-ipv6),,-DLWS_IPV6=)
+CMAKE_OPTIONS += $(if $(CONFIG_IPV6),,-DLWS_IPV6=)
 
 CMAKE_OPTIONS += -DLWS_WITHOUT_TESTAPPS=ON
 

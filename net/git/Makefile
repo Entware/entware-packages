@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.4.6
+PKG_VERSION:=2.6.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_MD5SUM:=fb2c5214f5dc90bad0a2abdd4c425df6
+PKG_MD5SUM:=5a6375349c3f13c8dbbabfc327bae429
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -98,6 +98,7 @@ define Package/git/install
 		opt/lib/git-core \
 	) | ( cd $(1); $(TAR) -xf - )
 	$(LN) /opt/bin/git $(1)/opt/lib/git-core/git
+	$(INSTALL_DIR) $(1)/opt/share/git-core/templates
 endef
 
 define Package/git-http/install

@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -28,11 +28,10 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_NUT_CLIENTS_UPSMON \
 	CONFIG_NUT_CLIENTS_UPSRW \
 	CONFIG_NUT_CLIENTS_UPSSCHED \
-	CONFIG_NUT_DRIVER_SERIAL \
 	CONFIG_NUT_DRIVER_SNMP \
 	CONFIG_NUT_DRIVER_USB \
 	CONFIG_NUT_SERVER \
-	CONFIG_NUT_SSL \
+	CONFIG_NUT_SSL
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -55,6 +54,7 @@ define Package/nut
 	$(call Package/nut/Default)
 	TITLE:=Network UPS Tools
 	DEPENDS:= +libwrap \
+		+libpthread \
 		+NUT_DRIVER_SNMP:libnetsnmp \
 		+NUT_DRIVER_USB:libusb-compat \
 		+NUT_SSL:libopenssl
@@ -76,7 +76,6 @@ endef
 
 define Package/nut/install
 	$(INSTALL_DIR) $(1)/opt/etc/nut
-	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(INSTALL_DIR) $(1)/opt/sbin
@@ -101,7 +100,7 @@ define Package/nut/install
 	$(if $(CONFIG_NUT_SERVER),$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.users.sample $(1)/opt/etc/nut/upsd.users)
 	$(if $(CONFIG_NUT_CLIENTS_UPSC),$(CP) $(PKG_INSTALL_DIR)/opt/bin/upsc $(1)/opt/bin/)
 	$(if $(CONFIG_NUT_CLIENTS_UPSCMD),$(CP) $(PKG_INSTALL_DIR)/opt/bin/upscmd $(1)/opt/bin/)
-	$(if $(CONFIG_NUT_CLIENTS_LOG),$(CP) $(PKG_INSTALL_DIR)/opt/bin/upslog $(1)/opt/bin/)
+	$(if $(CONFIG_NUT_CLIENTS_UPSLOG),$(CP) $(PKG_INSTALL_DIR)/opt/bin/upslog $(1)/opt/bin/)
 	$(if $(CONFIG_NUT_CLIENTS_UPSRW),$(CP) $(PKG_INSTALL_DIR)/opt/bin/upsrw $(1)/opt/bin/)
 	$(if $(CONFIG_NUT_CLIENTS_UPSMON),$(CP) ./files/S15upsmon $(1)/opt/etc/init.d/)
 	$(if $(CONFIG_NUT_CLIENTS_UPSMON),$(CP) $(PKG_INSTALL_DIR)/opt/sbin/upsmon $(1)/opt/sbin/)
@@ -111,13 +110,62 @@ define Package/nut/install
 	$(if $(CONFIG_NUT_CLIENTS_UPSSCHED),$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upssched.conf.sample $(1)/opt/etc/nut/upssched.conf)
 endef
 
+define Package/nut-web-cgi
+	$(call Package/nut/Default)
+	TITLE+= Web CGI interface
+	DEPENDS+=+libgd
+endef
+
+define Package/nut-web-cgi/description
+The CGI programs are clients that run through your web server.
+They allow you to see UPS status and perform certain administrative
+commands from any web browser. Javascript and cookies are not required.
+endef
+
+define Package/nut-web-cgi/conffiles
+	/opt/etc/nut/hosts.conf
+	/opt/etc/nut/upsset.conf
+	/opt/etc/nut/upsstats.html
+	/opt/etc/nut/upsstats-single.html
+endef
+
+define Package/nut-web-cgi/install
+	$(INSTALL_DIR) $(1)/opt/etc/nut
+	$(INSTALL_DIR) $(1)//opt/share/www/cgi-bin
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/hosts.conf.sample $(1)/etc/nut/hosts.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsset.conf.sample $(1)/etc/nut/upsset.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats.html.sample $(1)/etc/nut/upsstats.html
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats-single.html.sample $(1)/etc/nut/upsstats-single.html
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/nut $(1)/usr/share/www/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/nut $(1)/usr/share/www/cgi-bin/
+endef
+
+define Package/nut-avahi-service
+	$(call Package/nut/Default)
+	TITLE+= (Avahi service)
+	DEPENDS+=+avahi-daemon
+endef
+
+define Package/nut-avahi-service/description
+This package contains the service definition for announcing the
+attached UPS via mDNS/DNS-SD.
+endef
+
+define Package/nut-avahi-service/conffiles
+	/opt/etc/avahi/services/nut.service
+endef
+
+define Package/nut-avahi-service/install
+	$(INSTALL_DIR) $(1)/opt/etc/avahi/services
+	$(INSTALL_CONF) ./files/nut.service $(1)/opt/etc/avahi/services/
+endef
+
 # Dealing with all of the drivers is very repetitive, but the previous
 # maintainer had a neat solution which just needed some tweaking.
 define DriverPackage
         define Package/nut-driver-$(2)
 		$(call Package/nut/Default)
 		TITLE:=$(2) (NUT $(1) driver)
-		$(if $(filter $(1),serial),DEPENDS+= @NUT_DRIVER_SERIAL)
 		$(if $(filter $(1),snmp),DEPENDS+= @NUT_DRIVER_SNMP)
 		$(if $(filter $(1),usb),DEPENDS+= @NUT_DRIVER_USB)
         endef
@@ -269,31 +317,36 @@ $(eval $(call DriverDescription,usb,nutdrv_qx,\
 	Driver for Q* protocol serial and USB based UPS equipment))
 
 CONFIGURE_ARGS += \
-	--$(if $(CONFIG_NUT_DRIVER_SERIAL),with,without)-serial \
+	--sysconfdir=/opt/etc/nut \
+	--datadir=/opt/share/nut \
+	--with-dev \
 	--$(if $(CONFIG_NUT_DRIVER_USB),with,without)-usb \
+	--without-avahi \
 	--$(if $(CONFIG_NUT_DRIVER_SNMP),with,without)-snmp \
 	--without-neon \
 	--without-powerman \
 	--without-ipmi \
 	--without-freeipmi \
 	--$(if $(CONFIG_NUT_SSL),with,without)-ssl $(if $(CONFIG_NUT_SSL),--with-openssl) \
-	--without-avahi \
 	--without-libltdl \
-	--with-user=root \
-	--with-group=root \
-	--sysconfdir=/opt/etc/nut \
-	--with-drvpath=/opt/lib/nut \
+	--$(if $(CONFIG_PACKAGE_nut-web-cgi),with,without)-cgi \
 	--with-statepath=/opt/var/run \
-	--datadir=/opt/share/nut \
-	--without-doc \
-	--with-udev-dir=/opt/etc/udev \
-	--with-hotplug-dir=/opt/etc/hotplug \
-	--with-pidpath=/opt/var/run \
-	--with-altpidpath=/opt/var/run \
-	--with-htmlpath=/opt/share/www/nut \
+	--with-drvpath=/opt/lib/nut \
 	--with-cgipath=/opt/share/www/cgi-bin/nut \
+	--with-htmlpath=/opt/share/www/nut \
+	--with-user=root \
+	--with-group=root
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib*.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc $(1)/opt/lib/pkgconfig/
+endef
 
 $(eval $(call BuildPackage,nut))
+$(eval $(call BuildPackage,nut-web-cgi))
+$(eval $(call BuildPackage,nut-avahi-service))
 $(foreach d,$(filter-out $(SERIAL_DRIVERLIST_IGNORE),$(SERIAL_DRIVERLIST)),$(eval $(call BuildPackage,nut-driver-$(d))))
 $(foreach d,$(SNMP_DRIVERLIST),$(eval $(call BuildPackage,nut-driver-$(d))))
 $(foreach d,$(USB_LIBUSB_DRIVERLIST),$(eval $(call BuildPackage,nut-driver-$(d))))

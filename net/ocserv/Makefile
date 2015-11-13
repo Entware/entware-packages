@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ocserv
-PKG_VERSION:=0.10.8
-PKG_RELEASE:=1
+PKG_VERSION:=0.10.9
+PKG_RELEASE:=2
 PKG_USE_MIPS16:=0
 
 PKG_BUILD_DIR :=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=ftp://ftp.infradead.org/pub/ocserv/
-PKG_MD5SUM:=665b854377850db535271098a37213f1
+PKG_MD5SUM:=74834c59aa96beaa222c21ee6521adb2
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
@@ -92,7 +92,6 @@ define Package/ocserv/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocpasswd $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/occtl $(1)/usr/bin/
-	$(INSTALL_BIN) ./files/ocserv-script $(1)/usr/bin/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/ocserv.init $(1)/etc/init.d/ocserv
 	$(INSTALL_DIR) $(1)/etc/ocserv

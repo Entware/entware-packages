@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 
 # Make sure to also update the dbus-x package
 PKG_NAME:=dbus
-PKG_VERSION:=1.9.20
-PKG_RELEASE:=1a
+PKG_VERSION:=1.10.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dbus.freedesktop.org/releases/dbus/
-PKG_MD5SUM:=d5a6f0467612054d3bc7361e42ac6ee9
+PKG_MD5SUM:=5af6297348107a906c8449817a728b3b
 PKG_MAINTAINER:=Steven Barth <cyrus@openwrt.org>
 PKG_LICENSE:=AFL-2.1
 

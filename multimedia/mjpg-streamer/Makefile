@@ -7,6 +7,8 @@
 
 include $(TOPDIR)/rules.mk
 
+#!!!!REV 182 requres newer kernels!!!!
+
 PKG_NAME:=mjpg-streamer
 PKG_REV:=181
 PKG_VERSION:=r$(PKG_REV)

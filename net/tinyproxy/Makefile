@@ -12,8 +12,7 @@ PKG_VERSION:=1.8.3
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://www.banu.com/pub/tinyproxy/1.8/ \
-	ftp://ftp.uwsg.indiana.edu/linux/gentoo/distfiles
+PKG_SOURCE_URL:=http://www.banu.com/pub/tinyproxy/1.8/
 PKG_MD5SUM:=292ac51da8ad6ae883d4ebf56908400d
 PKG_MAINTAINER:=Jo-Philipp Wich <jow@openwrt.org>
 
