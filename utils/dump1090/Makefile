@@ -30,7 +30,7 @@ define Package/dump1090/Default
   CATEGORY:=Utilities
   TITLE:=Mode S decoder for the Realtek RTL2832U
   URL:=https://github.com/mutability/dump1090
-  DEPENDS:=+libpthread
+  DEPENDS:=+libpthread +librt
 endef
 
 define Package/dump1090
