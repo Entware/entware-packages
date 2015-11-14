@@ -131,13 +131,13 @@ endef
 
 define Package/nut-web-cgi/install
 	$(INSTALL_DIR) $(1)/opt/etc/nut
-	$(INSTALL_DIR) $(1)//opt/share/www/cgi-bin
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/hosts.conf.sample $(1)/etc/nut/hosts.conf
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsset.conf.sample $(1)/etc/nut/upsset.conf
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats.html.sample $(1)/etc/nut/upsstats.html
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats-single.html.sample $(1)/etc/nut/upsstats-single.html
-	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/nut $(1)/usr/share/www/
-	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/nut $(1)/usr/share/www/cgi-bin/
+	$(INSTALL_DIR) $(1)/opt/share/www/cgi-bin
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/hosts.conf.sample $(1)/opt/etc/nut/hosts.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsset.conf.sample $(1)/opt/etc/nut/upsset.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats.html.sample $(1)/opt/etc/nut/upsstats.html
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats-single.html.sample $(1)/opt/etc/nut/upsstats-single.html
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/nut $(1)/opt/share/www/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/nut $(1)/opt/share/www/cgi-bin/
 endef
 
 define Package/nut-avahi-service
