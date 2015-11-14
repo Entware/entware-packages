@@ -42,17 +42,17 @@ define Package/nail/conffiles
 endef
 
 define Build/Install
-	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/usr/bin
-	$(CP) $(PKG_BUILD_DIR)/mailx $(PKG_INSTALL_DIR)/usr/bin/
-	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/etc
-	$(CP) $(PKG_BUILD_DIR)/nail.rc $(PKG_INSTALL_DIR)/etc/
+	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/mailx $(PKG_INSTALL_DIR)/opt/bin/
+	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/opt/etc
+	$(CP) $(PKG_BUILD_DIR)/nail.rc $(PKG_INSTALL_DIR)/opt/etc/
 endef
 
 define Package/nail/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/etc/* $(1)/etc/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/etc/* $(1)/opt/etc/
 endef
 
 $(eval $(call BuildPackage,nail))
