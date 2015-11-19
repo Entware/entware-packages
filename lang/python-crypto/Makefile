@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pycrypto
 PKG_VERSION:=2.6.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/
@@ -38,7 +38,7 @@ endef
 
 define Build/Compile
 	$(call Build/Compile/PyMod,,\
-		install --prefix=/usr --root=$(PKG_INSTALL_DIR),\
+		install --prefix=/opt --root=$(PKG_INSTALL_DIR),\
 		CONFIG_BIG_ENDIAN="$(CONFIG_BIG_ENDIAN)" \
 	)
 endef
