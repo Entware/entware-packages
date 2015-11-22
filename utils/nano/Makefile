@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
 PKG_VERSION:=2.4.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1b
 PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
 
@@ -30,7 +30,7 @@ define Package/nano
   TITLE:=An enhanced clone of the Pico text editor
   URL:=http://www.nano-editor.org/
   MAINTAINER:=Jonathan Bennett <JBennett@incomsystems.biz>
-  DEPENDS:=+libncursesw
+  DEPENDS:=+libncursesw +zlib +libmagic
 endef
 
 define Package/nano/description
@@ -39,9 +39,10 @@ define Package/nano/description
 endef
 
 CONFIGURE_ARGS += \
-	--enable-tiny \
 	--disable-glibtest \
 	--enable-utf8 \
+	--enable-wrapping \
+	--enable-wrapping-as-root \
 	--without-slang \
 	--disable-color \
 
