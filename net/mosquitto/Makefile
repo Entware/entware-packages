@@ -139,46 +139,41 @@ endef
 
 
 define Package/$(PKG_NAME)/conffiles
-/etc/mosquitto/mosquitto.conf
-/etc/config/mosquitto
+/opt/etc/mosquitto/mosquitto.conf
 endef
 
 Package/$(PKG_NAME)-nossl/conffiles = $(Package/$(PKG_NAME)/conffiles)
 
 define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mosquitto $(1)/usr/sbin/mosquitto
-	$(INSTALL_DIR) $(1)/etc/mosquitto
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/mosquitto.conf $(1)/etc/mosquitto/mosquitto.conf
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/mosquitto.init $(1)/etc/init.d/mosquitto
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) ./files/mosquitto.uci.convert $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mosquitto $(1)/opt/sbin/mosquitto
+	$(INSTALL_DIR) $(1)/opt/etc/mosquitto
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/mosquitto.conf $(1)/opt/etc/mosquitto/mosquitto.conf
 endef
 Package/$(PKG_NAME)-nossl/install = $(Package/$(PKG_NAME)/install)
 
 
 define Package/mosquitto-client/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/client/mosquitto_pub $(1)/usr/bin/mosquitto_pub
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/client/mosquitto_sub $(1)/usr/bin/mosquitto_sub
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/client/mosquitto_pub $(1)/opt/bin/mosquitto_pub
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/client/mosquitto_sub $(1)/opt/bin/mosquitto_sub
 endef
 Package/mosquitto-client-nossl/install = $(Package/mosquitto-client/install)
 
 # This installs files into ./staging_dir/. so that you can cross compile from the host
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_BUILD_DIR)/lib/mosquitto.h $(1)/usr/include
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/lib/libmosquitto.so.1 $(1)/usr/lib/
-	$(LN) libmosquitto.so.1 $(1)/usr/lib/libmosquitto.so
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_BUILD_DIR)/lib/mosquitto.h $(1)/opt/include
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/lib/libmosquitto.so.1 $(1)/opt/lib/
+	$(LN) libmosquitto.so.1 $(1)/opt/lib/libmosquitto.so
 endef
 
 # This installs files on the target.  Compare with Build/InstallDev
 define Package/libmosquitto/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/lib/libmosquitto.so.1 $(1)/usr/lib/
-	$(LN) libmosquitto.so.1 $(1)/usr/lib/libmosquitto.so
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/lib/libmosquitto.so.1 $(1)/opt/lib/
+	$(LN) libmosquitto.so.1 $(1)/opt/lib/libmosquitto.so
 endef
 Package/libmosquitto-nossl/install = $(Package/libmosquitto/install)
 
