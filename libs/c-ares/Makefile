@@ -42,8 +42,8 @@ Netware, Android and many more operating systems.
 endef
 
 define Package/libcares/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so.* $(1)/opt/lib/
 endef
 
 define Build/InstallDev
