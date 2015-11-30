@@ -30,7 +30,7 @@ define Package/nano
   TITLE:=An enhanced clone of the Pico text editor
   URL:=http://www.nano-editor.org/
   MAINTAINER:=Jonathan Bennett <JBennett@incomsystems.biz>
-  DEPENDS:=+libncursesw +zlib +libmagic
+  DEPENDS:=+libncursesw +zlib +file
 endef
 
 define Package/nano/description
