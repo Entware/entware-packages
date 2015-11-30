@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
 PKG_VERSION:=2.4.2
-PKG_RELEASE:=1b
+PKG_RELEASE:=1c
 PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
 
@@ -44,14 +44,23 @@ CONFIGURE_ARGS += \
 	--enable-wrapping \
 	--enable-wrapping-as-root \
 	--without-slang \
-	--disable-color \
 
-CONFIGURE_VARS += \
-	ac_cv_header_regex_h=no \
+define Package/nano/conffiles
+/opt/etc/nanorc
+endef
 
 define Package/nano/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME) $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(CP) $(PKG_BUILD_DIR)/doc/nanorc.sample $(1)/opt/etc/nanorc
+	$(SED) 's,# include "/opt,include "/opt,g' $(1)/opt/etc/nanorc
+	$(INSTALL_DIR) $(1)/opt/share/nano
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/nano/* $(1)/opt/share/nano
+	for f in $(1)/opt/share/nano/*.nanorc; do \
+		$(SED) 's/\\</\\b/g' $$$$f; \
+		$(SED) 's/\\>/\\b/g' $$$$f; \
+	done;
 endef
 
 $(eval $(call BuildPackage,nano))
