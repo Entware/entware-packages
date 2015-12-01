@@ -7,9 +7,11 @@
 
 include $(TOPDIR)/rules.mk
 
+# openwrt difference - conffile + all files from /opt/lib/sqid added to ipk
+
 PKG_NAME:=squid
 PKG_VERSION:=3.5.9
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_LICENSE:=GPL-2.0
 PKG_MAINTAINER:=Luka Perkov <luka@openwrt.org>
@@ -47,6 +49,10 @@ define Package/squid-mod-cachemgr
   $(call Package/squid/Default)
   DEPENDS:=squid
   TITLE:=Web based proxy manager and reporting tool
+endef
+
+define Package/squid/conffiles
+/opt/etc/squid/squid.conf
 endef
 
 CONFIGURE_ARGS += \
@@ -107,7 +113,8 @@ define Package/squid/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/squid $(1)/opt/sbin/
 
 	$(INSTALL_DIR) $(1)/opt/lib/squid
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/squid/ssl_crtd $(1)/opt/lib/squid
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/squid/* $(1)/opt/lib/squid
+	$(RM) $(1)/opt/lib/squid/*.cgi $(1)/opt/lib/squid/*.sh $(1)/opt/lib/squid/*.pl
 
 	$(INSTALL_DIR) $(1)/opt/etc/squid
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/squid/mime.conf $(1)/opt/etc/squid/
