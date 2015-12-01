@@ -7,9 +7,11 @@
 
 include $(TOPDIR)/rules.mk
 
+# openwrt difference --- enabled openssl support and added more binaries to snmp-utils
+
 PKG_NAME:=net-snmp
 PKG_VERSION:=5.4.4
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
@@ -41,6 +43,7 @@ $(call Package/net-snmp/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Open source SNMP implementation (libraries)
+  DEPENDS:=+libopenssl
 endef
 
 define Package/libnetsnmp/description
@@ -79,6 +82,7 @@ endef
 define Package/snmpd-static
 $(call Package/net-snmp/Default)
   TITLE:=Open source SNMP implementation (daemon)
+  DEPENDS:=+libopenssl
 endef
 
 define Package/snmpd-static/description
@@ -166,7 +170,6 @@ CONFIGURE_ARGS += \
 	--disable-debugging \
 	--disable-manuals \
 	--disable-scripts \
-	--without-openssl \
 	--without-libwrap \
 	--without-rpm \
 	--without-zlib \
@@ -231,7 +234,7 @@ endef
 
 define Package/snmp-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/snmp{get,set,status,test,trap,walk} $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/snmp{bulkget,bulkwalk,delta,df,get,getnext,netstat,set,status,table,test,trap,translate,usm,vacm,walk} $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/share/snmp/mibs
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/snmp/mibs/*.txt $(1)/opt/share/snmp/mibs
 endef
