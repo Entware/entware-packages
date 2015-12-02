@@ -17,7 +17,7 @@ PKG_LICENSE:=GPL-2.0+
 
 PKG_SOURCE_URL:=@SF/linknx
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_BUILD_DEPENDS:=argp-standalone
+PKG_BUILD_DEPENDS:=USE_UCLIBC:argp-standalone USE_MUSL:argp-standalone
 PKG_FORTIFY_SOURCE:=1
 
 include $(INCLUDE_DIR)/package.mk

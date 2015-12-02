@@ -16,9 +16,11 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.linuxtv.org/downloads/v4l-utils
 PKG_MD5SUM:=80062780ae90e5955473b09b31e9828a
 
-PKG_BUILD_DEPENDS:=argp-standalone
+PKG_BUILD_DEPENDS:=USE_UCLIBC:argp-standalone USE_MUSL:argp-standalone
 
-include $(INCLUDE_DIR)/uclibc++.mk
+# glibc doen not need argp-standalone
+PATCH_DIR=./patches/$(CONFIG_LIBC)
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libv4l/Default
@@ -58,7 +60,7 @@ define Package/v4l-utils
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS := +libv4l $(CXX_DEPENDS)
+  DEPENDS := +libv4l +libstdcpp
 endef
 
 define Package/v4l-utils/description
