@@ -1,11 +1,3 @@
-# entware-packages feed
-Openwrt packages are modified to be used with entware.
-This repository is based on https://github.com/openwrt/packages .
-Some of the packges are modified to be installed in /opt folder. Some packages will be modified later as needed.
-Extra changes and patches are added to use these packages with glibc and uclibc-ng.
-
-The original README.md from https://github.com/openwrt/packages follows:
-
 # OpenWrt packages feed
 
 ## Description
@@ -31,5 +23,4 @@ See [LICENSE](LICENSE) file.
 ## Package Guidelines
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) file.
-
 
