@@ -108,7 +108,7 @@ CONFIGURE_ARGS += \
 	--disable-documentation \
 	--disable-test \
 	--disable-werror \
-	--disable-signalfd \
+	\
 	--disable-ao \
 	--disable-bzip2 \
 	--disable-fluidsynth \
@@ -165,9 +165,9 @@ ifeq ($(BUILD_VARIANT),full)
 	--enable-fifo \
 	--enable-ffmpeg \
 	--enable-id3 \
-	--disable-lastfm \
+	--enable-lastfm \
 	--enable-mms \
-	--disable-oggflac \
+	--enable-oggflac \
 	--enable-pipe-output \
 	--enable-recorder-output \
 	--disable-shout \
