@@ -78,7 +78,7 @@ endef
 
 define Package/madplay-alsa/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)//madplay $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/madplay $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,madplay-alsa))
