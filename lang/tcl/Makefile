@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tcl
-PKG_VERSION:=8.6.4
+PKG_VERSION:=8.5.18
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)$(PKG_VERSION)-src.tar.gz
@@ -49,8 +49,9 @@ CONFIGURE_PATH := unix
 CONFIGURE_VARS += \
 	tcl_cv_strtod_unbroken=ok
 
-CONFIGURE_ARGS += \
-	--enable-threads
+# Theads are broken on MIPS
+#CONFIGURE_ARGS += \
+#	--enable-threads
 
 MAKE_PATH := unix
 
