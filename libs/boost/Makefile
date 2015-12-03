@@ -27,7 +27,7 @@ PKG_MD5SUM:=51528a0e3b33d9e10aaa311d9eb451e3
 PKG_LICENSE:=Boost Software License <http://www.boost.org/users/license.html>
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 
-PKG_BUILD_DEPENDS += boost/host 
+PKG_BUILD_DEPENDS += boost/host python
 PKG_BUILD_PARALLEL:=0
 PKG_USE_MIPS16:=0
 
