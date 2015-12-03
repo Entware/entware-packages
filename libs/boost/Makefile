@@ -17,7 +17,7 @@ include $(INCLUDE_DIR)/target.mk
 
 PKG_NAME:=boost
 PKG_VERSION:=1_59_0
-PKG_RELEASE:=3
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/boost
@@ -34,17 +34,49 @@ PKG_USE_MIPS16:=0
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 
-# For now, the combination TARGET_mpc85xx&&USE_UCLIBC disables boost due to incompatibility
+
 define Package/boost/Default
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Boost C++ source library
   URL:=http://www.boost.org
-  DEPENDS:=@(!(TARGET_mpc85xx&&USE_UCLIBC)) +libstdcpp +libpthread +librt
+  DEPENDS:=+libstdcpp +libpthread +librt
 endef
 
 define Package/boost/description/Default
-  Boost provides free peer-reviewed portable C++ source libraries
+  true
+endef
+
+define Package/boost/description
+This package provides the Boost v1.59 libraries.
+Boost is a set of free, peer-reviewed, portable C++ source libraries.
+This package provides the following libraries:
+ - atomic
+ - chrono
+ - container
+ - context
+ - coroutine
+ - - coroutine2 (requires GCC v5 and up)
+ - date_time
+ - exception
+ - filesystem
+ - graph
+ - - graph-parallel
+ - iostreams
+ - locale
+ - log
+ - math
+ - program_options
+ - python
+ - python3
+ - random
+ - regex
+ - serialization
+ - signals
+ - system
+ - thread
+ - timer
+ - wave
 endef
 
 BOOST_LIBS =
@@ -72,34 +104,91 @@ define Package/boost/install
   true
 endef
 
-# For now, the combination TARGET_mpc85xx&&USE_UCLIBC disables boost due to incompatibility
+
 define Package/boost
   $(call Package/boost/Default)
   TITLE+= packages
-  DEPENDS:=@(!(TARGET_mpc85xx&&USE_UCLIBC)) +ALL:boost-libs +ALL:boost-test
+  DEPENDS:=+ALL:boost-libs +ALL:boost-test
 endef
 
 define Package/boost/config
+    menu "Select Boost Options"
+      depends on PACKAGE_boost
+        comment "Boost compilation options."
+            config boost-static-libs
+                bool "Compile Static Libraries"
+                help
+                        Compile static version of all selected boost libraries.
+                default n
+
+            config boost-shared-libs
+                bool "Compile Shared Libraries"
+                help
+                        Compile shared version of all selected boost libraries.
+                default y
+
+            config boost-runtime-static
+                bool "Use static version of C and C++ runtimes for static libraries."
+                help
+                        Determines if shared or static version of C and C++ runtimes should be used for static libraries.
+                default n
+                select boost-static-libs
+
+            config boost-runtime-shared
+                bool "Use shared version of C and C++ runtimes for shared libraries."
+                help
+                        Determines if shared or static version of C and C++ runtimes should be used for shared libraries.
+                default n
+                select boost-shared-libs
+
+
+            config boost-multi-threading
+                bool "Multithread Support"
+                help
+                        Compile Boost libraries n multithread mode.
+                default y
+
+            config boost-single-thread
+                bool "Single thread Support"
+                help
+                        Compile Boost libraries in single-thread mode.
+                default n
+
+            config boost-with-debug
+                bool "Boost Debug Support"
+                help
+                        Compile Boost libraries with debug support.
+                default n
+    endmenu
+
     menu "Select Boost libraries"
       depends on PACKAGE_boost
+                comment "Libraries"
 
-    config boost-libs-all
-      bool "Include all Boost libraries"
-      select PACKAGE_boost-libs
+                config boost-libs-all
+                bool "Include all Boost libraries."
+                select PACKAGE_boost-libs
 
-   config boost-test-pkg
-     bool "Boost test package"
-     select PACKAGE_boost-test
+                config boost-test-pkg
+                bool "Boost test package."
+                select PACKAGE_boost-test
 
-    comment "Libraries"
+                config boost-coroutine2
+                depends on @GCC_USE_VERSION_5
+                bool "Boost couroutine2 support."
+                select PACKAGE_boost-coroutine
+                default n
 
-    $(foreach lib,$(BOOST_LIBS), \
-        config PACKAGE_boost-$(lib)
-           prompt "Boost $(lib) library"
+                config boost-graph-parallel
+                bool "Boost parallel graph support."
+                select PACKAGE_boost-graph
+                default n
 
-   )
-
-  endmenu
+                $(foreach lib,$(BOOST_LIBS), \
+                  config PACKAGE_boost-$(lib)
+                  prompt "Boost $(lib) library."
+                )
+        endmenu
 
 endef
 
@@ -139,6 +228,7 @@ define DefineBoostLibrary
   endef
 endef
 
+
 $(eval $(call DefineBoostLibrary,atomic,system,))
 $(eval $(call DefineBoostLibrary,chrono,system,))
 $(eval $(call DefineBoostLibrary,container,,))
@@ -148,26 +238,23 @@ $(eval $(call DefineBoostLibrary,date_time,,))
 #$(eval $(call DefineBoostLibrary,exception,,))
 $(eval $(call DefineBoostLibrary,filesystem,system,))
 $(eval $(call DefineBoostLibrary,graph,regex,))
-#$(eval $(call DefineBoostLibrary,graph_parallel,,))
 $(eval $(call DefineBoostLibrary,iostreams,,+zlib))
 $(eval $(call DefineBoostLibrary,locale,system,$(ICONV_DEPENDS) +@BUILD_NLS))
 $(eval $(call DefineBoostLibrary,log,system chrono date_time thread filesystem regex,))
 $(eval $(call DefineBoostLibrary,math,,))
-#$(eval $(call DefineBoostLibrary,mpi,,))
+#$(eval $(call DefineBoostLibrary,mpi,,)) # OpenMPI does no exist in OpenWRT at this time.
 $(eval $(call DefineBoostLibrary,program_options,,))
+$(eval $(call DefineBoostLibrary,python,,+CONFIG_boost_python:python))
+$(eval $(call DefineBoostLibrary,python3,,+CONFIG_boost_python3:python3))
 $(eval $(call DefineBoostLibrary,random,system,))
-
-# We need a beter way to provide this package, information regarding the Python packages
-#  such as Python version and directories locations. 
-# Python 2.7 version is for now hard-coded. Python 3 is (until this date) broken in the trunk tree.
-$(eval $(call DefineBoostLibrary,python,,+PACKAGE_boost-python:python))
 $(eval $(call DefineBoostLibrary,regex,,))
 $(eval $(call DefineBoostLibrary,serialization,,))
 $(eval $(call DefineBoostLibrary,signals,,))
-$(eval $(call DefineBoostLibrary,system,,))
+$(eval $(call DefineBoostLibrary,system,,+@boost-multi-threading))
 $(eval $(call DefineBoostLibrary,thread,system chrono atomic,))
 $(eval $(call DefineBoostLibrary,timer,chrono))
 $(eval $(call DefineBoostLibrary,wave,date_time thread filesystem,))
+
 
 define Host/Compile
 	# bjam does not provide a configure-script nor a Makefile
@@ -177,7 +264,10 @@ endef
 CONFIGURE_PREFIX:=$(PKG_INSTALL_DIR)
 TARGET_LDFLAGS += -pthread -lrt
 
-TARGET_CFLAGS += $(if $(CONFIG_SOFT_FLOAT),-DBOOST_NO_FENV_H)
+TARGET_CFLAGS += \
+       $(if $(CONFIG_PACKAGE_boost-python), -I$(STAGING_DIR)/opt/include/python2.7/) \
+       $(if $(CONFIG_PACKAGE_boost-python3), -I$(STAGING_DIR)/opt/include/python3.5/) \
+       $(if $(CONFIG_SOFT_FLOAT),-DBOOST_NO_FENV_H) -fPIC
 
 ifneq ($(findstring mips,$(ARCH)),)
     BOOST_ABI = o32
@@ -197,20 +287,36 @@ define Build/Compile
 	$(info Selected Boost API $(BOOST_ABI) for architecture $(ARCH))
 	( cd $(PKG_BUILD_DIR) ; \
 		echo "using gcc : $(ARCH) : $(TARGET_CROSS)gcc : <compileflags>\"$(TARGET_CFLAGS)\" <cxxflags>\"$(TARGET_CXXFLAGS)\" <linkflags>\"$(TARGET_LDFLAGS)\" ;" > tools/build/src/user-config.jam ; \
+		$(if $(CONFIG_PACKAGE_boost-python3), \
+			echo "using python : 3.5 : $(STAGING_DIR_ROOT)/opt/bin/python3 :	$(STAGING_DIR)/opt/include/python3.5/ ;" >> \
+				tools/build/src/user-config.jam; \
+		) \
 		$(if $(CONFIG_PACKAGE_boost-python), \
-			echo "using python : : $(STAGING_DIR_ROOT)/opt/bin/python :	$(STAGING_DIR)/opt/include/python2.7/ ;" >> \
+			echo "using python : 2.7 : $(STAGING_DIR_ROOT)/opt/bin/python :		$(STAGING_DIR)/opt/include/python2.7/ ;" >> \
 				tools/build/src/user-config.jam; \
 		) \
 		bjam \
 			'-sBUILD=release <optimization>space <inlining>on <debug-symbols>off' \
 			--ignore-site-config \
-			--toolset=gcc-$(ARCH) --build-type=minimal --layout=system abi=$(BOOST_ABI) \
+			--toolset=gcc-$(ARCH) abi=$(BOOST_ABI) \
 			--disable-long-double \
+			--layout=tagged \
+			$(if $(CONFIG_boost-with-debug),--build-type=complete,--build-type=minimal) \
+			$(if $(CONFIG_boost-static-libs),link=static,) \
+			$(if $(CONFIG_boost-runtime-static),runtime-link=static,runtime-link=shared) \
+			$(if $(CONFIG_boost-shared-libs),link=shared,) \
+			$(if $(CONFIG_boost-runtime-shared),runtime-link=shared,) \
+			$(if $(CONFIG_boost-single-thread),threading=single,) \
+			$(if $(CONFIG_boost-multi-threading),threading=multi,) \
 			$(CONFIGURE_ARGS) \
 			--without-mpi \
 			$(if $(CONFIG_PACKAGE_boost-test),,--without-test) \
+			$(if $(CONFIG_boost-coroutine2),,--without-coroutine2) \
+			$(if $(CONFIG_boost-graph-parallel),,--without-graph_parallel) \
 			$(foreach lib,$(BOOST_LIBS), \
-				$(if $(CONFIG_PACKAGE_boost-$(lib)),,--without-$(lib)) \
+				$(if $(findstring python,$(lib)), \
+				  $(if $(or $(CONFIG_PACKAGE_boost-python),$(CONFIG_PACKAGE_boost-python3)),,--without-python), \
+				  $(if $(CONFIG_PACKAGE_boost-$(lib)),,--without-$(lib))) \
 			) \
 			$(if $(CONFIG_PACKAGE_boost-locale),boost.locale.iconv=on -sICONV_PATH=$(ICONV_PREFIX) boost.locale.posix=$(if $(USE_UCLIBC),on,off), \
 				boost.locale.iconv=off) \
@@ -231,8 +337,8 @@ define Build/InstallDev
 		# copies _all_ header files - independent of <--with-library>-argument above
 
 	$(INSTALL_DIR) $(1)/opt/lib
-	-$(CP) $(PKG_INSTALL_DIR)/lib/*.a $(1)/opt/lib/
-	-$(CP) $(PKG_INSTALL_DIR)/lib/*.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/lib/*.a $(1)/opt/lib/ # copies all compiled archive files
+	$(FIND) $(PKG_INSTALL_DIR)/lib/ -name '*.so*' -exec $(CP) {} $(1)/opt/lib/ \; # copies all the shared objects files
 endef
 
 define Host/Install
@@ -248,22 +354,19 @@ define Package/boost/Default/install
 	$(INSTALL_DIR) \
 		$(1)/opt/lib
 
-	$(CP) \
-		$(PKG_INSTALL_DIR)/lib/libboost_$(2)*.so* \
-		$(1)/opt/lib/
+	$(FIND) \
+		$(PKG_INSTALL_DIR)/lib/ -name 'libboost_$(2)*.so*' -exec $(CP) {} $(1)/opt/lib/ \;
 endef
 
 define Package/boost-test/install
 	$(INSTALL_DIR) \
 		$(1)/opt/lib
 
-	$(CP) \
-		$(PKG_INSTALL_DIR)/lib/libboost_unit_test_framework*.so* \
-		$(1)/opt/lib/
+		$(FIND) \
+			$(PKG_INSTALL_DIR)/lib/ -name 'libboost_unit_test_framework*.so*' -exec $(CP) {} $(1)/opt/lib/ \;
 
-	$(CP) \
-		$(PKG_INSTALL_DIR)/lib/libboost_prg_exec_monitor*.so* \
-		$(1)/opt/lib/
+		$(FIND) \
+			$(PKG_INSTALL_DIR)/lib/ -name 'libboost_prg_exec_monitor*.so*' -exec $(CP) {} $(1)/opt/lib/ \;
 endef
 
 define BuildBoostLibrary
@@ -278,6 +381,5 @@ $(eval $(call HostBuild))
 
 $(foreach lib,$(BOOST_LIBS),$(eval $(call BuildBoostLibrary,$(lib))))
 $(eval $(call BuildPackage,boost-test))
-
 $(eval $(call BuildPackage,boost-libs))
 $(eval $(call BuildPackage,boost))
