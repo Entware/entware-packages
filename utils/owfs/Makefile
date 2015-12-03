@@ -20,6 +20,14 @@ PKG_LICENSE:=GPL-2.0
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
+PKG_CONFIG_DEPENDS:= \
+  CONFIG_LIBOW_MASTER_USB \
+  CONFIG_LIBOW_MASTER_I2C \
+  CONFIG_LIBOW_MASTER_W1 \
+  CONFIG_LIBOW_ZEROCONF \
+  CONFIG_LIBOW_DEBUG \
+  CONFIG_LIBOW_OWTRAFFIC
+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 
@@ -75,8 +83,15 @@ endef
 
 define Package/libow
   $(call Package/owfs/Library)
-  DEPENDS:=+libusb-compat +libpthread +$(ICONV_DEPENDS)
+  DEPENDS:= \
+	+libpthread \
+	$(ICONV_DEPENDS) \
+	+LIBOW_MASTER_USB:libusb-compat
   TITLE:=OWFS - common shared library
+endef
+
+define Package/libow/config
+  source "$(SOURCE)/Config.in"
 endef
 
 define Package/libow/description
@@ -167,18 +182,21 @@ CONFIGURE_ARGS += \
 	--enable-owserver \
 	--enable-owhttpd \
 	--enable-owfs \
+	--with-fuseinclude="$(STAGING_DIR)/opt/include" \
+	--with-fuselib="$(STAGING_DIR)/opt/lib" \
 	--enable-shared \
-	--enable-zero \
 	--disable-parport \
 	--disable-ownet \
 	--disable-owpython \
 	--disable-owphp \
 	--disable-owtcl \
 	--disable-swig \
-	--with-fuseinclude="$(STAGING_DIR)/opt/include" \
-	--with-fuselib="$(STAGING_DIR)/opt/lib" \
-	--enable-usb \
-	--with-libusb-config="$(STAGING_DIR)/opt/bin/libusb-config"
+	$(if $(CONFIG_LIBOW_MASTER_USB),--enable-usb,--disable-usb) \
+	$(if $(CONFIG_LIBOW_MASTER_W1),--enable-w1,--disable-w1) \
+	$(if $(CONFIG_LIBOW_MASTER_I2C),--enable-i2c,--disable-i2c) \
+	$(if $(CONFIG_LIBOW_ZEROCONF),--enable-zero,--disable-zero) \
+	$(if $(CONFIG_LIBOW_DEBUG),--enable-debug,--disable-debug) \
+	$(if $(CONFIG_LIBOW_OWTRAFFIC),--enable-owtraffic,--disable-owtraffic)
 
 TARGET_LDFLAGS += \
 	-L$(ICONV_PREFIX)/lib \
@@ -188,6 +206,7 @@ TARGET_CFLAGS += \
 	-I$(ICONV_PREFIX)/include \
 
 CONFIGURE_VARS += \
+	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(TOOLCHAIN_DIR)/usr/lib" \
 	lt_cv_sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib" \
 	lt_cv_sys_lib_search_path_spec="$(STAGING_DIR)/opt/lib" \
 	shrext_cmds=".so" \
