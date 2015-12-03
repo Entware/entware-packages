@@ -108,6 +108,7 @@ CONFIGURE_ARGS+= \
 	--enable-agent \
 	--enable-server \
 	--enable-proxy \
+	$(call autoconf_bool,CONFIG_IPV6,ipv6) \
 	--disable-java \
 	--with-sqlite3="$(STAGING_DIR)/opt"
 
