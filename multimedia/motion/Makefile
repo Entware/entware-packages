@@ -23,7 +23,6 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_SOURCE_SUBDIR).tar.gz
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
 PKG_BUILD_PARALLEL:=1
-PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -50,9 +49,9 @@ CONFIGURE_ARGS+= \
 
 define Package/motion/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(CP) $(PKG_INSTALL_DIR)/opt/etc/motion/motion-dist.conf $(1)/opt/etc/motion.conf
+	$(CP) $(PKG_BUILD_DIR)/motion-dist.conf $(1)/opt/etc/motion.conf
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/motion $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/motion $(1)/opt/bin/
 	$(INSTALL_BIN) ./files/S99motion  $(1)/opt/etc/init.d
 endef
 

@@ -57,6 +57,7 @@ endef
 
 CONFIGURE_ARGS += \
 	--disable-doxygen-doc \
+	--with-homedir=/opt/etc/mc \
 	--with-screen=slang \
 	--without-gpm-mouse \
 	--without-x \

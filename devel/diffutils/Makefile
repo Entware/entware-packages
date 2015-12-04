@@ -36,7 +36,7 @@ endef
 
 CONFIGURE_VARS += \
 	ac_cv_func_mempcpy=n
-TARGET_CFLAGS += --std=c99 -fgnu89-inline
+TARGET_CFLAGS += --std=gnu99
 
 define Package/diffutils/install
 	$(INSTALL_DIR) $(1)/opt/bin

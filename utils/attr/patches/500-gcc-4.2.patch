@@ -1,5 +1,5 @@
---- a/include/attributes.h.orig	2014-11-26 15:57:56.425404552 +0300
-+++ b/include/attributes.h	2014-11-26 16:00:45.005252966 +0300
+--- a/include/attributes.h
++++ b/include/attributes.h
 @@ -121,10 +121,10 @@
   */
  extern int attr_get (const char *__path, const char *__attrname,

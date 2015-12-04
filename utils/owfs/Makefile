@@ -198,12 +198,12 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_LIBOW_DEBUG),--enable-debug,--disable-debug) \
 	$(if $(CONFIG_LIBOW_OWTRAFFIC),--enable-owtraffic,--disable-owtraffic)
 
+TARGET_CFLAGS += \
+	-I$(ICONV_PREFIX)/include \
+
 TARGET_LDFLAGS += \
 	-L$(ICONV_PREFIX)/lib \
 	-liconv \
-
-TARGET_CFLAGS += \
-	-I$(ICONV_PREFIX)/include \
 
 CONFIGURE_VARS += \
 	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(TOOLCHAIN_DIR)/usr/lib" \

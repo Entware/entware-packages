@@ -47,7 +47,6 @@ define Package/tinyproxy/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/tinyproxy/*.html $(1)/opt/share/tinyproxy/
 	$(INSTALL_DIR) $(1)/opt/etc/tinyproxy
 	$(INSTALL_CONF) ./files/tinyproxy.config $(1)/opt/etc/tinyproxy
-	$(INSTALL_DIR) $(1)/opt/var/log
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S21tinyproxy $(1)/opt/etc/init.d
 endef

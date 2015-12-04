@@ -30,7 +30,7 @@ define Package/libshout/default
   CATEGORY:=Libraries
   TITLE:=Shoutcast client library
   URL:=http://www.icecast.org/download.php
-  DEPENDS:=+libvorbis +libvorbisidec +libpthread
+  DEPENDS:= +libvorbis +libvorbisidec +libpthread
 endef
 
 define Package/libshout
@@ -58,7 +58,7 @@ Package/libshout-full/description=Package/libshout/description
 
 CONFIGURE_ARGS += \
 	--enable-shared \
-	--enable-static \
+	--enable-static
 
 ifeq ($(BUILD_VARIANT),nospeex)
   CONFIGURE_ARGS += --disable-theora --disable-speex

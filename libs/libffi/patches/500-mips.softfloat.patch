@@ -1,5 +1,5 @@
---- libffi/src/mips/o32.S.orig	2014-11-08 14:47:24.000000000 +0200
-+++ libffi/src/mips/o32.S	2015-04-16 12:03:11.302116104 +0300
+--- a/src/mips/o32.S
++++ b/src/mips/o32.S
 @@ -82,13 +82,16 @@
  		
  	ADDU	$sp, 4 * FFI_SIZEOF_ARG		# adjust $sp to new args

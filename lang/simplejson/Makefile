@@ -15,8 +15,7 @@ PKG_LICENSE:=MIT
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://pypi.python.org/packages/source/s/simplejson/
 PKG_MD5SUM:=b65dc21c7aaad14c6b4ad0d9179e437d
-PKG_BUILD_DEPENDS:=python
-# python-setuptools
+PKG_BUILD_DEPENDS:=python python-setuptools
 
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)

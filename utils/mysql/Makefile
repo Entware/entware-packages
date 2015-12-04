@@ -58,7 +58,6 @@ define Package/libmysqlclient-r
   DEPENDS+= +libpthread
 endef
 
-#TARGET_CXX=g++-uc
 
 TARGET_CFLAGS += $(FPIC)
 

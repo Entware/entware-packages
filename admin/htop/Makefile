@@ -27,7 +27,7 @@ define Package/htop
   SECTION:=admin
   CATEGORY:=Administration
   TITLE:=Interactive processes viewer
-  DEPENDS:=+libncurses +libncursesw
+  DEPENDS:=+libncurses
   URL:=http://htop.sourceforge.net/
   MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
 endef

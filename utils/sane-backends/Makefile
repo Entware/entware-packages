@@ -5,7 +5,7 @@
 # See /LICENSE for more information.
 #
 
-#The original owrt Makefile splits sane-backent into manu small packages. It is removed
+# The original owrt Makefile splits sane-backent into many small packages. It is removed
 
 include $(TOPDIR)/rules.mk
 

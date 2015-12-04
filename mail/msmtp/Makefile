@@ -87,7 +87,10 @@ CONFIGURE_ARGS += \
 	--without-libidn \
 	--without-libsecret \
 	--without-macosx-keyring \
-	--disable-gai-idn
+
+ifneq ($(CONFIG_USE_UCLIBC),)
+  CONFIGURE_ARGS += --disable-gai-idn
+endif
 
 MAKE_FLAGS :=
 

@@ -35,7 +35,7 @@ endef
 define Package/squid
   $(call Package/squid/Default)
   MENU:=1
-  DEPENDS:=+libopenssl +libpthread +librt +libltdl +libstdcpp +libgnutls
+  DEPENDS:=+libopenssl +libpthread +librt +libltdl +libstdcpp
   TITLE:=full-featured Web proxy cache
 endef
 

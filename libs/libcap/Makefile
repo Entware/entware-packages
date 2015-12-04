@@ -19,7 +19,7 @@ PKG_MAINTAINER:=Steven Barth <cyrus@openwrt.org>
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
-#include $(INCLUDE_DIR)/kernel.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 define Package/libcap
   TITLE:=Linux capabilities library

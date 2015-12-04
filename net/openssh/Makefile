@@ -125,7 +125,7 @@ define Package/openssh-sftp-server
 	$(call Package/openssh/Default)
 	TITLE+= SFTP server
 	# Strip dependencies to avoid pulling in OpenSSL etc.
-	DEPENDS:=+librt
+	DEPENDS:=
 endef
 
 define Package/openssh-sftp-server/description
@@ -190,12 +190,10 @@ ifeq ($(BUILD_VARIANT),with-pam)
 TARGET_LDFLAGS += -lpthread
 endif
 
-TARGET_LDFLAGS += -lssp
-
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
-		LIBS="-lrt" \
+		LIBS="" \
 		sftp-server
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \

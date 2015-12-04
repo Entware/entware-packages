@@ -26,9 +26,9 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libaudiofile
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libflac +libstdcpp +alsa-lib
   TITLE:=Audio File library
   URL:=http://www.68k.org/~michael/audiofile/
+  DEPENDS:=+libflac +libstdcpp
 endef
 
 define Package/libaudiofile/description

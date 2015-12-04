@@ -100,7 +100,6 @@ define Package/rsyncd/install
 	$(INSTALL_DATA) ./files/rsyncd.conf $(1)/opt/etc/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S50rsyncd $(1)/opt/etc/init.d/
-	$(INSTALL_DIR) $(1)/opt/var/log
 	$(INSTALL_DIR) $(1)/opt/etc/xinetd.d
 	$(INSTALL_DATA) ./files/rsyncd $(1)/opt/etc/xinetd.d/
 endef
