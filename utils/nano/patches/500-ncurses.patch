@@ -1,0 +1,11 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -488,7 +488,7 @@
+ 
+     if test "x$enable_utf8" != xno; then
+ 	OLDLIBS="$LIBS"
+-	AC_CHECK_TOOL(NCURSESW_CONFIG, ncursesw5-config, no)
++	AC_CHECK_TOOL(NCURSESW_CONFIG, ncursesw6-config, no)
+ 	if test "x$NCURSESW_CONFIG" != xno; then
+ 	    CURSES_LIB=`$NCURSESW_CONFIG --libs`
+ 	    LIBS="$CURSES_LIB $LIBS"
