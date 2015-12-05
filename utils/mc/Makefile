@@ -4,12 +4,15 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Subshell patch removed as useless, export SHELL=/opt/bin/bash solves
+# this problem with no any additional patches. BB ash doesn't support
+# subshell anyway
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
 PKG_VERSION:=4.8.15
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 PKG_MAINTAINER:=Dirk Brenken <dirk@brenken.org>
 PKG_LICENSE:=GPL-3.0+
 
