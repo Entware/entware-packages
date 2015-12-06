@@ -8,9 +8,11 @@
 
 include $(TOPDIR)/rules.mk
 
+#glibc changed (patched) --> increase PKG_RELEASE of gcc since libs are taken from toolchain
+
 PKG_NAME:=gcc
 PKG_VERSION:=4.8.5
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_SOURCE_URL:=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-$(PKG_VERSION) \
      http://mirrors.rcn.net/pub/sourceware/gcc/releases/gcc-$(PKG_VERSION) \
     ftp://ftp.gnu.org/gnu/gcc/releases/gcc-$(PKG_VERSION)
