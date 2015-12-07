@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# mpd uses signalfd() and epoll() in some strange way, so we disabled it
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpd
 PKG_VERSION:=0.19.11
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.musicpd.org/download/mpd/0.19/
@@ -146,7 +147,7 @@ CONFIGURE_ARGS += \
 	--enable-tcp \
 	--enable-un \
 	--disable-epoll \
-	--disable-mvp \
+	--disable-signalfd \
 
 CONFIGURE_VARS += \
 	FLAC_CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include/FLAC" \
