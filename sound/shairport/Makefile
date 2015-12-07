@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Downgraded from 2015-09-29 for unknown reason
 
 include $(TOPDIR)/rules.mk
 

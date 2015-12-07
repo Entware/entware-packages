@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# LDAP is always turned on. MySQL variant added.
 
 include $(TOPDIR)/rules.mk
 

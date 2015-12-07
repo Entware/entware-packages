@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Wrapping and syntax highlight enabled.
 
 include $(TOPDIR)/rules.mk
 

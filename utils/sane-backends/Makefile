@@ -4,8 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-
-# The original owrt Makefile splits sane-backent into many small packages. It is removed
+# The original Makefile splits backends into many small packages.
 
 include $(TOPDIR)/rules.mk
 

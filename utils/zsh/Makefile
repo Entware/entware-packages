@@ -42,7 +42,6 @@ define Build/Configure
 	$(call Build/Configure/Default, \
 		--bindir=/opt/bin \
 		--enable-etcdir=/opt/etc \
-		--enable-multibyte \
 		--disable-gdbm \
 		--enable-pcre \
 		--enable-multibyte \

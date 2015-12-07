@@ -4,11 +4,10 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-#
+# Upgraded from 4.8.3 to 4.8.5
+# glibc changed (patched) --> increase PKG_RELEASE of gcc since libs are taken from toolchain
 
 include $(TOPDIR)/rules.mk
-
-#glibc changed (patched) --> increase PKG_RELEASE of gcc since libs are taken from toolchain
 
 PKG_NAME:=gcc
 PKG_VERSION:=4.8.5

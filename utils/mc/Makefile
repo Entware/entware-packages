@@ -7,6 +7,7 @@
 # Subshell patch removed as useless, export SHELL=/opt/bin/bash solves
 # this problem with no any additional patches. BB ash doesn't support
 # subshell anyway
+# Switched from ncurses to slang to support broken terminals
 
 include $(TOPDIR)/rules.mk
 

@@ -4,6 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Make uses preprocessor output that is differnet for gcc 5.x
+# TARGET_CPPFLAGS +=-P fixes it
 
 include $(TOPDIR)/rules.mk
 
@@ -38,8 +40,6 @@ endef
 
 TARGET_CFLAGS += $(FPIC)
 
-# Make uses preprocessor output that is differnet for gcc 5.x
-# -P flag fixes it
 
 ifeq ($(CONFIG_GCC_VERSION_5),y)
     TARGET_CPPFLAGS += -P

@@ -4,10 +4,9 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# openssl support enabled, more binaries added to snmp-utils
 
 include $(TOPDIR)/rules.mk
-
-# openwrt difference --- enabled openssl support and added more binaries to snmp-utils
 
 PKG_NAME:=net-snmp
 PKG_VERSION:=5.4.4
