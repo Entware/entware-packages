@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fakeidentd
 PKG_VERSION:=2.6
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).c
 PKG_SOURCE_URL:=http://distfiles.gentoo.org/distfiles/
