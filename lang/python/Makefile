@@ -12,7 +12,7 @@ include ./files/python-package.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=6
+PKG_RELEASE:=6a
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.python.org/ftp/python/$(PKG_VERSION)
@@ -200,7 +200,6 @@ define PyPackage/python-light/filespec
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/_testcapi.so
 -|/opt/lib/python$(PYTHON_VERSION)/pdb.doc
 -|/opt/lib/python$(PYTHON_VERSION)/test
--|/opt/lib/python$(PYTHON_VERSION)/webbrowser.py
 -|/opt/lib/python$(PYTHON_VERSION)/*/test
 -|/opt/lib/python$(PYTHON_VERSION)/*/tests
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/readline.so
