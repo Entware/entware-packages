@@ -38,7 +38,7 @@ define Package/luaposix/description
   to various low level libc functions.
 endef
 
-CONFIGURE_VARS += ac_cv_path_LDOC=""
+CONFIGURE_VARS += ac_cv_path_LDOC="true"
 
 TARGET_CFLAGS += -DLUA_USE_LINUX $(FPIC) -std=gnu99
 ifeq ($(CONFIG_USE_MUSL),y)
@@ -53,9 +53,9 @@ endif
 
 
 define Package/luaposix/install
-	$(INSTALL_DIR) $(1)/usr/lib/lua/posix
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ext/posix/.libs/posix.so $(1)/usr/lib/lua
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/lib/posix.lua $(1)/usr/lib/lua
+	$(INSTALL_DIR) $(1)/opt/lib/lua/posix
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ext/posix/.libs/posix.so $(1)/opt/lib/lua
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/lib/posix.lua $(1)/opt/lib/lua
 endef
 
 $(eval $(call BuildPackage,luaposix))
