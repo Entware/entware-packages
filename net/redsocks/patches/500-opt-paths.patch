@@ -1,0 +1,11 @@
+--- a/main.c
++++ b/main.c
+@@ -39,7 +39,7 @@
+ 	&dnstc_subsys,
+ };
+ 
+-static const char *confname = "/etc/redsocks.conf";
++static const char *confname = "/opt/etc/redsocks.conf";
+ static const char *pidfile = NULL;
+ 
+ static void terminate(int sig, short what, void *_arg)

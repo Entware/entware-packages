@@ -30,7 +30,7 @@ define Package/redsocks
 endef
 
 define Package/redsocks/conffiles
-/etc/redsocks.conf
+/opt/etc/redsocks.conf
 endef
 
 define Package/redsocks/description
@@ -48,11 +48,11 @@ define Package/redsocks/description
 endef
 
 define Package/redsocks/install
-	$(INSTALL_DIR) $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/redsocks $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) files/redsocks.init $(1)/etc/init.d/redsocks
-	$(INSTALL_CONF) files/redsocks.conf $(1)/etc/
+	$(INSTALL_DIR) $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/redsocks $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d/
+	$(INSTALL_BIN) files/S23redsocks $(1)/opt/etc/init.d/
+	$(INSTALL_CONF) files/redsocks.conf $(1)/opt/etc/
 endef
 
 $(eval $(call BuildPackage,redsocks))
