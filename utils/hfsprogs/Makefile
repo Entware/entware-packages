@@ -59,22 +59,20 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		-f Makefile.lnx \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS+="$(TARGET_CFLAGS) -I$(PKG_BUILD_DIR)/include -DDEBUG_BUILD=0 -D_FILE_OFFSET_BITS=64 -D LINUX=1 -D BSD=1" \
+		CFLAGS+="$(TARGET_CPPFLAGS) -I$(PKG_BUILD_DIR)/include -DDEBUG_BUILD=0 -D_FILE_OFFSET_BITS=64 -D LINUX=1 -D BSD=1 $(TARGET_LDFLAGS)" \
 		all
 endef
 
 define Package/hfsfsck/install
-	$(INSTALL_DIR) $(1)/lib/functions/fsck
-	$(INSTALL_DATA) ./files/hfsfsck.sh $(1)/lib/functions/fsck/
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/fsck_hfs.tproj/fsck_hfs	$(1)/usr/sbin/fsck.hfsplus
-	(cd $(1)/usr/sbin; ln -sf fsck.hfsplus fsck.hfs;)
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/fsck_hfs.tproj/fsck_hfs	$(1)/opt/sbin/fsck.hfsplus
+	(cd $(1)/opt/sbin; ln -sf fsck.hfsplus fsck.hfs;)
 endef
 
 define Package/mkhfs/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/newfs_hfs.tproj/newfs_hfs $(1)/usr/sbin/mkfs.hfsplus
-	(cd $(1)/usr/sbin; ln -sf mkfs.hfsplus mkfs.hfs;)
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/newfs_hfs.tproj/newfs_hfs $(1)/opt/sbin/mkfs.hfsplus
+	(cd $(1)/opt/sbin; ln -sf mkfs.hfsplus mkfs.hfs;)
 endef
 
 $(eval $(call BuildPackage,hfsfsck))
