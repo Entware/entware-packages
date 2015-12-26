@@ -1,0 +1,41 @@
+--- a/libntfs-3g/Makefile.in
++++ b/libntfs-3g/Makefile.in
+@@ -1057,9 +1057,9 @@
+ # We may need to move .so files to root
+ # And create ldscript or symbolic link from /usr
+ install-exec-hook: install-rootlibLTLIBRARIES
+-@INSTALL_LIBRARY_TRUE@	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
+-@INSTALL_LIBRARY_TRUE@		$(MV) -f "$(DESTDIR)/$(libdir)"/libntfs-3g.so* "$(DESTDIR)/$(rootlibdir)";  \
+-@INSTALL_LIBRARY_TRUE@	fi
++#@INSTALL_LIBRARY_TRUE@	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
++#@INSTALL_LIBRARY_TRUE@		$(MV) -f "$(DESTDIR)/$(libdir)"/libntfs-3g.so* "$(DESTDIR)/$(rootlibdir)";  \
++#@INSTALL_LIBRARY_TRUE@	fi
+ @GENERATE_LDSCRIPT_TRUE@@INSTALL_LIBRARY_TRUE@	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
+ @GENERATE_LDSCRIPT_TRUE@@INSTALL_LIBRARY_TRUE@		$(install_sh_PROGRAM) "libntfs-3g.script.so" "$(DESTDIR)/$(libdir)/libntfs-3g.so"; \
+ @GENERATE_LDSCRIPT_TRUE@@INSTALL_LIBRARY_TRUE@	fi
+--- a/libntfs-3g/Makefile.am
++++ b/libntfs-3g/Makefile.am
+@@ -59,17 +59,17 @@
+ # And create ldscript or symbolic link from /usr
+ install-exec-hook: install-rootlibLTLIBRARIES
+ if INSTALL_LIBRARY
+-	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
+-		$(MV) -f "$(DESTDIR)/$(libdir)"/libntfs-3g.so* "$(DESTDIR)/$(rootlibdir)";  \
+-	fi
++#	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
++#		$(MV) -f "$(DESTDIR)/$(libdir)"/libntfs-3g.so* "$(DESTDIR)/$(rootlibdir)";  \
++#	fi
+ if GENERATE_LDSCRIPT
+ 	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
+ 		$(install_sh_PROGRAM) "libntfs-3g.script.so" "$(DESTDIR)/$(libdir)/libntfs-3g.so"; \
+ 	fi
+ else
+-	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
+-		$(LN_S) "$(rootlibdir)/libntfs-3g.so" "$(DESTDIR)/$(libdir)/libntfs-3g.so"; \
+-	fi
++#	if [ ! "$(rootlibdir)" -ef "$(libdir)" ]; then \
++#		$(LN_S) "$(rootlibdir)/libntfs-3g.so" "$(DESTDIR)/$(libdir)/libntfs-3g.so"; \
++#	fi
+ endif
+ endif
+ 

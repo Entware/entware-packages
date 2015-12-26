@@ -41,7 +41,7 @@ endef
 
 define Package/ntfs-3g
   $(call Package/ntfs-3g/common)
-  DEPENDS+= +kmod-fuse +PACKAGE_NTFS-3G_USE_LIBFUSE:libfuse +libpthread
+  DEPENDS+= +PACKAGE_NTFS-3G_USE_LIBFUSE:libfuse +libpthread
 endef
 
 define Package/ntfs-3g/description
@@ -133,7 +133,7 @@ CONFIGURE_ARGS += \
 # configure/make according selection
 ifdef CONFIG_PACKAGE_NTFS-3G_USE_LIBFUSE
 	CONFIGURE_ARGS += --with-fuse=external
-	TARGET_CPPFLAGS:=-I$(STAGING_DIR)/usr/include/fuse $(TARGET_CPPFLAGS)
+	TARGET_CPPFLAGS:=-I$(STAGING_DIR)/opt/include/fuse $(TARGET_CPPFLAGS)
 else
 	CONFIGURE_ARGS += --with-fuse=internal
 	TARGET_CPPFLAGS:=-I../include/fuse-lite $(TARGET_CPPFLAGS)
@@ -156,75 +156,39 @@ define Build/Prepare
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP)	$(PKG_INSTALL_DIR)/usr/include/ntfs-3g $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP)	$(PKG_INSTALL_DIR)/usr/lib/libntfs-3g.{la,a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP)	$(PKG_INSTALL_DIR)/opt/include/ntfs-3g $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP)	$(PKG_INSTALL_DIR)/opt/lib/libntfs-3g.{la,a,so*} $(1)/opt/lib/
 endef
 
 define Package/ntfs-3g/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ntfs-3g{,.probe} $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libntfs-3g.so.* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.ntfs-3g $(1)/sbin/
-endef
-
-define Package/ntfs-3g/postinst
-#!/bin/sh
-FILE="$${IPKG_INSTROOT}/etc/filesystems"
-ID="ntfs-3g"
-
-if ! [ -f '/etc/filesystems' ]; then
-	echo "Create '$$FILE'."
-	touch "$$FILE"
-fi
-
-if ! grep -q -e '^ntfs-3g$$' "$$FILE"; then
-	echo "Add '$$ID' to known filesystems."
-	echo "$$ID" >> "$$FILE"
-fi
-
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ntfs-3g{,.probe} $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libntfs-3g.so.* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.ntfs-3g $(1)/opt/sbin/
 endef
 
 define Package/ntfs-3g-low/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/lowntfs-3g $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.lowntfs-3g $(1)/sbin/
-endef
-
-define Package/ntfs-3g-low/postinst
-#!/bin/sh
-FILE="$${IPKG_INSTROOT}/etc/filesystems"
-ID="lowntfs-3g"
-
-if ! [ -f '/etc/filesystems' ]; then
-	echo "Create '$$FILE'."
-	touch "$$FILE"
-fi
-
-if ! grep -q -e '^ntfs-3g$$' "$$FILE"; then
-	echo "Add '$$ID' to known filesystems."
-	echo "$$ID" >> "$$FILE"
-fi
-
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lowntfs-3g $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.lowntfs-3g $(1)/opt/sbin/
 endef
 
 define Package/ntfs-3g-utils/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ntfs-3g.secaudit $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ntfs-3g.usermap $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ntfs-3g.secaudit $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ntfs-3g.usermap $(1)/opt/bin
 endef
 
 define Package/ntfsprogs_ntfs-3g/install
-	$(INSTALL_DIR) $(1)/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mkfs.ntfs $(1)/sbin/
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(FIND) $(PKG_INSTALL_DIR)/usr/bin/ -type f ! -regex '.*[^/]*ntfs-3g[^/]*' -exec $(INSTALL_BIN) {} $(1)/usr/bin/ \;
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/* $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(FIND) $(PKG_INSTALL_DIR)/opt/bin/ -type f ! -regex '.*[^/]*ntfs-3g[^/]*' -exec $(INSTALL_BIN) {} $(1)/opt/bin/ \;
 endef
 
 $(eval $(call BuildPackage,ntfs-3g))
