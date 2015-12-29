@@ -47,10 +47,6 @@ define Package/gpsd
   TITLE:=An interface daemon for GPS receivers
 endef
 
-define Package/gpsd/conffiles
-/etc/config/gpsd
-endef
-
 define Package/gpsd/description
   $(call Package/gpsd/Default/description)
   This package contains the GPS daemon.
@@ -102,41 +98,40 @@ SCONS_OPTIONS += \
 	implicit_link=no \
 	chrpath=no
 
+SCONS_VARS += \
+	LINKFLAGS="$(TARGET_LDFLAGS)"
+
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/gps.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgps*.so* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/gps.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgps*.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libgps*.pc \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libgps*.pc \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/gpsd/install
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/gpsd.config $(1)/etc/config/gpsd
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/gpsd.init $(1)/etc/init.d/gpsd
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
-	$(INSTALL_DATA) ./files/gpsd.hotplug $(1)/etc/hotplug.d/usb/20-gpsd
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/gpsd $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S62gpsd $(1)/opt/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/gpsd $(1)/opt/sbin/
 endef
 
 define Package/gpsd-clients/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/usr/bin/cgps \
-		$(PKG_INSTALL_DIR)/usr/bin/gps{ctl,decode,mon,pipe} \
-		$(PKG_INSTALL_DIR)/usr/bin/gpxlogger \
-		$(PKG_INSTALL_DIR)/usr/bin/lcdgps \
-		$(1)/usr/bin/
+		$(PKG_INSTALL_DIR)/opt/bin/cgps \
+		$(PKG_INSTALL_DIR)/opt/bin/gps{ctl,decode,mon,pipe} \
+		$(PKG_INSTALL_DIR)/opt/bin/gpxlogger \
+		$(PKG_INSTALL_DIR)/opt/bin/lcdgps \
+		$(1)/opt/bin/
 endef
 
 define Package/libgps/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgps.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgps.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,gpsd))
