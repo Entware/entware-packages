@@ -37,7 +37,7 @@ Python 3.3+'s ipaddress for Python 2.6, 2.7, 3.2.
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
+	$(call Build/Compile/PyMod,,install --prefix=/opt --root=$(PKG_INSTALL_DIR))
 endef
 
 $(eval $(call PyPackage,python-ipaddress))

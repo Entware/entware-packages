@@ -41,7 +41,7 @@ documentation for more information on what is provided.
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root=$(PKG_INSTALL_DIR))
+	$(call Build/Compile/PyMod,,install --prefix=/opt --root=$(PKG_INSTALL_DIR))
 endef
 
 $(eval $(call PyPackage,python-six))

@@ -10,16 +10,20 @@ HOST_PYTHON_INC_DIR:=$(STAGING_DIR_HOST)/include/python$(PYTHON_VERSION)
 HOST_PYTHON_PKG_DIR:=/lib/python$(PYTHON_VERSION)/site-packages
 
 HOST_PYTHONPATH:=$(HOST_PYTHON_LIB_DIR):$(STAGING_DIR_HOST)/$(HOST_PYTHON_PKG_DIR)
-define HostHostPython
-	(	export PYTHONPATH="$(HOST_PYTHONPATH)"; \
-		export PYTHONOPTIMIZE=""; \
-		export PYTHONDONTWRITEBYTECODE=1; \
+define HostPython
+	if [ "$(strip $(3))" == "HOST" ]; then \
+		export PYTHONPATH="$(HOST_PYTHONPATH)"; \
 		export _python_sysroot="$(STAGING_DIR_HOST)"; \
-		export _python_prefix=""; \
-		export _python_exec_prefix=""; \
-		$(1) \
-		$(HOST_PYTHON_BIN) $(2); \
-	)
+	else \
+		export PYTHONPATH="$(PYTHONPATH)"; \
+		export _python_sysroot="$(STAGING_DIR)"; \
+	fi; \
+	export PYTHONOPTIMIZE=""; \
+	export PYTHONDONTWRITEBYTECODE=1; \
+	export _python_prefix=""; \
+	export _python_exec_prefix=""; \
+	$(1) \
+	$(HOST_PYTHON_BIN) $(2);
 endef
 
 # These configure args are needed in detection of path to Python header files
@@ -33,7 +37,7 @@ HOST_CONFIGURE_ARGS += \
 # $(2) => additional arguments to setup.py
 # $(3) => additional variables
 define Build/Compile/HostPyMod
-	$(call HostHostPython, \
+	$(call HostPython, \
 		cd $(HOST_BUILD_DIR)/$(strip $(1)); \
 		CC="$(HOSTCC)" \
 		CCSHARED="$(HOSTCC) $(HOST_FPIC)" \
@@ -48,6 +52,8 @@ define Build/Compile/HostPyMod
 		$(3) \
 		, \
 		./setup.py $(2) \
+		, \
+		HOST \
 	)
 endef
 
