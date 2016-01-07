@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libev
 PKG_VERSION:=4.20
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dist.schmorp.de/libev/Attic/
@@ -43,10 +43,12 @@ CONFIGURE_ARGS += \
 	--enable-static \
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/libev
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/libev/
-	$(INSTALL_DIR) $(1)/opt/lib/libev
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libev.{a,so*} $(1)/opt/lib/libev/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/event.h $(1)/opt/include/ev_event_compat.h
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/ev.h $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/ev++.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libev.{a,so*} $(1)/opt/lib/
 endef
 
 define Package/libev/install

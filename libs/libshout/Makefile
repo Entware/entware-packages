@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libshout
 PKG_VERSION:=2.3.1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -70,21 +70,22 @@ CONFIGURE_VARS += \
 
 TARGET_CFLAGS += $(FPIC) -Wl,-rpath-link="$(STAGING_DIR)/opt/lib"
 
+PACKAGE_CONFIG_FILE=shout$(if $(findstring $(BUILD_VARIANT),full),-full).pc
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/shout $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libshout.{a,so*} $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/shout.pc $(1)/opt/lib/pkgconfig/
-	$(SED) 's| -I/opt/include||' $(1)/opt/lib/pkgconfig/shout.pc
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/shout.pc $(1)/opt/lib/pkgconfig/$(PACKAGE_CONFIG_FILE)
+	$(SED) 's| -I/opt/include||' $(1)/opt/lib/pkgconfig/$(PACKAGE_CONFIG_FILE)
 endef
 
 define Package/libshout/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libshout.so.* $(1)/opt/lib/
 endef
-
 Package/libshout-full/install=$(Package/libshout/install)
 
 $(eval $(call BuildPackage,libshout))
