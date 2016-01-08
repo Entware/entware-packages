@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpg123
 PKG_VERSION:=1.22.3
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.mpg123.de/download/
@@ -51,6 +51,7 @@ define Build/Configure
 		--enable-shared \
 		--enable-static \
 		--with-cpu=generic_nofpu \
+		--with-audio=alsa \
 		--with-default-audio=alsa \
 	)
 endef
@@ -84,7 +85,6 @@ define Package/libmpg123/install
 		$(1)/opt/lib/
 endef
 
-#mpg123 if compiled after pulseaudio will build pulseaudio plugin. It is removed!
 define Package/mpg123/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) \
@@ -98,7 +98,6 @@ define Package/mpg123/install
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/lib/mpg123/*.so \
 		$(1)/opt/lib/mpg123
-	$(RM) $(1)/opt/lib/mpg123/*pulse*.so
 endef
 
 $(eval $(call BuildPackage,libmpg123))
