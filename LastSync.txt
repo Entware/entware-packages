@@ -1,3 +1,3 @@
-commit 2ad0476c9b912880d09bd80f536bcf1613990f72
-Author: Daniel Golle <daniel@makrotopia.org>
-Date:   Thu Dec 3 01:24:21 2015 +0100
+commit 26beedd70c619c7b83607f6a96404abfafcaeaf1
+Author: Nikos Mavrogiannopoulos <nmav@gnutls.org>
+Date:   Tue Jan 5 21:48:03 2016 +0100

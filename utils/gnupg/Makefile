@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnupg
-PKG_VERSION:=1.4.19
+PKG_VERSION:=1.4.20
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=ftp://ftp.franken.de/pub/crypt/mirror/ftp.gnupg.org/gcrypt/gnupg \
 	ftp://ftp.gnupg.org/gcrypt/gnupg
-PKG_MD5SUM:=3af4ab5b3113b3e28d3551ecf9600785
+PKG_MD5SUM:=b7af897a041c03c8ad1c7c466b54d10d
 
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=COPYING
@@ -24,12 +24,23 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/gnupg
+define Package/gnupg/Default
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+zlib +libncurses +libreadline +libbz2
+  DEPENDS:=+zlib +libncurses +libreadline
   TITLE:=GNU privacy guard - a free PGP replacement
   URL:=http://www.gnupg.org/
+endef
+
+define Package/gnupg
+  $(call Package/gnupg/Default)
+  MENU:=1
+endef
+
+define Package/gnupg-utils
+  $(call Package/gnupg/Default)
+  DEPENDS:=gnupg +libcurl +libopenssl
+  TITLE:=Key management utilities for GnuPG
 endef
 
 define Package/gnupg/description
@@ -42,16 +53,21 @@ define Package/gnupg/description
  with PGP2 because it uses IDEA (which is patented worldwide).
 endef
 
+define Package/gnupg-utils/description
+ Key management utilies for GnuPG.
+ This package is needed to import keys from a keyserver.
+endef
+
 CONFIGURE_ARGS += \
 	--disable-rpath \
 	--disable-asm \
 	--disable-gnupg-iconv \
 	--disable-card-support \
 	--disable-agent-support \
-	--disable-exec \
+	--disable-bzip2 \
 	--disable-ldap \
-	--disable-hkp \
 	--disable-finger \
+	--disable-ftp \
 	--disable-dns-srv \
 	--enable-fake-curl \
 	--disable-regex \
@@ -64,4 +80,13 @@ define Package/gnupg/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/gpg $(1)/opt/bin/
 endef
 
+define Package/gnupg-utils/install
+	$(INSTALL_DIR) $(1)/opt/lib/gnupg
+	for file in gpgkeys_curl gpgkeys_hkp; do \
+		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/gnupg/$$$$file \
+		  $(1)/opt/lib/gnupg/; \
+	done
+endef
+
 $(eval $(call BuildPackage,gnupg))
+$(eval $(call BuildPackage,gnupg-utils))
