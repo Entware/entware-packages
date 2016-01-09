@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# 0.2.7.6 does not have source code for tor-fw-helper. package is disabled!
 
 include $(TOPDIR)/rules.mk
 
@@ -117,5 +118,5 @@ define Package/tor-geoip/install
 endef
 
 $(eval $(call BuildPackage,tor))
-$(eval $(call BuildPackage,tor-fw-helper))
+#$(eval $(call BuildPackage,tor-fw-helper))
 $(eval $(call BuildPackage,tor-geoip))
