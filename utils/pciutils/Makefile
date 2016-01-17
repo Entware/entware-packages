@@ -39,14 +39,13 @@ endef
 
 define Package/pciutils/postinst
 #!/bin/sh
-[ -z "$${IPKG_INSTROOT}" ] || \
-(cd $${PKG_ROOT}/usr/share; $${PKG_ROOT}/usr/sbin/update-pciids; rm pci.ids.gz.old)
-exit 0
+ cd /opt/share; /opt/sbin/update-pciids; rm pci.ids.gz.old
+ exit 0
 endef
 
 MAKE_FLAGS += \
-	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include" \
-	PREFIX="/usr" \
+	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include" \
+	PREFIX="/opt" \
 	HOST="$(GNU_TARGET_NAME)" \
 	ZLIB="yes"
 
@@ -55,18 +54,18 @@ TARGET_LDFLAGS += -lresolv
 endif
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/lib/libpci.a $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/include/pci
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/lib/libpci.a $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/include/pci
 	$(CP) $(foreach i,pci.h config.h header.h types.h, \
-		$(PKG_BUILD_DIR)/lib/$(i)) $(1)/usr/include/pci
+		$(PKG_BUILD_DIR)/lib/$(i)) $(1)/opt/include/pci
 endef
 
 define Package/pciutils/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{lspci,setpci,update-pciids} $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/usr/share
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/pci.ids.gz $(1)/usr/share/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{lspci,setpci,update-pciids} $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/share
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/pci.ids.gz $(1)/opt/share/
 endef
 
 $(eval $(call BuildPackage,pciutils))

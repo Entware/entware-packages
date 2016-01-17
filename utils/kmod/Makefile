@@ -55,11 +55,11 @@ LEGACY_BINARIES:= \
 	rmmod
 
 define Package/kmod/install
-	$(INSTALL_DIR) $(1)/sbin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/kmod $(1)/sbin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/kmod $(1)/opt/sbin
 
 	for b in $(LEGACY_BINARIES); do \
-		ln -sf kmod $(1)/sbin/$$$$b ; \
+		ln -sf kmod $(1)/opt/sbin/$$$$b ; \
 	done
 endef
 
@@ -72,20 +72,20 @@ $(call Package/kmod/Default)
 endef
 
 define Package/libkmod/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libkmod.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libkmod.so.* $(1)/opt/lib/
 endef
 
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include $(1)/usr/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include $(1)/opt/
 
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libkmod.{so*,la} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libkmod.{so*,la} $(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libkmod.pc $(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libkmod.pc $(1)/opt/lib/pkgconfig/
 endef
 
 
