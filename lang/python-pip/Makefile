@@ -37,7 +37,7 @@ endef
 
 define Build/Compile
 	$(call Build/Compile/PyMod,,\
-		install --root="$(PKG_INSTALL_DIR)" --prefix="/usr" \
+		install --root="$(PKG_INSTALL_DIR)" --prefix="/opt" --root="$(PKG_INSTALL_DIR)" \
 		--single-version-externally-managed \
 	)
 endef
@@ -48,9 +48,9 @@ define PyPackage/python-pip/filespec
 endef
 
 define PyPackage/python-pip/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin
-	$(INSTALL_CONF) ./files/pip.conf $(1)/etc/
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/etc
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
+	$(INSTALL_CONF) ./files/pip.conf $(1)/opt/etc/
 endef
 
 $(eval $(call PyPackage,python-pip))
