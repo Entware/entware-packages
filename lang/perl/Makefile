@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl
 PKG_VERSION:=5.22.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=ftp://ftp.cpan.org/pub/CPAN/src/5.0 \
 		http://www.cpan.org/src/5.0 \
@@ -35,7 +35,7 @@ PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
 
 # Variables used during configuration/build
-HOST_PERL_PREFIX:=$(STAGING_DIR_HOST)/usr
+HOST_PERL_PREFIX:=$(STAGING_DIR)/host/usr
 
 # Filter -g3, it will break Compress-Raw-Zlib
 TARGET_CFLAGS_PERL:=$(patsubst -g3,-g,$(TARGET_CFLAGS))

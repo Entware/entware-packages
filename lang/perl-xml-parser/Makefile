@@ -25,8 +25,8 @@ HOST_BUILD_DEPENDS:=perl/host expat/host
 
 EXPAT_LIBPATH:=$(STAGING_DIR)/opt/lib
 EXPAT_INCPATH=$(STAGING_DIR)/opt/include
-HOST_EXPAT_LIBPATH:=$(STAGING_DIR_HOST)/lib
-HOST_EXPAT_INCPATH=$(STAGING_DIR_HOST)/include
+HOST_EXPAT_LIBPATH:=$(STAGING_DIR)/host/lib
+HOST_EXPAT_INCPATH=$(STAGING_DIR)/host/include
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk

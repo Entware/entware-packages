@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-setuptools
-PKG_VERSION:=18.7
+PKG_VERSION:=19.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=setuptools-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/source/s/setuptools/
-PKG_MD5SUM:=295d7aaef2da7d6ff10b522581da0cf9
+PKG_MD5SUM:=c5a7d90c1e0acf8c4ec5c2bf31bc25b5
 
 HOST_BUILD_DEPENDS:=python/host
 
@@ -60,7 +60,7 @@ endef
 
 define Host/Compile
 	$(call Build/Compile/HostPyMod,,\
-		install --root="$(STAGING_DIR_HOST)" --prefix="/usr" \
+		install --root="$(STAGING_DIR)/host" --prefix="/usr" \
 		--single-version-externally-managed \
 	)
 endef

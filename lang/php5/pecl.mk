@@ -15,11 +15,11 @@ endef
 
 define Build/Prepare
 	$(Build/Prepare/Default)
-	( cd $(PKG_BUILD_DIR); $(STAGING_DIR_HOST)/opt/bin/phpize )
+	( cd $(PKG_BUILD_DIR); $(STAGING_DIR)/host/opt/bin/phpize )
 endef
 
 CONFIGURE_ARGS+= \
-	--with-php-config=$(STAGING_DIR_HOST)/opt/bin/php-config
+	--with-php-config=$(STAGING_DIR)/host/opt/bin/php-config
 
 define PECLPackage
 
