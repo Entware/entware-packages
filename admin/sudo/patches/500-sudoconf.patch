@@ -1,0 +1,11 @@
+--- a/pathnames.h.in
++++ b/pathnames.h.in
+@@ -59,7 +59,7 @@
+  * NOTE: _PATH_SUDO_CONF is usually overridden by the Makefile.
+  */
+ #ifndef _PATH_SUDO_CONF
+-# define _PATH_SUDO_CONF	"/etc/sudo.conf"
++# define _PATH_SUDO_CONF	"/opt/etc/sudo.conf"
+ #endif /* _PATH_SUDO_CONF */
+ 
+ /*

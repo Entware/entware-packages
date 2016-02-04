@@ -1,3 +1,4 @@
-commit 26beedd70c619c7b83607f6a96404abfafcaeaf1
-Author: Nikos Mavrogiannopoulos <nmav@gnutls.org>
-Date:   Tue Jan 5 21:48:03 2016 +0100
+commit 72aa1e370d5cb7c2c1869d230477d1e447b2c48d
+Merge: 52c82f1 1b8358b
+Author: Hannu Nyman <hannu.nyman@iki.fi>
+Date:   Wed Feb 3 20:40:08 2016 +0200
