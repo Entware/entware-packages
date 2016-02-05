@@ -1,8 +1,8 @@
 #!/bin/sh
-##############################################
-# function library used by adblock-update.sh #
-# written by Dirk Brenken (dirk@brenken.org) #
-##############################################
+#################################################
+# function library used by adblock-update.sh    #
+# written by Dirk Brenken (openwrt@brenken.org) #
+#################################################
 
 #####################################
 # f_envload: load adblock environment
@@ -15,20 +15,20 @@ f_envload()
     then
         . "/lib/functions.sh" 2>/dev/null
     else
-        rc=500
+        rc=110
         f_log "openwrt function library not found" "${rc}"
-        f_deltemp
+        f_exit
     fi
 
-    # source in openwrt json helpers library
+    # source in openwrt network library
     #
-    if [ -r "/usr/share/libubox/jshn.sh" ]
+    if [ -r "/lib/functions/network.sh" ]
     then
-        . "/usr/share/libubox/jshn.sh" 2>/dev/null
+        . "/lib/functions/network.sh" 2>/dev/null
     else
-        rc=505
-        f_log "openwrt json helpers library not found" "${rc}"
-        f_deltemp
+        rc=115
+        f_log "openwrt network library not found" "${rc}"
+        f_exit
     fi
 
     # get list with all installed openwrt packages
@@ -36,9 +36,9 @@ f_envload()
     pkg_list="$(opkg list-installed 2>/dev/null)"
     if [ -z "${pkg_list}" ]
     then
-        rc=510
+        rc=120
         f_log "empty openwrt package list" "${rc}"
-        f_deltemp
+        f_exit
     fi
 }
 
@@ -47,31 +47,18 @@ f_envload()
 #
 f_envparse()
 {
-    # set the C locale, characters are single bytes, the charset is ASCII
-    # speeds up sort, grep etc.
+    # set initial defaults,
+    # may be overwritten by setting appropriate adblock config options in global section of /etc/config/adblock
     #
-    LC_ALL=C
-
-    # set initial defaults (may be overwritten by setting appropriate adblock config options)
-    #
-    adb_if="adblock"
-    adb_minspace="20000"
+    adb_wanif="wan"
+    adb_lanif="lan"
+    adb_port="65535"
+    adb_nullipv4="192.0.2.1"
+    adb_nullipv6="::ffff:c000:0201"
     adb_maxtime="60"
-    adb_maxloop="5"
-    adb_unique="1"
+    adb_maxloop="20"
     adb_blacklist="/etc/adblock/adblock.blacklist"
     adb_whitelist="/etc/adblock/adblock.whitelist"
-
-    # adblock device name auto detection
-    # derived from first entry in openwrt lan ifname config
-    #
-    adb_dev="$(uci get network.lan.ifname 2>/dev/null)"
-    adb_dev="${adb_dev/ *}"
-
-    # adblock ntp server name auto detection
-    # derived from ntp list found in openwrt ntp server config
-    #
-    adb_ntpsrv="$(uci get system.ntp.server 2>/dev/null)"
 
     # function to read/set global options by callback,
     # prepare list items and build option list for all others
@@ -103,13 +90,7 @@ f_envparse()
             {
                 local list="${1}"
                 local value="${2}"
-                if [ "${list}" = "adb_wanlist" ]
-                then
-                    adb_wandev="${adb_wandev} ${value}"
-                elif [ "${list}" = "adb_ntplist" ]
-                then
-                    adb_ntpsrv="${adb_ntpsrv} ${value}"
-                elif [ "${list}" = "adb_catlist" ]
+                if [ "${list}" = "adb_catlist" ]
                 then
                     adb_cat_shalla="${adb_cat_shalla} ${value}"
                 fi
@@ -139,15 +120,6 @@ f_envparse()
                     fi
                 fi
             done
-        elif [ "${config}" = "wancheck" ]
-        then
-           unset adb_wandev
-        elif [ "${config}" = "ntpcheck" ]
-        then
-           unset adb_ntpsrv
-        elif [ "${config}" = "shalla" ]
-        then
-           unset adb_cat_shalla
         fi
     }
 
@@ -157,12 +129,23 @@ f_envparse()
     config_foreach parse_config service
     config_foreach parse_config source
 
-    # set temp variables and defaults 
+    # set more script defaults (can't be overwritten by adblock config options)
     #
+    adb_cnt=0
+    adb_minspace=20000
+    adb_unique=1
     adb_tmpfile="$(mktemp -tu 2>/dev/null)"
     adb_tmpdir="$(mktemp -p /tmp -d 2>/dev/null)"
-    unset adb_srcfind
-    unset adb_revsrcfind
+    adb_dnsdir="/tmp/dnsmasq.d"
+    adb_dnsprefix="adb_list"
+    adb_prechain_ipv4="prerouting_rule"
+    adb_fwdchain_ipv4="forwarding_rule"
+    adb_outchain_ipv4="output_rule"
+    adb_prechain_ipv6="PREROUTING"
+    adb_fwdchain_ipv6="forwarding_rule"
+    adb_outchain_ipv6="output_rule"
+    unset adb_srclist
+    unset adb_revsrclist
 
     # set adblock source ruleset definitions
     #
@@ -174,6 +157,7 @@ f_envparse()
     rset_dshield="${rset_start} | ${rset_end}"
     rset_feodo="${rset_start} | ${rset_end}"
     rset_malware="${rset_start} | ${rset_end}"
+    rset_malwarelist="${rset_start} | sed 's/\([0-9]\{1,3\}\.\)\{3\}[0-1]\{1,1\}//g' | ${rset_end}"
     rset_palevo="${rset_start} | ${rset_end}"
     rset_shalla="${rset_start} | sed 's/\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}$//g' | ${rset_end}"
     rset_spam404="${rset_start} | sed 's/^\|\|//g' | ${rset_end}"
@@ -182,101 +166,104 @@ f_envparse()
     rset_yoyo="${rset_start} | sed 's/,/\n/g' | ${rset_end}"
     rset_zeus="${rset_start} | ${rset_end}"
 
-    # set dnsmasq defaults
+    # get logical wan update interfaces (with default route) and their device names
     #
-    adb_dnsdir="/tmp/dnsmasq.d"
-    adb_dnsformat="sed 's/^/address=\//;s/$/\/'${adb_ip}'/'"
-    adb_dnsprefix="adb_list"
+    while [ $((adb_cnt)) -le $((adb_maxloop)) ]
+    do
+        network_find_wan adb_wanif4 2>/dev/null
+        network_find_wan6 adb_wanif6 2>/dev/null
+        if [ -z "${adb_wanif4}" ] && [ -z "${adb_wanif6}" ]
+        then
+            network_flush_cache
+        elif [ "${adb_wanif4}" = "${adb_lanif}" ] || [ "${adb_wanif6}" = "${adb_lanif}" ]
+        then
+            rc=125
+            f_log "LAN only (${adb_lanif}) network, no valid IPv4/IPv6 wan update interface found" "${rc}"
+            f_exit
+        else
+            network_get_device adb_wandev4 "${adb_wanif4}" 2>/dev/null
+            network_get_device adb_wandev6 "${adb_wanif6}" 2>/dev/null
+            break
+        fi
+        if [ $((adb_cnt)) -ge $((adb_maxloop)) ]
+        then
+            rc=125
+            f_log "no valid IPv4/IPv6 wan update interface found" "${rc}"
+            f_exit
+        fi
+        adb_cnt=$((adb_cnt + 1))
+        sleep 1
+    done
+
+    # get lan ip addresses
+    #
+    network_get_ipaddr adb_ipv4 "${adb_lanif}" 2>/dev/null
+    network_get_ipaddr6 adb_ipv6 "${adb_lanif}" 2>/dev/null
+    if [ -z "${adb_ipv4}" ] && [ -z "${adb_ipv6}" ]
+    then
+        rc=130
+        f_log "no valid IPv4/IPv6 configuration for given logical LAN interface found (${adb_lanif}), please set 'adb_lanif' manually" "${rc}"
+        f_exit
+    fi
+
+    # read system ntp server names
+    #
+    adb_ntpsrv="$(uci get system.ntp.server 2>/dev/null)"
 }
 
-#############################################
-# f_envcheck: check environment prerequisites
+#################################################
+# f_envcheck: check/set environment prerequisites
 #
 f_envcheck()
 {
-    # check adblock config file
+    # check general package dependencies
     #
-    check_config="$(grep -F "ruleset=rset_default" /etc/config/adblock 2>/dev/null)"
-    if [ -n "${check_config}" ]
-    then
-        rc=515
-        grep -Fv "#" "/etc/adblock/samples/adblock.conf.sample" > /etc/config/adblock
-        f_log "new default adblock config applied, please check your configuration settings in /etc/config/adblock" "${rc}"
-        f_deltemp
-    fi
+    f_depend "uhttpd"
+    f_depend "wget"
+    f_depend "iptables"
+    f_depend "kmod-ipt-nat"
 
-    # check required config options
+    # check ipv6 related package dependencies
     #
-    adb_varlist="adb_ip adb_dev adb_domain"
-    for var in ${adb_varlist}
-    do
-        if [ -z "$(eval printf \"\$"${var}"\")" ]
+    if [ -n "${adb_wanif6}" ]
+    then
+        check="$(printf "${pkg_list}" | grep "^ip6tables -" 2>/dev/null)"
+        if [ -z "${check}" ]
         then
-            rc=520
-            f_log "missing adblock config option (${var})" "${rc}"
-            f_deltemp
+            f_log "package 'ip6tables' not found, IPv6 support wíll be disabled"
+            unset adb_wanif6
+        else
+            check="$(printf "${pkg_list}" | grep "^kmod-ipt-nat6 -" 2>/dev/null)"
+            if [ -z "${check}" ]
+            then
+                f_log "package 'kmod-ipt-nat6' not found, IPv6 support wíll be disabled"
+                unset adb_wanif6
+            fi
         fi
-    done
-
-    # check main uhttpd configuration
-    #
-    check_uhttpd="$(uci get uhttpd.main.listen_http 2>/dev/null | grep -Fo "0.0.0.0" 2>/dev/null)"
-    if [ -n "${check_uhttpd}" ]
-    then
-        rc=525
-        lan_ip="$(uci get network.lan.ipaddr 2>/dev/null)"
-        f_log "please bind main uhttpd instance to LAN only (lan ip: ${lan_ip})" "${rc}"
-        f_deltemp
     fi
 
-    # check adblock network device configuration
+    # check ca-certificates package and set wget parms accordingly
     #
-    if [ ! -d "/sys/class/net/${adb_dev}" ]
+    check="$(printf "${pkg_list}" | grep "^ca-certificates -" 2>/dev/null)"
+    if [ -z "${check}" ]
     then
-        rc=530
-        f_log "invalid adblock network device input (${adb_dev})" "${rc}"
-        f_deltemp
-    fi
-
-    # check adblock network interface configuration
-    #
-    check_if="$(printf "${adb_if}" | sed -n '/[^._0-9A-Za-z]/p' 2>/dev/null)"
-    banned_if="$(printf "${adb_if}" | sed -n '/.*lan.*\|.*wan.*\|.*switch.*\|main\|globals\|loopback\|px5g/p' 2>/dev/null)"
-    if [ -n "${check_if}" ] || [ -n "${banned_if}" ]
-    then
-        rc=535
-        f_log "invalid adblock network interface input (${adb_if})" "${rc}"
-        f_deltemp
-    fi
-
-    # check adblock ip address configuration
-    #
-    check_ip="$(printf "${adb_ip}" | sed -n '/\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/p' 2>/dev/null)"
-    lan_ip="$(uci get network.lan.ipaddr 2>/dev/null)"
-    if [ -z "${check_ip}" ]
-    then
-        rc=540
-        f_log "invalid adblock ip address input (${adb_ip})" "${rc}"
-        f_deltemp
-    elif [ "${adb_ip}" = "${lan_ip}" ]
-    then
-        rc=545
-        f_log "adblock ip needs to be a different subnet from the normal LAN (adblock ip: ${adb_ip})" "${rc}"
-        f_deltemp
+        wget_parm="--no-config --no-check-certificate --quiet --tries=1 --no-cache --no-cookies --max-redirect=0"
+    else
+        wget_parm="--no-config --quiet --tries=1 --no-cache --no-cookies --max-redirect=0"
     fi
 
     # check adblock blacklist/whitelist configuration
     #
     if [ ! -r "${adb_blacklist}" ]
     then
-        rc=550
-        f_log "adblock blacklist not found" "${rc}"
-        f_deltemp
+        rc=135
+        f_log "adblock blacklist not found (${adb_blacklist})" "${rc}"
+        f_exit
     elif [ ! -r "${adb_whitelist}" ]
     then
-        rc=555
-        f_log "adblock whitelist not found" "${rc}"
-        f_deltemp
+        rc=135
+        f_log "adblock whitelist not found (${adb_whitelist})" "${rc}"
+        f_exit
     fi
 
     # check adblock temp directory
@@ -284,44 +271,16 @@ f_envcheck()
     if [ -n "${adb_tmpdir}" ] && [ -d "${adb_tmpdir}" ]
     then
         f_space "${adb_tmpdir}"
-        tmp_ok="true"
+        if [ "${space_ok}" = "false" ]
+        then
+            rc=140
+            f_log "not enough space in '${adb_tmpdir}', please supersize your temp directory" "${rc}"
+            f_exit
+        fi
     else
-        rc=560
-        tmp_ok="false"
+        rc=140
         f_log "temp directory not found" "${rc}"
-        f_deltemp
-    fi
-
-    # check curl package dependency
-    #
-    check="$(printf "${pkg_list}" | grep "^curl -" 2>/dev/null)"
-    if [ -z "${check}" ]
-    then
-        rc=565
-        f_log "curl package not found" "${rc}"
-        f_deltemp
-    fi
-
-    # check wget package dependency
-    #
-    check="$(printf "${pkg_list}" | grep "^wget -" 2>/dev/null)"
-    if [ -z "${check}" ]
-    then
-        rc=570
-        f_log "wget package not found" "${rc}"
-        f_deltemp
-    fi
-
-    # check ca-certificates package and set wget/curl options accordingly
-    #
-    check="$(printf "${pkg_list}" | grep "^ca-certificates -" 2>/dev/null)"
-    if [ -z "${check}" ]
-    then
-        curl_parm="-q --insecure --silent"
-        wget_parm="--no-config --no-hsts --no-check-certificate --quiet"
-    else
-        curl_parm="-q --silent"
-        wget_parm="--no-config --no-hsts --quiet"
+        f_exit
     fi
 
     # check total and swap memory
@@ -332,8 +291,8 @@ f_envcheck()
     if [ $((mem_total)) -le 64000 ] && [ $((swap_total)) -eq 0 ]
     then
         adb_unique=0
-        f_log "overall sort/unique processing will be disabled,"
-        f_log "please consider adding an external swap device to supersize your /tmp directory (total: ${mem_total}, free: ${mem_free}, swap: ${mem_swap})"
+        f_log "not enough memory, overall sort/unique processing will be disabled"
+        f_log "please consider adding an external swap device to supersize your temp directory (total: ${mem_total}, free: ${mem_free}, swap: ${mem_swap})"
     fi
 
     # check backup configuration
@@ -341,127 +300,245 @@ f_envcheck()
     if [ -n "${adb_backupdir}" ] && [ -d "${adb_backupdir}" ]
     then
         f_space "${adb_backupdir}"
-        backup_ok="true"
+        if [ "${space_ok}" = "false" ]
+        then
+            f_log "backup/restore will be disabled"
+            backup_ok="false"
+        else
+            f_log "backup/restore will be enabled"
+            backup_ok="true"
+        fi
     else
         backup_ok="false"
         f_log "backup/restore will be disabled"
     fi
 
-    # check dns query log configuration
-    #
-    adb_querydir="${adb_queryfile%/*}"
-    adb_querypid="/var/run/adb_query.pid"
-    if [ -n "${adb_querydir}" ] && [ -d "${adb_querydir}" ]
-    then
-        # check find capabilities
-        #
-        check="$(find --help 2>&1 | grep -F "mtime" 2>/dev/null)"
-        if [ -z "${check}" ]
-        then
-            query_ok="false"
-            f_log "busybox without 'find/mtime' support (min. r47362), dns query logging will be disabled"
-        else
-            f_space "${adb_querydir}"
-            query_ok="true"
-            query_name="${adb_queryfile##*/}"
-            query_ip="${adb_ip//./\\.}"
-        fi
-    else
-        query_ok="false"
-        f_log "dns query logging will be disabled"
-        if [ -s "${adb_querypid}" ]
-        then
-            kill -9 "$(cat "${adb_querypid}")" >/dev/null 2>&1
-            f_log "remove old dns query log background process (pid: $(cat "${adb_querypid}" 2>/dev/null))"
-            > "${adb_querypid}"
-        fi
-    fi
-
-    # check debug log configuration
+    # check log configuration
     #
     adb_logdir="${adb_logfile%/*}"
     if [ -n "${adb_logdir}" ] && [ -d "${adb_logdir}" ]
     then
         f_space "${adb_logdir}"
-        log_ok="true"
+        if [ "${space_ok}" = "false" ]
+        then
+            f_log "not enough space in '${adb_logdir}', logging will be disabled"
+            log_ok="false"
+        else
+            f_log "logging will be enabled"
+            log_ok="true"
+        fi
     else
         log_ok="false"
-        f_log "debug logging will be disabled"
+        f_log "logging will be disabled"
     fi
 
-    # check wan update configuration
+    # check ipv4/iptables configuration
     #
-    if [ -n "${adb_wandev}" ]
+    if [ -n "${adb_wanif4}" ]
     then
-        f_wancheck "${adb_maxloop}"
-    else
-        wan_ok="false"
-        f_log "wan update check will be disabled"
+        f_firewall "IPv4" "nat" "A" "${adb_prechain_ipv4}" "adblock-pre" "-p tcp -d ${adb_nullipv4} --dport 80 -j REDIRECT --to-ports ${adb_port}"
+        f_firewall "IPv4" "nat" "A" "${adb_prechain_ipv4}" "adblock-dns" "-p udp --dport 53 -j REDIRECT"
+        f_firewall "IPv4" "nat" "A" "${adb_prechain_ipv4}" "adblock-dns" "-p tcp --dport 53 -j REDIRECT"
+        f_firewall "IPv4" "filter" "A" "${adb_fwdchain_ipv4}" "adblock-fwd" "-d ${adb_nullipv4} -j REJECT"
+        f_firewall "IPv4" "filter" "A" "${adb_outchain_ipv4}" "adblock-out" "-d ${adb_nullipv4} -j REJECT"
     fi
 
-    # check ntp sync configuration
+    # check ipv6/ip6tables configuration
+    #
+    if [ -n "${adb_wanif6}" ]
+    then
+        f_firewall "IPv6" "nat" "A" "${adb_prechain_ipv6}" "adblock-pre" "-p tcp -d ${adb_nullipv6} --dport 80 -j REDIRECT --to-ports ${adb_port}"
+        f_firewall "IPv6" "nat" "A" "${adb_prechain_ipv6}" "adblock-dns" "-p udp --dport 53 -j REDIRECT"
+        f_firewall "IPv6" "nat" "A" "${adb_prechain_ipv6}" "adblock-dns" "-p tcp --dport 53 -j REDIRECT"
+        f_firewall "IPv6" "filter" "A" "${adb_fwdchain_ipv6}" "adblock-fwd" "-d ${adb_nullipv6} -j REJECT"
+        f_firewall "IPv6" "filter" "A" "${adb_outchain_ipv6}" "adblock-out" "-d ${adb_nullipv6} -j REJECT"
+    fi
+
+    # check volatile adblock uhttpd instance configuration
+    #
+    rc="$(ps | grep "[u]httpd.*\-h /www/adblock" >/dev/null 2>&1; printf ${?})"
+    if [ $((rc)) -ne 0 ]
+    then
+        if [ -n "${adb_wanif4}" ] && [ -n "${adb_wanif6}" ]
+        then
+            uhttpd -h "/www/adblock" -k 0 -N 100 -T 5 -D -E "/adblock.html" -p "${adb_ipv4}:${adb_port}" -p "[${adb_ipv6}]:${adb_port}">/dev/null 2>&1
+            rc=${?}
+            if [ $((rc)) -eq 0 ]
+            then
+                f_log "created volatile uhttpd instance (${adb_ipv4}:${adb_port}, [${adb_ipv6}]:${adb_port})"
+            else
+                f_log "failed to initialize volatile uhttpd instance (${adb_ipv4}:${adb_port}, [${adb_ipv6}]:${adb_port})" "${rc}"
+                f_restore
+            fi
+        elif [ -n "${adb_wanif4}" ]
+        then
+            uhttpd -h "/www/adblock" -k 0 -N 100 -T 5 -D -E "/adblock.html" -p "${adb_ipv4}:${adb_port}" >/dev/null 2>&1
+            rc=${?}
+            if [ $((rc)) -eq 0 ]
+            then
+                f_log "created volatile uhttpd instance (${adb_ipv4}:${adb_port})"
+            else
+                f_log "failed to initialize volatile uhttpd instance (${adb_ipv4}:${adb_port})" "${rc}"
+                f_restore
+            fi
+        elif [ -n "${adb_wanif6}" ]
+        then
+            uhttpd -h "/www/adblock" -k 0 -N 100 -T 5 -D -E "/adblock.html" -p "[${adb_ipv6}]:${adb_port}" >/dev/null 2>&1
+            rc=${?}
+            if [ $((rc)) -eq 0 ]
+            then
+                f_log "created volatile uhttpd instance ([${adb_ipv6}]:${adb_port})"
+            else
+                f_log "failed to initialize volatile uhttpd instance ([${adb_ipv6}]:${adb_port})" "${rc}"
+                f_restore
+            fi
+        fi
+    fi
+
+    # wait for active wan update interface
+    #
+    while [ $((adb_cnt)) -le $((adb_maxloop)) ]
+    do
+        for interface in ${adb_wanif}
+        do
+            network_get_device adb_wandev "${interface}" 2>/dev/null
+            if [ -z "${adb_wandev}" ] || [ ! -d "/sys/class/net/${adb_wandev}" ]
+            then
+                if [ -n "${adb_wandev4}" ]
+                then
+                    adb_wandev="${adb_wandev4}"
+                else
+                    adb_wandev="${adb_wandev6}"
+                fi
+                if [ -z "${adb_wandev}" ] || [ ! -d "/sys/class/net/${adb_wandev}" ]
+                then
+                    rc=145
+                    f_log "no valid network device for given logical WAN interface found, please set 'adb_wanif' manually" "${rc}"
+                    f_restore
+                fi
+            fi
+            check="$(cat /sys/class/net/${adb_wandev}/operstate 2>/dev/null)"
+            if [ "${check}" = "up" ]
+            then
+                f_log "get active wan update interface/device (${adb_wanif}/${adb_wandev})"
+                break 2
+            elif [ $((adb_cnt)) -eq $((adb_maxloop)) ]
+            then
+                rc=145
+                f_log "wan update interface/device not running (${adb_wanif}/${adb_wandev})" "${rc}"
+                f_restore
+            fi
+            adb_cnt=$((adb_cnt + 1))
+            sleep 1
+        done
+    done
+
+    # wait for ntp sync
     #
     if [ -n "${adb_ntpsrv}" ]
     then
-        f_ntpcheck "${adb_maxloop}"
-    else
-        ntp_ok="false"
-        f_log "ntp time sync will be disabled"
-    fi
-
-    # check dynamic/volatile adblock network interface configuration
-    #
-    rc="$(ifstatus "${adb_if}" >/dev/null 2>&1; printf ${?})"
-    if [ $((rc)) -ne 0 ]
-    then
-        json_init
-        json_add_string name "${adb_if}"
-        json_add_string ifname "${adb_dev}"
-        json_add_string proto "static"
-        json_add_array ipaddr
-        json_add_string "" "${adb_ip}"
-        json_close_array
-        json_close_object
-        ubus call network add_dynamic "$(json_dump)"
+        unset ntp_pool
+        for srv in ${adb_ntpsrv}
+        do
+            ntp_pool="${ntp_pool} -p ${srv}"
+        done
+        /usr/sbin/ntpd -nq ${ntp_pool} >/dev/null 2>&1
         rc=${?}
         if [ $((rc)) -eq 0 ]
         then
-            f_log "created new dynamic/volatile network interface (${adb_if}, ${adb_ip})"
+            f_log "get ntp time sync"
         else
-            f_log "failed to initialize new dynamic/volatile network interface (${adb_if}, ${adb_ip})" "${rc}"
-            f_remove
+            rc=0
+            f_log "ntp time sync failed"
         fi
     fi
 
-    # check dynamic/volatile adblock uhttpd instance configuration
+    # set dnsmasq defaults
     #
-    rc="$(ps | grep "[u]httpd.*\-r ${adb_if}" >/dev/null 2>&1; printf ${?})"
-    if [ $((rc)) -ne 0 ]
+    if [ -n "${adb_wanif4}" ] && [ -n "${adb_wanif6}" ]
     then
-        uhttpd -h "/www/adblock" -r "${adb_if}" -E "/adblock.html" -p "${adb_ip}:80" >/dev/null 2>&1
-        rc=${?}
-        if [ $((rc)) -eq 0 ]
-        then
-            f_log "created new dynamic/volatile uhttpd instance (${adb_if}, ${adb_ip})"
-        else
-            f_log "failed to initialize new dynamic/volatile uhttpd instance (${adb_if}, ${adb_ip})" "${rc}"
-            f_remove
-        fi
+        adb_dnsformat="awk -v ipv4="${adb_nullipv4}" -v ipv6="${adb_nullipv6}" '{print \"address=/\"\$0\"/\"ipv4\"\n\"\"address=/\"\$0\"/\"ipv6}'"
+    elif [ -n "${adb_wanif4}" ]
+    then
+        adb_dnsformat="awk -v ipv4="${adb_nullipv4}" '{print \"address=/\"\$0\"/\"ipv4}'"
+    elif [ -n "${adb_wanif6}" ]
+    then
+        adb_dnsformat="awk -v ipv6="${adb_nullipv6}" '{print \"address=/\"\$0\"/\"ipv6}'"
     fi
 
-    # remove no longer used package list
+    # remove no longer used opkg package list
     #
     unset pkg_list
 }
 
-################################################
-# f_log: log messages to stdout, syslog, logfile
+######################################
+# f_depend: check package dependencies
+#
+f_depend()
+{
+    local package="${1}"
+
+    check="$(printf "${pkg_list}" | grep "^${package} -" 2>/dev/null)"
+    if [ -z "${check}" ]
+    then
+        rc=150
+        f_log "package '${package}' not found" "${rc}"
+        f_exit
+    fi
+}
+
+##############################################
+# f_firewall: set iptables rules for ipv4/ipv6
+#
+f_firewall()
+{
+    local ipt
+    local iptv4="/usr/sbin/iptables"
+    local iptv6="/usr/sbin/ip6tables"
+    local proto="${1}"
+    local table="${2}"
+    local ctype="${3}"
+    local chain="${4}"
+    local notes="${5}"
+    local rules="${6}"
+
+    # select appropriate iptables executable
+    #
+    if [ "${proto}" = "IPv4" ]
+    then
+        ipt="${iptv4}"
+    else
+        ipt="${iptv6}"
+    fi
+
+    # check whether iptables rule already applied and proceed accordingly
+    #
+    rc="$("${ipt}" -w -t "${table}" -C "${chain}" -m comment --comment "${notes}" ${rules}  >/dev/null 2>&1; printf ${?})"
+    if [ $((rc)) -ne 0 ]
+    then
+        "${ipt}" -w -t "${table}" -"${ctype}" "${chain}" -m comment --comment "${notes}" ${rules} >/dev/null 2>&1
+        rc=${?}
+        if [ $((rc)) -eq 0 ]
+        then
+            f_log "created volatile ${proto} firewall rule in '${chain}' chain (${notes})"
+        else
+            f_log "failed to initialize volatile ${proto} firewall rule in '${chain}' chain (${notes})" "${rc}"
+            f_restore
+        fi
+    fi
+}
+
+###################################################
+# f_log: log messages to stdout, syslog and logfile
 #
 f_log()
 {
     local log_msg="${1}"
     local log_rc="${2}"
     local class="info "
+
+    # log to different output devices, set log class accordingly
+    #
     if [ -n "${log_msg}" ]
     then
         if [ $((log_rc)) -ne 0 ]
@@ -470,8 +547,12 @@ f_log()
             log_rc=", rc: ${log_rc}"
             log_msg="${log_msg}${log_rc}"
         fi
-        /usr/bin/logger -s -t "adblock[${pid}] ${class}" "${log_msg}"
-        if [ "${log_ok}" = "true" ] && [ "${ntp_ok}" = "true" ]
+        /usr/bin/logger -t "adblock[${pid}] ${class}" "${log_msg}"
+        if [ -t 1 ]
+        then
+            printf "%s\n" "adblock[${pid}] ${class}: ${log_msg}"
+        fi
+        if [ "${log_ok}" = "true" ]
         then
             printf "%s\n" "$(/bin/date "+%d.%m.%Y %H:%M:%S") adblock[${pid}] ${class}: ${log_msg}" >> "${adb_logfile}"
         fi
@@ -484,6 +565,9 @@ f_log()
 f_space()
 {
     local mp="${1}"
+
+    # check relevant mount points in a subshell
+    #
     if [ -d "${mp}" ]
     then
         df "${mp}" 2>/dev/null |\
@@ -493,32 +577,115 @@ f_space()
             av_space="${available}"
             if [ $((av_space)) -eq 0 ]
             then
-                rc=575
-                f_log "no space left on device/not mounted (${mp})" "${rc}"
+                rc=155
+                f_log "no space left on device/not mounted (${mp})"
                 exit ${rc}
             elif [ $((av_space)) -lt $((adb_minspace)) ]
             then
-                rc=580
-                f_log "not enough space left on device (${mp})" "${rc}"
+                rc=155
+                f_log "not enough space left on device (${mp})"
                 exit ${rc}
             fi
         done
+
+        # subshell return code handling, set space trigger accordingly
+        #
         rc=${?}
-        if [ $((rc)) -eq 0 ]
+        if [ $((rc)) -ne 0 ]
         then
-            space_ok="true"
-        else
+            rc=0
             space_ok="false"
-            f_deltemp
         fi
     fi
 }
 
-####################################################
-# f_deltemp: delete temp files, directories and exit
+##################################################################
+# f_restore: restore last adblock list backups and restart dnsmasq
 #
-f_deltemp()
+f_restore()
 {
+    local removal_done
+    local restore_done
+
+    # remove bogus adblock lists
+    #
+    if [ -n "${adb_revsrclist}" ]
+    then
+        find "${adb_dnsdir}" -maxdepth 1 -type f \( ${adb_revsrclist} \) -exec rm -f "{}" \; 2>/dev/null
+        rc=${?}
+        if [ $((rc)) -ne 0 ]
+        then
+            f_log "error during removal of bogus adblock lists" "${rc}"
+            f_exit
+        else
+            removal_done="true"
+            f_log "all bogus adblock lists removed"
+        fi
+    fi
+
+    # restore backups
+    #
+    if [ "${backup_ok}" = "true" ] && [ -d "${adb_backupdir}" ] && [ "$(printf "${adb_backupdir}/${adb_dnsprefix}."*)" != "${adb_backupdir}/${adb_dnsprefix}.*" ]
+    then
+        for file in ${adb_backupdir}/${adb_dnsprefix}.*
+        do
+            filename="${file##*/}"
+            cp -pf "${file}" "${adb_dnsdir}" 2>/dev/null
+            rc=${?}
+            if [ $((rc)) -ne 0 ]
+            then
+                f_log "error during restore of adblock list (${filename})" "${rc}"
+                f_exit
+            fi
+            restore_done="true"
+        done
+        f_log "all available backups restored"
+    else
+        f_log "no backups found, nothing to restore"
+    fi
+
+    # (re-)try dnsmasq restart without bogus adblock lists / with backups 
+    #
+    if [ "${restore_done}" = "true" ] || [ "${removal_done}" = "true" ]
+    then
+        /etc/init.d/dnsmasq restart >/dev/null 2>&1
+        sleep 2
+        dns_status="$(ps 2>/dev/null | grep "[d]nsmasq" 2>/dev/null)"
+        if [ -n "${dns_status}" ]
+        then
+            rc=0
+            if [ -n "${adb_wanif4}" ] && [ -n "${adb_wanif6}" ]
+            then
+                adb_count="$(($(head -qn -4 "${adb_dnsdir}/${adb_dnsprefix}."* 2>/dev/null | wc -l) / 2))"
+            else
+                adb_count="$(head -qn -4 "${adb_dnsdir}/${adb_dnsprefix}."* 2>/dev/null | wc -l)"
+            fi
+            f_log "adblock lists with overall ${adb_count} domains loaded"
+        else
+            rc=160
+            f_log "dnsmasq restart failed, please check 'logread' output" "${rc}"
+        fi
+    fi
+    f_exit
+}
+
+###################################
+# f_exit: delete (temporary) files,
+# generate statistics and exit
+#
+f_exit()
+{
+    local ipv4_prerouting
+    local ipv4_forward
+    local ipv4_output
+    local ipv6_prerouting
+    local ipv6_forward
+    local ipv6_output
+    local iptv4="/usr/sbin/iptables"
+    local iptv6="/usr/sbin/ip6tables"
+
+    # delete temporary files & directories
+    #
     if [ -f "${adb_tmpfile}" ]
     then
        rm -f "${adb_tmpfile}" >/dev/null 2>&1
@@ -527,168 +694,44 @@ f_deltemp()
     then
        rm -rf "${adb_tmpdir}" >/dev/null 2>&1
     fi
-    f_log "domain adblock processing finished (${adb_version}, ${openwrt_version}, $(/bin/date "+%d.%m.%Y %H:%M:%S"))"
+
+    # final log message and iptables statistics
+    #
+    if [ $((rc)) -eq 0 ]
+    then
+        if [ -n "${adb_wanif4}" ]
+        then
+            ipv4_prerouting="$(${iptv4} -t nat -vnL | grep -F "adblock-pre" | grep -Eo "[0-9]+" | head -n1)"
+            ipv4_forward="$(${iptv4} -vnL | grep -F "adblock-fwd" | grep -Eo "[0-9]+" | head -n1)"
+            ipv4_output="$(${iptv4} -vnL | grep -F "adblock-out" | grep -Eo "[0-9]+" | head -n1)"
+        fi
+        if [ -n "${adb_wanif6}" ]
+        then
+            ipv6_prerouting="$(${iptv6} -t nat -vnL | grep -F "adblock-pre" | grep -Eo "[0-9]+" | head -n1)"
+            ipv6_forward="$(${iptv6} -vnL | grep -F "adblock-fwd" | grep -Eo "[0-9]+" | head -n1)"
+            ipv6_output="$(${iptv6} -vnL | grep -F "adblock-out" | grep -Eo "[0-9]+" | head -n1)"
+        fi
+        if [ -n "${adb_wanif4}" ] && [ -n "${adb_wanif6}" ]
+        then
+            f_log "adblock firewall statistics (IPv4/IPv6):"
+            f_log "${ipv4_prerouting}/${ipv6_prerouting} packets redirected in PREROUTING chain"
+            f_log "${ipv4_forward}/${ipv6_forward} packets rejected in FORWARD chain"
+            f_log "${ipv4_output}/${ipv6_output} packets rejected in OUTPUT chain"
+        elif [ -n "${adb_wanif4}" ]
+        then
+            f_log "adblock firewall statistics (IPv4):"
+            f_log "${ipv4_prerouting} packets redirected in PREROUTING chain"
+            f_log "${ipv4_forward} packets rejected in FORWARD chain"
+            f_log "${ipv4_output} packets rejected in OUTPUT chain"
+        elif [ -n "${adb_wanif6}" ]
+        then
+            f_log "${ipv6_prerouting} packets redirected in PREROUTING chain"
+            f_log "${ipv6_forward} packets rejected in FORWARD chain"
+            f_log "${ipv6_output} packets rejected in OUTPUT chain"
+        fi
+        f_log "domain adblock processing finished successfully (${adb_version}, ${openwrt_version}, $(/bin/date "+%d.%m.%Y %H:%M:%S"))"
+    else
+        f_log "domain adblock processing failed (${adb_version}, ${openwrt_version}, $(/bin/date "+%d.%m.%Y %H:%M:%S"))"
+    fi
     exit ${rc}
-}
-
-####################################################
-# f_remove: maintain and (re-)start domain query log
-#
-f_remove()
-{
-    local query_pid
-    local query_date
-    local query_total
-    local query_blocked
-    if [ "${query_ok}" = "true" ] && [ "${ntp_ok}" = "true" ]
-    then
-        query_date="$(date "+%Y%m%d")"
-        if [ -s "${adb_querypid}" ] && [ -f "${adb_queryfile}.${query_date}" ]
-        then
-            query_total="$(grep -F "query[A]" "${adb_queryfile}.${query_date}" 2>/dev/null | wc -l)"
-            query_blocked="$(grep -Fv "query[A]" "${adb_queryfile}.${query_date}" 2>/dev/null | wc -l)"
-            f_log "adblock statistics for query date ${query_date} (total: ${query_total}, blocked: ${query_blocked})"
-        fi
-        if [ -s "${adb_querypid}" ] && [ ! -f "${adb_queryfile}.${query_date}" ]
-        then
-            query_pid="$(cat "${adb_querypid}" 2>/dev/null)"
-            > "${adb_querypid}"
-            kill -9 "${query_pid}" >/dev/null 2>&1
-            rc=${?}
-            if [ $((rc)) -eq 0 ]
-            then
-                find "${adb_backupdir}" -maxdepth 1 -type f -mtime +"${adb_queryhistory}" -name "${query_name}.*" -exec rm -f "{}" \; 2>/dev/null
-                rc=${?}
-                if [ $((rc)) -eq 0 ]
-                then
-                    f_log "remove old domain query background process (pid: ${query_pid}) and do logfile housekeeping"
-                else
-                    f_log "error during domain query logfile housekeeping" "${rc}"
-                fi
-            else
-                f_log "error during domain query background process removal (pid: ${query_pid})" "${rc}"
-            fi
-        fi
-        if [ ! -s "${adb_querypid}" ]
-        then
-            (logread -f 2>/dev/null & printf ${!} > "${adb_querypid}") | grep -Eo "(query\[A\].*)|([a-z0-9\.\-]* is ${query_ip}$)" 2>/dev/null >> "${adb_queryfile}.${query_date}" &
-            rc=${?}
-            if [ $((rc)) -eq 0 ]
-            then
-                sleep 1
-                f_log "new domain query log background process started (pid: $(cat "${adb_querypid}" 2>/dev/null))"
-            else
-                f_log "error during domain query background process start" "${rc}"
-            fi
-        fi
-    fi
-    f_deltemp
-}
-
-################################################################
-# f_restore: restore last adblocklist backup and restart dnsmasq
-#
-f_restore()
-{
-    # remove bogus adblocklists
-    #
-    if [ -n "${adb_revsrclist}" ]
-    then
-        find "${adb_dnsdir}" -maxdepth 1 -type f \( ${adb_revsrcfind} \) -exec rm -f "{}" \; 2>/dev/null
-        if [ $((rc)) -eq 0 ]
-        then
-            f_log "bogus adblocklists removed"
-        else
-            f_log "error during removal of bogus adblocklists" "${rc}"
-            f_remove
-        fi
-    fi
-
-    # restore backups
-    #
-    if [ "${backup_ok}" = "true" ] && [ -d "${adb_backupdir}" ] && [ "$(printf "${adb_backupdir}/${adb_dnsprefix}."*)" != "${adb_backupdir}/${adb_dnsprefix}.*" ]
-    then
-        cp -f "${adb_backupdir}/${adb_dnsprefix}."* "${adb_dnsdir}" >/dev/null 2>&1
-        rc=${?}
-        if [ $((rc)) -eq 0 ]
-        then
-            f_log "all available backups restored"
-        else
-            f_log "error during restore" "${rc}"
-            f_remove
-        fi
-    fi
-    /etc/init.d/dnsmasq restart >/dev/null 2>&1
-    f_remove
-}
-
-#######################################################
-# f_wancheck: check for usable adblock update interface
-#
-f_wancheck()
-{
-    local cnt=0
-    local cnt_max="${1}"
-    local dev
-    local dev_out
-    while [ $((cnt)) -le $((cnt_max)) ]
-    do
-        for dev in ${adb_wandev}
-        do
-            if [ -d "/sys/class/net/${dev}" ]
-            then
-                dev_out="$(cat /sys/class/net/${dev}/operstate 2>/dev/null)"
-                rc=${?}
-                if [ "${dev_out}" = "up" ]
-                then
-                    wan_ok="true"
-                    f_log "get wan/update interface (${dev}), after ${cnt} loops"
-                    break 2
-                fi
-            fi
-        done
-        sleep 1
-        cnt=$((cnt + 1))
-    done
-    if [ -z "${wan_ok}" ]
-    then
-        rc=585
-        wan_ok="false"
-        f_log "no wan/update interface(s) found (${adb_wandev# })" "${rc}"
-        f_restore
-    fi
-}
-
-#####################################
-# f_ntpcheck: check/get ntp time sync
-#
-f_ntpcheck()
-{
-    local cnt=0
-    local cnt_max="${1}"
-    local ntp_pool
-    for srv in ${adb_ntpsrv}
-    do
-        ntp_pool="${ntp_pool} -p ${srv}"
-    done
-    while [ $((cnt)) -le $((cnt_max)) ]
-    do
-        /usr/sbin/ntpd -nq ${ntp_pool} >/dev/null 2>&1
-        rc=${?}
-        if [ $((rc)) -eq 0 ]
-        then
-            ntp_ok="true"
-            f_log "get ntp time sync (${adb_ntpsrv# }), after ${cnt} loops"
-            break
-        fi
-        sleep 1
-        cnt=$((cnt + 1))
-    done
-    if [ -z "${ntp_ok}" ]
-    then
-        rc=590
-        ntp_ok="false"
-        f_log "ntp time sync failed (${adb_ntpsrv# })" "${rc}"
-        f_restore
-    fi
 }
