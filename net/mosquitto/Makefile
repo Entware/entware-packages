@@ -144,7 +144,7 @@ endef
 
 Package/$(PKG_NAME)-nossl/conffiles = $(Package/$(PKG_NAME)/conffiles)
 
-define Package/$(PKG_NAME)/install
+define Package/mosquitto/install/default
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mosquitto $(1)/opt/sbin/mosquitto
 	$(INSTALL_DIR) $(1)/opt/etc/mosquitto
