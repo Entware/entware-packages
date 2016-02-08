@@ -4,7 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-
+# perl-dev package (with headers only) for native perl modules building added at the end of Makefile
+#
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl
@@ -182,3 +183,16 @@ define Package/perl-tests-common/install
 endef
 
 $(eval $(call BuildPackage,perl-tests-common))
+
+define Package/perl-dev
+$(call Package/perlbase-template)
+TITLE:=Perl development files
+DEPENDS:=+perl
+endef
+
+define Package/perl-dev/install
+	$(INSTALL_DIR) $(1)/opt/lib/perl5/$(PERL_VERSION)/CORE
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/perl5/$(PERL_VERSION)/CORE/*.h $(1)/opt/lib/perl5/$(PERL_VERSION)/CORE/
+endef
+
+$(eval $(call BuildPackage,perl-dev))
