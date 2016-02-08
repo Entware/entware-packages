@@ -47,27 +47,27 @@ define Build/Configure
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/opt/include/
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/* \
-		$(1)/usr/include/
+		$(PKG_INSTALL_DIR)/opt/include/* \
+		$(1)/opt/include/
 
-	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libuv.so* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/libuv.so* \
+		$(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libuv.pc \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libuv.pc \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libuv/install
-	$(INSTALL_DIR) $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libuv.so* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/libuv.so* \
+		$(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libuv))
