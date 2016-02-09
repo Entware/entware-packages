@@ -60,7 +60,10 @@ CONFIGURE_ARGS += \
 	--without-libexpat \
 	--without-libcares \
 	--without-sqlite3 \
+	--without-libuv \
 	--with-libz
+
+TARGET_CXXFLAGS += -fpermissive
 
 define Package/aria2/conffiles
 /opt/etc/aria2.conf
