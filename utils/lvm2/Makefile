@@ -26,7 +26,7 @@ define Package/libdevmapper
   CATEGORY:=Libraries
   TITLE:=The Linux Kernel Device Mapper userspace library
   URL:=http://sourceware.org/dm/
-  DEPENDS:=+libpthread +librt
+  DEPENDS:=+libuuid +libpthread +librt
 endef
 
 define Package/libdevmapper/description
@@ -54,6 +54,7 @@ CONFIGURE_ARGS += --disable-o_direct
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(FPIC)" \
+		LIBS="-L$(STAGING_DIR)/opt/lib -luuid -lm" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		install
 endef
