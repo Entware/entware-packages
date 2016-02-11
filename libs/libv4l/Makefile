@@ -17,7 +17,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.linuxtv.org/downloads/v4l-utils
 PKG_MD5SUM:=80062780ae90e5955473b09b31e9828a
 
-PKG_BUILD_DEPENDS:=USE_UCLIBC:argp-standalone USE_MUSL:argp-standalone
+PKG_BUILD_DEPENDS:=USE_MUSL:argp-standalone
 
 # glibc doen not need argp-standalone
 PATCH_DIR=./patches/$(CONFIG_LIBC)

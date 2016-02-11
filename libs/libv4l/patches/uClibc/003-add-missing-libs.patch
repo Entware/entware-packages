@@ -5,7 +5,7 @@
  
  v4l2grab: v4l2grab.o ../../lib/libv4l2/libv4l2.so
 -	$(CC) $(LDFLAGS) -o $@ $^ -L../../lib/libv4l2 -L../../lib/libv4lconvert -lv4l2 -lv4lconvert
-+	$(CC) $(LDFLAGS) -o $@ $^ -L../../lib/libv4l2 -L../../lib/libv4lconvert -lv4l2 -lv4lconvert -largp
++	$(CC) $(LDFLAGS) -o $@ $^ -L../../lib/libv4l2 -L../../lib/libv4lconvert -lv4l2 -lv4lconvert -luargp
  
  ioctl-test: ioctl-test.o
  	$(CC) $(LDFLAGS) -o $@ $^
@@ -16,7 +16,7 @@
  
  decode_tm6000: decode_tm6000.o ../libv4l2util/libv4l2util.a
 -	$(CC) $(LDFLAGS) -o $@ $^
-+	$(CC) $(LDFLAGS) -o $@ $^ -largp
++	$(CC) $(LDFLAGS) -o $@ $^ -luargp
  
  install: $(TARGETS)
  	mkdir -p $(DESTDIR)$(PREFIX)/bin
@@ -27,7 +27,7 @@
  
  ir-keytable: keytable.o
 -	$(CC) $(LDFLAGS) -o $@ $^
-+	$(CC) $(LDFLAGS) -o $@ $^ -largp
++	$(CC) $(LDFLAGS) -o $@ $^ -luargp
  
  keytable.o: keytable.c parse.h
  
@@ -60,7 +60,7 @@
  
  v4l2-sysfs-path: v4l2-sysfs-path.o ../libmedia_dev/libmedia_dev.a
 -	$(CC) $(LDFLAGS) -o $@ $^
-+	$(CC) $(LDFLAGS) -o $@ $^ -largp
++	$(CC) $(LDFLAGS) -o $@ $^ -luargp
  
  install: $(TARGETS)
  	mkdir -p $(DESTDIR)$(PREFIX)/bin
