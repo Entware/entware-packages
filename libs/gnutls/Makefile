@@ -22,7 +22,7 @@ PKG_LICENSE:=LGPLv2.1+
 PKG_INSTALL:=1
 PKG_LIBTOOL_PATHS:=. lib
 PKG_CHECK_FORMAT_SECURITY:=0
-PKG_BUILD_DEPENDS:=USE_UCLIBC:argp-standalone USE_MUSL:argp-standalone
+PKG_BUILD_DEPENDS:=USE_MUSL:argp-standalone
 
 #do not patch - glibc does not need -largp
 ifneq ($(CONFIG_USE_GLIBC),)
