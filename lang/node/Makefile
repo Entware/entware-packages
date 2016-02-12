@@ -31,7 +31,7 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=http://nodejs.org/
-  DEPENDS:=+libpthread +librt +libstdcpp +libopenssl +libuv @!TARGET_armv5soft
+  DEPENDS:=+libpthread +librt +libstdcpp +libopenssl +libuv @!(TARGET_armv5soft||TARGET_armv7soft||TARGET_mipselsf)
 endef
 
 define Package/node/description
@@ -45,6 +45,7 @@ CPU:=$(subst x86_64,x64,$(subst i386,ia32,$(ARCH)))
 MAKE_VARS += \
 	DESTCPU=$(CPU)
 
+
 CONFIGURE_ARGS= \
 	--dest-cpu=$(CPU) \
 	--dest-os=linux \
@@ -52,6 +53,11 @@ CONFIGURE_ARGS= \
 	--shared-zlib \
 	--shared-openssl \
 	--prefix=/opt
+
+ifeq ($(ARCH),arm)
+CONFIGURE_ARGS+= --with-arm-float-abi=softfp
+endif
+
 
 HOST_CONFIGURE_VARS:=
 HOST_CONFIGURE_ARGS:= \
