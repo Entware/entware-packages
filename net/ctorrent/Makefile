@@ -65,7 +65,7 @@ CONFIGURE_VARS += \
 
 ifeq ($(BUILD_VARIANT),ssl)
 	CONFIGURE_ARGS += \
-		--with-ssl="$(STAGING_DIR)/usr"
+		--with-ssl="$(STAGING_DIR)/opt"
 endif
 
 ifeq ($(BUILD_VARIANT),nossl)
@@ -74,8 +74,8 @@ ifeq ($(BUILD_VARIANT),nossl)
 endif
 
 define Package/ctorrent/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(PKG_NAME) $(1)/usr/bin/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(PKG_NAME) $(1)/opt/bin/$(PKG_NAME)
 endef
 
 Package/ctorrent-nossl/install = $(Package/ctorrent/install)
