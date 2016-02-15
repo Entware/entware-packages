@@ -38,7 +38,7 @@ endef
 
 MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS)" \
-	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath=/opt/lib"
+	LDFLAGS="$(TARGET_LDFLAGS)"
 
 define Package/tar/install
 	$(INSTALL_DIR) $(1)/opt/bin/
