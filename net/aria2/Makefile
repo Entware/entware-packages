@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aria2
-PKG_VERSION:=1.18.7
-PKG_RELEASE:=1a
+PKG_VERSION:=1.20.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=@SF/aria2
-PKG_MD5SUM:=36e92af92b4370817c577ed802546842
+PKG_SOURCE_URL:=https://github.com/tatsuhiro-t/aria2/releases/download/release-$(PKG_VERSION)
+PKG_MD5SUM:=ffbded43458432b5a58b8053ef1db56c
 PKG_INSTALL:=1
 
 PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>
@@ -24,7 +24,8 @@ PKG_CONFIG_DEPENDS := \
   ARIA2_OPENSSL \
   ARIA2_GNUTLS \
   ARIA2_BITTORRENT \
-  ARIA2_METALINK
+  ARIA2_METALINK \
+  ARIA2_SFTP
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -38,7 +39,7 @@ define Package/aria2
   SUBMENU:=File Transfer
   TITLE:=lightweight download utility
   URL:=http://aria2.sourceforge.net/
-  DEPENDS:=+zlib +ARIA2_METALINK:libxml2 +libstdcpp +ARIA2_OPENSSL:libopenssl +ARIA2_GNUTLS:libgnutls
+  DEPENDS:=+zlib +ARIA2_METALINK:libxml2 +libstdcpp +ARIA2_OPENSSL:libopenssl +ARIA2_GNUTLS:libgnutls +ARIA2_SFTP:libssh2
 endef
 
 define Package/aria2/description
@@ -54,6 +55,7 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_ARIA2_BITTORRENT),--enable,--disable)-bittorrent \
 	$(if $(CONFIG_ARIA2_METALINK),--enable,--disable)-metalink \
 	$(if $(CONFIG_ARIA2_METALINK),--with,--without)-libxml2 \
+	$(if $(CONFIG_ARIA2_SFTP),--with,--without)-libssh2 \
 	--without-libnettle \
 	--without-libgmp \
 	--without-libgcrypt \
