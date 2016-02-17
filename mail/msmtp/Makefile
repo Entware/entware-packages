@@ -120,7 +120,7 @@ define Package/msmtp/postinst
 endef
 
 define Package/msmtp/prerm
-	[ "../bin/msmtp" = "$(readlink -qs $${IPKG_INSTROOT}/opt/sbin/sendmail)" ] && {
+	[ ! -z "$(ls -l /opt/sbin/sendmail | grep '../bin/msmtp')" ] && {
 		rm -f $${IPKG_INSTROOT}/opt/sbin/sendmail
 	}
 endef
