@@ -206,6 +206,16 @@ define PyPackage/python-base/install
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python2
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* $(1)/opt/lib/
+	$(SED) "s|-L$(STAGING_DIR)/opt/lib|-L/opt/lib|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-L$(STAGING_DIR)/lib|-L/opt/lib/gcc/$(REAL_GNU_TARGET_NAME)/4.8.5|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-L$(TOOLCHAIN_DIR)/usr/lib||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-L$(TOOLCHAIN_DIR)/lib||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-L$(PKG_BUILD_DIR)||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-rpath-link=$(STAGING_DIR)/opt/lib|-rpath-link=/opt/lib|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-I$(STAGING_DIR)/opt/include|-I/opt/include|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-I$(STAGING_DIR)/include||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-I$(TOOLCHAIN_DIR)/usr/include||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-I$(TOOLCHAIN_DIR)/include||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
 endef
 
 define PyPackage/python/filespec
