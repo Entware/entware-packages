@@ -8,12 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=transmission
-PKG_VERSION:=2.84
-PKG_RELEASE:=4
+PKG_VERSION:=2.90
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=http://download-origin.transmissionbt.com/files/ http://mirrors.m0k.org/transmission/files
-PKG_MD5SUM:=411aec1c418c14f6765710d89743ae42
+PKG_SOURCE_URL:=https://download.transmissionbt.com/files \
+	http://mirrors.m0k.org/transmission/files
+PKG_MD5SUM:=0792c67fcbf722f7823e964e09eb16bc
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -87,7 +88,7 @@ CONFIGURE_ARGS += \
 	--enable-lightweight
 
 MAKE_FLAGS += \
-	CFLAGS="$(TARGET_CFLAGS) -D_GNU_SOURCE"
+	CFLAGS="-std=gnu99 $(TARGET_CFLAGS)"
 
 define Package/transmission-daemon/install
 	$(INSTALL_DIR) $(1)/opt/bin
