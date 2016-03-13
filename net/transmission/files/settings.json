@@ -49,6 +49,8 @@
     "rpc-whitelist": "127.0.0.1",
     "rpc-whitelist-enabled": false,
     "scrape-paused-torrents-enabled": true,
+    "script-torrent-added-enabled": false,
+    "script-torrent-added-filename": "",
     "script-torrent-done-enabled": false,
     "script-torrent-done-filename": "",
     "seed-queue-enabled": false,
