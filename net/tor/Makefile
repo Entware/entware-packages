@@ -105,6 +105,8 @@ define Package/tor/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tor $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc/tor
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/tor/torrc.sample $(1)/opt/etc/tor/torrc
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S35tor $(1)/opt/etc/init.d/
 endef
 
 define Package/tor-fw-helper/install
