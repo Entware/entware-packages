@@ -219,6 +219,8 @@ define Package/snmpd/install
 	$(INSTALL_DIR) $(1)/opt/etc/snmp
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/snmpd $(1)/opt/sbin/snmpd
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S47snmpd $(1)/opt/etc/init.d
 endef
 
 define Package/snmpd-static/conffiles
