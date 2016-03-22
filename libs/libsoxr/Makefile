@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libsoxr
 PKG_VERSION:=0.1.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://git.code.sf.net/p/soxr/code
@@ -43,19 +43,20 @@ define Package/libsoxr/description
   High quality, one-dimensional sample-rate conversion library
 endef
 
-CMAKE_OPTIONS:= -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=0 -DBUILD_EXAMPLES=0
+CMAKE_OPTIONS:= -DBUILD_TESTS=0 -DBUILD_EXAMPLES=0
 CMAKE_OPTIONS+= -DHAVE_WORDS_BIGENDIAN_EXITCODE=$(if $(CONFIG_BIG_ENDIAN),0,1)
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_BUILD_DIR)/src/soxr.h $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_BUILD_DIR)/src/*.a $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/soxr.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsoxr.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/soxr.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libsoxr/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_BUILD_DIR)/src/*.a $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsoxr.so* $(1)/opt/lib/
 endef
 
 

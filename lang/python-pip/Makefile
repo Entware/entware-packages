@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pip
-PKG_VERSION:=8.0.2
+PKG_VERSION:=8.1.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=pip-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/source/p/pip/
-PKG_MD5SUM:=3a73c4188f8dbad6a1e6f6d44d117eeb
+PKG_MD5SUM:=e9c3844db343f47d16040b32ad9072be
 PKG_BUILD_DIR:=$(BUILD_DIR)/pip-$(PKG_VERSION)
 PKG_USE_MIPS16:=0
 

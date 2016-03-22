@@ -32,7 +32,7 @@ define Package/tcl
   SUBMENU:=Tcl
   SECTION:=lang
   CATEGORY:=Languages
-  DEPENDS:=+libpthread
+#  DEPENDS:=+libpthread
   TITLE:=The Tcl language
   URL:=http://www.tcl.tk/
 endef

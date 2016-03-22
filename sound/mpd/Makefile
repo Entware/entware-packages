@@ -148,6 +148,7 @@ CONFIGURE_ARGS += \
 	--enable-un \
 	--disable-epoll \
 	--disable-signalfd \
+	--disable-soxr
 
 CONFIGURE_VARS += \
 	FLAC_CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include/FLAC" \

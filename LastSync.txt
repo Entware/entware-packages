@@ -1,4 +1,6 @@
-commit 72aa1e370d5cb7c2c1869d230477d1e447b2c48d
-Merge: 52c82f1 1b8358b
-Author: Hannu Nyman <hannu.nyman@iki.fi>
-Date:   Wed Feb 3 20:40:08 2016 +0200
+commit d21ff2a0cbc2ae584338f3d8292986ff6f5b28cf
+Merge: 9ea127d 40ac8c3
+Author: Noah Meyerhans <frodo@morgul.net>
+Date:   Sun Mar 20 13:54:24 2016 -0700
+
+    Merge pull request #2526 from DonkZZ/bind

@@ -9,14 +9,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
-PKG_VERSION:=1.4.7
+PKG_VERSION:=1.4.8
 PKG_RELEASE:=1
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://mosquitto.org/files/source/
-PKG_MD5SUM:=4cb978502312bff2dcdaab6a433b1bf2
+PKG_MD5SUM:=d859cd474ffa61a6197bdabe007b9027
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
@@ -137,9 +137,20 @@ define Package/libmosquitto-nossl/description
     This package is built without SSL support
 endef
 
+define Package/libmosquittopp
+    SECTION:=libs
+    CATEGORY:=Libraries
+    DEPENDS:=+libmosquitto +libstdcpp
+    TITLE:= mosquitto - client c++ library
+endef
+
+define Package/libmosquittopp/description
+ C++ Library wrapper for libmosquitto.
+endef
 
 define Package/$(PKG_NAME)/conffiles
 /opt/etc/mosquitto/mosquitto.conf
+/opt/etc/config/mosquitto
 endef
 
 Package/$(PKG_NAME)-nossl/conffiles = $(Package/$(PKG_NAME)/conffiles)
@@ -174,9 +185,12 @@ Package/mosquitto-client-nossl/install = $(Package/mosquitto-client/install)
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_BUILD_DIR)/lib/mosquitto.h $(1)/opt/include
+	$(CP) $(PKG_BUILD_DIR)/lib/cpp/mosquittopp.h $(1)/opt/include
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_BUILD_DIR)/lib/libmosquitto.so.1 $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/lib/cpp/libmosquittopp.so.1 $(1)/opt/lib/
 	$(LN) libmosquitto.so.1 $(1)/opt/lib/libmosquitto.so
+	$(LN) libmosquittopp.so.1 $(1)/opt/lib/libmosquittopp.so
 endef
 
 # This installs files on the target.  Compare with Build/InstallDev
@@ -186,6 +200,12 @@ define Package/libmosquitto/install
 	$(LN) libmosquitto.so.1 $(1)/opt/lib/libmosquitto.so
 endef
 Package/libmosquitto-nossl/install = $(Package/libmosquitto/install)
+
+define Package/libmosquittopp/install
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/lib/cpp/libmosquittopp.so.1 $(1)/opt/lib/
+	$(LN) libmosquittopp.so.1 $(1)/opt/lib/libmosquittopp.so
+endef
 
 # Applies to all...
 MAKE_FLAGS += WITH_DOCS=no
@@ -199,5 +219,6 @@ $(eval $(call BuildPackage,$(PKG_NAME)))
 $(eval $(call BuildPackage,$(PKG_NAME)-nossl))
 $(eval $(call BuildPackage,libmosquitto))
 $(eval $(call BuildPackage,libmosquitto-nossl))
+$(eval $(call BuildPackage,libmosquittopp))
 $(eval $(call BuildPackage,mosquitto-client))
 $(eval $(call BuildPackage,mosquitto-client-nossl))

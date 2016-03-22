@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2015 OpenWrt.org
+# Copyright (C) 2006-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -12,7 +12,7 @@ include ./files/python-package.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=3
+PKG_RELEASE:=6
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
@@ -29,7 +29,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=python/host
-HOST_BUILD_DEPENDS:=bzip2/host expat/host
+HOST_BUILD_DEPENDS:=bzip2/host expat/host libffi/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -230,8 +230,8 @@ HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \
 	--without-pymalloc \
 	--with-threads \
-	--prefix=$(STAGING_DIR)/host \
 	--with-system-expat=$(STAGING_DIR)/host \
+	--with-system-ffi="$(STAGING_DIR)/host" \
 	--with-ensurepip=upgrade \
 	CONFIG_SITE= \
 	CFLAGS="$(HOST_CFLAGS)"
