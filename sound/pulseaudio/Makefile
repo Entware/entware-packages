@@ -99,7 +99,8 @@ CONFIGURE_ARGS += \
 	--disable-udev \
 	--without-fftw \
 	--disable-avahi \
-	--disable-dbus
+	--disable-dbus \
+	--without-soxr
 
 CONFIGURE_VARS += \
 	PKG_CONFIG_LIBDIR="$(STAGING_DIR)/opt/lib/pkgconfig"
