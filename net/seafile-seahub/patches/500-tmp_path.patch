@@ -1,0 +1,13 @@
+--- a/seahub/settings.py
++++ b/seahub/settings.py
+@@ -298,8 +298,8 @@
+ GROUP_AVATAR_DEFAULT_URL = 'avatars/groups/default.png'
+ AUTO_GENERATE_GROUP_AVATAR_SIZES = (20, 24, 32, 36, 48, 56)
+ 
+-LOG_DIR = os.environ.get('SEAHUB_LOG_DIR', '/tmp')
+-CACHE_DIR = "/tmp"
++LOG_DIR = os.environ.get('SEAHUB_LOG_DIR', '/opt/tmp')
++CACHE_DIR = "/opt/tmp"
+ install_topdir = os.path.expanduser(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+ central_conf_dir = os.environ.get('SEAFILE_CENTRAL_CONF_DIR', '')
+ 

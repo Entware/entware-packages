@@ -52,7 +52,7 @@ CONFIGURE_ARGS += --disable-profiling \
 		    --enable-sqliteunlock \
 		    --enable-openssl
 
-TARGET_CPPFLAGS += -std=c99
+TARGET_CPPFLAGS += -std=gnu99
 
 include $(INCLUDE_DIR)/host-build.mk
 
@@ -78,16 +78,16 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/zdb
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/zdb/ $(1)/usr/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libzdb* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/zdb.pc $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/include/zdb
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/zdb/ $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzdb* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/zdb.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libzdb/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libzdb.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzdb.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libzdb))

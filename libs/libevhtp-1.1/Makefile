@@ -38,10 +38,10 @@ endef
 include $(INCLUDE_DIR)/cmake.mk
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/libevhtp-1.1/
-	$(INSTALL_DIR) $(1)/usr/lib/libevhtp-1.1/
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/usr/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include/libevhtp-1.1/
+	$(INSTALL_DIR) $(1)/opt/lib/libevhtp-1.1/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libevhtp-1.1))

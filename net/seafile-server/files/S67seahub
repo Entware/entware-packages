@@ -1,0 +1,13 @@
+#!/bin/sh
+
+prefix="/opt"
+PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+
+if [ $# -lt 1 ]; then
+    printf "Usage: $0 {start|stop|restart}\n" >&2
+    exit 1
+fi
+
+/opt/share/seafile/seafile-server/seahub.sh $1
+
+exit 0

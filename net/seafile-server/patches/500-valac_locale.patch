@@ -1,0 +1,20 @@
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -35,7 +35,7 @@
+ 
+ seafile-object.h: ${seafile_object_define}
+ 	rm -f $@
+-	valac --pkg posix ${seafile_object_define} -C -H seafile-object.h
++	LC_ALL= LANG=en_US.UTF-8 valac --pkg posix ${seafile_object_define} -C -H seafile-object.h
+ 
+ DISTCLEANFILES = ${searpc_gen}
+ 
+@@ -74,7 +74,7 @@
+ 	rm -f ${seafile_object_gen}
+ 	@rm -f vala.tmp
+ 	@touch vala.tmp
+-	valac -C --pkg posix $^
++	LC_ALL= LANG=en_US.UTF-8 valac -C --pkg posix $^
+ 	@mv -f vala.tmp $@
+ 
+ ${seafile_object_gen}: vala.stamp

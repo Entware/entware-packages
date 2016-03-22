@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 
 TARGET_LDFLAGS+=\
-        -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
+        -Wl,-rpath-link=$(STAGING_DIR)/opt/lib
 
 define Package/vala
   SECTION:=lang
@@ -47,26 +47,26 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) \
-		$(1)/usr/share/vala-0.30/vapi \
-		$(1)/usr/lib \
-		$(1)/usr/share/pkgconfig \
-		$(1)/usr/bin
+		$(1)/opt/share/vala-0.30/vapi \
+		$(1)/opt/lib \
+		$(1)/opt/share/pkgconfig \
+		$(1)/opt/bin
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/share/vala-0.30/vapi/* \
-		$(1)/usr/share/vala-0.30/vapi
+		$(PKG_INSTALL_DIR)/opt/share/vala-0.30/vapi/* \
+		$(1)/opt/share/vala-0.30/vapi
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/lib/libvala-0.30.{so*,la} \
-		$(1)/usr/lib
+		$(PKG_INSTALL_DIR)/opt/lib/libvala-0.30.{so*,la} \
+		$(1)/opt/lib
 
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/usr/bin/{vala,vala-0.30,valac,valac-0.30,vapicheck,vapicheck-0.30,vapigen,vapigen-0.30,vala-gen-introspect,vala-gen-introspect-0.30} \
-		$(1)/usr/bin
+		$(PKG_INSTALL_DIR)/opt/bin/{vala,vala-0.30,valac,valac-0.30,vapicheck,vapicheck-0.30,vapigen,vapigen-0.30,vala-gen-introspect,vala-gen-introspect-0.30} \
+		$(1)/opt/bin
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/share/pkgconfig/*.pc \
-		$(1)/usr/share/pkgconfig
+		$(PKG_INSTALL_DIR)/opt/share/pkgconfig/*.pc \
+		$(1)/opt/share/pkgconfig
 endef
 
 $(eval $(call HostBuild))

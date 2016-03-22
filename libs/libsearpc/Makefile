@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libsearpc
-PKG_VERSION:=3.1.7
-PKG_RELEASE=$(PKG_SOURCE_VERSION)
+PKG_VERSION:=3.0.7
+PKG_RELEASE=1
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/haiwen/libsearpc.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=8998e7b2c5587f0b94c48db24e2952d08def5add
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
+PKG_SOURCE_VERSION:=13f49676cc5444d3a9e9397310f7d322fb7d887f
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
@@ -41,7 +41,7 @@ endef
 CONFIGURE_ARGS += --enable-compile-demo=no \
 		    --disable-server-pkg
 
-TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/usr/lib -liconv
+TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/opt/lib -liconv
 
 include $(INCLUDE_DIR)/host-build.mk
 
@@ -59,19 +59,19 @@ endef
 $(eval $(call HostBuild))
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/{bin,include}
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libsearpc.so* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/searpc* $(1)/usr/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libsearpc.pc $(1)/usr/lib/pkgconfig/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/searpc-codegen.py $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/{bin,include}
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsearpc.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/searpc* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libsearpc.pc $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/searpc-codegen.py $(1)/opt/bin/
 endef
 
 define Package/libsearpc/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/lib/python2.7/site-packages
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libsearpc.so* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/python2.7/site-packages/pysearpc $(1)/usr/lib/python2.7/site-packages/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/python2.7/site-packages
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsearpc.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/python2.7/site-packages/pysearpc $(1)/opt/lib/python2.7/site-packages/
 endef
 
 $(eval $(call BuildPackage,libsearpc))
