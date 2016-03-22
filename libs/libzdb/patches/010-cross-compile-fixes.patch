@@ -33,14 +33,14 @@ diff -rupN libzdb-3.0.orig/configure.ac libzdb-3.0/configure.ac
          svd_LDFLAGS=$LDFLAGS
 -        CPPFLAGS="`$MYSQLCONFIG --include` $CPPFLAGS"
 -        LDFLAGS="`$MYSQLCONFIG --libs` $LDFLAGS"
-+        CPPFLAGS="-I$STAGING_DIR/usr/include/mysql $CPPFLAGS"
-+        LDFLAGS="-L$STAGING_DIR/usr/lib/mysql -L$STAGING_DIR/usr/lib $LDFLAGS"
++        CPPFLAGS="-I$STAGING_DIR/opt/include/mysql $CPPFLAGS"
++        LDFLAGS="-L$STAGING_DIR/opt/lib/mysql -L$STAGING_DIR/opt/lib $LDFLAGS"
          AC_CHECK_HEADERS([mysql.h], [], [mysql="no"])
          if test "xyes" = "x$mysql"; then
 -                DBCPPFLAGS="$DBCPPFLAGS `$MYSQLCONFIG --include`"
 -                DBLDFLAGS="$DBLDFLAGS `$MYSQLCONFIG --libs`"
-+                DBCPPFLAGS="$DBCPPFLAGS -I$STAGING_DIR/usr/include/mysql"
-+                DBLDFLAGS="$DBLDFLAGS -L$STAGING_DIR/usr/lib/mysql -L$STAGING_DIR/usr/lib -lmysqlclient -lz -lcrypt -lm $LDFLAGS"
++                DBCPPFLAGS="$DBCPPFLAGS -I$STAGING_DIR/opt/include/mysql"
++                DBLDFLAGS="$DBLDFLAGS -L$STAGING_DIR/opt/lib/mysql -L$STAGING_DIR/opt/lib -lmysqlclient -lz -lcrypt -lm $LDFLAGS"
                  AC_DEFINE([HAVE_LIBMYSQLCLIENT], 1, [Define to 1 to enable mysql])
          else
                  CPPFLAGS=$svd_CPPFLAGS
@@ -76,14 +76,14 @@ diff -rupN libzdb-3.0.orig/configure.ac libzdb-3.0/configure.ac
          svd_LDFLAGS=$LDFLAGS
 -        CPPFLAGS="-I`$PGCONFIG --includedir` $CPPFLAGS"
 -        LDFLAGS="-L`$PGCONFIG --libdir` $LDFLAGS"
-+        CPPFLAGS="-I$STAGING_DIR/usr/include/postgresql -I$STAGING_DIR/usr/include $CPPFLAGS"
-+        LDFLAGS="-L$STAGING_DIR/usr/lib $LDFLAGS"
++        CPPFLAGS="-I$STAGING_DIR/opt/include/postgresql -I$STAGING_DIR/opt/include $CPPFLAGS"
++        LDFLAGS="-L$STAGING_DIR/opt/lib $LDFLAGS"
          AC_CHECK_HEADERS([libpq-fe.h], [], [postgresql="no"])
          if test "xyes" = "x$postgresql"; then
 -                DBCPPFLAGS="$DBCPPFLAGS -I`$PGCONFIG --includedir`"
 -                DBLDFLAGS="$DBLDFLAGS -L`$PGCONFIG --libdir` -lpq"
-+                DBCPPFLAGS="$DBCPPFLAGS -I$STAGING_DIR/usr/include/postgresql -I$STAGING_DIR/usr/include"
-+                DBLDFLAGS="$DBLDFLAGS -L$STAGING_DIR/usr/lib -lpq"
++                DBCPPFLAGS="$DBCPPFLAGS -I$STAGING_DIR/opt/include/postgresql -I$STAGING_DIR/opt/include"
++                DBLDFLAGS="$DBLDFLAGS -L$STAGING_DIR/opt/lib -lpq"
                  AC_DEFINE([HAVE_LIBPQ], 1, [Define to 1 to enable postgresql])
          else
                  CPPFLAGS=$svd_CPPFLAGS
