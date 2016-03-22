@@ -1,0 +1,20 @@
+--- a/common/commit-mgr.h
++++ b/common/commit-mgr.h
+@@ -6,6 +6,7 @@
+ struct _SeafCommitManager;
+ typedef struct _SeafCommit SeafCommit;
+ 
++#include <sqlite3.h>
+ #include <glib/gstdio.h>
+ #include "db.h"
+ 
+--- a/daemon/seafile-session.h
++++ b//daemon/seafile-session.h
+@@ -3,6 +3,7 @@
+ #ifndef SEAFILE_SESSION_H
+ #define SEAFILE_SESSION_H
+ 
++#include <sqlite3.h>
+ #include <glib-object.h>
+ #include <ccnet/cevent.h>
+ #include <ccnet/mqclient-proc.h>
