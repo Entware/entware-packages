@@ -4,21 +4,20 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Upgraded from 4.8.3 to 4.8.5
-# glibc changed (patched) --> increase PKG_RELEASE of gcc since libs are taken from toolchain
+# Upgraded from 4.8.3 to 5.3.0
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
-PKG_VERSION:=4.8.5
-PKG_RELEASE:=1a
+PKG_VERSION:=5.3.0
+PKG_RELEASE:=1
 PKG_SOURCE_URL:=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-$(PKG_VERSION) \
      http://mirrors.rcn.net/pub/sourceware/gcc/releases/gcc-$(PKG_VERSION) \
     ftp://ftp.gnu.org/gnu/gcc/releases/gcc-$(PKG_VERSION)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_MD5SUM:=80d2c2982a3392bb0b89673ff136e223
-PATCH_DIR:=$(TOPDIR)/toolchain/gcc/patches/4.8.5
+PKG_MD5SUM:=c9616fd448f980259c31de613e575719
+PATCH_DIR:=$(TOPDIR)/toolchain/gcc/patches/$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_FIXUP:=libtool
 PKG_BUILD_PARALLEL:=1
@@ -50,11 +49,42 @@ define Package/gcc/description
 	build a native toolchain for compiling on target
 endef
 
+GMPSRC=gmp-4.3.2
+
+define Download/gmp
+  URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
+  FILE:=$(GMPSRC).tar.bz2
+  MD5SUM:=dd60683d7057917e34630b4a787932e8
+endef
+$(eval $(call Download,gmp))
+
+MPCSRC=mpc-0.8.1
+
+define Download/mpc
+  URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
+  FILE:=$(MPCSRC).tar.gz
+  MD5SUM:=5b34aa804d514cc295414a963aedb6bf
+endef
+$(eval $(call Download,mpc))
+
+MPFRSRC=mpfr-2.4.2
+
+define Download/mpfr
+  URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
+  FILE:=$(MPFRSRC).tar.bz2
+  MD5SUM:=89e59fe665e2b3ad44a6789f40b059a0
+endef
+$(eval $(call Download,mpfr))
 
 define Build/Prepare
 	$(PKG_UNPACK)
-# 	we have to download additional stuff before patching
-	(cd $(PKG_BUILD_DIR) && ./contrib/download_prerequisites)
+# 	we have to download and unpack additional stuff before patching
+	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(GMPSRC).tar.bz2
+	ln -sf $(PKG_BUILD_DIR)/$(GMPSRC) $(PKG_BUILD_DIR)/gmp
+	tar -C $(PKG_BUILD_DIR) -xvzf $(DL_DIR)/$(MPCSRC).tar.gz
+	ln -sf $(PKG_BUILD_DIR)/$(MPCSRC) $(PKG_BUILD_DIR)/mpc
+	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(MPFRSRC).tar.bz2
+	ln -sf $(PKG_BUILD_DIR)/$(MPFRSRC) $(PKG_BUILD_DIR)/mpfr
 	$(Build/Patch)
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/002-dont-choke-when-building-32bit-on-64bit.patch
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/003-mpfr-longlong-mips.patch
@@ -78,12 +108,16 @@ define Build/Configure
 			--with-bugurl=$(BUGURL) \
 			--with-pkgversion="$(PKGVERSION)" \
 			--enable-shared \
-			$(if $(CONFIG_GLIBC_USE_VERSION_2_22),--enable,--disable)-__cxa_atexit \
+			$(if $(CONFIG_LIBC_USE_GLIBC),--enable,--disable)-__cxa_atexit \
+			--with-default-libstdcxx-abi=gcc4-compatible \
 			--enable-target-optspace \
 			--with-gnu-ld \
 			--with-stage1-ldflags="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--with-boot-ldflags="static-libstdc++ -static-libgcc -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--disable-nls \
+			--disable-libsanitizer \
+			--disable-libvtv \
+			--disable-libcilkrts \
 			--disable-libmudflap \
 			--disable-multilib \
 			--disable-libgomp \
@@ -97,8 +131,6 @@ define Build/Configure
 			--with-local-prefix=/opt \
 			$(SOFT_FLOAT_CONFIG_OPTION) \
 			$(call qstrip,$(CONFIG_EXTRA_GCC_CONFIG_OPTIONS)) \
-			$(if $(CONFIG_mips64)$(CONFIG_mips64el),--with-arch=mips64 \
-			--with-abi=$(subst ",,$(CONFIG_MIPS64_ABI))) \
 	);
 endef
 
