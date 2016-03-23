@@ -1,0 +1,18 @@
+--- a/lib/shell.c
++++ b/lib/shell.c
+@@ -185,6 +185,7 @@
+          * so we need to check busybox symlinks *before* checking for the name "bash"
+          * in order to avoid that case. */
+         mc_shell->type = SHELL_ASH_BUSYBOX;
++        mc_global.tty.use_subshell = FALSE;
+         mc_shell->name = mc_shell->path;
+     }
+     else if (strstr (mc_shell->path, "/bash") != NULL || getenv ("BASH") != NULL)
+@@ -203,6 +204,7 @@
+     {
+         /* If bash is not symlinked to busybox, it is safe to assume it is a real bash */
+         mc_shell->type = SHELL_ASH_BUSYBOX;
++        mc_global.tty.use_subshell = FALSE;
+         mc_shell->name = "ash";
+     }
+     else
