@@ -159,11 +159,9 @@ define Package/ruby/install
 	$(INSTALL_DIR) $(1)/opt/lib/ruby/vendor_ruby/$(PKG_LIBVER)
 	$(INSTALL_DIR) $(1)/opt/lib/ruby/site_ruby/$(PKG_LIBVER)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ruby $(1)/opt/lib/ruby/ruby$(PKG_LIBVER)-bin
-	$(INSTALL_BIN) ./files/ruby $(1)/opt/bin/ruby
+	$(LN) /opt/lib/ruby/ruby$(PKG_LIBVER)-bin $(1)/opt/bin/ruby
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ruby/vendor_ruby/$(PKG_LIBVER)/* $(1)/opt/lib/ruby/vendor_ruby/$(PKG_LIBVER)/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ruby/site_ruby/$(PKG_LIBVER)/* $(1)/opt/lib/ruby/site_ruby/$(PKG_LIBVER)/
-	$(SED) "s%@RUBY_LIBPATH@%/opt/lib/ruby/$(PKG_LIBVER)%" $(1)/opt/bin/ruby
-	$(SED) "s%@RUBY_BINPATH@%/opt/lib/ruby/ruby$(PKG_LIBVER)-bin%" $(1)/opt/bin/ruby
 endef
 
 define Package/libruby
