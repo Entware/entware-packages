@@ -1,5 +1,5 @@
---- a/conf/nginx.conf	2011-06-27 19:47:51.000000000 +0400
-+++ b/conf/nginx.conf	2012-07-18 00:22:18.000000000 +0400
+--- a/conf/nginx.conf
++++ b/conf/nginx.conf
 @@ -1,16 +1,16 @@
  
 -#user  nobody;
@@ -32,7 +32,7 @@
  
      sendfile        on;
      #tcp_nopush     on;
-@@ -38,7 +38,7 @@
+@@ -38,10 +38,10 @@
  
          #charset koi8-r;
  
@@ -40,4 +40,8 @@
 +        #access_log  /opt/var/log/nginx/host.access.log;
  
          location / {
-             root   html;
+-            root   html;
++            root   /opt/share/nginx/html;
+             index  index.html index.htm;
+         }
+ 
