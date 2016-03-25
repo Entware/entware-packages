@@ -1,20 +1,19 @@
 #
-# Copyright (C) 2015 OpenWrt.org
+# Copyright (C) 2015-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# The newer versions requires newer python-cffi
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptography
-PKG_VERSION:=1.1.2
+PKG_VERSION:=1.3.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/source/c/cryptography
-PKG_MD5SUM:=15eeba9e31f852bac21155baa3dfbc61
+PKG_MD5SUM:=bc8148d2ff2d80fef8ef2d2e856b3a7f
 
 PKG_BUILD_DEPENDS:=python-cffi/host
 
@@ -22,10 +21,8 @@ PKG_LICENSE:=Apache-2.0 BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.APACHE LICENSE.BSD
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 
-include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)
-$(call include_mk, python-host.mk)
 
 define Package/python-cryptography
 	SECTION:=lang
@@ -51,15 +48,6 @@ endef
 define Build/Compile
 	$(call Build/Compile/PyMod,,install --prefix="/opt" --root="$(PKG_INSTALL_DIR)")
 endef
-
-define Host/Compile
-	$(call Build/Compile/HostPyMod,,install --prefix="/usr" --root="$(STAGING_DIR_HOST)")
-endef
-
-define Host/Install
-endef
-
-$(eval $(call HostBuild))
 
 $(eval $(call PyPackage,python-cryptography))
 $(eval $(call BuildPackage,python-cryptography))
