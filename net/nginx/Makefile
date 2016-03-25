@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.9.9
-PKG_RELEASE:=2
+PKG_VERSION:=1.9.12
+PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://nginx.org/download/
-PKG_MD5SUM:=50fdfa08e93ead7a111cba5a5f5735af
+PKG_MD5SUM:=0afe4a7e589a0de43b7b54aa055a4351
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
 PKG_LICENSE:=2-clause BSD-like license
 
@@ -191,6 +191,7 @@ define Build/Configure
 		./configure \
 			--crossbuild=Linux::$(ARCH) \
 			--prefix=/opt \
+			--modules-path=/opt/lib/nginx \
 			--conf-path=/opt/etc/nginx/nginx.conf \
 			$(ADDITIONAL_MODULES) \
 			--error-log-path=/opt/var/log/nginx/error.log \
@@ -218,8 +219,7 @@ define Package/nginx/install
 	$(INSTALL_BIN) ./files/S80nginx $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/share/nginx/html
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/html/{index,50x}.html $(1)/opt/share/nginx/html
-	$(INSTALL_DIR) $(1)/opt/var/{run,lock}
-	$(INSTALL_DIR) $(1)/opt/var/log/nginx
+	$(INSTALL_DIR) $(1)/opt/var/{run,lock} $(1)/opt/var/log/nginx $(1)/opt/lib/nginx
 	$(INSTALL_DIR) $(1)/opt/var/lib/nginx/{body,proxy,fastcgi}
 ifeq ($(CONFIG_NGINX_NAXSI),y)
 	$(INSTALL_DIR) $(1)/opt/etc/nginx
