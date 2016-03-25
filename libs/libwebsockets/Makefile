@@ -61,25 +61,25 @@ define Package/libwebsockets-cyassl
 endef
 
 ifeq ($(BUILD_VARIANT),openssl)
-    CMAKE_OPTIONS += -DLWS_OPENSSL_CLIENT_CERTS=/etc/ssl/certs
+    CMAKE_OPTIONS += -DLWS_OPENSSL_CLIENT_CERTS=/opt/etc/ssl/certs
     CMAKE_OPTIONS += -DLWS_OPENSSL_SUPPORT=ON
     CMAKE_OPTIONS += -DLWS_WITH_SSL=ON
 endif
 
 ifeq ($(BUILD_VARIANT),cyassl)
-    CMAKE_OPTIONS += -DLWS_OPENSSL_CLIENT_CERTS=/etc/ssl/certs
+    CMAKE_OPTIONS += -DLWS_OPENSSL_CLIENT_CERTS=/opt/etc/ssl/certs
     CMAKE_OPTIONS += -DLWS_OPENSSL_SUPPORT=ON
     CMAKE_OPTIONS += -DLWS_WITH_SSL=ON
 # for cyassl, edit package/libs/cyassl/Makefile to include --enable-opensslextra
 # NOTE: it will compile without it, untested whether it it's needed?!
     CMAKE_OPTIONS += -DLWS_USE_CYASSL=ON
-    CMAKE_OPTIONS += -DLWS_CYASSL_LIBRARIES=$(STAGING_DIR)/usr/lib/libcyassl.so
-    CMAKE_OPTIONS += -DLWS_CYASSL_INCLUDE_DIRS=$(STAGING_DIR)/usr/include
+    CMAKE_OPTIONS += -DLWS_CYASSL_LIBRARIES=$(STAGING_DIR)/opt/lib/libcyassl.so
+    CMAKE_OPTIONS += -DLWS_CYASSL_INCLUDE_DIRS=$(STAGING_DIR)/opt/include
 endif
 
 define Package/libwebsockets/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libwebsockets.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libwebsockets.so* $(1)/opt/lib/
 endef
 
 Package/$(PKG_NAME)-cyassl/install = $(Package/$(PKG_NAME)/install)
