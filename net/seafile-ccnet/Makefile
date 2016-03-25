@@ -54,7 +54,7 @@ PKG_BUILD_DEPENDS:=vala/host \
 TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/opt/lib -liconv \
 		    -L$(STAGING_DIR)/opt/lib/mysql -lmysqlclient -lz
 
-MAKE_VARS += LANG=en_US.UTF-8
+MAKE_VARS += LC_ALL= LANG=en_US.UTF-8
 
 
 define Package/seafile-ccnet/install
