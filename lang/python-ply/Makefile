@@ -42,11 +42,15 @@ and yacc.
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix="/opt" --root="$(PKG_INSTALL_DIR)")
+	$(call Build/Compile/PyMod,,install --prefix="/opt" --root="$(PKG_INSTALL_DIR)" \
+		--single-version-externally-managed \
+	)
 endef
 
 define Host/Compile
-	$(call Build/Compile/HostPyMod,,install --prefix="" --root="$(STAGING_DIR)/host")
+	$(call Build/Compile/HostPyMod,,install --prefix="" --root="$(STAGING_DIR)/host" \
+		--single-version-externally-managed \
+	)
 endef
 
 define Host/Install
