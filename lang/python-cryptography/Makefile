@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/source/c/cryptography
 PKG_MD5SUM:=bc8148d2ff2d80fef8ef2d2e856b3a7f
 
-PKG_BUILD_DEPENDS:=python-cffi/host python-pycparser/host python-ply/host
+PKG_BUILD_DEPENDS:=python-cffi/host
 
 PKG_LICENSE:=Apache-2.0 BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.APACHE LICENSE.BSD
