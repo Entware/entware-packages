@@ -1,0 +1,22 @@
+--- a/src/vfs/fish/helpers/ls
++++ b/src/vfs/fish/helpers/ls
+@@ -107,7 +107,7 @@
+             n=$n" "$n2" "$n3
+         fi
+         echo "P$p $u $g"
+-        echo "E$a$i"
++        echo "S$s"
+         echo "d$m $d $y"
+         echo ":"$n
+         echo
+@@ -138,10 +138,6 @@
+         my $linkname = readlink ("$dirname/$filename");
+         $linkname =~ $strutils_shell_escape_regex;
+         printf("R%%o %%o $uid.$gid\nS$size\nd$mloctime\n:\"%%s\" -> \"%%s\"\n\n", S_IMODE($mode), S_IFMT($mode), $e_filename, $linkname);
+-    } elseif (S_ISCHR ($mode) || S_ISBLK ($mode)) {
+-        my $minor = $rdev % 256;
+-        my $major = int( $rdev / 256 );
+-        printf("R%%o %%o $uid.$gid\nE$major,$minor\nd$mloctime\n:\"%%s\"\n\n", S_IMODE($mode), S_IFMT($mode), $e_filename);
+     } else {
+         printf("R%%o %%o $uid.$gid\nS$size\nd$mloctime\n:\"%%s\"\n\n", S_IMODE($mode), S_IFMT($mode), $e_filename);
+     }
