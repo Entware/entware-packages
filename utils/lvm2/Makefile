@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=LVM2
 PKG_VERSION:=2.02.145
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 PKG_LICENSE:=GPL-2.0 LGPL-2.1
 
 PKG_SOURCE:=$(PKG_NAME).$(PKG_VERSION).tgz
@@ -75,7 +75,7 @@ endef
 
 define Package/lvm2/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/lvm $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{dmsetup,lvm} $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/lvm
 	$(SED) '/^[[:space:]]*\(#\|$$$$\)/d; /cache_dir/s@.*@    cache_dir = "/opt/tmp/lvm/cache"@' $(PKG_BUILD_DIR)/conf/example.conf
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/example.conf $(1)/opt/etc/lvm/lvm.conf
