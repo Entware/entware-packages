@@ -50,10 +50,6 @@ config SOCAT_SSL
           Implements SSL support in socat (using libopenssl).
 endef
 
-define Package/socat/conffiles
-/etc/config/socat
-endef
-
 CONFIGURE_ARGS += \
 	--disable-libwrap \
 	--disable-readline \
@@ -70,12 +66,8 @@ CONFIGURE_VARS += \
 	sc_cv_sys_csize_shift=4
 
 define Package/socat/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/socat $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/socat.config $(1)/etc/config/socat
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/socat.init $(1)/etc/init.d/socat
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/socat $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,socat))
