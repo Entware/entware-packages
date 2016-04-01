@@ -1,6 +1,15 @@
 --- a/cfg/vnstat.conf
 +++ b/cfg/vnstat.conf
-@@ -78,13 +78,13 @@ DaemonUser ""
+@@ -5,7 +5,7 @@
+ Interface "eth0"
+ 
+ # location of the database directory
+-DatabaseDir "/var/lib/vnstat"
++DatabaseDir "/opt/var/lib/vnstat"
+ 
+ # locale (LC_ALL) ("-" = use system locale)
+ Locale "-"
+@@ -82,13 +82,13 @@
  DaemonGroup ""
  
  # how often (in seconds) interface data is updated
@@ -17,3 +26,16 @@
  
  # how often (in minutes) data is saved when all interface are offline
  OfflineSaveInterval 30
+@@ -110,10 +110,10 @@
+ UpdateFileOwner 1
+ 
+ # file used for logging if UseLogging is set to 1
+-LogFile "/var/log/vnstat/vnstat.log"
++LogFile "/opt/var/log/vnstat.log"
+ 
+ # file used as daemon pid / lock file
+-PidFile "/var/run/vnstat/vnstat.pid"
++PidFile "/opt/var/run/vnstat.pid"
+ 
+ 
+ # vnstati

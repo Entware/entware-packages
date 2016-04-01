@@ -1,48 +1,39 @@
 --- a/src/cfg.c
 +++ b/src/cfg.c
-@@ -228,7 +228,7 @@
- 	/* load default config */
- 	defaultcfg();
- 
--	/* possible config files: 1) --config   2) $HOME/.vnstatrc   3) /etc/vnstat.conf   4) none */
-+	/* possible config files: 1) --config   2) $HOME/.vnstatrc   3) /opt/etc/vnstat.conf   4) none */
- 
- 	if (cfgfile[0]!='\0') {
- 
-@@ -256,9 +256,9 @@
- 		if (tryhome && (fd=fopen(buffer, "r"))!=NULL) {
+@@ -559,12 +559,9 @@
+ 		if (tryhome && (*fd=fopen(buffer, "r"))!=NULL) {
  			if (debug)
  				printf("Config file: $HOME/.vnstatrc\n");
--		} else if ((fd=fopen("/etc/vnstat.conf", "r"))!=NULL) {
-+		} else if ((fd=fopen("/opt/etc/vnstat.conf", "r"))!=NULL) {
+-		} else if ((*fd=fopen("/etc/vnstat.conf", "r"))!=NULL) {
++		} else if ((*fd=fopen("/opt/etc/vnstat.conf", "r"))!=NULL) {
  			if (debug)
 -				printf("Config file: /etc/vnstat.conf\n");
+-		} else if ((*fd=fopen("/usr/local/etc/vnstat.conf", "r"))!=NULL) {
+-			if (debug)
+-				printf("Config file: /usr/local/etc/vnstat.conf\n");
 +				printf("Config file: /opt/etc/vnstat.conf\n");
  		} else {
  			if (debug)
  				printf("Config file: none\n");
 --- a/src/common.h
 +++ b/src/common.h
-@@ -50,9 +50,9 @@
- /* location of the database directory */
- #ifndef DATABASEDIR
+@@ -54,7 +54,7 @@
  #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
--#define DATABASEDIR "/var/db/vnstat"
-+#define DATABASEDIR "/opt/var/db/vnstat"
+ #define DATABASEDIR "/var/db/vnstat"
  #else
 -#define DATABASEDIR "/var/lib/vnstat"
 +#define DATABASEDIR "/opt/var/lib/vnstat"
  #endif
  #endif
  #define DATABASEFILE "vnstat.db"
-@@ -180,8 +180,8 @@
+@@ -193,8 +193,8 @@
  #define USELOGGING 2
  #define CREATEDIRS 1
  #define UPDATEFILEOWNER 1
 -#define LOGFILE "/var/log/vnstat/vnstat.log"
 -#define PIDFILE "/var/run/vnstat/vnstat.pid"
-+#define LOGFILE "/opt/var/log/vnstat/vnstat.log"
-+#define PIDFILE "/opt/var/run/vnstat/vnstat.pid"
++#define LOGFILE "/opt/var/log/vnstat.log"
++#define PIDFILE "/opt/var/run/vnstat.pid"
  
  /* no transparency by default */
  #define TRANSBG 0
