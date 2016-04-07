@@ -21,7 +21,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=joe
 PKG_VERSION:=4.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE_URL:=@SF/joe-editor
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -50,7 +50,7 @@ define Package/joe/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/joe/joe $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/joe
-	$(INSTALL_CONF) ./files/joerc $(1)/opt/etc/joe/joerc
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/rc/joerc $(1)/opt/etc/joe/joerc
 endef
 
 define Package/joe/conffiles
