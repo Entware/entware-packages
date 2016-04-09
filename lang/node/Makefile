@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v0.12.12
+PKG_VERSION:=v0.12.13
 PKG_RELEASE:=1
 
 PKG_SOURCE:=node-$(PKG_VERSION).tar.gz
@@ -31,7 +31,7 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=http://nodejs.org/
-  DEPENDS:=+libpthread +librt +libstdcpp +libopenssl +libuv @!TARGET_armv5soft @!TARGET_armv7soft @!TARGET_mipselsf
+  DEPENDS:=+libpthread +librt +libstdcpp +libopenssl +libuv @i386||@x86_64
 endef
 
 define Package/node/description
