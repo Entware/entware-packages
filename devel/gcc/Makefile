@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
 PKG_VERSION:=5.3.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 PKG_SOURCE_URL:=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-$(PKG_VERSION) \
      http://mirrors.rcn.net/pub/sourceware/gcc/releases/gcc-$(PKG_VERSION) \
     ftp://ftp.gnu.org/gnu/gcc/releases/gcc-$(PKG_VERSION)
@@ -88,6 +88,10 @@ define Build/Prepare
 	$(Build/Patch)
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/002-dont-choke-when-building-32bit-on-64bit.patch
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/003-mpfr-longlong-mips.patch
+#uclibc needs -lm to build libcc1
+ifdef CONFIG_USE_UCLIBC
+	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/004-libcc1_uclibc_lm.patch
+endif
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpfr/
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/gmp/
@@ -164,6 +168,8 @@ define Package/gcc/install
 	cp -ar $(TOOLCHAIN_DIR)/include $(1)/opt
 	cp -a $(TOOLCHAIN_DIR)/lib/*.{o,so*} $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 	cp -a $(TOOLCHAIN_DIR)/lib/*nonshared*.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	rm -f $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/libgo*
+	rm -f $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/libcc1*
 	echo '#!/bin/sh' > $(1)/opt/bin/gcc_env.sh
 	echo 'export LDFLAGS=$(ENVLDFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	echo 'export CFLAGS=$(ENVCFLAGS)' >> $(1)/opt/bin/gcc_env.sh
