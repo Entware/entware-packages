@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -66,12 +66,12 @@ define Package/nut/config
 endef
 
 define Package/nut/conffiles
-	/opt/etc/nut/nut.conf
-	$(if $(CONFIG_NUT_CLIENTS_UPSMON),/opt/etc/nut/upsmon.conf)
-	$(if $(CONFIG_NUT_CLIENTS_UPSSCHED),/opt/etc/nut/upssched.conf)
-	$(if $(CONFIG_NUT_SERVER),/opt/etc/nut/ups.conf)
-	$(if $(CONFIG_NUT_SERVER),/opt/etc/nut/upsd.conf)
-	$(if $(CONFIG_NUT_SERVER),/opt/etc/nut/upsd.users)
+/opt/etc/nut/nut.conf
+$(if $(CONFIG_NUT_CLIENTS_UPSMON),/opt/etc/nut/upsmon.conf)
+$(if $(CONFIG_NUT_CLIENTS_UPSSCHED),/opt/etc/nut/upssched.conf)
+$(if $(CONFIG_NUT_SERVER),/opt/etc/nut/ups.conf)
+$(if $(CONFIG_NUT_SERVER),/opt/etc/nut/upsd.conf)
+$(if $(CONFIG_NUT_SERVER),/opt/etc/nut/upsd.users)
 endef
 
 define Package/nut/install
@@ -123,10 +123,10 @@ commands from any web browser. Javascript and cookies are not required.
 endef
 
 define Package/nut-web-cgi/conffiles
-	/opt/etc/nut/hosts.conf
-	/opt/etc/nut/upsset.conf
-	/opt/etc/nut/upsstats.html
-	/opt/etc/nut/upsstats-single.html
+/opt/etc/nut/hosts.conf
+/opt/etc/nut/upsset.conf
+/opt/etc/nut/upsstats.html
+/opt/etc/nut/upsstats-single.html
 endef
 
 define Package/nut-web-cgi/install
@@ -152,7 +152,7 @@ attached UPS via mDNS/DNS-SD.
 endef
 
 define Package/nut-avahi-service/conffiles
-	/opt/etc/avahi/services/nut.service
+/opt/etc/avahi/services/nut.service
 endef
 
 define Package/nut-avahi-service/install
