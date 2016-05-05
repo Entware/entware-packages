@@ -1,16 +1,15 @@
 #
-# Copyright (C) 2008-2014 OpenWrt.org
+# Copyright (C) 2008-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# 0.2.7.6 does not have source code for tor-fw-helper. package is disabled!
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tor
 PKG_VERSION:=0.2.7.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.torproject.org/dist \
@@ -19,7 +18,6 @@ PKG_MD5SUM:=cc19107b57136a68e8c563bf2d35b072
 PKG_MAINTAINER:=Hauke Mehrtens <hauke@hauke-m.de>
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_BUILD_DEPENDS:=libminiupnpc libnatpmp
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -48,17 +46,6 @@ endef
 define Package/tor/description
 $(call Package/tor/Default/description)
  This package contains the tor daemon.
-endef
-
-define Package/tor-fw-helper
-$(call Package/tor/Default)
-  TITLE:=Firewall helper for tor
-  DEPENDS:=+tor +libminiupnpc +libnatpmp
-endef
-
-define Package/tor-fw-helper/description
-$(call Package/tor/Default/description)
- This package contains a helper for automatically configuring port forwarding.
 endef
 
 define Package/tor-geoip
@@ -120,5 +107,4 @@ define Package/tor-geoip/install
 endef
 
 $(eval $(call BuildPackage,tor))
-#$(eval $(call BuildPackage,tor-fw-helper))
 $(eval $(call BuildPackage,tor-geoip))

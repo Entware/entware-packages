@@ -9,7 +9,7 @@
 -# you need changes, make a copy of this under another name, and customize
 -# that, and use the (left/right)updown parameters in ipsec.conf to make
 -# strongSwan use yours instead of this default one.
-+# Add your custom ip rules to the /opt/etc/ipsec.user file if you need that functionality.
++# Add your custom ip rules to the /etc/ipsec.user file if you need that functionality.
 +
 +[ -e /opt/etc/ipsec.user ] && . /opt/etc/ipsec.user "$1"
  
