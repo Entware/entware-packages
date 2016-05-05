@@ -63,18 +63,18 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) \
-		$(1)/usr/include
+		$(1)/opt/include
 
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/* \
-		$(1)/usr/include/
+		$(PKG_INSTALL_DIR)/opt/include/* \
+		$(1)/opt/include/
 
 	$(INSTALL_DIR) \
-		$(1)/usr/lib
+		$(1)/opt/lib
 
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/* \
+		$(1)/opt/lib/
 endef
 
 define Host/install
@@ -82,11 +82,11 @@ endef
 
 define Package/icu/install
 	$(INSTALL_DIR) \
-		$(1)/usr/lib
+		$(1)/opt/lib
 
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/*.so.* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/*.so.* \
+		$(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,icu))

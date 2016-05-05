@@ -17,7 +17,7 @@ include $(INCLUDE_DIR)/target.mk
 
 PKG_NAME:=boost
 PKG_VERSION:=1_60_0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/boost
@@ -27,7 +27,7 @@ PKG_MD5SUM:=28f58b9a33469388302110562bdf6188
 PKG_LICENSE:=Boost Software License <http://www.boost.org/users/license.html>
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 
-PKG_BUILD_DEPENDS += boost/host
+PKG_BUILD_DEPENDS += boost/host 
 PKG_BUILD_PARALLEL:=0
 PKG_USE_MIPS16:=0
 
@@ -148,7 +148,7 @@ define Package/boost/config
       			    - Not available if Shared libs are to be built.
       			 -> Use both runtimes.
       			    - Not available if Shared libs are to be built.
-      			    - Two seperate versions of Boost are built, linking each to a different runtime. 
+      			    - Two separate versions of Boost are built, linking each to a different runtime. 
       			    - This option requires "Use tagged names" option to be active.
 
 		    config boost-runtime-shared
@@ -336,7 +336,7 @@ comma := ,
 define Build/Compile
 	$(info Selected Boost API $(BOOST_ABI) for architecture $(ARCH) and cpu $(CPU_TYPE) $(CPU_SUBTYPE))
 	( cd $(PKG_BUILD_DIR) ; \
-		echo "using gcc : $(ARCH) : $(GNU_TARGET_NAME)-gcc : <compileflags>\"$(TARGET_CFLAGS)\" <cxxflags>\"$(TARGET_CXXFLAGS)\" <linkflags>\"$(TARGET_LDFLAGS)\" ;" > tools/build/src/user-config.jam ; \
+		echo "using gcc : $(ARCH) : $(GNU_TARGET_NAME)-gcc : <compileflags>\"$(TARGET_CFLAGS)\" <cxxflags>\"$(TARGET_CXXFLAGS) $(if $(CONFIG_boost-coroutine2),-std=c++14,)\" <linkflags>\"$(TARGET_LDFLAGS)\" ;" > tools/build/src/user-config.jam ; \
 		$(if $(CONFIG_PACKAGE_boost-python3), \
 			echo "using python : 3.5 : $(STAGING_DIR_ROOT)/opt/bin/python3 : $(STAGING_DIR)/opt/include/python3.5/ ;" >> \
 				tools/build/src/user-config.jam; \
