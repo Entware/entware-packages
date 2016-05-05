@@ -9,8 +9,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=5.6.18
-PKG_RELEASE:=1
+PKG_VERSION:=5.6.19
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>, Michael Heimpold <mhei@heimpold.de>
 
@@ -19,7 +19,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_MD5SUM:=177ba962557795866ae331ad4ad99bba
+PKG_MD5SUM:=aab960cc1b2bfbeb00d030a9d42b38bd
 
 PKG_FIXUP:=libtool autoreconf
 PKG_BUILD_PARALLEL:=1
@@ -33,7 +33,7 @@ PHP5_MODULES = \
 	ftp \
 	gettext gd gmp \
 	hash \
-	iconv \
+	iconv intl \
 	json \
 	ldap \
 	mbstring mcrypt mysql mysqli \
@@ -99,6 +99,7 @@ endef
 
 define Package/php5-cli
   $(call Package/php5/Default)
+  DEPENDS+= +PACKAGE_php5-mod-intl:libstdcpp
   TITLE+= (CLI)
 endef
 
@@ -109,6 +110,7 @@ endef
 
 define Package/php5-cgi
   $(call Package/php5/Default)
+  DEPENDS+= +PACKAGE_php5-mod-intl:libstdcpp
   TITLE+= (CGI & FastCGI)
 endef
 
@@ -236,6 +238,12 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_php5-mod-iconv),)
   CONFIGURE_ARGS+= --with-iconv=shared,"$(ICONV_PREFIX)"
 else
   CONFIGURE_ARGS+= --without-iconv
+endif
+
+ifneq ($(SDK)$(CONFIG_PACKAGE_php5-mod-intl),)
+  CONFIGURE_ARGS+= --enable-intl=shared
+else
+  CONFIGURE_ARGS+= --disable-intl
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php5-mod-json),)
@@ -534,6 +542,7 @@ $(eval $(call BuildModule,gettext,Gettext,+PACKAGE_php5-mod-gettext:libintl-full
 $(eval $(call BuildModule,gmp,GMP,+PACKAGE_php5-mod-gmp:libgmp))
 $(eval $(call BuildModule,hash,Hash))
 $(eval $(call BuildModule,iconv,iConv,$(ICONV_DEPENDS)))
+$(eval $(call BuildModule,intl,Internationalization Functions,+PACKAGE_php5-mod-intl:icu))
 $(eval $(call BuildModule,json,JSON))
 $(eval $(call BuildModule,ldap,LDAP,+PACKAGE_php5-mod-ldap:libopenldap +PACKAGE_php5-mod-ldap:libsasl2))
 $(eval $(call BuildModule,mbstring,MBString))

@@ -10,14 +10,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ruby
-PKG_VERSION:=2.3.0
+PKG_VERSION:=2.3.1
 PKG_RELEASE:=1
 
 PKG_LIBVER:=2.3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://cache.ruby-lang.org/pub/ruby/$(PKG_LIBVER)/
-PKG_MD5SUM:=f0d9f9bbdc87372ca98988a571875819
+PKG_MD5SUM:=c194281f63d7fcd816747fe78474be5e
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=COPYING
@@ -122,22 +122,22 @@ endef
 
 define RubyDependency
     $(eval \
-	$(call Package/Default)
-	$(call Package/ruby-$(1))
-	FILTER_CONFIG:=$$(strip \
-	    $$(foreach config_dep, \
-		$$(filter @%, \
-		    $$(foreach v, \
-			$$(DEPENDS), \
-			$$(if $$(findstring :,$$v),,$$v) \
-		    ) \
-		), \
-		$$(subst @,,$$(config_dep)) \
-	    ) \
-	)
-	ifneq (,$$(FILTER_CONFIG))
-	    FILTER_CONFIG:=($$(subst $$(space),&&,$$(FILTER_CONFIG))):
-	endif
+        $(call Package/Default)
+        $(call Package/ruby-$(1))
+        FILTER_CONFIG:=$$(strip \
+            $$(foreach config_dep, \
+                $$(filter @%, \
+                    $$(foreach v, \
+                        $$(DEPENDS), \
+                        $$(if $$(findstring :,$$v),,$$v) \
+                    ) \
+                ), \
+                $$(subst @,,$$(config_dep)) \
+            ) \
+        )
+        ifneq (,$$(FILTER_CONFIG))
+           FILTER_CONFIG:=($$(subst $$(space),&&,$$(FILTER_CONFIG))):
+        endif
     ) \
     +$(FILTER_CONFIG)ruby-$(1)
 endef
@@ -171,6 +171,7 @@ $(call Package/ruby/Default)
   CATEGORY:=Libraries
   TITLE+= (shared library)
   DEPENDS+= +libpthread +librt +libgmp
+  ABI_VERSION:=$(PKG_LIBVER)
 endef
 define Package/libruby/install
 	$(INSTALL_DIR) $(1)/opt/lib
@@ -257,7 +258,7 @@ define Package/ruby-digest/config
 
 	config RUBY_DIGEST_USE_OPENSSL
 		bool "Use OpenSSL functions for ruby digest hash functions"
-	depends on PACKAGE_ruby-digest
+        depends on PACKAGE_ruby-digest
 		help
 			Ruby can use OpenSSL hash functions or compile alternative implementations. Using
 			OpenSSL saves about 30KBytes (less when compressed) but requires OpenSSL (that
@@ -711,7 +712,7 @@ $(eval $(call RubyBuildPackage,json,support for JSON,+ruby-datetime +ruby-misc))
 $(eval $(call RubyBuildPackage,logger,logger and syslog library,+ruby-multithread))
 $(eval $(call RubyBuildPackage,math,math library,+ruby-patterns))
 $(eval $(call RubyBuildPackage,minitest,Gem minitest,+ruby-gems))
-$(eval $(call RubyBuildPackage,misc,standard libraries subset (miscelaneous files),))
+$(eval $(call RubyBuildPackage,misc,standard libraries subset (miscellaneous files),))
 $(eval $(call RubyBuildPackage,mkmf,makefile library,+ruby-filelib +ruby-optparse +ruby-rbconfig))
 $(eval $(call RubyBuildPackage,multithread,multithread library,+ruby-misc))
 $(eval $(call RubyBuildPackage,net,Network Protocols Library,+ruby-datetime +ruby-digest +ruby-filelib +ruby-uri))
