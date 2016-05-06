@@ -442,6 +442,7 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius2-mod-sql-pgsql),)
   CONFIGURE_ARGS+= \
 		--with-rlm_sql_postgresql-include-dir="$(STAGING_DIR)/opt/include" \
 		--with-rlm_sql_postgresql-lib-dir="$(STAGING_DIR)/opt/lib"
+  CONFIGURE_LIBS+= -lm
 else
   CONFIGURE_ARGS+= --without-rlm_sql_postgresql
 endif
