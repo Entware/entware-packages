@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
 PKG_VERSION:=3.15
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://download-mirror.savannah.gnu.org/releases/gpsd/
@@ -47,6 +47,10 @@ define Package/gpsd
   TITLE:=An interface daemon for GPS receivers
 endef
 
+define Package/gpsd/conffiles
+/opt/etc/config/gpsd
+endef
+
 define Package/gpsd/description
   $(call Package/gpsd/Default/description)
   This package contains the GPS daemon.
@@ -79,6 +83,9 @@ define Package/libgps/description
   This package contains the libgps library.
 endef
 
+SCONS_VARS += \
+	LINKFLAGS="$(TARGET_LDFLAGS)"
+
 SCONS_OPTIONS += \
 	dbus_export=no \
 	tsip=no \
@@ -97,9 +104,6 @@ SCONS_OPTIONS += \
 	python=no \
 	implicit_link=no \
 	chrpath=no
-
-SCONS_VARS += \
-	LINKFLAGS="$(TARGET_LDFLAGS)"
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include

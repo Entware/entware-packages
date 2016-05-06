@@ -1,6 +1,6 @@
-commit d21ff2a0cbc2ae584338f3d8292986ff6f5b28cf
-Merge: 9ea127d 40ac8c3
-Author: Noah Meyerhans <frodo@morgul.net>
-Date:   Sun Mar 20 13:54:24 2016 -0700
+commit 33843c23f1fc262ab635d7cba6b442ae7f40026c
+Merge: 417ddf3 a99aa1f
+Author: champtar <champetier.etienne@gmail.com>
+Date:   Wed May 4 19:23:09 2016 +0200
 
-    Merge pull request #2526 from DonkZZ/bind
+    Merge pull request #2126 from lynxis/libmicrohttpd
