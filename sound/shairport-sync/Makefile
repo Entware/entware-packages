@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 OpenWrt.org
+# Copyright (C) 2015-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shairport-sync
-PKG_VERSION:=2.8.1
+PKG_VERSION:=2.8.2
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
@@ -71,7 +71,6 @@ define Package/shairport-sync/default/description
   Ensure Kernel Modules > Sound Support > kmod-sound-core is selected.
   Also select kmod-usb-audio if you want to use USB-connected sound cards.
 endef
-
 Package/shairport-sync-openssl/description = $(Package/shairport-sync/default/description)
 Package/shairport-sync-polarssl/description = $(Package/shairport-sync/default/description)
 
