@@ -16,7 +16,16 @@
  
  use_existing_ccnet="false"
  use_existing_seafile="false"
-@@ -343,7 +342,7 @@
+@@ -110,7 +109,7 @@
+     if [[ "$PYTHON" != "" && -x $PYTHON ]]; then
+         return 0
+     fi
+-
++        
+     if which python2.7 2>/dev/null 1>&2; then
+         PYTHON=python2.7
+     elif which python27 2>/dev/null 1>&2; then
+@@ -339,7 +338,7 @@
      src_docs_dir=${INSTALLPATH}/seafile/docs/
      library_template_dir=${seafile_data_dir}/library-template
      mkdir -p ${library_template_dir}
@@ -25,7 +34,7 @@
  }
  
  
-@@ -352,12 +351,12 @@
+@@ -348,12 +347,12 @@
  # -------------------------------------------
  
  check_root;
@@ -41,7 +50,7 @@
  
  check_existing_ccnet;
  if [[ ${use_existing_ccnet} != "true" ]]; then
-@@ -372,7 +371,7 @@
+@@ -368,7 +367,7 @@
      get_fileserver_port
  fi
  
@@ -50,7 +59,7 @@
  
  printf "\nThis is your config information:\n\n"
  
-@@ -414,7 +413,7 @@
+@@ -410,7 +409,7 @@
      echo
  fi
  
@@ -59,7 +68,7 @@
  
  # -------------------------------------------
  # Create seafile conf
-@@ -597,7 +596,7 @@
+@@ -593,7 +592,7 @@
  # copy user manuals to library template
  # -------------------------------------------
  copy_user_manuals;
@@ -68,7 +77,7 @@
  # -------------------------------------------
  # final message
  # -------------------------------------------
-@@ -610,7 +609,9 @@
+@@ -606,7 +605,9 @@
  echo "-----------------------------------------------------------------"
  echo 
  echo "run seafile server:     ./seafile.sh { start | stop | restart }"
@@ -78,7 +87,7 @@
  echo
  echo "-----------------------------------------------------------------"
  echo "If the server is behind a firewall, remember to open these tcp ports:"
-@@ -619,7 +620,4 @@
+@@ -615,7 +616,4 @@
  echo "port of seafile fileserver:   ${fileserver_port}"
  echo "port of seahub:               8000"
  echo
@@ -121,7 +130,7 @@
      export CCNET_CONF_DIR=${default_ccnet_conf_dir}
      export SEAFILE_CONF_DIR=${seafile_data_dir}
      export SEAFILE_CENTRAL_CONF_DIR=${central_config_dir}
--    export PYTHONPATH=${INSTALLPATH}/seafile/lib/python2.6/site-packages:${INSTALLPATH}/seafile/lib64/python2.6/site-packages:${INSTALLPATH}/seahub/thirdpart:$PYTHONPATH
+-    export PYTHONPATH=${INSTALLPATH}/seafile/lib/python2.6/site-packages:${INSTALLPATH}/seafile/lib64/python2.6/site-packages:${INSTALLPATH}/seahub:${INSTALLPATH}/seahub/thirdpart:$PYTHONPATH
 -    export PYTHONPATH=${INSTALLPATH}/seafile/lib/python2.7/site-packages:${INSTALLPATH}/seafile/lib64/python2.7/site-packages:$PYTHONPATH
 +    export PYTHONPATH=${INSTALLPATH}/seahub/thirdpart:$PYTHONPATH
  
