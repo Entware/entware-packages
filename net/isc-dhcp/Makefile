@@ -58,17 +58,9 @@ $(call Package/isc-dhcp-relay-ipv6/description)
  This package is compiled with IPv4 support only.
 endef
 
-define Package/isc-dhcp-relay-ipv4/conffiles
-/etc/config/dhcrelay
-endef
-
 define Package/isc-dhcp-relay-ipv6/description
 $(call Package/isc-dhcp-relay/description)
  This package is compiled with IPv4 and IPv6 support.
-endef
-
-define Package/isc-dhcp-relay-ipv6/conffiles
-/etc/config/dhcrelay
 endef
 
 define Package/isc-dhcp-client-ipv4
@@ -181,54 +173,47 @@ define Build/Compile
 endef
 
 define Package/isc-dhcp-relay-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcrelay $(1)/usr/sbin
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/etc/config/dhcrelay $(1)/etc/config
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/dhcrelay4.init $(1)/etc/init.d/dhcrelay4
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dhcrelay $(1)/opt/sbin
 endef
 
 define Package/isc-dhcp-server-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcpd $(1)/usr/sbin
-	$(INSTALL_BIN) ./files/dhcpd.init $(1)/etc/init.d/dhcpd
-	$(INSTALL_BIN) ./files/dhcpd.conf $(1)/etc
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/init.d
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dhcpd $(1)/opt/sbin
+	$(INSTALL_BIN) ./files/dhcpd.conf $(1)/opt/etc
 ifeq ($(BUILD_VARIANT),ipv6)
-	$(INSTALL_BIN) ./files/dhcpd6.init $(1)/etc/init.d/dhcpd6
-	$(INSTALL_BIN) ./files/dhcpd6.conf $(1)/etc
+	$(INSTALL_BIN) ./files/dhcpd6.conf $(1)/opt/etc
 endif
 endef
 
 define Package/isc-dhcp-server-ipv4/conffiles
-/etc/dhcpd.conf
+/opt/etc/dhcpd.conf
 endef
 
 define Package/isc-dhcp-server-ipv6/conffiles
-/etc/dhcpd6.conf
+/opt/etc/dhcpd6.conf
 endef
 
 define Package/isc-dhcp-client-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhclient $(1)/usr/sbin
-	$(INSTALL_BIN) ./files/dhclient-script $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dhclient $(1)/opt/sbin
+	$(INSTALL_BIN) ./files/dhclient-script $(1)/opt/sbin/
 ifeq ($(BUILD_VARIANT),ipv6)
-	$(INSTALL_BIN) ./files/dhclient6.conf $(1)/etc
+	$(INSTALL_BIN) ./files/dhclient6.conf $(1)/opt/etc
 endif
 endef
 
 define Package/isc-dhcp-client-ipv4/conffiles
-/etc/dhclient.conf
+/opt/etc/dhclient.conf
 endef
 
 define Package/isc-dhcp-client-ipv6/conffiles
-/etc/dhclient6.conf
+/opt/etc/dhclient6.conf
 endef
 
 define Package/isc-dhcp-omshell-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/omshell $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/omshell $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,isc-dhcp-relay-ipv4))
