@@ -37,9 +37,14 @@ define Package/youtube-dl/description
   It requires the Python interpreter.
 endef
 
+define Build/Compile
+	$(RM) $(PKG_BUILD_DIR)/youtube-dl
+	$(MAKE) -C $(PKG_BUILD_DIR) youtube-dl
+endef
+
 define Package/youtube-dl/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/youtube-dl $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/youtube-dl $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,youtube-dl))
