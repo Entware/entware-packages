@@ -1,6 +1,6 @@
 --- a/seahub/settings.py
 +++ b/seahub/settings.py
-@@ -305,8 +305,8 @@
+@@ -298,8 +298,8 @@
  GROUP_AVATAR_DEFAULT_URL = 'avatars/groups/default.png'
  AUTO_GENERATE_GROUP_AVATAR_SIZES = (20, 24, 32, 36, 48, 56)
  

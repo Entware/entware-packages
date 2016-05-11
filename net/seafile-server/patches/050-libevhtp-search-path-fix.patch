@@ -9,7 +9,7 @@ diff -rupN seafile-server-4.1.2.orig/server/Makefile.am seafile-server-4.1.2/ser
  	-I$(top_srcdir)/include \
  	-I$(top_srcdir)/lib \
  	-I$(top_builddir)/lib \
-@@ -118,4 +119,4 @@ seaf_server_LDADD = @CCNET_LIBS@ \
+@@ -121,4 +122,4 @@ seaf_server_LDADD = @CCNET_LIBS@ \
  	@SEARPC_LIBS@ @JANSSON_LIBS@ @ZDB_LIBS@ @CURL_LIBS@ ${LIB_WS32} @ZLIB_LIBS@ \
  	@LIBARCHIVE_LIBS@
  
