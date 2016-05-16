@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
 PKG_VERSION:=5.6.19
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>, Michael Heimpold <mhei@heimpold.de>
 
@@ -474,8 +474,9 @@ define Package/php5-fpm/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sapi/fpm/php-fpm $(1)/opt/bin/php-fpm
 
-	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_DATA) ./files/php5-fpm.conf $(1)/opt/etc/php5-fpm.conf
+	$(INSTALL_BIN) ./files/S79php-fpm $(1)/opt/etc/init.d/S79php-fpm
 
 	$(INSTALL_DIR) $(1)/opt/etc/php5-fpm.d
 	$(INSTALL_DATA) ./files/php5-fpm-www.conf $(1)/opt/etc/php5-fpm.d/www.conf
