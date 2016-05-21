@@ -45,15 +45,16 @@ CMAKE_OPTIONS += \
 	-DCMAKE_BUILD_TYPE:String="Release" 
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/yajl $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libyajl.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/yajl $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libyajl.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/pkgconfig/yajl.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/yajl/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libyajl.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libyajl.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,yajl))
