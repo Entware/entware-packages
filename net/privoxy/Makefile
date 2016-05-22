@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=privoxy
 PKG_VERSION:=3.0.24
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=privoxy-$(PKG_VERSION)-stable-src.tar.gz
 PKG_SOURCE_URL:=@SF/ijbswa
@@ -112,7 +112,7 @@ CONFIGURE_ARGS += \
 MAKE_FLAGS:=
 
 define Package/$(PKG_NAME)/conffiles
-/opt/etc/config/privoxy
+/opt/etc/privoxy/config
 /opt/etc/privoxy/user.action
 /opt/etc/privoxy/user.filter
 /opt/etc/privoxy/user.trust
