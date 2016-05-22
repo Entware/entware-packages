@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aria2
-PKG_VERSION:=1.20.0
+PKG_VERSION:=1.23.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/tatsuhiro-t/aria2/releases/download/release-$(PKG_VERSION)
-PKG_MD5SUM:=ffbded43458432b5a58b8053ef1db56c
+PKG_MD5SUM:=bc41d919e7d89835ee01c1175300eddc
 PKG_INSTALL:=1
 
 PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>
