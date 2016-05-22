@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=motion
 PKG_VERSION=3.4.0-20141018-$(PKG_SOURCE_VERSION)
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PKG_MAINTAINER:=Roger D <rogerdammit@gmail.com>
 PKG_LICENSE:=GPLv2
@@ -49,7 +49,8 @@ CONFIGURE_ARGS+= \
 
 define Package/motion/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(CP) $(PKG_BUILD_DIR)/motion-dist.conf $(1)/opt/etc/motion.conf
+	$(INSTALL_DIR) $(1)/opt/etc/motion
+	$(CP) $(PKG_BUILD_DIR)/motion-dist.conf $(1)/opt/etc/motion/motion.conf
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/motion $(1)/opt/bin/
 	$(INSTALL_BIN) ./files/S99motion  $(1)/opt/etc/init.d
