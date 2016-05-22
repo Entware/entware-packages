@@ -35,7 +35,7 @@ define Package/motion
 endef
 
 define Package/motion/conffiles
-/opt/etc/motion.conf
+/opt/etc/motion/motion.conf
 endef
 
 CONFIGURE_ARGS+= \
