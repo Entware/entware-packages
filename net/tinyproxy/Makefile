@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tinyproxy
 PKG_VERSION:=1.8.3
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.banu.com/pub/tinyproxy/1.8/
@@ -29,7 +29,7 @@ define Package/tinyproxy
 endef
 
 define Package/tinyproxy/conffiles
-/opt/etc/tinyproxy
+/opt/etc/tinyproxy.conf
 endef
 
 CONFIGURE_ARGS+= \
@@ -45,9 +45,8 @@ define Package/tinyproxy/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/tinyproxy $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/share/tinyproxy
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/tinyproxy/*.html $(1)/opt/share/tinyproxy/
-	$(INSTALL_DIR) $(1)/opt/etc/tinyproxy
-	$(INSTALL_CONF) ./files/tinyproxy.config $(1)/opt/etc/tinyproxy
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/tinyproxy.conf $(1)/opt/etc/
 	$(INSTALL_BIN) ./files/S21tinyproxy $(1)/opt/etc/init.d
 endef
 
