@@ -12,7 +12,7 @@ start() {
 	#insmod v4l2-int-device
 	#insmod input-core
 	#insmod uvcvideo
-	mjpg_streamer -b -i "input_uvc.so -r 320x240 -f 5" -o "output_http.so -p 3000 -w /opt/share/www/webcam"
+	yes | mjpg_streamer -b -i "input_uvc.so -r 320x240 -f 5" -o "output_http.so -p 3000 -w /opt/share/www/webcam"
 	}
 
 stop() {
