@@ -8,12 +8,12 @@
 define Package/python3-xml
 $(call Package/python3/Default)
   TITLE:=Python $(PYTHON3_VERSION) xml libs
-  DEPENDS:=+python3-light
+  DEPENDS:=+python3-light +libexpat
 endef
 
 $(eval $(call Py3BasePackage,python3-xml, \
-	/usr/lib/python$(PYTHON3_VERSION)/xml \
-	/usr/lib/python$(PYTHON3_VERSION)/xmlrpc \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_elementtree.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/pyexpat.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/xml \
+	/opt/lib/python$(PYTHON3_VERSION)/xmlrpc \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_elementtree.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/pyexpat.$(PYTHON3_SO_SUFFIX) \
 ))

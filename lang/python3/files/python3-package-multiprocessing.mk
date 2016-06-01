@@ -12,6 +12,6 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-multiprocessing, \
-	/usr/lib/python$(PYTHON3_VERSION)/multiprocessing \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_multiprocessing.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/multiprocessing \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_multiprocessing.$(PYTHON3_SO_SUFFIX) \
 ))

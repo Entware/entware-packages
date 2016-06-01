@@ -1,0 +1,13 @@
+--- a/Modules/socketmodule.h
++++ b/Modules/socketmodule.h
+@@ -1,6 +1,10 @@
+ /* Socket module header file */
+ 
+ /* Includes needed for the sockaddr_* symbols below */
++#ifndef HAVE_LINUX_CAN_H
++# undef AF_CAN
++#endif
++
+ #ifndef MS_WINDOWS
+ #ifdef __VMS
+ #   include <socket.h>

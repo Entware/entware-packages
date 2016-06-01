@@ -12,5 +12,5 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-gdbm, \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_gdbm.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_gdbm.$(PYTHON3_SO_SUFFIX) \
 ))

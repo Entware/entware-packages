@@ -12,5 +12,5 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-asyncio, \
-	/usr/lib/python$(PYTHON3_VERSION)/asyncio \
+	/opt/lib/python$(PYTHON3_VERSION)/asyncio \
 ))

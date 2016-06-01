@@ -12,7 +12,7 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-pydoc, \
-	/usr/lib/python$(PYTHON3_VERSION)/doctest.py \
-	/usr/lib/python$(PYTHON3_VERSION)/pydoc.py \
-	/usr/lib/python$(PYTHON3_VERSION)/pydoc_data \
+	/opt/lib/python$(PYTHON3_VERSION)/doctest.py \
+	/opt/lib/python$(PYTHON3_VERSION)/pydoc.py \
+	/opt/lib/python$(PYTHON3_VERSION)/pydoc_data \
 ))

@@ -12,7 +12,7 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-ncurses, \
-	/usr/lib/python$(PYTHON3_VERSION)/curses \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_curses.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_curses_panel.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/curses \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_curses.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_curses_panel.$(PYTHON3_SO_SUFFIX) \
 ))

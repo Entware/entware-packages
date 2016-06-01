@@ -12,5 +12,5 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-email, \
-	/usr/lib/python$(PYTHON3_VERSION)/email \
+	/opt/lib/python$(PYTHON3_VERSION)/email \
 ))

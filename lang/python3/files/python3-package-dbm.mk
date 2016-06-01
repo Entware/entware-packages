@@ -12,6 +12,6 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-dbm, \
-	/usr/lib/python$(PYTHON3_VERSION)/dbm \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_dbm.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/dbm \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_dbm.$(PYTHON3_SO_SUFFIX) \
 ))

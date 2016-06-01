@@ -12,11 +12,11 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-codecs, \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_cn.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_hk.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_iso2022.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_jp.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_kr.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_tw.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/unicodedata.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_cn.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_hk.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_iso2022.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_jp.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_kr.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_codecs_tw.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/unicodedata.$(PYTHON3_SO_SUFFIX) \
 ))

@@ -12,6 +12,6 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-sqlite3, \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_sqlite3.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/sqlite3 \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_sqlite3.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/sqlite3 \
 ))

@@ -39,7 +39,7 @@ endef
 
 define Build/Compile
 	$(call Build/Compile/Py3Mod,,\
-		install --root="$(PKG_INSTALL_DIR)" --prefix="/usr" \
+		install --root="$(PKG_INSTALL_DIR)" --prefix="/opt" \
 		--single-version-externally-managed \
 	)
 endef
@@ -51,9 +51,9 @@ define Py3Package/python3-pip/filespec
 endef
 
 define Py3Package/python3-pip/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/pip$(PYTHON3_VERSION) $(1)/usr/bin
-	$(LN) pip$(PYTHON3_VERSION) $(1)/usr/bin/pip3
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/pip$(PYTHON3_VERSION) $(1)/opt/bin
+	$(LN) pip$(PYTHON3_VERSION) $(1)/opt/bin/pip3
 endef
 
 $(eval $(call Py3Package,python3-pip))

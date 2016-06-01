@@ -11,12 +11,12 @@ PYTHON3_VERSION_MICRO:=1
 
 PYTHON3_VERSION:=$(PYTHON3_VERSION_MAJOR).$(PYTHON3_VERSION_MINOR)
 
-PYTHON3_DIR:=$(STAGING_DIR)/usr
+PYTHON3_DIR:=$(STAGING_DIR)/opt
 PYTHON3_BIN_DIR:=$(PYTHON3_DIR)/bin
 PYTHON3_INC_DIR:=$(PYTHON3_DIR)/include/python$(PYTHON3_VERSION)
 PYTHON3_LIB_DIR:=$(PYTHON3_DIR)/lib/python$(PYTHON3_VERSION)
 
-PYTHON3_PKG_DIR:=/usr/lib/python$(PYTHON3_VERSION)/site-packages
+PYTHON3_PKG_DIR:=/opt/lib/python$(PYTHON3_VERSION)/site-packages
 
 PYTHON3:=python$(PYTHON3_VERSION)
 
@@ -40,8 +40,8 @@ endef
 # using autotools.
 CONFIGURE_ARGS += \
 	_python_sysroot="$(STAGING_DIR)" \
-	_python_prefix="/usr" \
-	_python_exec_prefix="/usr"
+	_python_prefix="/opt" \
+	_python_exec_prefix="/opt"
 
 PKG_USE_MIPS16:=0
 # This is required in addition to PKG_USE_MIPS16:=0 because otherwise MIPS16
@@ -112,7 +112,7 @@ define Build/Compile/Py3Mod
 		CPPFLAGS="$(TARGET_CPPFLAGS) -I$(PYTHON3_INC_DIR)" \
 		LDFLAGS="$(TARGET_LDFLAGS) -lpython$(PYTHON3_VERSION)" \
 		_PYTHON_HOST_PLATFORM=linux2 \
-		__PYVENV_LAUNCHER__="/usr/bin/$(PYTHON3)" \
+		__PYVENV_LAUNCHER__="/opt/bin/$(PYTHON3)" \
 		$(3) \
 		, \
 		./setup.py $(2) \

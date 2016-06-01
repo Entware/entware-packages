@@ -12,6 +12,6 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-lzma, \
-	/usr/lib/python$(PYTHON3_VERSION)/lzma.py \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_lzma.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lzma.py \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_lzma.$(PYTHON3_SO_SUFFIX) \
 ))

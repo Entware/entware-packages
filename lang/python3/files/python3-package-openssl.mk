@@ -12,6 +12,6 @@ $(call Package/python3/Default)
 endef
 
 $(eval $(call Py3BasePackage,python3-openssl, \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_hashlib.$(PYTHON3_SO_SUFFIX) \
-	/usr/lib/python$(PYTHON3_VERSION)/lib-dynload/_ssl.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_hashlib.$(PYTHON3_SO_SUFFIX) \
+	/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_ssl.$(PYTHON3_SO_SUFFIX) \
 ))
