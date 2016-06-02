@@ -148,7 +148,8 @@ CONFIGURE_ARGS += \
 	--enable-tcp \
 	--enable-un \
 	--disable-epoll \
-	--disable-signalfd
+	--disable-signalfd \
+	--disable-soundcloud
 
 CONFIGURE_VARS += \
 	FLAC_CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include/FLAC" \
