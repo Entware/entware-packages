@@ -39,7 +39,7 @@ define Package/ocserv
   TITLE:=OpenConnect VPN server
   URL:=http://www.infradead.org/ocserv/
   MAINTAINER:=Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
-  DEPENDS:= +OCSERV_RADIUS:libradcli +OCSERV_HTTP_PARSER:libhttp-parser +OCSERV_SECCOMP:libseccomp +libgnutls +certtool +libncurses +libreadline +OCSERV_PAM:libpam +OCSERV_PROTOBUF:libprotobuf-c +libev +kmod-tun
+  DEPENDS:= +OCSERV_RADIUS:libradcli +OCSERV_HTTP_PARSER:libhttp-parser +OCSERV_SECCOMP:libseccomp +libgnutls +certtool +libncurses +libreadline +OCSERV_PAM:libpam +OCSERV_PROTOBUF:libprotobuf-c +libev
   USERID:=ocserv=72:ocserv=72
 endef
 
@@ -52,7 +52,7 @@ define Package/ocserv/description
  as TLS 1.2, and Datagram TLS to provide the secure VPN service. 
 endef
 
-EXTRA_CPPFLAGS+=-I$(STAGING_DIR)/usr/include/readline/
+EXTRA_CPPFLAGS+=-I$(STAGING_DIR)/opt/include/readline/
 EXTRA_LDFLAGS+=-lncurses
 
 CONFIGURE_ARGS+= \
@@ -88,20 +88,21 @@ define Package/ocserv/conffiles
 endef
 
 define Package/ocserv/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocserv $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocserv-fw $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocpasswd/ocpasswd $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/occtl/occtl $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/ocserv.init $(1)/etc/init.d/ocserv
-	$(INSTALL_DIR) $(1)/etc/ocserv
-	$(INSTALL_CONF) ./files/ocserv.conf.template $(1)/etc/ocserv/ocserv.conf.template
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/config $(1)/etc/config/ocserv
-	$(INSTALL_DIR) $(1)/lib/upgrade/keep.d
-	$(INSTALL_DATA) ./files/ocserv.upgrade $(1)/lib/upgrade/keep.d/ocserv
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocserv $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocserv-fw $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ocpasswd/ocpasswd $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/occtl/occtl $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/etc/ocserv
+	$(INSTALL_CONF) ./files/ocserv.conf.template $(1)/opt/etc/ocserv/ocserv.conf.template
+	$(INSTALL_CONF) ./files/ocserv.conf $(1)/opt/etc/ocserv/ocserv.conf
+	$(INSTALL_DIR) $(1)/opt/etc/config
+	$(INSTALL_CONF) ./files/config $(1)/opt/etc/config/ocserv
+	$(INSTALL_DIR) $(1)/opt/lib/upgrade/keep.d
+	$(INSTALL_DATA) ./files/ocserv.upgrade $(1)/opt/lib/upgrade/keep.d/ocserv
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S79ocserv $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,ocserv))

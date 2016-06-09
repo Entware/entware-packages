@@ -73,8 +73,8 @@ try-mtu-discovery = false
 #
 # There may be multiple certificate and key pairs and each key
 # should correspond to the preceding certificate.
-server-cert = /etc/ocserv/server-cert.pem
-server-key = /etc/ocserv/server-key.pem
+server-cert = /opt/etc/ocserv/server-cert.pem
+server-key = /opt/etc/ocserv/server-key.pem
 
 # Diffie-Hellman parameters. Only needed if you require support
 # for the DHE ciphersuites (by default this server supports ECDHE).
@@ -100,7 +100,7 @@ server-key = /etc/ocserv/server-key.pem
 # The Certificate Authority that will be used to verify
 # client certificates (public keys) if certificate authentication
 # is set.
-#ca-cert = /etc/ocserv/ca.pem
+#ca-cert = /opt/etc/ocserv/ca.pem
 
 # The object identifier that will be used to read the user ID in the client 
 # certificate. The object identifier should be part of the certificate's DN
@@ -115,7 +115,7 @@ server-key = /etc/ocserv/server-key.pem
 #cert-group-oid = 2.5.4.11
 
 # The revocation list of the certificates issued by the 'ca-cert' above.
-#crl = /etc/ocserv/crl.pem
+#crl = /opt/etc/ocserv/crl.pem
 
 # Uncomment this to enable compression negotiation (LZS, LZ4).
 |COMPRESSION|compression = true
@@ -199,8 +199,8 @@ rekey-method = ssl
 
 # These scripts are not needed if you have setup an interface for all vpns+
 # devices.
-#connect-script = /usr/bin/ocserv-script
-#disconnect-script = /usr/bin/ocserv-script
+#connect-script = /opt/bin/ocserv-script
+#disconnect-script = /opt/bin/ocserv-script
 
 # UTMP
 use-utmp = false
@@ -211,17 +211,17 @@ use-occtl = true
 
 # socket file used for IPC with occtl. You only need to set that,
 # if you use more than a single servers.
-occtl-socket-file = /var/run/occtl.socket
+occtl-socket-file = /opt/var/run/occtl.socket
 
 # PID file. It can be overriden in the command line.
-pid-file = /var/run/ocserv.pid
+pid-file = /opt/var/run/ocserv.pid
 
 # The default server directory. Does not require any devices present.
-chroot-dir = /var/lib/ocserv
+chroot-dir = /opt/var/lib/ocserv
 
 # socket file used for IPC, will be appended with .PID
 # It must be accessible within the chroot environment (if any)
-#socket-file = /var/run/ocserv-socket
+#socket-file = /opt/var/run/ocserv-socket
 socket-file = ocserv-socket
 
 # The user the worker processes will be run as. It should be
@@ -311,14 +311,14 @@ ping-leases = |PING_LEASES|
 # based on a user or group. The syntax depends on the input accepted
 # by the commands route-add-cmd and route-del-cmd (see below).
 
-config-per-user = /etc/ocserv/config-per-user/
-config-per-group = /etc/ocserv/config-per-group/
+config-per-user = /opt/etc/ocserv/config-per-user/
+config-per-group = /opt/etc/ocserv/config-per-group/
 
 # When config-per-xxx is specified and there is no group or user that
 # matches, then utilize the following configuration.
 
-#default-user-config = /etc/ocserv/defaults/user.conf
-#default-group-config = /etc/ocserv/defaults/group.conf
+#default-user-config = /opt/etc/ocserv/defaults/user.conf
+#default-group-config = /opt/etc/ocserv/defaults/group.conf
 
 # Groups that a client is allowed to select from.
 # A client may belong in multiple groups, and in certain use-cases
