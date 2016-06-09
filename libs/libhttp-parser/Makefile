@@ -44,17 +44,17 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/http_parser.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/libhttp_parser.so.* $(1)/usr/lib/
-	( cd $(1)/usr/lib ; ln -s libhttp_parser.so.* libhttp_parser.so )
+	$(INSTALL_DIR) $(1)/opt/include
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/http_parser.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/libhttp_parser.so.* $(1)/opt/lib/
+	( cd $(1)/opt/lib ; ln -s libhttp_parser.so.* libhttp_parser.so )
 endef
 
 define Package/libhttp-parser/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/libhttp_parser.so.* $(1)/usr/lib/
-	( cd $(1)/usr/lib ; ln -s libhttp_parser.so.* libhttp_parser.so )
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/libhttp_parser.so.* $(1)/opt/lib/
+	( cd $(1)/opt/lib ; ln -s libhttp_parser.so.* libhttp_parser.so )
 endef
 
 $(eval $(call BuildPackage,libhttp-parser))
