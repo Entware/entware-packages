@@ -1,0 +1,27 @@
+--- a/alsactl/alsactl.c
++++ b//alsactl/alsactl.c
+@@ -32,15 +32,15 @@
+ #include <alsa/asoundlib.h>
+ #include "alsactl.h"
+ 
+-#ifndef SYS_ASOUNDRC
+-#define SYS_ASOUNDRC "/var/lib/alsa/asound.state"
+-#endif
+-#ifndef SYS_PIDFILE
+-#define SYS_PIDFILE "/var/run/alsactl.pid"
+-#endif
+-#ifndef SYS_LOCKPATH
+-#define SYS_LOCKPATH "/var/lock"
+-#endif
++#undef SYS_ASOUNDRC
++#define SYS_ASOUNDRC "/opt/var/lib/alsa/asound.state"
++#undef SYS_PIDFILE
++#define SYS_PIDFILE "/opt/var/run/alsactl.pid"
++#undef SYS_LOCKPATH
++#define SYS_LOCKPATH "/opt/var/lock"
++#undef SYS_LOCKFILE
++#define SYS_LOCKFILE "/opt/var/lock/asound.state.lock"
++
+ 
+ int debugflag = 0;
+ int force_restore = 1;

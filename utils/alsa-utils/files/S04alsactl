@@ -1,0 +1,21 @@
+#!/opt/bin/sh
+# Copyright (C) 2015 NDM Systems, McMCC
+
+start() {
+	if [ -f /opt/var/lib/alsa/asound.state ]; then
+		alsactl restore 2>/dev/null
+	else
+		alsactl -f /opt/var/lib/alsa/asound.state store
+	fi
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		;;
+	*)
+		echo "Usage: $0 {start}"
+		;;
+esac
