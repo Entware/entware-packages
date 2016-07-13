@@ -41,8 +41,8 @@ endef
 
 MAKE_FLAGS := \
 	TCC="$(TARGET_CC)" \
-	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include -DFOSSIL_ENABLE_JSON" \
-	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath=$(TOOLCHAIN_DIR)/lib -L$(STAGING_DIR)/lib -L$(STAGING_DIR)/usr/lib" \
+	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include -DFOSSIL_ENABLE_JSON -DFOSSIL_OMIT_LOAD_AVERAGE" \
+	LDFLAGS="$(TARGET_LDFLAGS) -L$(STAGING_DIR)/lib -L$(STAGING_DIR)/opt/lib -lm" \
 
 define Build/Configure
 endef
@@ -56,17 +56,9 @@ endef
 define Build/Install
 endef
 
-define Package/fossil/conffiles
-/etc/config/fossil
-endef
-
 define Package/fossil/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(PKG_NAME) $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/fossil.init $(1)/etc/init.d/fossil
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/fossil.config $(1)/etc/config/fossil
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(PKG_NAME) $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,fossil))
