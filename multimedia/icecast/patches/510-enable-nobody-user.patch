@@ -1,6 +1,6 @@
 --- a/conf/icecast.xml.in
 +++ b/conf/icecast.xml.in
-@@ -164,11 +164,9 @@
+@@ -234,11 +234,9 @@
  
      <security>
          <chroot>0</chroot>

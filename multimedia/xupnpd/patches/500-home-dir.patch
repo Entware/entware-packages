@@ -1,5 +1,5 @@
---- a/main.cpp
-+++ b/main.cpp
+--- a/src/main.cpp
++++ b/src/main.cpp
 @@ -16,23 +16,7 @@
  
  int main(int argc,char** argv)

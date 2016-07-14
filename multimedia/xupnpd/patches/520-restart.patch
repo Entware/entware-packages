@@ -1,5 +1,5 @@
---- a/ui/xupnpd_ui.lua
-+++ b/ui/xupnpd_ui.lua
+--- a/src/ui/xupnpd_ui.lua
++++ b/src/ui/xupnpd_ui.lua
 @@ -531,7 +531,7 @@
  end
  
