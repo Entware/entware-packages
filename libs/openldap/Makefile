@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openldap
 PKG_VERSION:=2.4.43
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/ \
@@ -100,7 +100,10 @@ CONFIGURE_ARGS += \
 	--disable-bdb \
 	--disable-hdb \
 	--disable-monitor \
-	--disable-relay \
+	--disable-relay
+
+CONFIGURE_VARS += \
+	ol_cv_lib_icu="no" \
 	ac_cv_func_memcmp_working=yes
 
 define Build/Compile
