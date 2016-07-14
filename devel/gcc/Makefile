@@ -11,9 +11,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=gcc
 PKG_VERSION:=5.3.0
 PKG_RELEASE:=3
-PKG_SOURCE_URL:=ftp://ftp.fu-berlin.de/unix/languages/gcc/releases/gcc-$(PKG_VERSION) \
-     http://mirrors.rcn.net/pub/sourceware/gcc/releases/gcc-$(PKG_VERSION) \
-    ftp://ftp.gnu.org/gnu/gcc/releases/gcc-$(PKG_VERSION)
+PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_MD5SUM:=c9616fd448f980259c31de613e575719
