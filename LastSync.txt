@@ -1,6 +1,7 @@
-commit 33843c23f1fc262ab635d7cba6b442ae7f40026c
-Merge: 417ddf3 a99aa1f
-Author: champtar <champetier.etienne@gmail.com>
-Date:   Wed May 4 19:23:09 2016 +0200
+commit 7088374279c28f2e2b9a4aa0c99c424fa423ab45
+Author: Xotic750 <xotic750@gmail.com>
+Date:   Tue Jun 14 19:34:16 2016 +0200
 
-    Merge pull request #2126 from lynxis/libmicrohttpd
+    krb5: Bump to v1.14.2
+
+    Signed-off-by: Graham Fairweather <xotic750@gmail.com>

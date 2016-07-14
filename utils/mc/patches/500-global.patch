@@ -1,6 +1,6 @@
 --- a/lib/global.h
 +++ b/lib/global.h
-@@ -135,7 +135,7 @@
+@@ -125,7 +125,7 @@
  #define PATH_SEP_STR "/"
  #define IS_PATH_SEP(c) ((c) == PATH_SEP)
  #define PATH_ENV_SEP ':'

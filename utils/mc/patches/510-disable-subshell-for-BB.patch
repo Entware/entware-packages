@@ -7,10 +7,10 @@
 +        mc_global.tty.use_subshell = FALSE;
          mc_shell->name = mc_shell->path;
      }
-     else if (strstr (mc_shell->path, "/bash") != NULL || getenv ("BASH") != NULL)
-@@ -203,6 +204,7 @@
+     else
+@@ -210,6 +211,7 @@
+     else if (strstr (mc_shell->path, "/ash") != NULL || getenv ("ASH") != NULL)
      {
-         /* If bash is not symlinked to busybox, it is safe to assume it is a real bash */
          mc_shell->type = SHELL_ASH_BUSYBOX;
 +        mc_global.tty.use_subshell = FALSE;
          mc_shell->name = "ash";
