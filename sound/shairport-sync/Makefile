@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shairport-sync
-PKG_VERSION:=2.8.2
+PKG_VERSION:=2.8.4
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
@@ -99,7 +99,7 @@ else
 endif
 
 define Package/shairport-sync/default/conffiles
-/opt/etc/shairport-sync.conf
+/opt/etc/asound.conf
 endef
 
 Package/shairport-sync-openssl/conffiles = $(Package/shairport-sync/default/conffiles)
@@ -111,9 +111,7 @@ define Package/shairport-sync/default/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/shairport-sync $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S50shairport-sync $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_DATA) ./files/shairport-sync $(1)/opt/etc/config/
-	$(INSTALL_DATA) ./files/asound.conf $(1)/opt/etc/
+	$(INSTALL_CONF) ./files/asound.conf $(1)/opt/etc/
 endef
 
 Package/shairport-sync-openssl/install = $(Package/shairport-sync/default/install)
