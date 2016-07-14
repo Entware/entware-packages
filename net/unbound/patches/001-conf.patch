@@ -106,7 +106,7 @@ index ff90e3b..5c20fdf 100644
  	# file to read root hints from.
  	# get one from https://www.internic.net/domain/named.cache
  	# root-hints: ""
-+	root-hints: "/opt/etc/unbound/named.cache"
++	# root-hints: "/opt/etc/unbound/named.cache"
  
  	# enable to not answer id.server and hostname.bind queries.
  	# hide-identity: no

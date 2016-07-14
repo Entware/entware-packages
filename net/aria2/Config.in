@@ -21,12 +21,25 @@ config ARIA2_BITTORRENT
 	depends on ARIA2_OPENSSL
 	default n
 
-config ARIA2_SFTP
-	bool "Enable SFTP support"
-	default n
-
 config ARIA2_METALINK
 	bool "Enable metalink support"
-	default N
+	default n
+
+config ARIA2_SFTP
+        bool "Enable sftp support"
+        default n
+
+choice
+	prompt "XML library"
+	default ARIA2_EXPAT
+	depends on ARIA2_METALINK
+
+config ARIA2_EXPAT
+	bool "EXPAT"
+
+config ARIA2_LIBXML2
+	bool "LIBXML2"
+
+endchoice
 
 endmenu

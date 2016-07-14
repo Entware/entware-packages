@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.10.0
-PKG_RELEASE:=1
+PKG_VERSION:=1.10.1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://nginx.org/download/
-PKG_MD5SUM:=c184c873d2798c5ba92be95ed1209c02
+PKG_MD5SUM:=088292d9caf6059ef328aa7dda332e44
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
 PKG_LICENSE:=2-clause BSD-like license
 
@@ -231,12 +231,11 @@ define Package/nginx/install
 	$(INSTALL_DIR) $(1)/opt/etc/nginx
 	$(INSTALL_DATA) $(addprefix $(PKG_INSTALL_DIR)/opt/etc/nginx/,$(config_files)) $(1)/opt/etc/nginx/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S80nginx $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S80nginx $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/share/nginx/html
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/html/{index,50x}.html $(1)/opt/share/nginx/html
 	$(INSTALL_DIR) $(1)/opt/var/{run,lock} $(1)/opt/var/log/nginx $(1)/opt/lib/nginx
 	$(INSTALL_DIR) $(1)/opt/var/lib/nginx/{body,proxy,fastcgi}
-
 ifeq ($(CONFIG_NGINX_NAXSI),y)
 	$(INSTALL_DIR) $(1)/opt/etc/nginx
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nginx-naxsi/naxsi_config/naxsi_core.rules $(1)/opt/etc/nginx
@@ -253,7 +252,7 @@ define Build/Prepare
 endef
 
 define Download/nginx-naxsi
-	VERSION:=5ab2309f0dc93d33e1443a15db519f8bfed8b455
+	VERSION:=7a6ff365f6be736c826b2d69b967a250ac07197d
 	SUBDIR:=nginx-naxsi
 	FILE:=nginx-naxsi-module-$(PKG_VERSION)-$$(VERSION).tar.gz
 	URL:=https://github.com/nbs-system/naxsi.git

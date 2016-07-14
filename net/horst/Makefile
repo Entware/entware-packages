@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=horst
-PKG_VERSION:=4.2
+PKG_VERSION:=5.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-git.tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_URL:=git://br1.einfach.org/horst
+PKG_SOURCE_URL:=git://github.com/br101/horst.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=version-$(PKG_VERSION)
 
@@ -25,7 +25,7 @@ PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-MAKE_FLAGS += DEBUG=1
+MAKE_FLAGS += DEBUG=1 LIBNL=0
 
 define Package/horst
 	SECTION:=net

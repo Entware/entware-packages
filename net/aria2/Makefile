@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012-2014 OpenWrt.org
+# Copyright (C) 2012-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -7,15 +7,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aria2
-PKG_VERSION:=1.23.0
+PKG_VERSION:=1.24.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=https://github.com/tatsuhiro-t/aria2/releases/download/release-$(PKG_VERSION)
-PKG_MD5SUM:=bc41d919e7d89835ee01c1175300eddc
+PKG_SOURCE_URL:=https://github.com/aria2/aria2/releases/download/release-$(PKG_VERSION)/
+PKG_MD5SUM:=d8d75cd0ee01c3e50e57214ff552a961
 PKG_INSTALL:=1
 
-PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>
+PKG_MAINTAINER:=Imre Kaloz <kaloz@openwrt.org>, Hsing-Wang Liao <kuoruan@gmail.com>
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
 
@@ -25,7 +25,9 @@ PKG_CONFIG_DEPENDS := \
   ARIA2_GNUTLS \
   ARIA2_BITTORRENT \
   ARIA2_METALINK \
-  ARIA2_SFTP
+  ARIA2_SFTP \
+  ARIA2_EXPAT \
+  ARIA2_LIBXML2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -38,8 +40,8 @@ define Package/aria2
   CATEGORY:=Network
   SUBMENU:=File Transfer
   TITLE:=lightweight download utility
-  URL:=http://aria2.sourceforge.net/
-  DEPENDS:=+zlib +ARIA2_METALINK:libxml2 +libstdcpp +ARIA2_OPENSSL:libopenssl +ARIA2_GNUTLS:libgnutls +ARIA2_SFTP:libssh2
+  URL:=https://aria2.github.io/
+  DEPENDS:=+zlib +ARIA2_SFTP:libssh2 +ARIA2_LIBXML2:libxml2 +ARIA2_EXPAT:libexpat +libstdcpp +ARIA2_OPENSSL:libopenssl +ARIA2_GNUTLS:libgnutls
 endef
 
 define Package/aria2/description
@@ -54,13 +56,14 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_ARIA2_GNUTLS),--with,--without)-gnutls \
 	$(if $(CONFIG_ARIA2_BITTORRENT),--enable,--disable)-bittorrent \
 	$(if $(CONFIG_ARIA2_METALINK),--enable,--disable)-metalink \
-	$(if $(CONFIG_ARIA2_METALINK),--with,--without)-libxml2 \
 	$(if $(CONFIG_ARIA2_SFTP),--with,--without)-libssh2 \
+	$(if $(CONFIG_ARIA2_LIBXML2),--with,--without)-libxml2 \
+	$(if $(CONFIG_ARIA2_EXPAT),--with,--without)-libexpat \
 	--without-libnettle \
 	--without-libgmp \
 	--without-libgcrypt \
-	--without-libexpat \
 	--without-libcares \
+	--without-libuv \
 	--without-sqlite3 \
 	--without-libuv \
 	--with-libz
@@ -74,7 +77,7 @@ endef
 define Package/aria2/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/aria2c $(1)/opt/bin
-	$(INSTALL_DIR) $(1)/opt/var/aria2/torrents $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/var/aria2/downloads $(1)/opt/etc/init.d
 	$(INSTALL_CONF) ./files/aria2.conf $(1)/opt/etc
 	$(INSTALL_BIN) ./files/S81aria2 $(1)/opt/etc/init.d
 endef

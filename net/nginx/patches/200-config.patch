@@ -28,7 +28,7 @@
      #                  '"$http_user_agent" "$http_x_forwarded_for"';
  
 -    #access_log  logs/access.log  main;
-+    #access_log  /opt/var/log/nginx/access.log;
++    #access_log  /opt/var/log/nginx/access.log main;
  
      sendfile        on;
      #tcp_nopush     on;
@@ -44,13 +44,4 @@
 +            root   /opt/share/nginx/html;
              index  index.html index.htm;
          }
- 
-@@ -66,7 +66,7 @@
-         #    root           html;
-         #    fastcgi_pass   127.0.0.1:9000;
-         #    fastcgi_index  index.php;
--        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-+        #    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-         #    include        fastcgi_params;
-         #}
  
