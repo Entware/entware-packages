@@ -11,7 +11,7 @@ PKG_NAME:=perl-image-exiftool
 PKG_VERSION:=10.08
 PKG_RELEASE:=1
 
-PKG_SOURCE_URL:=@SF/exiftool
+PKG_SOURCE_URL:=http://www.sno.phy.queensu.ca/~phil/exiftool
 PKG_SOURCE:=Image-ExifTool-$(PKG_VERSION).tar.gz
 PKG_MD5SUM:=392026e36db9111a60bf9ac91d4901cf
 
