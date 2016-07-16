@@ -15,7 +15,7 @@ PKG_LICENSE:=GPL-2.0+
 PKG_MAINTAINER:=Michael Haas <haas@computerlinguist.org>
 PKG_LICENSE_FILES:=COPYING COPYRIGHT.GPL
 
-PKG_SOURCE_URL:=https://www.stunnel.org/downloads/
+PKG_SOURCE_URL:=https://www.stunnel.org/downloads/archive/5.x
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_MD5SUM:=60462f97b62e745288541089e8c0877c
 
