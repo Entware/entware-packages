@@ -51,7 +51,7 @@ include $(INCLUDE_DIR)/cmake.mk
 define Package/fastd
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+kmod-tun +librt +libpthread +FASTD_WITH_STATUS_SOCKET:libjson-c +FASTD_WITH_CAPABILITIES:libcap
+  DEPENDS:=+librt +libpthread +FASTD_WITH_STATUS_SOCKET:libjson-c +FASTD_WITH_CAPABILITIES:libcap
   TITLE:=Fast and Secure Tunneling Daemon
   URL:=https://projects.universe-factory.net/projects/fastd
   SUBMENU:=VPN
@@ -186,20 +186,16 @@ define Package/fastd/description
 endef
 
 define Package/fastd/conffiles
-/etc/config/fastd
+/opt/etc/fastd/fastd.conf
 endef
 
 define Package/fastd/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/fastd $(1)/usr/bin/
-
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/doc/examples/openwrt/fastd.init $(1)/etc/init.d/fastd
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/doc/examples/openwrt/fastd.config $(1)/etc/config/fastd
-	$(INSTALL_DIR) $(1)/etc/fastd
-	$(INSTALL_DIR) $(1)/lib/upgrade/keep.d
-	$(INSTALL_DATA) files/fastd.upgrade $(1)/lib/upgrade/keep.d/fastd
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/fastd $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S36fastd $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/fastd/peers
+	$(INSTALL_CONF) ./files/fastd.conf $(1)/opt/etc/fastd
 endef
 
 $(eval $(call BuildPackage,fastd))
