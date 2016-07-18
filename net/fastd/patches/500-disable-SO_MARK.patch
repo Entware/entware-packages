@@ -1,0 +1,11 @@
+--- a/cmake/config.cmake
++++ b/cmake/config.cmake
+@@ -16,7 +16,7 @@
+ set(USE_FREEBIND ${LINUX})
+ set(USE_PMTU ${LINUX})
+ set(USE_PKTINFO ${LINUX})
+-set(USE_PACKET_MARK ${LINUX})
++set(USE_PACKET_MARK FALSE)
+ 
+ 
+ if(ANDROID)
