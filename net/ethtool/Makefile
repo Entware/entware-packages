@@ -50,8 +50,8 @@ CONFIGURE_ARGS += --disable-pretty-dump
 endif
 
 define Package/ethtool/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ethtool $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ethtool $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,ethtool))
