@@ -1,21 +1,20 @@
 #
-# Copyright (C) 2006-2014 OpenWrt.org
+# Copyright (C) 2006-2015 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Downgraded to r181 - the last one working with kernel 2.6.22
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mjpg-streamer
-PKG_REV:=181
+PKG_REV:=182
 PKG_VERSION:=r$(PKG_REV)
-PKG_RELEASE:=2
+PKG_RELEASE:=8
 PKG_MAINTAINER:=Roger D <rogerdammit@gmail.com>
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=https://svn.code.sf.net/p/mjpg-streamer/code/mjpg-streamer
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).1.tar.bz2
+PKG_SOURCE_URL:=https://svn.code.sf.net/p/mjpg-streamer/code/mjpg-streamer-experimental
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE_PROTO:=svn
@@ -45,6 +44,32 @@ define Package/mjpg-streamer/config
 endef
 
 EXTRA_CFLAGS += $(TARGET_CPPFLAGS) $(TARGET_LDFLAGS)
+
+define Package/mjpg-streamer/conffiles
+/opt/etc/config/mjpg-streamer
+endef
+
+CAMBOZOLA:=cambozola-0.936.tar.gz
+
+# Distribution URL doesn't always have the correct version
+# Using the OpenWrt mirror provides a stable version
+#      orig-URL:=http://www.andywilcock.com/code/cambozola
+define Download/cambozola
+  URL:=http://mirror2.openwrt.org/sources
+  FILE:=$(CAMBOZOLA)
+  MD5SUM:=35c45188aa9635aef2b745c35c311396
+endef
+
+# Fetch latest cambozola that works with latest Java(s)
+# Yes, I know this is ugly
+define Build/Prepare
+    $(call Build/Prepare/Default)
+    ifeq ($(CONFIG_MJPG_STREAMER_WWW),y)
+	$(eval $(call Download,cambozola))
+	$(TAR) -xvf $(DL_DIR)/$(CAMBOZOLA) --strip=2 --wildcards \
+		-C $(PKG_BUILD_DIR)/www */dist/cambozola.jar
+    endif
+endef
 
 ifeq ($(CONFIG_MJPG_STREAMER_V4L2),y)
     TARGET_CFLAGS+= -DUSE_LIBV4L2
