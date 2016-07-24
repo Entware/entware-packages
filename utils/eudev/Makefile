@@ -60,7 +60,7 @@ define Package/eudev/config
 endef
 
 CONFIGURE_ARGS += \
-	--prefix=/usr --exec-prefix= --sysconfdir=/etc \
+	--prefix=/opt --exec-prefix= --sysconfdir=/etc \
 	--libexecdir=/lib/udev --sbindir=/sbin \
 	--disable-hwdb --disable-introspection --disable-manpages \
 	--disable-selinux \
@@ -88,14 +88,14 @@ eudev-extra-lib-bin-$(CONFIG_EUDEV_EXTRA_v4l_id) += v4l_id
 eudev-extra-rules-$(CONFIG_EUDEV_EXTRA_v4l_id) += 60-persistent-v4l.rules
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libudev.h $(1)/usr/include
-	$(INSTALL_DIR) $(1)/usr/share/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/pkgconfig/udev.pc $(1)/usr/share/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libudev.h $(1)/opt/include
+	$(INSTALL_DIR) $(1)/opt/share/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/pkgconfig/udev.pc $(1)/opt/share/pkgconfig
 	$(INSTALL_DIR) $(1)/lib
 	$(CP) $(PKG_INSTALL_DIR)/lib/libudev.so* $(1)/lib
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/lib/pkgconfig/libudev.pc $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/lib/pkgconfig/libudev.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libudev/install
@@ -109,7 +109,7 @@ define Package/eudev/install
 
 	$(INSTALL_DIR) $(1)/sbin
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/usr/bin/udevadm \
+		$(PKG_INSTALL_DIR)/opt/bin/udevadm \
 		$(PKG_INSTALL_DIR)/sbin/udevd \
 		$(1)/sbin
 
