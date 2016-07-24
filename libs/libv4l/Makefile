@@ -1,28 +1,33 @@
 #
-# Copyright (C) 2009-2012 OpenWrt.org
+# Copyright (C) 2009-2015 OpenWrt.org
 # Copyright (C) 2009 David Cooper <dave@kupesoft.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Downgraded to 0.8.6 - the last one working on kernel 2.6.22
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v4l-utils
-PKG_VERSION:=0.8.6
-PKG_RELEASE:=2
+PKG_VERSION:=1.10.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.linuxtv.org/downloads/v4l-utils
-PKG_MD5SUM:=80062780ae90e5955473b09b31e9828a
+PKG_MD5SUM:=945a38979138997e805828a4a53e53ec
 
-PKG_BUILD_DEPENDS:=USE_MUSL:argp-standalone
+PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 
-# glibc doen not need argp-standalone
-PATCH_DIR=./patches/$(CONFIG_LIBC)
+PKG_LICENSE:=GPL-2.0 LGPL-2.1
+PKG_LICENSE_FILES:=COPYING COPYING.libv4l
 
+PKG_USE_MIPS16:=0
+PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
+
+include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/libv4l/Default
   TITLE:=Video 4 Linux
@@ -49,7 +54,7 @@ define Package/libv4l
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= wrapper libraries
-  DEPENDS := +libpthread +librt
+  DEPENDS := +libpthread +librt $(ICONV_DEPENDS)
 endef
 
 define Package/libv4l/description
@@ -61,7 +66,7 @@ define Package/v4l-utils
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS := +libv4l +libstdcpp
+  DEPENDS := +libv4l $(CXX_DEPENDS) $(ICONV_DEPENDS)
 endef
 
 define Package/v4l-utils/description
@@ -71,19 +76,12 @@ endef
 
 TARGET_CFLAGS += $(FPIC)
 
-define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		DESTDIR="$(PKG_INSTALL_DIR)" PREFIX="/opt" \
-		DISABLE_LIBJPEG="1" \
-		$(CONFIGURE_VARS) \
-		all install
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		DESTDIR="$(PKG_INSTALL_DIR)" PREFIX="/opt" \
-		DISABLE_LIBJPEG="1" \
-		$(CONFIGURE_VARS) \
-		LINKTYPE="static" \
-		all install
-endef
+CONFIGURE_ARGS+= \
+	--disable-doxygen-doc \
+	--disable-libdvbv5 \
+	--disable-qv4l2 \
+	--without-jpeg \
+	--with-udevdir="/opt/lib/udev" \
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -103,8 +101,9 @@ endef
 
 define Package/v4l-utils/install
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(CP) $(PKG_INSTALL_DIR)/etc/rc_maps.cfg $(1)/opt/etc/
-	$(CP) $(PKG_INSTALL_DIR)/etc/rc_keymaps $(1)/opt/etc/
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/rc_maps.cfg $(1)/opt/etc/
+	$(INSTALL_DIR) $(1)/opt/lib/udev
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/udev/rc_keymaps $(1)/opt/lib/udev/
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{cx18,ivtv}-ctl $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/decode_tm6000 $(1)/opt/bin/
