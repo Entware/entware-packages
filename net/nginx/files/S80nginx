@@ -1,10 +1,54 @@
 #!/bin/sh
 
-ENABLED=yes
-PROCS=nginx
-ARGS=""
-PREARGS=""
-DESC=$PROCS
-PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-. /opt/etc/init.d/rc.func
+NGINX_BIN=/opt/sbin/nginx
+
+start() {
+	$NGINX_BIN && logger "Started nginx"
+}
+
+stop() {
+	$NGINX_BIN -s stop
+}
+
+reload() {
+	$NGINX_BIN -s reload
+}
+
+shutdown() {
+	$NGINX_BIN -s quit
+}
+
+
+case $1 in
+	start)
+	start
+	echo "Started nginx"
+	;;
+	stop)
+	shutdown
+	echo "Stopped nginx"
+	;;
+	restart)
+	shutdown
+	sleep 1
+	start
+	echo "Restarted nginx"
+	;;
+	reload)
+        reload
+	echo "Reloaded nginx"
+	;;
+	link_up)
+	;;
+	ppp_up)
+	;;
+	link_down)
+	;;
+	ppp_down)
+	;;
+	*)
+	echo "Usage: $0 {start|stop|restart|reload|link_up|link_down|ppp_up|ppp_down}"
+	;;
+esac
