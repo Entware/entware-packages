@@ -1,53 +1,74 @@
 #
-# Copyright (C) 2006-2011 OpenWrt.org
+# Copyright (C) 2006-2015 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# The newer versions requires libnl1 or libnl3 which is incompatible with k2.6.22
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aircrack-ng
-PKG_VERSION:=1.1
-PKG_RELEASE:=3
+PKG_VERSION:=1.2-rc1
+PKG_RELEASE:=1
+PKG_LICENSE:=GPL-2.0
+PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://download.aircrack-ng.org/ \
-	http://archive.aircrack-ng.org/aircrack-ng/$(PKG_VERSION)/
-PKG_MD5SUM:=f7a24ed8fad122c4187d06bfd6f998b4
+		http://archive.aircrack-ng.org/aircrack-ng/$(PKG_VERSION)/
+PKG_MD5SUM:=c2f8648c92f7e46051c86c618d4fb0d5
 
-PKG_BUILD_PARALLEL:=0
+PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
+
+PKG_MAINTAINER:=Rick Farina <zerochaos@gentoo.org>
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/aircrack-ng
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libpthread +libopenssl +libpcap
-  TITLE:=next generation of aircrack with new features
+  DEPENDS:=+libpcap +libpthread +libopenssl +libnl-core +libnl-genl
+  TITLE:=WLAN tools (without airmon-ng) for breaking 802.11 WEP/WPA keys
   URL:=http://www.aircrack-ng.org/
   SUBMENU:=wireless
 endef
 
 define Package/aircrack-ng/description
-Aircrack-ng is the next generation of aircrack with new features
+  WLAN tools for breaking 802.11 WEP/WPA keys
 endef
 
-MAKE_FLAGS += \
-	CFLAGS="$(TARGET_CFLAGS) -Wall -Iinclude/ $(TARGET_CPPFLAGS) -D_REVISION=0" \
-	LDFLAGS="$(TARGET_LDFLAGS)" \
-	OSNAME=Linux \
-	prefix="/opt" \
-	sqlite="false" \
-	unstable="true"
+define Package/airmon-ng
+  SECTION:=net
+  CATEGORY:=Network
+  DEPENDS:=+procps-ng +CONFIG_PCI_SUPPORT:pciutils +CONFIG_USB_SUPPORT:usbutils
+  TITLE:=Bash script designed to turn wireless cards into monitor mode.
+  URL:=http://www.aircrack-ng.org/
+  SUBMENU:=wireless
+endef
+
+define Package/airmon-ng/description
+  Bash script designed to turn wireless cards into monitor mode.
+endef
+
+MAKE_FLAGS += prefix=/opt \
+	libnl=true \
+	sqlite=false \
+	unstable=false \
+	OSNAME=Linux
 
 define Package/aircrack-ng/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
+	rm -f $(1)/opt/sbin/airmon-ng
+endef
+
+define Package/airmon-ng/install
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/airmon-ng $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,aircrack-ng))
+$(eval $(call BuildPackage,airmon-ng))
