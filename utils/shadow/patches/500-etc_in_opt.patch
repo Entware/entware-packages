@@ -1,0 +1,27 @@
+--- a/lib/defines.h
++++ b/lib/defines.h
+@@ -299,20 +299,20 @@
+ 	(strncpy((A), (B), sizeof(A) - 1), (A)[sizeof(A) - 1] = '\0')
+ 
+ #ifndef PASSWD_FILE
+-#define PASSWD_FILE "/etc/passwd"
++#define PASSWD_FILE "/opt/etc/passwd"
+ #endif
+ 
+ #ifndef GROUP_FILE
+-#define GROUP_FILE "/etc/group"
++#define GROUP_FILE "/opt/etc/group"
+ #endif
+ 
+ #ifndef SHADOW_FILE
+-#define SHADOW_FILE "/etc/shadow"
++#define SHADOW_FILE "/opt/etc/shadow"
+ #endif
+ 
+ #ifdef SHADOWGRP
+ #ifndef SGROUP_FILE
+-#define SGROUP_FILE "/etc/gshadow"
++#define SGROUP_FILE "/opt/etc/gshadow"
+ #endif
+ #endif
+ 

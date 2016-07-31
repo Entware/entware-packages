@@ -4,12 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# !!!! Entware-3x version has an additional patch that changes path to passwd,... files from /etc to /opt/etc
+#
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadow
 PKG_VERSION:=4.2.1
-PKG_RELEASE:=5
+PKG_RELEASE:=5a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://pkg-shadow.alioth.debian.org/releases
