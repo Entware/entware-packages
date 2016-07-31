@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
 PKG_VERSION:=7.2p2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
@@ -150,6 +150,7 @@ endef
 CONFIGURE_ARGS+= \
 	$(DISABLE_NLS) \
 	--sysconfdir=/opt/etc/ssh \
+	--with-pid-dir=/opt/var/run \
 	--with-privsep-user=sshd \
 	--with-privsep-path=/opt/var/empty \
 	--enable-shared \

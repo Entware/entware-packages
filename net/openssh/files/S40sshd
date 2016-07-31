@@ -2,19 +2,25 @@
 
 prefix="/opt"
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+OPID=/opt/var/run/sshd.pid
 
 start() {
-        echo "starting sshd..."
-        /opt/sbin/sshd
-        }
+	echo "starting sshd..."
+	/opt/sbin/sshd
+	}
 
 stop() {
-        echo "stopping sshd..."
-        killall sshd
-        }
+	echo "stopping sshd..."
+	kill `cat $OPID`
+	}
+
 status() {
-        echo "PID of sshd is `pidof sshd`"
-        }
+	if [ -f $OPID ]; then
+		echo "PID of sshd is `cat $OPID`"
+	else
+		echo "sshd is not running"
+	fi
+	}
 
 case "$1" in
         start)
