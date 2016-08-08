@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
 PKG_VERSION:=5.0.6
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=Apache-2.0
 
 PKG_SOURCE_PROTO:=git
@@ -24,7 +24,7 @@ $(call include_mk, python-package.mk)
 define Package/seafile-seahub
     SECTION:=net
     CATEGORY:=Network
-    DEPENDS:=+python +simplejson +python-pillow +python-setuptools
+    DEPENDS:=+python +simplejson +pillow +python-setuptools
     TITLE:=Seafile server - seahub component
     MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
     URL:=http://seafile.com/
