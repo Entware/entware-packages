@@ -5,11 +5,12 @@
 # See /LICENSE for more information.
 #
 # libfreetype support added for php5-mod-gd
+# added --enable-bcmath
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=5.6.21
+PKG_VERSION:=5.6.23
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>, Michael Heimpold <mhei@heimpold.de>
@@ -19,7 +20,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_MD5SUM:=177c69d47024541739c439c9d9eb6ba5
+PKG_MD5SUM:=c2d2155e50bcbaa0ee7a63845862c894
 
 PKG_FIXUP:=libtool autoreconf
 PKG_BUILD_PARALLEL:=1
@@ -146,6 +147,7 @@ CONFIGURE_ARGS+= \
 	--enable-cgi \
 	--enable-fpm \
 	--enable-shared \
+	--enable-bcmath \
 	--disable-static \
 	--disable-rpath \
 	--disable-debug \

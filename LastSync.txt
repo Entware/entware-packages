@@ -1,7 +1,7 @@
-commit 7088374279c28f2e2b9a4aa0c99c424fa423ab45
-Author: Xotic750 <xotic750@gmail.com>
-Date:   Tue Jun 14 19:34:16 2016 +0200
+commit 39f0b6f067217de83889110428890acad9accab4
+Author: Ted Hess <thess@kitschensync.net>
+Date:   Mon Aug 8 15:44:04 2016 -0400
 
-    krb5: Bump to v1.14.2
-
-    Signed-off-by: Graham Fairweather <xotic750@gmail.com>
+    msmtp: Add nls.mk, . Fix build when BUILD_NLS not specified
+    
+    Signed-off-by: Ted Hess <thess@kitschensync.net>

@@ -15,6 +15,8 @@ A lot of people already use adblocker plugins within their desktop browsers, but
     * => daily updates, approx. 4.500 entries
     * [feodotracker](https://feodotracker.abuse.ch)
     * => daily updates, approx. 0-10 entries
+    * [hphosts](https://hosts-file.net)
+    * => monthly updates, approx. 390.000 entries
     * [malwaredomains](http://malwaredomains.com)
     * => daily updates, approx. 16.000 entries
     * [malwaredomainlist](http://www.malwaredomainlist.com)
@@ -60,7 +62,7 @@ A lot of people already use adblocker plugins within their desktop browsers, but
 * use dynamic iptables chains/rulesets for adblock related redirects/rejects
 * init system support (start/stop/restart/reload/toggle/stats/cfgup)
 * hotplug support, the adblock start will be triggered by wan 'ifup' event
-* adblock toggle to quickly switch adblocking 'on' or 'off'
+* toggle to quickly switch adblock 'on' or 'off'
 * optional: automatic adblock list backup/restore, backups will be (de-)compressed on the fly (disabled by default)
 * optional: add new adblock sources via uci config (see example below)
 

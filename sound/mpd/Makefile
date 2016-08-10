@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpd
-PKG_VERSION:=0.19.14
-PKG_RELEASE:=1a
+PKG_VERSION:=0.19.17
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.musicpd.org/download/mpd/0.19/
-PKG_MD5SUM:=9f99340ec6b77bea4ba3729e3b76fd7c
+PKG_MD5SUM:=47e13f3f160bf94e7a897c5a48990f3d
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 
 PKG_LICENSE:=GPL-2.0
@@ -37,7 +37,7 @@ define Package/mpd/Default
   TITLE:=Music Player Daemon
   URL:=http://www.musicpd.org/
   DEPENDS:= +glib2 +libcurl +libpthread +libmpdclient +libstdcpp $(ICONV_DEPENDS) \
-	    +libflac +BUILD_PATENTED:libmad +libvorbisidec +alsa-lib \
+	    +libflac +BUILD_PATENTED:libmad +libvorbisidec +AUDIO_SUPPORT:alsa-lib \
             +boost +boost-container +libexpat
 endef
 
@@ -144,7 +144,7 @@ CONFIGURE_ARGS += \
 	--enable-flac \
 	--enable-httpd-output \
 	$(call autoconf_bool,CONFIG_BUILD_PATENTED,mad) \
-	--enable-alsa \
+	$(call autoconf_bool,CONFIG_AUDIO_SUPPORT,alsa) \
 	--enable-tcp \
 	--enable-un \
 	--disable-epoll \

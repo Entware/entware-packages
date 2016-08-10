@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=relayctl
 PKG_VERSION:=0.1
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/relayctl/relayctl-$(PKG_VERSION)
@@ -18,6 +18,7 @@ PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 
 PKG_INSTALL:=1
+PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -26,7 +27,7 @@ define Package/relayctl
   CATEGORY:=Utilities
   TITLE:=Simple command-line control of SainSmart USB relay boards
   URL:=https://github.com/darryln/relayctl
-  DEPENDS:= +libftdi1 +udev
+  DEPENDS:= +libftdi1
 endef
 
 define Package/relayctl/description

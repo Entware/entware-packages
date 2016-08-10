@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# df applet excluded
+# restored df - all normal firmwares have /etc/mtab needed for coreutils-df to work!
 
 include $(TOPDIR)/rules.mk
 
@@ -58,9 +58,9 @@ define Package/coreutils
 endef
 
 define Package/coreutils/description
- Full versions of standard GNU utilities. Normally, you would not use this
- package, since the functionality in BusyBox is more than sufficient and
- smaller.
+ Full versions of standard GNU utilities. If an equivalent Busybox applet is
+ available, you should consider compiling that instead as Busybox applets are
+ usually smaller, at the expense of reduced functionality.
 endef
 
 define GenPlugin
@@ -71,8 +71,7 @@ define GenPlugin
  endef
 
  define Package/$(1)/description
-  Full version of standard GNU $(2) utility. Normally, you would not use this
-  package, since the functionality in BusyBox is more than sufficient.
+  Full version of standard GNU $(2) utility.
  endef
 endef
 
