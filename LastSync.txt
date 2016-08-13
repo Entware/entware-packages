@@ -1,7 +1,6 @@
-commit 39f0b6f067217de83889110428890acad9accab4
-Author: Ted Hess <thess@kitschensync.net>
-Date:   Mon Aug 8 15:44:04 2016 -0400
+commit 5ae3447d2c708a9f15979c79fc3e6db45545a0a9
+Merge: 4bb3b82 2931140
+Author: Yousong Zhou <yszhou4tech@gmail.com>
+Date:   Fri Aug 12 17:28:49 2016 +0800
 
-    msmtp: Add nls.mk, . Fix build when BUILD_NLS not specified
-    
-    Signed-off-by: Ted Hess <thess@kitschensync.net>
+    Merge pull request #3049 from dedeckeh/pr_l2tp_teardown_on_l3_link_down
