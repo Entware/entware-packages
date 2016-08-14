@@ -320,11 +320,10 @@ $(call Package/ffmpeg/Default/description)
  This package contains FFmpeg shared libraries for audio decoding
 endef
 
-
 define Package/libffmpeg-full
 $(call Package/libffmpeg/Default)
  TITLE+= (full)
- DEPENDS+= +alsa-lib +libx264 +lame-lib +libopus +libspeex
+ DEPENDS+= +alsa-lib +lame-lib +libopus +libspeex +@!TARGET_armv5_3x:libx264
  VARIANT:=full
 endef
 
@@ -423,8 +422,10 @@ ifeq ($(BUILD_VARIANT),full)
 	FFMPEG_CONFIGURE+= \
 		--enable-libopus --enable-decoder=libopus \
 		--enable-libspeex --enable-decoder=libspeex \
-		--enable-libx264 \
 		--enable-libmp3lame
+    ifneq ($(CONFIG_TARGET_armv5_3x),y)
+	FFMPEG_CONFIGURE+= --enable-libx264
+    endif
 endif
 
 ifeq ($(BUILD_VARIANT),custom)

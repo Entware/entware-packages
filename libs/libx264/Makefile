@@ -45,7 +45,7 @@ define Package/libx264
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=H264/AVC free codec library.
-  DEPENDS:=@BUILD_PATENTED
+  DEPENDS:=@BUILD_PATENTED @!TARGET_armv5_3x
   URL:=http://www.videolan.org/developers/x264.html
 endef
 
