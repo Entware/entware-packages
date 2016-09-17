@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ffmpeg
 PKG_VERSION:=2.8.7
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ffmpeg.org/releases/
@@ -323,7 +323,7 @@ endef
 define Package/libffmpeg-full
 $(call Package/libffmpeg/Default)
  TITLE+= (full)
- DEPENDS+= +alsa-lib +lame-lib +libopus +libspeex +@!TARGET_armv5_3x:libx264
+ DEPENDS+= +alsa-lib +lame-lib +libopus +libspeex +!TARGET_armv5_3x:libx264
  VARIANT:=full
 endef
 
