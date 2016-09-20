@@ -40,14 +40,14 @@ define Package/hub-ctrl/description
 endef
 
 define Build/Compile
-	$(TARGET_CC) $(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include \
-		-L$(STAGING_DIR)/usr/lib -lusb \
+	$(TARGET_CC) $(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include \
+		$(TARGET_LDFLAGS) -L$(STAGING_DIR)/opt/lib -lusb -lusb-1.0 \
 		-o $(PKG_BUILD_DIR)/hub-ctrl $(PKG_BUILD_DIR)/hub-ctrl.c
 endef
 
 define Package/hub-ctrl/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/hub-ctrl $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/hub-ctrl $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,hub-ctrl))
