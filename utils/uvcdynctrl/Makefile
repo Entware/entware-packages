@@ -42,7 +42,7 @@ config PACKAGE_UVCDYNCTRL_UDEV_RULE
 	default no
 	help
 	  Installs an udev rule to load uvcdynctrl with dynamic controls
-	  from xml files in /usr/share/uvcdynctrl when a webcam is attached.
+	  from xml files in /opt/share/uvcdynctrl when a webcam is attached.
 endef
 
 define Package/libwebcam
@@ -57,13 +57,13 @@ define Package/libwebcam/description
   $(call Package/uvcdynctrl/description)
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/lib/libiconv-full/include -liconv
-TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib/libiconv-full/lib
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/lib/libiconv-full/include -liconv
+TARGET_LDFLAGS += -L$(STAGING_DIR)/opt/lib/libiconv-full/lib
 
 define Package/uvcdynctrl/install
-	$(INSTALL_DIR) $(1)/usr/{bin,share}
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/uvcdynctrl* $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/uvcdynctrl/ $(1)/usr/share/
+	$(INSTALL_DIR) $(1)/opt/{bin,share}
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/uvcdynctrl* $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/uvcdynctrl/ $(1)/opt/share/
 
 ifeq ($(CONFIG_PACKAGE_UVCDYNCTRL_UDEV_RULE),y)
 	$(INSTALL_DIR) $(1)/lib/udev/rules.d
@@ -73,14 +73,14 @@ endif
 endef
 
 define Package/libwebcam/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libwebcam.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libwebcam.so* $(1)/opt/lib/
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/{include,lib}
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/usr/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libwebcam.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/{include,lib}
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libwebcam.{a,so*} $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,uvcdynctrl))
