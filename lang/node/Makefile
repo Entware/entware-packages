@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
 PKG_VERSION:=v6.7.0
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=node-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://nodejs.org/dist/$(PKG_VERSION)
@@ -34,7 +34,7 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=http://nodejs.org/
-  DEPENDS:=+libstdcpp +libopenssl +libuv +icu @!TARGET_armv5_3x
+  DEPENDS:=+libstdcpp +libopenssl +libuv @!TARGET_armv5_3x
 endef
 
 define Package/node/description
@@ -57,7 +57,7 @@ CONFIGURE_ARGS= \
 	--prefix=/opt \
 	--with-arm-float-abi=softfp \
 	--with-mips-float-abi=soft \
-	--with-intl=system-icu
+	--with-intl=none
 
 HOST_CONFIGURE_VARS:=
 HOST_CONFIGURE_ARGS:= \
