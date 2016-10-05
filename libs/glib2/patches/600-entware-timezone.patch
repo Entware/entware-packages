@@ -1,0 +1,20 @@
+--- a/glib/gtimezone.c
++++ b/glib/gtimezone.c
+@@ -410,7 +410,7 @@
+ 
+       tzdir = getenv ("TZDIR");
+       if (tzdir == NULL)
+-        tzdir = "/usr/share/zoneinfo";
++        tzdir = "/opt/share/zoneinfo";
+ 
+       if (*identifier == ':')
+         identifier ++;
+@@ -421,7 +421,7 @@
+         filename = g_build_filename (tzdir, identifier, NULL);
+     }
+   else
+-    filename = g_strdup ("/etc/localtime");
++    filename = g_strdup ("/opt/etc/localtime");
+ 
+   file = g_mapped_file_new (filename, FALSE, NULL);
+   if (file != NULL)
