@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=at
 PKG_VERSION:=3.1.16
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).orig.tar.gz
 PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/a/at
@@ -39,15 +39,19 @@ EXTRA_CFLAGS:=-DNEED_YYWRAP -I$(PKG_BUILD_DIR) \
 
 CONFIGURE_ARGS+=--prefix=/opt \
 		--with-daemon_username=nobody \
-		--with-daemon_groupname=nogroup \
+		--with-daemon_groupname=nobody \
+		--with-etcdir=/opt/etc \
 		--with-jobdir=/opt/var/spool/cron/atjobs \
 		--with-atspool=/opt/var/spool/cron/atspool \
 
+# Busybox is allways install - so we set SENDMAIL=/opt/bin/true
+
 CONFIGURE_VARS += \
-	ac_cv_header_security_pam_appl_h=no
+	ac_cv_header_security_pam_appl_h=no \
+	ac_cv_path_SENDMAIL=/opt/bin/true
 
 define Package/at/install
-	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/sbin $(1)/opt/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/sbin $(1)/opt/etc/init.d/ $(1)/opt/var/run
 	$(INSTALL_BIN) ./files/S50atd $(1)/opt/etc/init.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/at $(1)/opt/bin
 	ln -sf at $(1)/opt/bin/atq
