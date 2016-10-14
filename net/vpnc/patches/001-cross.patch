@@ -21,11 +21,11 @@
 -CFLAGS ?= -O3 -g
  CFLAGS += -W -Wall -Wmissing-declarations -Wwrite-strings
 -CFLAGS +=  $(shell libgcrypt-config --cflags) $(CRYPTO_CFLAGS)
-+CFLAGS += -O3 -I$(STAGING_DIR)/usr/include -I$(STAGING_DIR)/include $(OFLAGS) $(CRYPTO_CFLAGS)
++CFLAGS += -O3 -I$(STAGING_DIR)/opt/include -I$(STAGING_DIR)/include $(OFLAGS) $(CRYPTO_CFLAGS)
  CPPFLAGS += -DVERSION=\"$(VERSION)\"
 -LDFLAGS ?= -g
 -LIBS += $(shell libgcrypt-config --libs) $(CRYPTO_LDADD)
-+LIBS += -L$(STAGING_DIR)/usr/lib -L$(STAGING_DIR)/lib -lgcrypt -lgpg-error $(CRYPTO_LDADD)
++LIBS += -L$(STAGING_DIR)/opt/lib -L$(STAGING_DIR)/lib -lgcrypt -lgpg-error $(CRYPTO_LDADD)
  
 -ifeq ($(shell uname -s), SunOS)
 +ifeq ($(OS), SunOS)
