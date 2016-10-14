@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=irssi
-PKG_VERSION:=0.8.17
+PKG_VERSION:=0.8.20
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://github.com/irssi/irssi/archive
-PKG_MD5SUM:=1a600701d0880691bba7f3854c11f49f
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=https://github.com/irssi/irssi/releases/download/0.8.20/
+PKG_MD5SUM:=67d48c5feec2d3b949d088aa4abc3601
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -81,13 +81,6 @@ ifeq ($(BUILD_VARIANT),nossl)
 		--without-ssl \
 		--disable-ssl
 endif
-
-define Build/Configure
-	(cd $(PKG_BUILD_DIR); \
-	    ./autogen.sh; \
-	);
-	$(call Build/Configure/Default)
-endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/irssi
