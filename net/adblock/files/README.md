@@ -16,7 +16,7 @@ A lot of people already use adblocker plugins within their desktop browsers, but
     * [feodotracker](https://feodotracker.abuse.ch)
     * => daily updates, approx. 0-10 entries
     * [hphosts](https://hosts-file.net)
-    * => monthly updates, approx. 390.000 entries
+    * => monthly updates, approx. 50.000 entries
     * [malwaredomains](http://malwaredomains.com)
     * => daily updates, approx. 16.000 entries
     * [malwaredomainlist](http://www.malwaredomainlist.com)
@@ -31,6 +31,8 @@ A lot of people already use adblocker plugins within their desktop browsers, but
     * => weekly updates, approx. 600 entries
     * [ruadlist/easylist](https://code.google.com/p/ruadlist)
     * => weekly updates, approx. 2.000 entries
+    * [securemecca](http://www.securemecca.com)
+    * => infrequent updates, approx. 25.000 entries
     * [shallalist](http://www.shallalist.de) (categories "adv" "costtraps" "spyware" "tracker" "warez" enabled by default)
     * => daily updates, approx. 32.000 entries (a short description of all shallalist categories can be found [online](http://www.shallalist.de/categories.html))
     * [spam404](http://www.spam404.com)
@@ -48,7 +50,7 @@ A lot of people already use adblocker plugins within their desktop browsers, but
     * [zeus tracker](https://zeustracker.abuse.ch)
     * => daily updates, approx. 440 entries
 * zero-conf like automatic installation & setup, usually no manual changes needed (i.e. ip address, network devices etc.)
-* supports a wide range of router modes (incl. AP mode), as long as the firewall and the DNS server are enabled & in use
+* supports a wide range of router modes (incl. AP mode), as long as firewall and dnsmasq are installed and in use
 * full IPv4 and IPv6 support
 * each blocklist source will be updated and processed separately
 * timestamp check to download and process only updated adblock list sources
@@ -60,9 +62,11 @@ A lot of people already use adblocker plugins within their desktop browsers, but
 * status & error logging to stdout and syslog
 * use two dynamic uhttpd instances as adblock pixel server, separated for ads delivered on port 80 and on port 443
 * use dynamic iptables chains/rulesets for adblock related redirects/rejects
-* init system support (start/stop/restart/reload/toggle/stats/cfgup)
-* hotplug support, the adblock start will be triggered by wan 'ifup' event
+* init system support (start/stop/restart/reload/toggle/stats/cfgup/envchk/query)
+* hotplug support, the adblock start will be triggered by wan 'ifup' event, this can be restricted to a certain wan interface or disabled at all (see config options below)
 * toggle to quickly switch adblock 'on' or 'off'
+* envchk function to check the volatile adblock environment only (without list updates)
+* query function to quickly identify blocked (sub-)domains, i.e. for whitelisting
 * optional: automatic adblock list backup/restore, backups will be (de-)compressed on the fly (disabled by default)
 * optional: add new adblock sources via uci config (see example below)
 
@@ -101,13 +105,16 @@ A lot of people already use adblocker plugins within their desktop browsers, but
 * **white-/blacklist:** add domain white- or blacklist entries to always-allow or -deny certain (sub) domains, by default both lists are located in _/etc/adblock_. Please add one domain per line - ip addresses, wildcards & regex are _not_ allowed (see example below)
 * **backup/restore:** enable the backup/restore feature, to restore automatically the latest compressed backup of your adblock lists in case of any processing error (i.e. a single blocklist source is down). Please use an (external) solid partition and _not_ your volatile router temp directory for this
 * **list updates:** for a scheduled call of the adblock service add an appropriate crontab entry (see example below)
+* **hotplug fine tuning:** to restrict hotplug support to a certain wan interface or to disable it at all, you can set 'adb\_hotplugif' to an existing interface like 'wan' or to a non-existing 'dummy' interface
 * **new list sources:** you could add new blocklist sources on your own via uci config, all you need is a source url and an awk one-liner (see example below)
-* **AP mode:** in 'AP mode' adblock uses automatically the local router ip as nullip address. To make sure that your LuCI interface will be still accessible, you have to change the local uhttpd instance to ports <> 80/443 (see example below)
+* **AP mode:** in 'AP mode' adblock uses automatically the local router ip as nullip address. To make sure that your LuCI interface will be still accessible, you have to change the local uhttpd instance to ports <> 80/443 (see example below), also make sure that firewall and dnsmasq are installed and running
 * **restricted mode:** to disable flash writes with adblock status information to the adblock config file (used by LuCI frontend), please set 'adb\_restricted' to '1'
 * **adblock toggle:** to quickly switch adblocking 'on' or 'off', simply use _/etc/init.d/adblock toggle_
 * **adblock statistics:** to update only the adblock statistics (without updating the block lists as well), please run _/etc/init.d/adblock stats_
+* **adblock query `<DOMAIN>`:** to query the active blocklists for a specific domain, please run _/etc/init.d/adblock query `<DOMAIN>`_ (see example below)
 * **configuration update:** to update an outdated adblock config file with the current default version, please run _/etc/init.d/adblock cfgup_, make your individual changes and start the adblock service again
 * **debugging:** for script debugging please set the 'adb\_debug' variable in the header of _/etc/init.d/adblock_ to '1'
+* **mute output** to mute the normal adblock output and print only warn/error messages, please set 'adb\_loglevel to '0'
 * **disable active dns probing in windows:** to prevent a possible yellow exclamation mark on your internet connection icon (which wrongly means connected, but no internet), please change the following registry key/value from "1" to "0" _HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet\EnableActiveProbing_
 
 ## Further adblock config options
@@ -122,6 +129,8 @@ A lot of people already use adblocker plugins within their desktop browsers, but
     * adb\_forcedns => redirect all local DNS queries to the local dnsmasq resolver (default: '1', enabled / always disabled in 'AP mode')
     * adb\_fetchttl => set the timeout for list downloads (default: '5' seconds)
     * adb\_restricted => disable updates of the adblock config file (no flash writes) during runtime (default: '0', disabled)
+    * adb\_hotplugif => restrict hotplug support to a certain wan interface or disable it at all (default: '', disabled)
+    * adb\_loglevel => set it to '0' to mute normal adblock output and print only error messages (default: '1', normal output)
 
 ## Examples
 
@@ -177,17 +186,28 @@ config uhttpd 'main'
     list listen_https '0.0.0.0:445'
 </code></pre>
   
-**example grep for blocked (sub-)domains in adblock source files:**
+**example to query active blocklists for a certain (sub-)domain, i.e. for whitelisting:**
 <pre><code>
-grep "google-analytics.com" "/tmp/dnsmasq.d/adb_list"*
+/etc/init.d/adblock query "example.www.doubleclick.net"
+=> distinct results for domain 'example.www.doubleclick.net' (overall 0)
+   no matches in active blocklists
+=> distinct results for domain 'www.doubleclick.net' (overall 1)
+   adb_list.winhelp     : www.doubleclick.net
+=> distinct results for domain 'doubleclick.net' (overall 252)
+   adb_list.adaway      : ad-g.doubleclick.net
+   adb_list.hphosts     : 1016557.fls.doubleclick.net
+   adb_list.rolist      : feedads.g.doubleclick.net
+   adb_list.securemecca : 1168945.fls.doubleclick.net
+   adb_list.sysctl      : ad.co.doubleclick.net
+   adb_list.whocares    : 3ad.doubleclick.net
+   adb_list.winhelp     : 1435575.fls.doubleclick.net
 
-This will output all matches with corresponding source files:
-  /tmp/dnsmasq.d/adb_list.winhelp:address=/ssl.google-analytics.com/198.18.0.1
-  /tmp/dnsmasq.d/adb_list.winhelp:address=/www.google-analytics.com/198.18.0.1
-  /tmp/dnsmasq.d/adb_list.yoyo:address=/google-analytics.com/198.18.0.1
+The query function checks against the submitted (sub-)domain and recurses automatically to the upper top level domain(s).
+For every domain it returns the overall count plus a distinct list of active blocklists with the first relevant result.
+In the example above you have to whitelist "www.doubleclick.net" to free the submitted domain.
 </code></pre>
   
-**example to find blocked domains on certain sites for whitelisting:**
+**example to identify blocked domains during web browsing, i.e. for whitelisting:**
 <pre><code>
 1. the easy way ...
 enable the network analysis builtins in chrome or firefox to identify domains

@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
-PKG_VERSION:=5.5.1
-PKG_RELEASE:=6
+PKG_VERSION:=5.5.2
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://collectd.org/files/
-PKG_MD5SUM:=fd24b947cef9351ce3e2d6d2a0762e18
+PKG_MD5SUM:=40b83343f72089e0330f53965f1140bd
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libltdl/aclocal.m4
@@ -140,6 +140,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	syslog \
 	table \
 	tail \
+	tail_csv \
 	tcpconns \
 	teamspeak2 \
 	ted \
@@ -350,6 +351,7 @@ $(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod
 $(eval $(call BuildPlugin,snmp,SNMP input,snmp,+PACKAGE_collectd-mod-snmp:libnetsnmp))
 $(eval $(call BuildPlugin,syslog,syslog output,syslog,))
 $(eval $(call BuildPlugin,tail,tail input,tail,))
+$(eval $(call BuildPlugin,tail-csv,tail CSV input,tail_csv,))
 $(eval $(call BuildPlugin,table,table-like structured file input,table,))
 $(eval $(call BuildPlugin,teamspeak2,TeamSpeak2 input,teamspeak2,))
 $(eval $(call BuildPlugin,ted,The Energy Detective input,ted,@((!TARGET_avr32)||BROKEN))) # fails on avr32 because of warnings treated as errors

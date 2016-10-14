@@ -1,11 +1,13 @@
 #!/bin/sh /etc/rc.common
 #
 
-START=99
-EXTRA_COMMANDS="toggle stats cfgup"
+START=90
+EXTRA_COMMANDS="toggle stats cfgup envchk query"
 EXTRA_HELP="	toggle	Toggle adblock 'on' or 'off'
 	stats	Update adblock statistics
-	cfgup	Update adblock configuration file"
+	cfgup	Update adblock configuration file
+	envchk	Check/Set adblock environment
+	query	<DOMAIN> Query active blocklists for specific domain"
 
 adb_debug=0
 adb_pid="${$}"
@@ -125,5 +127,47 @@ cfgup()
     else
         f_log "default adblock configuration not found, please re-install the package via 'opkg install adblock --force-maintainer'"
     fi
+    return 0
+}
+
+query()
+{
+    domain="${1}"
+    tld="${domain#*.}"
+    list_dns="$(find "${adb_dnsdir}" -maxdepth 1 -type f -name "${adb_dnsprefix}*" -print)"
+    if [ -z "${list_dns}" ]
+    then
+        f_log "no active blocklists found, please start adblock first"
+    elif [ -z "${domain}" ] || [ "${domain}" = "${tld}" ]
+    then
+        f_log "invalid domain query input, please submit a specific (sub-)domain, i.e. 'www.abc.xyz'"
+    else
+        while [ "${domain}" != "${tld}" ]
+        do
+            search="${domain//./\.}"
+            result="$(grep -Hm 1 "[/\.]${search}/" "${adb_dnsdir}/adb_list"* | awk -F ':|/' '{print "   "$4"\t: "$6}')"
+            count="$(grep -hc "[/\.]${search}/" "${adb_dnsdir}/adb_list"* | awk '{sum += $1} END {printf sum}')"
+            printf "%s\n" "=> distinct results for domain '${domain}' (overall ${count})"
+            if [ -z "${result}" ]
+            then
+                printf "%s\n" "   no matches in active blocklists"
+            else
+                printf "%s\n" "${result}"
+            fi
+            domain="${tld}"
+            tld="${domain#*.}"
+        done
+    fi
+    return 0
+}
+
+envchk()
+{
+    adb_loglevel=0
+    f_envcheck
+    rm -f "${adb_tmpfile}"
+    rm -rf "${adb_tmpdir}"
+    adb_loglevel=1
+    f_log "adblock environment check finished successfully"
     return 0
 }
