@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=x264
-PKG_VERSION:=snapshot-20160416-2245-stable
-PKG_RELEASE:=1
+PKG_VERSION:=snapshot-20160815-2245-stable
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.videolan.org/x264/snapshots/
 PKG_MAINTAINER:=Adrian Panella <ianchi74@outlook.com>
-PKG_MD5SUM:=70953574692cb80232d2879b80a140e0
+PKG_MD5SUM:=93fa596ea1b5513fec73e9de27589dd4
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
@@ -24,22 +24,28 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-TARGET_CFLAGS:=-Wno-maybe-uninitialized -Wshadow -Wall -std=gnu99 -fPIC -O3 -ffast-math -I. 
+TARGET_CFLAGS+=-std=gnu99 -fPIC -O3 -ffast-math -I.
 MAKE_FLAGS+= LD="$(TARGET_CC) -o"
 
-ifeq ($(CONFIG_x86_64),y)
-CONFIGURE_VARS+= AS=yasm
-MAKE_FLAGS+= AS=yasm
+ifneq ($(CONFIG_x86_64),y)
+ifeq ($(CONFIG_YASM),y)
+  CONFIGURE_VARS+= AS=yasm
+  MAKE_FLAGS+= AS=yasm
+else
+  CONFIGURE_VARS+= AS= 
+  MAKE_FLAGS+= AS= 
+  CONFIGURE_ARGS += --disable-asm
+endif
+endif
+
+ifeq ($(CONFIG_SOFT_FLOAT),y)
+CONFIGURE_ARGS += --disable-asm
 endif
 
 CONFIGURE_ARGS += \
 		--enable-shared \
 		--enable-pic \
 		--disable-cli 
-
-ifeq ($(CONFIG_SOFT_FLOAT),y)
-CONFIGURE_ARGS += --disable-asm
-endif
 
 define Package/libx264
   SECTION:=libs
