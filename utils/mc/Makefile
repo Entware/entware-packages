@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2015 OpenWrt.org
+# Copyright (C) 2006-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,14 +9,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
-PKG_VERSION:=4.8.17
-PKG_RELEASE:=3
+PKG_VERSION:=4.8.18
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 PKG_LICENSE:=GPL-3.0+
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ftp.midnight-commander.org/
-PKG_MD5SUM:=0447bdddc0baa81866e66f50f9a545d29d6eebb68b0ab46c98d8fddd2bf4e44d
+PKG_MD5SUM:=f7636815c987c1719c4f5de2dcd156a0e7d097b1d10e4466d2bdead343d5bece
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf gettext-version
 PKG_INSTALL:=1
@@ -39,7 +39,7 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Utilities
 	DEPENDS:=+glib2 +libslang2 +libmount +MC_VFS:libssh2 $(ICONV_DEPENDS)
 	TITLE:=Midnight Commander - a powerful visual file manager
-	URL:=http://www.midnight-commander.org/
+	URL:=https://www.midnight-commander.org/
 	MENU:=1
 endef
 
