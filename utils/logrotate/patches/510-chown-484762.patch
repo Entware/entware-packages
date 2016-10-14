@@ -1,0 +1,19 @@
+Index: logrotate-3.9.1/logrotate.c
+===================================================================
+--- logrotate-3.9.1.orig/logrotate.c	2015-08-24 14:40:38.162011596 +0100
++++ logrotate-3.9.1/logrotate.c	2015-08-24 14:40:38.162011596 +0100
+@@ -381,8 +381,12 @@
+     if (fchmod(fd, (S_IRUSR | S_IWUSR) & sb->st_mode)) {
+ 	message(MESS_ERROR, "error setting mode of %s: %s\n",
+ 		fileName, strerror(errno));
+-	close(fd);
+-	return -1;
++	if (geteuid() == 0) {
++		/* If run as non-root, we may not be able to duplicate
++		   the ownership of the file. Warn but don't fail. */
++		close(fd);
++		return -1;
++	}
+     }
+ 
+ 	if (fstat(fd, &sb_create)) {
