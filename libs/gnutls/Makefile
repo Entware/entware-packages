@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnutls
-PKG_VERSION:=3.4.14
-PKG_RELEASE:=1
+PKG_VERSION:=3.5.4
+PKG_RELEASE:=3
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4
-PKG_MD5SUM:=ad3e269a6793424d5d21c9626e1c9ef1
+PKG_SOURCE_URL:=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.5
+PKG_MD5SUM:=c17e20d0f6b040580df57f5f94e3610f
 #PKG_FIXUP:=autoreconf gettext-version
 PKG_MAINTAINER:=Nikos Mavrogiannopoulos <nmav@gnutls.org>
 PKG_LICENSE:=LGPLv2.1+
@@ -22,12 +22,6 @@ PKG_LICENSE:=LGPLv2.1+
 PKG_INSTALL:=1
 PKG_LIBTOOL_PATHS:=. lib
 PKG_CHECK_FORMAT_SECURITY:=0
-PKG_BUILD_DEPENDS:=USE_MUSL:argp-standalone
-
-#do not patch - glibc does not need -largp
-ifneq ($(CONFIG_USE_GLIBC),)
-PATCH_DIR=
-endif
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_GNUTLS_ALPN \
@@ -41,6 +35,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_GNUTLS_PKCS11 \
 	CONFIG_GNUTLS_PSK \
 	CONFIG_GNUTLS_SRP \
+	CONFIG_GNUTLS_TPM \
 	CONFIG_LIBNETTLE_MINI \
 
 include $(INCLUDE_DIR)/package.mk
@@ -116,7 +111,6 @@ CONFIGURE_ARGS+= \
 	--disable-guile \
 	--disable-nls \
 	--without-zlib \
-	--disable-cxx \
 	--enable-local-libopts \
 	--disable-doc \
 	--disable-tests \
@@ -168,6 +162,10 @@ endif
 
 ifneq ($(CONFIG_GNUTLS_OCSP),y)
 CONFIGURE_ARGS += --disable-ocsp
+endif
+
+ifneq ($(CONFIG_GNUTLS_TPM),y)
+CONFIGURE_ARGS += --without-tpm
 endif
 
 ifeq ($(CONFIG_GNUTLS_CRYPTODEV),y)
@@ -227,6 +225,11 @@ endif
 ifeq ($(CONFIG_GNUTLS_PKCS11),y)
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/bin/p11tool \
+		$(1)/opt/bin/
+endif
+ifeq ($(CONFIG_GNUTLS_TPM),y)
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/bin/tpmtool \
 		$(1)/opt/bin/
 endif
 endef
