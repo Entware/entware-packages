@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postgresql
-PKG_VERSION:=9.5.1
-PKG_RELEASE:=1
-PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
+PKG_VERSION:=9.5.4
+PKG_RELEASE:=3a
+PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=PostgreSQL
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
@@ -18,7 +18,7 @@ PKG_SOURCE_URL:=\
 	http://ftp9.us.postgresql.org/pub/mirrors/postgresql/source/v$(PKG_VERSION) \
 	http://ftp.be.postgresql.org/postgresql/source/v$(PKG_VERSION) \
 	ftp://ftp-archives.postgresql.org/pub/source/v$(PKG_VERSION)
-PKG_MD5SUM:=11e037afaa4bd0c90bb3c3d955e2b401
+PKG_MD5SUM:=cf5e571164ad66028ecd7dd8819e3765470d45bcd440d258b686be7e69c76ed0
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
@@ -29,7 +29,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libpq
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+zlib +libreadline +libpthread +libncurses
+  DEPENDS:=+zlib +libreadline +libpthread +libncursesw
   TITLE:=PostgreSQL client library
   URL:=http://www.postgresql.org/
   SUBMENU:=database
@@ -42,7 +42,7 @@ endef
 define Package/pgsql-cli
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libpq +USE_UCLIBC:librt +shadow-utils +shadow-su
+  DEPENDS:=+libpq +librt +shadow-utils +shadow-su
   TITLE:=Command Line Interface (CLI) to PostgreSQL databases
   URL:=http://www.postgresql.org/
   SUBMENU:=database
@@ -55,7 +55,7 @@ endef
 define Package/pgsql-server
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libpq +USE_UCLIBC:librt
+  DEPENDS:=+libpq +librt +pgsql-cli
   TITLE:=PostgreSQL databases Server
   URL:=http://www.postgresql.org/
   SUBMENU:=database
