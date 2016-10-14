@@ -7,7 +7,7 @@
 
 PYTHON3_VERSION_MAJOR:=3
 PYTHON3_VERSION_MINOR:=5
-PYTHON3_VERSION_MICRO:=1
+PYTHON3_VERSION_MICRO:=2
 
 PYTHON3_VERSION:=$(PYTHON3_VERSION_MAJOR).$(PYTHON3_VERSION_MINOR)
 
@@ -23,14 +23,14 @@ PYTHON3:=python$(PYTHON3_VERSION)
 HOST_PYTHON3_LIB_DIR:=$(STAGING_DIR)/host/lib/python$(PYTHON3_VERSION)
 HOST_PYTHON3_BIN:=$(STAGING_DIR)/host/bin/python3
 
-PYTHON3PATH:=$(PYTHON3_LIB_DIR):$(STAGING_DIR)/$(PYTHON3_PKG_DIR):$(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)
+PYTHON3PATH:=$(PYTHON3_LIB_DIR):$(STAGING_DIR)$(PYTHON3_PKG_DIR):$(PKG_INSTALL_DIR)$(PYTHON3_PKG_DIR)
 define HostPython3
 	(	export PYTHONPATH="$(PYTHON3PATH)"; \
 		export PYTHONOPTIMIZE=""; \
 		export PYTHONDONTWRITEBYTECODE=1; \
 		export _python_sysroot="$(STAGING_DIR)"; \
-		export _python_prefix="/usr"; \
-		export _python_exec_prefix="/usr"; \
+		export _python_prefix="/opt"; \
+		export _python_exec_prefix="/opt"; \
 		$(1) \
 		$(HOST_PYTHON3_BIN) $(2); \
 	)
@@ -101,7 +101,7 @@ endef
 # $(2) => additional arguments to setup.py
 # $(3) => additional variables
 define Build/Compile/Py3Mod
-	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)
+	$(INSTALL_DIR) $(PKG_INSTALL_DIR)$(PYTHON3_PKG_DIR)
 	$(call HostPython3, \
 		cd $(PKG_BUILD_DIR)/$(strip $(1)); \
 		CC="$(TARGET_CC)" \
