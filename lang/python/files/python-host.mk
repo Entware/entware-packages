@@ -13,7 +13,7 @@ HOST_PYTHON_PKG_DIR:=/lib/python$(PYTHON_VERSION)/site-packages
 
 HOST_PYTHON_BIN:=$(HOST_PYTHON_DIR)/bin/python$(PYTHON_VERSION)
 
-HOST_PYTHONPATH:=$(HOST_PYTHON_LIB_DIR):$(STAGING_DIR)/host/$(HOST_PYTHON_PKG_DIR)
+HOST_PYTHONPATH:=$(HOST_PYTHON_LIB_DIR):$(STAGING_DIR)/host$(HOST_PYTHON_PKG_DIR)
 
 define HostPython
 	if [ "$(strip $(3))" == "HOST" ]; then \
@@ -23,8 +23,8 @@ define HostPython
 		export PYTHONPATH="$(PYTHONPATH)"; \
 		export PYTHONDONTWRITEBYTECODE=1; \
 		export _python_sysroot="$(STAGING_DIR)"; \
-		export _python_prefix="/usr"; \
-		export _python_exec_prefix="/usr"; \
+		export _python_prefix="/opt"; \
+		export _python_exec_prefix="/opt"; \
 	fi; \
 	export PYTHONOPTIMIZE=""; \
 	$(1) \

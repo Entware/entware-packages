@@ -12,11 +12,11 @@ include ./files/python-package.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=9
+PKG_RELEASE:=2
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_MD5SUM:=1dbcc848b4cd8399a8199d000f9f823c
+PKG_MD5SUM:=57dffcee9cee8bb2ab5f82af1d8e9a69
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
@@ -196,6 +196,7 @@ define PyPackage/python-light/filespec
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/_testcapi.so
 -|/opt/lib/python$(PYTHON_VERSION)/pdb.doc
 -|/opt/lib/python$(PYTHON_VERSION)/test
+-|/opt/lib/python$(PYTHON_VERSION)/webbrowser.py
 -|/opt/lib/python$(PYTHON_VERSION)/*/test
 -|/opt/lib/python$(PYTHON_VERSION)/*/tests
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/readline.so
@@ -207,7 +208,7 @@ define PyPackage/python-base/install
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python2
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* $(1)/opt/lib/
 	$(SED) "s|-L$(STAGING_DIR)/opt/lib|-L/opt/lib|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-L$(STAGING_DIR)/lib|-L/opt/lib/gcc/$(REAL_GNU_TARGET_NAME)/4.8.5|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
+	$(SED) "s|-L$(STAGING_DIR)/lib|-L/opt/lib/gcc/$(REAL_GNU_TARGET_NAME)/5.4.0|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
 	$(SED) "s|-L$(TOOLCHAIN_DIR)/usr/lib||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
 	$(SED) "s|-L$(TOOLCHAIN_DIR)/lib||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
 	$(SED) "s|-L$(PKG_BUILD_DIR)||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
@@ -221,10 +222,6 @@ endef
 define PyPackage/python/filespec
 -|$(PYTHON_PKG_DIR)
 endef
-
-HOST_CFLAGS+= \
-	-I/usr/include/ncursesw \
-	-I/usr/include/ncurses
 
 HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \

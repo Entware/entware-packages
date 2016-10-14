@@ -6,7 +6,7 @@
 #
 
 PYTHON_VERSION:=2.7
-PYTHON_VERSION_MICRO:=11
+PYTHON_VERSION_MICRO:=12
 
 PYTHON_DIR:=$(STAGING_DIR)/opt
 PYTHON_BIN_DIR:=$(PYTHON_DIR)/bin
@@ -17,7 +17,7 @@ PYTHON_PKG_DIR:=/opt/lib/python$(PYTHON_VERSION)/site-packages
 
 PYTHON:=python$(PYTHON_VERSION)
 
-PYTHONPATH:=$(PYTHON_LIB_DIR):$(STAGING_DIR)/$(PYTHON_PKG_DIR):$(PKG_INSTALL_DIR)/$(PYTHON_PKG_DIR)
+PYTHONPATH:=$(PYTHON_LIB_DIR):$(STAGING_DIR)$(PYTHON_PKG_DIR):$(PKG_INSTALL_DIR)/$(PYTHON_PKG_DIR)
 
 # These configure args are needed in detection of path to Python header files
 # using autotools.
@@ -86,7 +86,7 @@ $(call include_mk, python-host.mk)
 # $(2) => additional arguments to setup.py
 # $(3) => additional variables
 define Build/Compile/PyMod
-	$(INSTALL_DIR) $(PKG_INSTALL_DIR)/$(PYTHON_PKG_DIR)
+	$(INSTALL_DIR) $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)
 	$(call HostPython, \
 		cd $(PKG_BUILD_DIR)/$(strip $(1)); \
 		CC="$(TARGET_CC)" \
