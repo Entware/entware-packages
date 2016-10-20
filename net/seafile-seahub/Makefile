@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
 PKG_VERSION:=5.1.4
-PKG_RELEASE=$(PKG_SOURCE_VERSION)-1
+PKG_RELEASE=$(PKG_SOURCE_VERSION)-1a
 PKG_LICENSE:=Apache-2.0
 
 PKG_SOURCE_PROTO:=git
@@ -45,6 +45,12 @@ define Package/seafile-seahub/description
 
    NOTE: in order to have better performance, localization support is turned off by default.
    Please set 'USE_I18N = True' in seahub_settings.py if you intend to use languages other than English.
+endef
+
+define Build/Configure
+	$(call Build/Configure/Default,)
+	find $(PKG_BUILD_DIR)/ -name *.sh | xargs $(SED) 's|/bin/bash|/opt/bin/bash|'
+	find $(PKG_BUILD_DIR)/ -name *.sh | xargs $(SED) 's|SCRIPT=.*|SCRIPT=/opt/share/seafile/seafile-server/seahub/0.sh|'
 endef
 
 define Package/seafile-seahub/install

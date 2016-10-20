@@ -9,7 +9,7 @@
  #include "db.h"
  
 --- a/daemon/seafile-session.h
-+++ b//daemon/seafile-session.h
++++ b/daemon/seafile-session.h
 @@ -3,6 +3,7 @@
  #ifndef SEAFILE_SESSION_H
  #define SEAFILE_SESSION_H
