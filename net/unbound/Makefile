@@ -8,16 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.5.9
-PKG_RELEASE:=3
+PKG_VERSION:=1.5.10
+PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Michael Hanselmann <public@hansmi.ch>
+PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@hotmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.unbound.net/downloads
-PKG_MD5SUM:=0cefa62c1690b4db18583db84bff00e3
+PKG_MD5SUM:=0a3a236811f1ab5c1dc31974fa74e047
 
 PKG_BUILD_DEPENDS:=libexpat
 PKG_BUILD_PARALLEL:=1
@@ -30,7 +30,6 @@ define Package/unbound/Default
   TITLE:=A validating, recursive & caching DNS resolver
   URL:=http://www.unbound.net/
   DEPENDS:=+libopenssl
-  USERID:=unbound:unbound
 endef
 
 define Package/unbound
@@ -40,6 +39,7 @@ define Package/unbound
   SUBMENU:=IP Addresses and Names
   TITLE+= (daemon)
   DEPENDS+= +libunbound
+  USERID:=unbound:unbound
 endef
 
 define Package/unbound/description
@@ -103,6 +103,7 @@ define Package/libunbound
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= (library)
+  DEPENDS+= +libpthread
 endef
 
 define Package/libunbound/description
@@ -110,12 +111,13 @@ define Package/libunbound/description
 endef
 
 CONFIGURE_ARGS += \
+	--disable-dsa \
 	--disable-gost \
 	--enable-allsymbols \
 	--with-libexpat="$(STAGING_DIR)/opt" \
 	--with-ssl="$(STAGING_DIR)/opt" \
-	-with-pidfile=/opt/var/run/unbound.pid \
-	--without-pthreads
+	--with-pidfile=/opt/var/run/unbound.pid \
+	--with-user=unbound
 
 define Package/unbound/conffiles
 /opt/etc/unbound/unbound.conf
