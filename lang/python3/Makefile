@@ -14,7 +14,7 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
@@ -104,7 +104,6 @@ endef
 MAKE_FLAGS+=\
 	CROSS_COMPILE=yes \
 	LD="$(TARGET_CC)" \
-	FREEZE_IMPORTLIB=_freeze_importlib \
 	PGEN=pgen3
 
 ifeq ($(ARCH),i386)
@@ -127,7 +126,6 @@ CONFIGURE_ARGS+= \
 	--without-cxx-main \
 	--with-threads \
 	--with-system-ffi="$(STAGING_DIR)/opt" \
-	--with-system-expat="$(STAGING_DIR)/opt" \
 	--without-pymalloc \
 	--without-ensurepip \
 	$(ENABLE_IPV6) \
