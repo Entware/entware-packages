@@ -22,6 +22,8 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
+CONFIGURE_VARS += GREP=grep SED=sed
+
 define Package/libtool-bin
   SECTION:=devel
   CATEGORY:=Development
