@@ -107,6 +107,7 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_PRIVOXY_enable-strptime-sanity-checks),--enable-strptime-sanity-checks) \
 	$(if $(CONFIG_PRIVOXY_enable-compression),--enable-compression)
 
+
 # needed otherwise errors during compile
 MAKE_FLAGS:=
 

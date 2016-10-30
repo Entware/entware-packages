@@ -78,7 +78,7 @@ define Build/Configure
 	$(call Build/Configure/Default)
 endef
 
-CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/usr/include"
+CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include"
 
 define Download/usb.ids
   URL:=http://www.linux-usb.org/

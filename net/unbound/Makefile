@@ -30,6 +30,7 @@ define Package/unbound/Default
   TITLE:=A validating, recursive & caching DNS resolver
   URL:=http://www.unbound.net/
   DEPENDS:=+libopenssl
+  USERID:=unbound:unbound
 endef
 
 define Package/unbound
@@ -39,7 +40,6 @@ define Package/unbound
   SUBMENU:=IP Addresses and Names
   TITLE+= (daemon)
   DEPENDS+= +libunbound
-  USERID:=unbound:unbound
 endef
 
 define Package/unbound/description
@@ -117,7 +117,6 @@ CONFIGURE_ARGS += \
 	--with-libexpat="$(STAGING_DIR)/opt" \
 	--with-ssl="$(STAGING_DIR)/opt" \
 	--with-pidfile=/opt/var/run/unbound.pid \
-	--with-user=unbound
 
 define Package/unbound/conffiles
 /opt/etc/unbound/unbound.conf

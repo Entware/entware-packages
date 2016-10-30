@@ -87,15 +87,7 @@
  
  	# tag access-control with list of tags (in "" with spaces between)
  	# Clients using this access control element use localzones that
-@@ -259,6 +274,7 @@
- 	# and the given username is assumed. Default is user "unbound".
- 	# If you give "" no privileges are dropped.
- 	# username: "@UNBOUND_USERNAME@"
-+	username: ""
- 
- 	# the working directory. The relative files in this config are
- 	# relative to this directory. If you give "" the working directory
-@@ -283,10 +299,12 @@
+@@ -283,10 +298,11 @@
  
  	# the pid file. Can be an absolute path outside of chroot/work dir.
  	# pidfile: "@UNBOUND_PIDFILE@"
@@ -103,12 +95,12 @@
  
  	# file to read root hints from.
  	# get one from https://www.internic.net/domain/named.cache
- 	# root-hints: ""
+-	# root-hints: ""
 +	# root-hints: "/opt/etc/unbound/named.cache"
  
  	# enable to not answer id.server and hostname.bind queries.
  	# hide-identity: no
-@@ -309,12 +327,15 @@
+@@ -309,12 +325,15 @@
  	#	positive value: fetch that many targets opportunistically.
  	# Enclose the list of numbers between quotes ("").
  	# target-fetch-policy: "3 2 1 0 0"
@@ -124,7 +116,7 @@
  
  	# Harden against out of zone rrsets, to avoid spoofing attempts.
  	# harden-glue: yes
-@@ -414,7 +435,7 @@
+@@ -414,7 +433,7 @@
  	# you start unbound (i.e. in the system boot scripts).  And enable:
  	# Please note usage of unbound-anchor root anchor is at your own risk
  	# and under the terms of our LICENSE (see that file in the source).
@@ -133,7 +125,7 @@
  
  	# File with DLV trusted keys. Same format as trust-anchor-file.
  	# There can be only one DLV configured, it is trusted from root down.
-@@ -504,15 +525,18 @@
+@@ -504,15 +523,18 @@
  	# the amount of memory to use for the key cache.
  	# plain value in bytes or you can append k, m or G. default is "4Mb".
  	# key-cache-size: 4m

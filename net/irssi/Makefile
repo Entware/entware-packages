@@ -82,6 +82,13 @@ ifeq ($(BUILD_VARIANT),nossl)
 		--disable-ssl
 endif
 
+define Build/Configure
+	(cd $(PKG_BUILD_DIR); \
+	    ./autogen.sh; \
+	);
+	$(call Build/Configure/Default)
+endef
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/irssi
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/irssi/* $(1)/opt/include/irssi/

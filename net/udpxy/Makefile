@@ -44,18 +44,13 @@ define Package/udpxy/description
 	popcornhour/mediatomb/vlc).
 endef
 
-define Package/udpxy/conffiles
-/opt/etc/config/udpxy
-endef
-
 MAKE_FLAGS += \
 	INSTALLROOT="$(PKG_INSTALL_DIR)/opt" \
 	ALL_CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)"
 
 define Package/udpxy/install
-	$(INSTALL_DIR) $(1)/opt/etc/{init.d,config}
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S29udpxy $(1)/opt/etc/init.d/
-	$(INSTALL_CONF) ./files/udpxy.conf $(1)/opt/etc/config/
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/udpxy $(1)/opt/bin/
 	ln -sf udpxy $(1)/opt/bin/udpxrec

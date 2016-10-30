@@ -62,6 +62,8 @@ CONFIGURE_ARGS+= \
 	--without-libnl \
 	--without-gssapi \
 	--with-libcrypt-prefix="$(STAGING_DIR)/" \
+	--without-lz4 \
+	--with-local-talloc \
 
 ifneq ($(CONFIG_OCSERV_PAM),y)
 CONFIGURE_ARGS += --without-pam

@@ -29,7 +29,7 @@ define Package/subversion/Default
   CATEGORY:=Network
   SUBMENU:=Version Control Systems
   TITLE:=A compelling replacement for CVS
-  DEPENDS:=+zlib +libsqlite3 +libapr +libaprutil +libmagic \
+  DEPENDS:=+zlib +libsqlite3 +libapr +libaprutil +libmagic +unixodbc \
   	$(ICONV_DEPENDS) $(INTL_DEPENDS) +libserf
   URL:=http://subversion.apache.org/
 endef
@@ -102,7 +102,7 @@ else
 endif
 
 CONFIGURE_VARS += \
-	LDFLAGS="$(TARGET_LDFLAGS) -lcrypt -lm \
+	LDFLAGS="$(TARGET_LDFLAGS) -lcrypt -lm -lodbc \
 		-lz -lpthread $(if $(INTL_FULL),-lintl)"
 	CPPFLAGS="$(TARGET_CPPFLAGS)"
 

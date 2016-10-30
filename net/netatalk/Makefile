@@ -39,25 +39,19 @@ endef
 
 define Package/netatalk/conffiles
 /opt/etc/afp.conf
+/opt/etc/dbus-session.conf
+/opt/etc/extmap.conf
 endef
 
 CONFIGURE_ARGS += \
-	--disable-afs \
-	--enable-hfs \
-	--disable-debugging \
-	--disable-shell-check \
-	--disable-timelord \
-	--disable-a2boot \
-	--disable-cups \
-	--disable-tcp-wrappers \
-	--with-cnid-default-backend=dbd \
-	--without-kerberos \
-	--without-mysql \
-	--with-mysql-config=false \
-	--without-pam \
 	--disable-admin-group \
-	--disable-srvloc \
 	--disable-zeroconf \
+	--disable-debugging \
+	--disable-tcp-wrappers \
+	--disable-shell-check \
+	--with-mysql-config=false \
+	--with-cnid-default-backend=dbd \
+	--without-pam \
 	$(if $(CONFIG_SHADOW_PASSWORDS),--with-shadow,--without-shadow) \
 	--with-uams-path="/opt/lib/uams" \
 	--with-libgcrypt-dir="$(STAGING_DIR)/opt" \
@@ -65,6 +59,7 @@ CONFIGURE_ARGS += \
 	--with-bdb="$(STAGING_DIR)/opt/" \
 	--without-ldap \
 	--without-acls \
+	--without-kerberos \
 	--with-libevent-header="$(STAGING_DIR)/opt/include/event2" \
 	--with-libevent-lib="$(STAGING_DIR)/opt/lib" \
 	--with-lockfile=/opt/var/lock
