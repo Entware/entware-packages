@@ -44,11 +44,8 @@ CONFIGURE_ARGS+=--prefix=/opt \
 		--with-jobdir=/opt/var/spool/cron/atjobs \
 		--with-atspool=/opt/var/spool/cron/atspool \
 
-# Busybox is allways install - so we set SENDMAIL=/opt/bin/true
-
 CONFIGURE_VARS += \
-	ac_cv_header_security_pam_appl_h=no \
-	ac_cv_path_SENDMAIL=/opt/bin/true
+	ac_cv_header_security_pam_appl_h=no
 
 define Package/at/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/sbin $(1)/opt/etc/init.d/ $(1)/opt/var/run

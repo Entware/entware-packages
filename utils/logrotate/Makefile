@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=logrotate
 PKG_VERSION:=3.10.0
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= https://github.com/logrotate/logrotate/releases/download/$(PKG_VERSION)
@@ -21,7 +21,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/logrotate
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libpopt +libacl
+  DEPENDS:=+libpopt
   TITLE:=rotates, compresses, and mails system logs
   URL:=https://github.com/logrotate/logrotate
   MAINTAINER:=Christian Beier <cb@shoutrlabs.com>
@@ -40,7 +40,7 @@ endef
 
 CONFIGURE_ARGS += --with-acl=no
 
-EXTRA_CFLAGS += $(TARGET_CPPFLAGS) -Wno-nonnull-compare
+EXTRA_CFLAGS += $(TARGET_CPPFLAGS)
 EXTRA_LDFLAGS += $(TARGET_LDFLAGS)
 
 define Build/Compile
@@ -56,7 +56,6 @@ endef
 define Package/logrotate/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/logrotate $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DIR) $(1)/opt/etc/logrotate.d
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/examples/logrotate-default $(1)/opt/etc/logrotate.conf
 endef

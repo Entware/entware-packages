@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -488,7 +488,7 @@
+@@ -500,7 +500,7 @@
  
      if test "x$enable_utf8" != xno; then
  	OLDLIBS="$LIBS"

@@ -57,11 +57,9 @@ MAKE_FLAGS += \
 	UNAME="Linux"
 
 define Package/dump1090/install
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_CONF) files/dump1090.config $(1)/opt/etc/config/dump1090
 	$(INSTALL_DIR) $(1)/opt/share/dump1090
 	$(CP) $(PKG_BUILD_DIR)/public_html/* $(1)/opt/share/dump1090
+	$(LN) /opt/var/run/dump1090 $(1)/opt/share/dump1090/data
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/dump1090 $(1)/opt/bin
 endef

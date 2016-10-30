@@ -12,7 +12,7 @@ PKG_VERSION:=5.38
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://www.kernel.org/pub/linux/bluetooth/
+PKG_SOURCE_URL:=@KERNEL/linux/bluetooth/
 PKG_MD5SUM:=dae2ed00c63791800ea7d10a381270a5
 
 PKG_LICENSE:=GPL-2.0+

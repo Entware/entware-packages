@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fontconfig
-PKG_VERSION:=2.11.1
+PKG_VERSION:=2.12.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://fontconfig.org/release/
-PKG_MD5SUM:=824d000eb737af6e16c826dd3b2d6c90
+PKG_MD5SUM:=b5af5a423ee3b5cfc34846838963c058
 
 PKG_FIXUP:=libtool
 PKG_INSTALL:=1
@@ -58,7 +58,7 @@ define Package/fontconfig/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/fontconfig/conf.avail/* $(1)/opt/share/fontconfig/conf.avail
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-#	$(INSTALL_BIN) ./files/fontconfig.init $(1)/etc/init.d/fontconfig
+#	$(INSTALL_BIN) ./files/fontconfig.init $(1)/opt/etc/init.d/fontconfig
 endef
 
 $(eval $(call BuildPackage,fontconfig))
