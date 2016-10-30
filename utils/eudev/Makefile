@@ -52,7 +52,7 @@ various distributions.
 endef
 
 define Package/eudev/conffiles
-/etc/udev/udev.conf
+/opt/etc/udev/udev.conf
 endef
 
 define Package/eudev/config
@@ -60,8 +60,8 @@ define Package/eudev/config
 endef
 
 CONFIGURE_ARGS += \
-	--prefix=/usr --exec-prefix= --sysconfdir=/etc \
-	--libexecdir=/lib/udev --sbindir=/sbin \
+	--prefix=/opt --exec-prefix=/opt --sysconfdir=/opt/etc \
+	--libexecdir=/opt/lib/udev --sbindir=/opt/sbin \
 	--disable-hwdb --disable-introspection --disable-manpages \
 	--disable-selinux \
 	$(if $(CONFIG_EUDEV_EXTRA_blkid),--enable-blkid,--disable-blkid) \
@@ -88,36 +88,36 @@ eudev-extra-lib-bin-$(CONFIG_EUDEV_EXTRA_v4l_id) += v4l_id
 eudev-extra-rules-$(CONFIG_EUDEV_EXTRA_v4l_id) += 60-persistent-v4l.rules
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libudev.h $(1)/usr/include
-	$(INSTALL_DIR) $(1)/usr/share/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/pkgconfig/udev.pc $(1)/usr/share/pkgconfig
-	$(INSTALL_DIR) $(1)/lib
-	$(CP) $(PKG_INSTALL_DIR)/lib/libudev.so* $(1)/lib
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/lib/pkgconfig/libudev.pc $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libudev.h $(1)/opt/include
+	$(INSTALL_DIR) $(1)/opt/share/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/pkgconfig/udev.pc $(1)/opt/share/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libudev.so* $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libudev.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libudev/install
-	$(INSTALL_DIR) $(1)/lib
-	$(CP) $(PKG_INSTALL_DIR)/lib/libudev.so* $(1)/lib
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libudev.so* $(1)/opt/lib
 endef
 
 define Package/eudev/install
-	$(INSTALL_DIR) $(1)/etc/udev/rules.d
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/udev/udev.conf $(1)/etc/udev
+	$(INSTALL_DIR) $(1)/opt/etc/udev/rules.d
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/udev/udev.conf $(1)/opt/etc/udev
 
-	$(INSTALL_DIR) $(1)/sbin
+	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/usr/bin/udevadm \
-		$(PKG_INSTALL_DIR)/sbin/udevd \
-		$(1)/sbin
+		$(PKG_INSTALL_DIR)/opt/bin/udevadm \
+		$(PKG_INSTALL_DIR)/opt/sbin/udevd \
+		$(1)/opt/sbin
 
-	$(INSTALL_DIR) $(1)/lib/udev/rules.d
+	$(INSTALL_DIR) $(1)/opt/lib/udev/rules.d
 	$(INSTALL_DATA) \
-		$(addprefix $(PKG_INSTALL_DIR)/lib/udev/rules.d/, \
+		$(addprefix $(PKG_INSTALL_DIR)/opt/lib/udev/rules.d/, \
 			$(eudev-extra-rules-y)) \
-		$(addprefix $(PKG_INSTALL_DIR)/lib/udev/rules.d/, \
+		$(addprefix $(PKG_INSTALL_DIR)/opt/lib/udev/rules.d/, \
 			50-udev-default.rules \
 			60-block.rules \
 			60-drm.rules \
@@ -130,13 +130,13 @@ define Package/eudev/install
 			75-net-description.rules \
 			78-sound-card.rules \
 			80-net-name-slot.rules) \
-		$(1)/lib/udev/rules.d
+		$(1)/opt/lib/udev/rules.d
 
 ifneq ($(eudev-extra-lib-bin-y),)
 		$(INSTALL_BIN) \
-			$(addprefix $(PKG_INSTALL_DIR)/lib/udev/, \
+			$(addprefix $(PKG_INSTALL_DIR)/opt/lib/udev/, \
 				$(eudev-extra-lib-bin-y)) \
-			$(1)/lib/udev/
+			$(1)/opt/lib/udev/
 endif
 endef
 
