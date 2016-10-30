@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-ccnet
 PKG_VERSION:=5.1.4
-PKG_RELEASE=$(PKG_SOURCE_VERSION)-1
+PKG_RELEASE=1
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE_PROTO:=git
@@ -33,7 +33,6 @@ define Package/seafile-ccnet
     DEPENDS:=+libsearpc +libevent2 +libopenssl \
 		+glib2 +python +libzdb +libuuid \
 		+libpthread +libsqlite3 +jansson $(ICONV_DEPENDS)
-    EXTRA_DEPENDS:=libsearpc (=5.1.4-8998e7b2c5587f0b94c48db24e2952d08def5add-1)
 endef
 
 define Package/seafile-ccnet/description

@@ -85,6 +85,7 @@ define Package/git/install
 	$(RM) $(PKG_INSTALL_DIR)/opt/bin/git-cvsserver
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/git-* $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/lib/git-core
+	$(LN) /opt/bin/git $(1)/opt/lib/git-core/git
 	( cd $(PKG_INSTALL_DIR); $(TAR) \
 		--exclude=opt/lib/git-core/git-http-backend \
 		--exclude=opt/lib/git-core/git-http-fetch \
@@ -95,7 +96,6 @@ define Package/git/install
 		-cf - \
 		opt/lib/git-core \
 	) | ( cd $(1); $(TAR) -xf - )
-	$(LN) /opt/bin/git $(1)/opt/lib/git-core/git
 	$(INSTALL_DIR) $(1)/opt/share/git-core/templates
 endef
 

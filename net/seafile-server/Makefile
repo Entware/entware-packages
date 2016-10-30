@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-server
 PKG_VERSION:=5.1.4
-PKG_RELEASE=$(PKG_SOURCE_VERSION)-1a
+PKG_RELEASE=1
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE_PROTO:=git
@@ -35,7 +35,6 @@ define Package/seafile-server
     DEPENDS:=+libarchive +libopenssl +glib2 +libsearpc +seafile-ccnet +seafile-seahub +sqlite3-cli +python-mysql +python-urllib3 \
 		+jansson +libevent2 +libevent2-openssl +zlib +libzdb +libsqlite3 +libmysqlclient \
 		+libpthread +libuuid +bash +procps-ng +procps-ng-pkill +SEAFILE_FUSE_SUPPORT:libfuse $(ICONV_DEPENDS)
-    EXTRA_DEPENDS:=seafile-ccnet (=5.1.4-44f74fdc5160c1bf16a92e71d79b856763ddbc15-1), seafile-seahub (=5.1.4-1e1c02aa4f2a0256ffa29a28224aad2d678f43a0-1a)
     MENU:=1
 endef
 
@@ -96,7 +95,8 @@ endef
 define Package/seafile-server/install
 	$(INSTALL_DIR) $(1)/opt/{bin,lib}
 	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(INSTALL_DIR) $(1)/opt/share/seafile/seafile-server
+	$(INSTALL_DIR) $(1)/opt/share/seafile/seafile-server/runtime
+	$(INSTALL_DIR) $(1)/opt/share/seafile/seafile-server/seafile
 	$(INSTALL_DIR) $(1)/opt/share/seafile/conf
 	$(INSTALL_DIR) $(1)/opt/etc/{config,init.d}
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
@@ -108,12 +108,13 @@ ifeq ($(CONFIG_SEAFILE_FUSE_SUPPORT),y)
 	$(CP) $(PKG_BUILD_DIR)/scripts/seaf-fuse.sh $(1)/opt/share/seafile/seafile-server/
 endif
 	$(CP) $(PKG_BUILD_DIR)/scripts/setup-seafile-mysql.py $(1)/opt/share/seafile/seafile-server/
-	$(CP) $(PKG_BUILD_DIR)/scripts/setup-seafile-mysql.sh $(1)/opt/share/seafile/seafile-server/
+	$(CP) $(PKG_BUILD_DIR)/scripts/setup-{seafile-mysql,seafile}.sh $(1)/opt/share/seafile/seafile-server/
 	$(CP) $(PKG_BUILD_DIR)/scripts/sqlite2mysql.py $(1)/opt/share/seafile/seafile-server/
 	$(CP) $(PKG_BUILD_DIR)/scripts/sqlite2mysql.sh $(1)/opt/share/seafile/seafile-server/
 	$(CP) $(PKG_BUILD_DIR)/scripts/check_init_admin.py $(1)/opt/share/seafile/seafile-server/
 	$(CP) $(PKG_BUILD_DIR)/scripts/upgrade/ $(1)/opt/share/seafile/seafile-server/
 	$(CP) ./files/seafile.conf $(1)/opt/etc/config/seafile
+	$(CP) $(PKG_BUILD_DIR)/scripts/seahub.conf $(1)/opt/share/seafile/seafile-server/runtime
 	$(INSTALL_BIN) ./files/S66seafile $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) ./files/S67seahub $(1)/opt/etc/init.d/
 	find $(1) -name "*\.pyc" -o -name "*\.pyo" | xargs rm -f
@@ -138,8 +139,7 @@ define Package/seafile-server/postinst
     if [ ! -d /opt/share/seafile/seafile-data ]
     then
 	echo "*** Installation completed, running configuration script..."
-	cd /opt/share/seafile
-	/opt/bin/seafile-admin setup
+	/opt/share/seafile/seafile-server/setup-seafile.sh
     else
 	echo "*** It seems you are upgrading from an older version."
 	echo "*** If so, please run the appropriate upgrade scripts before using the new version of Seafile."

@@ -1,6 +1,7 @@
-commit 5ae3447d2c708a9f15979c79fc3e6db45545a0a9
-Merge: 4bb3b82 2931140
-Author: Yousong Zhou <yszhou4tech@gmail.com>
-Date:   Fri Aug 12 17:28:49 2016 +0800
+commit 78d163bdea65c3cd74ebfc6ed0ee3d9bd35fb78a
+Author: Peter Wagner <tripolar@gmx.at>
+Date:   Fri Oct 21 00:35:15 2016 +0200
 
-    Merge pull request #3049 from dedeckeh/pr_l2tp_teardown_on_l3_link_down
+    git: update to 2.10.1
+
+    Signed-off-by: Peter Wagner <tripolar@gmx.at>

@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
 PKG_VERSION:=5.1.4
-PKG_RELEASE=$(PKG_SOURCE_VERSION)-1a
+PKG_RELEASE=1
 PKG_LICENSE:=Apache-2.0
 
 PKG_SOURCE_PROTO:=git

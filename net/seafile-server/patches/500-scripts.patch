@@ -1,0 +1,122 @@
+--- a/scripts/setup-seafile.sh
++++ b/scripts/setup-seafile.sh
+@@ -321,7 +321,6 @@
+     src_docs_dir=${INSTALLPATH}/seafile/docs/
+     library_template_dir=${seafile_data_dir}/library-template
+     mkdir -p ${library_template_dir}
+-    cp -f ${src_docs_dir}/*.doc ${library_template_dir}
+ }
+ 
+ function parse_params() {
+@@ -422,9 +421,9 @@
+ if [[ "${need_pause}" == "1" ]]; then
+     welcome;
+ fi
+-sleep .5
++sleep 1
+ check_system_dependency;
+-sleep .5
++sleep 1
+ 
+ check_existing_ccnet;
+ if [[ ${use_existing_ccnet} != "true" ]]; then
+@@ -447,7 +446,7 @@
+     fi
+ fi
+ 
+-sleep .5
++sleep 1
+ 
+ printf "\nThis is your config information:\n\n"
+ 
+@@ -471,8 +470,8 @@
+     read dummy
+ fi
+ 
+-ccnet_init=${INSTALLPATH}/seafile/bin/ccnet-init
+-seaf_server_init=${INSTALLPATH}/seafile/bin/seaf-server-init
++ccnet_init=/opt/bin/ccnet-init
++seaf_server_init=/opt/bin/seaf-server-init
+ 
+ # -------------------------------------------
+ # Create ccnet conf 
+@@ -491,7 +490,7 @@
+     echo
+ fi
+ 
+-sleep 0.5
++sleep 1
+ 
+ # -------------------------------------------
+ # Create seafile conf
+@@ -584,10 +583,10 @@
+ }
+     
+ # get_seahub_admin_email;
+-# sleep .5;
++# sleep 1;
+ # get_seahub_admin_passwd;
+ # seahub_admin_passwd_enc=$(echo -n ${seahub_admin_passwd} | sha1sum | grep -o "[0-9a-f]*")
+-# sleep .5;
++# sleep 1;
+ 
+ # printf "\n\n"
+ # echo "This is your seahub admin username/password"
+@@ -688,8 +687,8 @@
+ echo "Your seafile server configuration has been completed successfully." 
+ echo "-----------------------------------------------------------------"
+ echo 
+-echo "run seafile server:     ./seafile.sh { start | stop | restart }"
+-echo "run seahub  server:     ./seahub.sh  { start <port> | stop | restart <port> }"
++echo "run seafile server:     /opt/etc/init.d/S66seafile { start | stop | restart }"
++echo "run seahub  server:     /opt/etc/init.d/S67seahub  { start <port> | stop | restart <port> }"
+ echo
+ echo "-----------------------------------------------------------------"
+ echo "If the server is behind a firewall, remember to open these tcp ports:"
+--- a/scripts/seafile.sh
++++ b/scripts/seafile.sh
+@@ -17,7 +17,7 @@
+ TOPDIR=$(dirname "${INSTALLPATH}")
+ default_ccnet_conf_dir=${TOPDIR}/ccnet
+ central_config_dir=${TOPDIR}/conf
+-seaf_controller="${INSTALLPATH}/seafile/bin/seafile-controller"
++seaf_controller="/opt/bin/seafile-controller"
+ 
+ 
+ export PATH=${INSTALLPATH}/seafile/bin:$PATH
+@@ -37,16 +37,6 @@
+     exit 1;
+ fi
+ 
+-function validate_running_user () {
+-    running_user=`id -un`
+-    data_dir_owner=`stat -c %U ${seafile_data_dir}`
+-
+-    if [[ "${running_user}" != "${data_dir_owner}" ]]; then
+-        echo "Error: the user running the script (\"${running_user}\") is not the owner of \"${seafile_data_dir}\" folder, you should use the user \"${data_dir_owner}\" to run the script."
+-        exit -1;
+-    fi
+-}
+-
+ function validate_ccnet_conf_dir () {
+     if [[ ! -d ${default_ccnet_conf_dir} ]]; then
+         echo "Error: there is no ccnet config directory."
+@@ -121,7 +111,6 @@
+     validate_central_conf_dir;
+     validate_ccnet_conf_dir;
+     read_seafile_data_dir;
+-    validate_running_user;
+     test_config;
+ 
+     echo "Starting seafile server, please wait ..."
+--- a/scripts/seahub.sh
++++ b/scripts/seahub.sh
+@@ -23,7 +23,7 @@
+ pidfile=${INSTALLPATH}/runtime/seahub.pid
+ errorlog=${INSTALLPATH}/runtime/error.log
+ accesslog=${INSTALLPATH}/runtime/access.log
+-gunicorn_exe=${INSTALLPATH}/seahub/thirdpart/gunicorn
++gunicorn_exe=/opt/bin/gunicorn
+ 
+ 
+ script_name=$0
