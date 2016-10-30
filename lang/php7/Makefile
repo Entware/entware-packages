@@ -2,6 +2,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# libfreetype support added for php7-mod-gd
 
 include $(TOPDIR)/rules.mk
 
@@ -210,7 +211,7 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-gd),)
   CONFIGURE_ARGS+= \
 	--with-gd=shared \
-	--without-freetype-dir \
+	--with-freetype-dir="$(STAGING_DIR)/opt" \
 	--with-jpeg-dir="$(STAGING_DIR)/opt" \
 	--with-png-dir="$(STAGING_DIR)/opt" \
 	--without-xpm-dir \
@@ -473,12 +474,14 @@ define Package/php7-fpm/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sapi/fpm/php-fpm $(1)/opt/bin/php-fpm
 
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) ./files/php7-fpm.conf $(1)/opt/etc/php7-fpm.conf
-	$(INSTALL_BIN) ./files/S79php-fpm $(1)/opt/etc/init.d/S79php7-fpm
 
 	$(INSTALL_DIR) $(1)/opt/etc/php7-fpm.d
 	$(INSTALL_DATA) ./files/php7-fpm-www.conf $(1)/opt/etc/php7-fpm.d/www.conf
+
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S79php7-fpm $(1)/opt/etc/init.d
 endef
 
 define Build/Prepare
@@ -548,7 +551,7 @@ $(eval $(call BuildModule,dom,DOM,+@PHP7_LIBXML +PACKAGE_php7-mod-dom:libxml2))
 $(eval $(call BuildModule,exif,EXIF))
 $(eval $(call BuildModule,fileinfo,Fileinfo))
 $(eval $(call BuildModule,ftp,FTP,+PACKAGE_php7-mod-ftp:libopenssl))
-$(eval $(call BuildModule,gd,GD graphics,+PACKAGE_php7-mod-gd:libjpeg +PACKAGE_php7-mod-gd:libpng))
+$(eval $(call BuildModule,gd,GD graphics,+PACKAGE_php7-mod-gd:libjpeg +PACKAGE_php7-mod-gd:libpng +PACKAGE_php7-mod-gd:libfreetype))
 $(eval $(call BuildModule,gettext,Gettext,+PACKAGE_php7-mod-gettext:libintl-full))
 $(eval $(call BuildModule,gmp,GMP,+PACKAGE_php7-mod-gmp:libgmp))
 $(eval $(call BuildModule,hash,Hash))
