@@ -90,7 +90,7 @@ endef
 
 define Package/libidn/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libidn.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libidn.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,idn))

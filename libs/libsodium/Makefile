@@ -30,6 +30,7 @@ define Package/libsodium
   TITLE:=P(ortable|ackageable) NaCl-based crypto library
   URL:=https://github.com/jedisct1/libsodium
   MAINTAINER:=Damiano Renfer <damiano.renfer@gmail.com>
+  DEPENDS:=+libpthread
 endef
 
 define Package/libsodium/description
@@ -50,8 +51,12 @@ menu "Configuration"
 endmenu
 endef
 
+TARGET_CFLAGS += \
+	-std=gnu99
+
 CONFIGURE_ARGS+= \
 	--disable-ssp \
+	--disable-asm \
 	$(if $(CONFIG_LIBSODIUM_MINIMAL),--enable-minimal=yes,--enable-minimal=no)
 
 define Build/InstallDev

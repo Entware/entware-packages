@@ -24,19 +24,31 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-TARGET_CFLAGS+=-std=gnu99 -fPIC -O3 -ffast-math -I.
+TARGET_CFLAGS:=-std=gnu99 -fPIC -O3 -ffast-math -I.
 MAKE_FLAGS+= LD="$(TARGET_CC) -o"
 
-ifeq ($(CONFIG_x86_64),y)
+ifeq ($(CONFIG_x86_64)$(CONFIG_i386),y)
+CONFIGURE_VARS+= AS=yasm
+MAKE_FLAGS+= AS=yasm
+endif
+
+# ARM ASM depends on ARM1156 or later, blacklist earlier or incompatible cores
+CPU_ASM_BLACKLIST:=arm920t arm926ej-s arm1136j-s arm1176jzf-s fa526 mpcore xscale
+
+ifneq ($(CONFIG_TARGET_x86),)
+ifeq ($(CONFIG_YASM),y)
   CONFIGURE_VARS+= AS=yasm
   MAKE_FLAGS+= AS=yasm
 else
-  CONFIGURE_VARS+= AS= 
-  MAKE_FLAGS+= AS= 
+  CONFIGURE_VARS+= AS=
+  MAKE_FLAGS+= AS=
   CONFIGURE_ARGS += --disable-asm
 endif
+endif
 
-ifeq ($(CONFIG_SOFT_FLOAT),y)
+ifneq ($(CONFIG_SOFT_FLOAT)$(findstring $(CONFIG_CPU_TYPE),$(CPU_ASM_BLACKLIST)),)
+CONFIGURE_VARS+= AS=
+MAKE_FLAGS+= AS=
 CONFIGURE_ARGS += --disable-asm
 endif
 
@@ -49,7 +61,7 @@ define Package/libx264
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=H264/AVC free codec library.
-  DEPENDS:=+libpthread @BUILD_PATENTED
+  DEPENDS:=+libpthread @BUILD_PATENTED @!TARGET_armv5_3x
   URL:=http://www.videolan.org/developers/x264.html
 endef
 

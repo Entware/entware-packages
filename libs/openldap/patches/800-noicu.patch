@@ -1,0 +1,17 @@
+--- a/configure.in
++++ b/configure.in
+@@ -2083,14 +2083,6 @@
+ fi
+ 
+ dnl ----------------------------------------------------------------
+-dnl International Components for Unicode
+-OL_ICU
+-if test "$ol_icu" = no ; then
+-	AC_MSG_WARN([ICU not available])
+-else
+-	ICU_LIBS="$ol_icu"
+-fi
+-dnl ----------------------------------------------------------------
+ dnl
+ dnl Check for Cyrus SASL
+ dnl
