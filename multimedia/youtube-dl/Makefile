@@ -22,13 +22,12 @@ PKG_MAINTAINER:=Adrian Panella <ianchi74@outlook.com>
 
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
 
 define Package/youtube-dl
   SECTION:=multimedia
   CATEGORY:=Multimedia
   TITLE:=utility to download videos from YouTube.com
-  DEPENDS:=+python-openssl +python-email +python-xml +python-codecs +python-ctypes +ca-certificates +python-setuptools
+  DEPENDS:=+python-openssl +python-email +python-xml +python-codecs +python-ctypes +ca-certificates
   URL:=https://youtube-dl.org
 endef
 
@@ -38,17 +37,12 @@ define Package/youtube-dl/description
   It requires the Python interpreter.
 endef
 
-define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix="/opt" --root="$(PKG_INSTALL_DIR)")
-endef
-
 define Package/youtube-dl/install
-	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(CP) \
-		$(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
-		$(1)$(PYTHON_PKG_DIR)
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/youtube-dl $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/youtube-dl $(1)/opt/bin
+	$(SED) 's,/usr/bin/env python,/opt/bin/python,' \
+		$(1)/opt/bin/youtube-dl
+
 endef
 
 $(eval $(call BuildPackage,youtube-dl))
