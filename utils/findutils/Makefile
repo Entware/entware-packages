@@ -33,9 +33,20 @@ sufficient functionality, but some users may want or need
 the full functionality of the GNU tools.
 endef
 
+define Package/findutils
+	$(call Package/findutils/Default)
+	TITLE+= (metapackage)
+	DEPENDS:=+findutils-find +findutils-xargs
+endef
+
 define Package/findutils-find
 	$(call Package/findutils/Default)
 	TITLE+= (find)
+endef
+
+define Package/findutils/description
+$(call Package/findutils/description/Default)
+This metapackage installs find and xargs utilities
 endef
 
 define Package/findutils-find/description
@@ -66,6 +77,11 @@ endef
 CONFIGURE_ARGS += --localstatedir=/opt/var
 CONFIGURE_VARS += ac_cv_path_SORT=sort
 
+define Package/findutils/install
+	$(INSTALL_DIR) $(1)/opt/tmp
+	touch $(1)/opt/tmp/.findutils-placeholder
+endef
+
 define Package/findutils-find/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/find $(1)/opt/bin/
@@ -83,6 +99,7 @@ define Package/findutils-locate/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib $(1)/opt/
 endef
 
+$(eval $(call BuildPackage,findutils))
 $(eval $(call BuildPackage,findutils-find))
 $(eval $(call BuildPackage,findutils-xargs))
 $(eval $(call BuildPackage,findutils-locate))
