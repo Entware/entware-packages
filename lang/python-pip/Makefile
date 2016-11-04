@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pip
 PKG_VERSION:=8.1.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=pip-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/e7/a8/7556133689add8d1a54c0b14aeff0acb03c64707ce100ecd53934da1aa13/
@@ -51,6 +51,9 @@ endef
 define PyPackage/python-pip/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/etc
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
+	$(SED) 's,#!.*,#!/opt/bin/python2.7,' $(1)/opt/bin/pip
+	$(SED) 's,#!.*,#!/opt/bin/python2.7,' $(1)/opt/bin/pip2
+	$(SED) 's,#!.*,#!/opt/bin/python2.7,' $(1)/opt/bin/pip2.7
 	$(INSTALL_CONF) ./files/pip.conf $(1)/opt/etc/
 endef
 
