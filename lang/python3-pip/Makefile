@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python3-pip
 PKG_VERSION:=8.1.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=pip-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/e7/a8/7556133689add8d1a54c0b14aeff0acb03c64707ce100ecd53934da1aa13/
@@ -54,6 +54,7 @@ endef
 define Py3Package/python3-pip/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/pip$(PYTHON3_VERSION) $(1)/opt/bin
+	$(SED) 's,#!.*,#!/opt/bin/python3,' $(1)/opt/bin/pip$(PYTHON3_VERSION)
 	$(LN) pip$(PYTHON3_VERSION) $(1)/opt/bin/pip3
 endef
 
