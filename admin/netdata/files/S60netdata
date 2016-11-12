@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Startup script for netdata
+#
+
+mkdir -m 0755 -p /opt/var/cache/netdata
+chown nobody /opt/var/cache/netdata
+mkdir -m 0755 -p /opt/var/lib/netdata
+chown nobody /opt/var/lib/netdata
+mkdir -m 0755 -p /opt/var/log/netdata
+chown nobody /opt/var/log/netdata
+
+
+ENABLED=yes
+PROCS=netdata
+ARGS=""
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+. /opt/etc/init.d/rc.func

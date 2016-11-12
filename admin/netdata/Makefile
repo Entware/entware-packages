@@ -37,32 +37,32 @@ define Package/netdata/description
 endef
 
 define Package/netdata/conffiles
-/etc/netdata/
+/opt/etc/netdata/netdata.conf
 endef
 
 define Package/netdata/install
-	mkdir -p $(1)/etc/netdata
-	$(CP) $(PKG_INSTALL_DIR)/etc/netdata $(1)/etc
-	$(CP) ./files/netdata.conf $(1)/etc/netdata
-	mkdir -p $(1)/usr/share/netdata
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/netdata $(1)/usr/share
-	rm $(1)/usr/share/netdata/web/images/animated.gif
-	rm -rf $(1)/usr/share/netdata/web/old
-	rm $(1)/usr/share/netdata/web/demo*html
-	rm $(1)/usr/share/netdata/web/fonts/*.svg
-	rm $(1)/usr/share/netdata/web/fonts/*.ttf
-	rm $(1)/usr/share/netdata/web/fonts/*.woff
-	rm $(1)/usr/share/netdata/web/fonts/*.otf
-	mkdir -p $(1)/usr/lib/netdata
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/netdata $(1)/usr/lib
-	rm $(1)/usr/lib/netdata/python.d/python-modules-installer.sh
-	rm -rf $(1)/usr/lib/netdata/python.d/python_modules/pyyaml2
-	rm -rf $(1)/usr/lib/netdata/python.d/python_modules/pyyaml3
-	chmod 4755 $(1)/usr/lib/netdata/plugins.d/apps.plugin
-	mkdir -p $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/netdata.init $(1)/etc/init.d/netdata
-	mkdir -p $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/netdata $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/opt/etc/netdata
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/netdata $(1)/opt/etc
+	$(CP) ./files/netdata.conf $(1)/opt/etc/netdata
+	$(INSTALL_DIR) $(1)/opt/share/netdata
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/netdata $(1)/opt/share
+	rm $(1)/opt/share/netdata/web/images/animated.gif
+	rm -rf $(1)/opt/share/netdata/web/old
+	rm $(1)/opt/share/netdata/web/demo*html
+	rm $(1)/opt/share/netdata/web/fonts/*.svg
+	rm $(1)/opt/share/netdata/web/fonts/*.ttf
+	rm $(1)/opt/share/netdata/web/fonts/*.woff
+	rm $(1)/opt/share/netdata/web/fonts/*.otf
+	$(INSTALL_DIR) $(1)/opt/lib/netdata
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/netdata $(1)/opt/lib
+	rm $(1)/opt/lib/netdata/python.d/python-modules-installer.sh
+	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml2
+	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml3
+	chmod 4755 $(1)/opt/lib/netdata/plugins.d/apps.plugin
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S60netdata $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,netdata))
