@@ -36,14 +36,14 @@ UNIX-like operating systems.
 endef
 
 CONFIGURE_ARGS += \
-	--prefix="/usr"
+	--prefix="/opt"
 
 MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS)"
 
 define Package/stress/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stress $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/stress $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,stress))
