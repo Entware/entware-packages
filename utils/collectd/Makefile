@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.5.2
-PKG_RELEASE:=3
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://collectd.org/files/
@@ -28,9 +28,9 @@ COLLECTD_PLUGINS_DISABLED:= \
 	apple_sensors \
 	aquaero \
 	barometer \
-	battery \
 	ceph \
 	cgroups \
+	cpufreq \
 	curl_json \
 	curl_xml \
 	dbi \
@@ -42,11 +42,13 @@ COLLECTD_PLUGINS_DISABLED:= \
 	hddtemp \
 	ipc \
 	ipmi \
+	iptables \
 	ipvs \
+	iwinfo \
 	java \
 	log_logstash \
-	lvm \
 	lpar \
+	lvm \
 	mbmon \
 	md \
 	memcachec \
@@ -73,7 +75,6 @@ COLLECTD_PLUGINS_DISABLED:= \
 	sigrok \
 	smart \
 	statsd \
-	swap \
 	tape \
 	tokyotyrant \
 	turbostat \
@@ -96,11 +97,11 @@ COLLECTD_PLUGINS_SELECTED:= \
 	apache \
 	apcups \
 	ascent \
+	battery \
 	bind \
 	conntrack \
 	contextswitch \
 	cpu \
-	cpufreq \
 	csv \
 	curl \
 	df \
@@ -112,9 +113,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	filecount \
 	fscache \
 	interface \
-	iptables \
 	irq \
-	iwinfo \
 	load \
 	logfile \
 	madwifi \
@@ -137,6 +136,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	rrdtool \
 	sensors \
 	snmp \
+	swap \
 	syslog \
 	table \
 	tail \
@@ -168,7 +168,7 @@ endef
 
 define Package/collectd
 $(call Package/collectd/Default)
-  DEPENDS:= +libpthread +zlib +libltdl +libip4tc
+  DEPENDS:= +libpthread +zlib +libltdl +libgcrypt +libgpg-error
   MENU:=1
 endef
 
@@ -222,7 +222,7 @@ CONFIGURE_ARGS+= \
 # exception: mod-ascent needs libxml2
 ifneq ($(CONFIG_PACKAGE_collectd-mod-ascent),)
   CONFIGURE_VARS+= \
-	CPPFLAGS="$$$$CPPFLAGS -I$(STAGING_DIR)/usr/include/libxml2"
+	CPPFLAGS="$$$$CPPFLAGS -I$(STAGING_DIR)/opt/include/libxml2"
 endif
 
 ifneq ($(CONFIG_BIG_ENDIAN),)
@@ -232,47 +232,50 @@ else
 endif
 
 ifneq ($(CONFIG_PACKAGE_collectd-mod-postgresql),)
-  CONFIGURE_ARGS+= --with-libpq="$(STAGING_DIR)/usr/"
+  CONFIGURE_ARGS+= --with-libpq="$(STAGING_DIR)/opt/"
 endif
 
 ifneq ($(CONFIG_PACKAGE_collectd-mod-mysql),)
-  CONFIGURE_ARGS+= --with-libmysql="$(STAGING_DIR)/usr/"
+  CONFIGURE_ARGS+= --with-libmysql="$(STAGING_DIR)/opt/"
 endif
 
 # exception: mod-netlink needs libnetlink from iproute
 ifneq ($(CONFIG_PACKAGE_collectd-mod-netlink),)
-  CONFIGURE_ARGS+= --with-libnetlink="$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-libnetlink="$(STAGING_DIR)/opt"
 endif
 
 # exception: mod-modbus needs libmodbus
 ifneq ($(CONFIG_PACKAGE_collectd-mod-modbus),)
-  CONFIGURE_ARGS+= --with-libmodbus="$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-libmodbus="$(STAGING_DIR)/opt"
 endif
 
 # exception: mod-onewire needs libow-capi
 ifneq ($(CONFIG_PACKAGE_collectd-mod-onewire),)
-  CONFIGURE_ARGS+= --with-libowcapi="$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-libowcapi="$(STAGING_DIR)/opt"
 endif
 
 # exception: mod-rrdtool needs rrdtool-1.0.x
 ifneq ($(CONFIG_PACKAGE_collectd-mod-rrdtool),)
-  CONFIGURE_ARGS+= --with-librrd="$(STAGING_DIR)/usr/lib/rrdtool-1.0"
+  CONFIGURE_ARGS+= --with-librrd="$(STAGING_DIR)/opt/lib/rrdtool-1.0"
 endif
 
 define Package/collectd/conffiles
-/etc/collectd.conf
+/opt/etc/collectd.conf
 endef
 
 define Package/collectd/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/collectd $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/usr/share/collectd
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/collectd/types.db $(1)/usr/share/collectd/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/collectd.conf $(1)/etc/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/collectd.init $(1)/etc/init.d/collectd
-	$(INSTALL_DIR) $(1)/etc/collectd/conf.d
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{collectd,collectdmon} $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/{libcollectdclient.so,libcollectdclient.so.1,libcollectdclient.so.1.0.0} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/share/collectd
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/collectd/types.db $(1)/opt/share/collectd/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) ./files/collectd.conf $(1)/opt/etc/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S70collectd $(1)/opt/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/etc/collectd/conf.d
+	$(INSTALL_DIR) $(1)/opt/var/run/collectd
 endef
 
 # 1: plugin name
@@ -290,11 +293,11 @@ define BuildPlugin
   endef
 
   define Package/collectd-mod-$(1)/install
-	$(INSTALL_DIR) $$(1)/usr/lib/collectd
+	$(INSTALL_DIR) $$(1)/opt/lib/collectd
 	for m in $(3); do \
 		$(CP) \
-			$(PKG_INSTALL_DIR)/usr/lib/collectd/$$$$$$$${m}.so \
-			$$(1)/usr/lib/collectd/ ; \
+			$(PKG_INSTALL_DIR)/opt/lib/collectd/$$$$$$$${m}.so \
+			$$(1)/opt/lib/collectd/ ; \
 	done
   endef
 
@@ -308,11 +311,11 @@ $(eval $(call BuildPackage,collectd))
 $(eval $(call BuildPlugin,apache,apache status input,apache,+PACKAGE_collectd-mod-apache:libcurl))
 $(eval $(call BuildPlugin,apcups,apcups status input,apcups,))
 $(eval $(call BuildPlugin,ascent,ascent status input,ascent,+PACKAGE_collectd-mod-ascent:libcurl +PACKAGE_collectd-mod-ascent:libxml2))
+$(eval $(call BuildPlugin,battery,battery status input,battery,))
 $(eval $(call BuildPlugin,bind,BIND server/zone input,bind,+PACKAGE_collectd-mod-bind:libcurl +PACKAGE_collectd-mod-bind:libxml2))
 $(eval $(call BuildPlugin,conntrack,connection tracking table size input,conntrack,))
 $(eval $(call BuildPlugin,contextswitch,context switch input,contextswitch,))
 $(eval $(call BuildPlugin,cpu,CPU input,cpu,))
-$(eval $(call BuildPlugin,cpufreq,CPU Freq input,cpufreq,@(TARGET_x86||TARGET_x86_64||TARGET_mvebu))) # Only enable on x86 and mvebu
 $(eval $(call BuildPlugin,csv,CSV output,csv,))
 $(eval $(call BuildPlugin,curl,cURL input,curl,+PACKAGE_collectd-mod-curl:libcurl))
 #$(eval $(call BuildPlugin,dbi,relational database input,dbi,+PACKAGE_collectd-mod-dbi:libdbi))
@@ -325,9 +328,9 @@ $(eval $(call BuildPlugin,exec,process exec input,exec,))
 $(eval $(call BuildPlugin,filecount,file count input,filecount,))
 $(eval $(call BuildPlugin,fscache,file-system based caching framework input,fscache,))
 $(eval $(call BuildPlugin,interface,network interfaces input,interface,))
-$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables +libiptc))
+#$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables +libiptc))
 $(eval $(call BuildPlugin,irq,interrupt usage input,irq,))
-$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
+#$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
 $(eval $(call BuildPlugin,load,system load input,load,))
 $(eval $(call BuildPlugin,logfile,log files output,logfile,))
 $(eval $(call BuildPlugin,madwifi,MadWifi status input,madwifi,))
@@ -350,6 +353,7 @@ $(eval $(call BuildPlugin,protocols,network protocols input,protocols,))
 $(eval $(call BuildPlugin,rrdtool,RRDtool output,rrdtool,+PACKAGE_collectd-mod-rrdtool:librrd1))
 $(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod-sensors:libsensors))
 $(eval $(call BuildPlugin,snmp,SNMP input,snmp,+PACKAGE_collectd-mod-snmp:libnetsnmp))
+$(eval $(call BuildPlugin,swap,swap usage,swap,))
 $(eval $(call BuildPlugin,syslog,syslog output,syslog,))
 $(eval $(call BuildPlugin,tail,tail input,tail,))
 $(eval $(call BuildPlugin,tail-csv,tail CSV input,tail_csv,))

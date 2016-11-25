@@ -76,26 +76,26 @@ define Build/Compile
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="$(TARGET_CPPFLAGS)" \
 		STAGING_DIR="$(STAGING_DIR)" \
-		PREFIX="/usr" \
+		PREFIX="/opt" \
 		MACHINE="$(ARCH)" \
 		EXLDFLAGS="" \
 		user
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/sensors
+	$(INSTALL_DIR) $(1)/opt/include/sensors
 	$(CP) \
 		$(PKG_BUILD_DIR)/lib/sensors.h \
-		$(1)/usr/include/sensors
-	$(INSTALL_DIR) $(1)/usr/lib
+		$(1)/opt/include/sensors
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
 		$(PKG_BUILD_DIR)/lib/libsensors.{a,so*} \
-		$(1)/usr/lib
+		$(1)/opt/lib
 endef
 
 define Package/lm-sensors/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/prog/sensors/sensors $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/prog/sensors/sensors $(1)/opt/sbin
 ifeq ($(ARCH),i386)
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_CONF) ./files/sensors.conf $(1)/etc/sensors.conf
@@ -103,13 +103,13 @@ endif
 endef
 
 define Package/lm-sensors-detect/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/prog/detect/sensors-detect $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/prog/detect/sensors-detect $(1)/opt/sbin
 endef
 
 define Package/libsensors/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/lib/libsensors.so* $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/lib/libsensors.so* $(1)/opt/lib
 endef
 
 $(eval $(call BuildPackage,lm-sensors))
