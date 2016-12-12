@@ -6,12 +6,13 @@
 #
 # Downgraded from 8.6.4 to 8.5.18, upstream package is broken
 # Threads support is broken on MIPS
+# Missing tcl files added to package (/opt/lib/tcl*)
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tcl
 PKG_VERSION:=8.5.18
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)$(PKG_VERSION)-src.tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
@@ -67,6 +68,8 @@ endef
 define Package/tcl/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/tcl8 $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/tcl8.5 $(1)/opt/lib/
 
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
