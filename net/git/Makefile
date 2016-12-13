@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.10.1
+PKG_VERSION:=2.10.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_MD5SUM:=a9e1bf842497fc3a23e86424018b3499
+PKG_MD5SUM:=3cd1dca37be60668f482545716923b72
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -53,6 +53,21 @@ $(call Package/git/description)
  This package allows git push/fetch over http(s) and ftp(s)
 endef
 
+define Package/git-gitweb
+$(call Package/git/Default)
+  TITLE:=Git repository web interface
+  DEPENDS:=git +perlbase-essential +perlbase-file +perlbase-fcntl +perlbase-encode +perlbase-digest +perlbase-time +perl-cgi
+endef
+
+define Package/git-gitweb/description
+$(call Package/git/description)
+ This package builds the gitweb web interface for git repositories
+endef
+
+define Package/git-gitweb/conffiles
+/opt/etc/gitweb.conf
+endef
+
 MAKE_FLAGS := \
 	CC="$(TARGET_CC)" \
 	CFLAGS="$(TARGET_CFLAGS)" \
@@ -68,6 +83,11 @@ MAKE_FLAGS := \
 	NO_PYTHON="YesPlease" \
 	NO_TCLTK="YesPlease" \
 	NO_INSTALL_HARDLINKS="yes" \
+	gitwebdir="/opt/share/www/gitweb/cgi-bin" \
+	GITWEB_JS="/gitweb/gitweb.js" \
+	GITWEB_CSS="/gitweb/gitweb.css" \
+	GITWEB_LOGO="/gitweb/gitweb-logo.png" \
+	GITWEB_FAVICON="/gitweb/gitweb-favicon.png"
 
 CONFIGURE_ARGS += \
 	--without-iconv \
@@ -77,6 +97,11 @@ define Build/Configure
 		configure
 
 	$(call Build/Configure/Default,)
+endef
+
+define Build/Compile
+	mkdir -p $(PKG_INSTALL_DIR)/opt/share/www/gitweb/cgi-bin
+	$(call Build/Compile/Default,DESTDIR=$(PKG_INSTALL_DIR) all install gitweb install-gitweb)
 endef
 
 define Package/git/install
@@ -109,5 +134,12 @@ define Package/git-http/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/git-core/git-remote-https $(1)/opt/lib/git-core
 endef
 
+define Package/git-gitweb/install
+	$(INSTALL_DIR) $(1)/opt/share/www/gitweb/cgi-bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/www/gitweb/cgi-bin/gitweb.cgi $(1)/opt/share/www/gitweb/cgi-bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/gitweb/cgi-bin/static/* $(1)/opt/share/www/gitweb/
+endef
+
 $(eval $(call BuildPackage,git))
 $(eval $(call BuildPackage,git-http))
+$(eval $(call BuildPackage,git-gitweb))
