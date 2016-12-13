@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnutls
-PKG_VERSION:=3.5.4
-PKG_RELEASE:=3
+PKG_VERSION:=3.5.6
+PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.5
-PKG_MD5SUM:=c17e20d0f6b040580df57f5f94e3610f
+PKG_MD5SUM:=7a38b23757aae009c3eb5bb12fb0afda
 #PKG_FIXUP:=autoreconf gettext-version
 PKG_MAINTAINER:=Nikos Mavrogiannopoulos <nmav@gnutls.org>
 PKG_LICENSE:=LGPLv2.1+
@@ -22,12 +22,6 @@ PKG_LICENSE:=LGPLv2.1+
 PKG_INSTALL:=1
 PKG_LIBTOOL_PATHS:=. lib
 PKG_CHECK_FORMAT_SECURITY:=0
-PKG_BUILD_DEPENDS:=USE_MUSL:argp-standalone
-
-#do not patch - glibc does not need -largp
-ifneq ($(CONFIG_USE_GLIBC),)
-PATCH_DIR=
-endif
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_GNUTLS_ALPN \
@@ -69,6 +63,7 @@ define Package/certtool
 $(call Package/gnutls/Default)
   SECTION:=utils
   CATEGORY:=Utilities
+  SUBMENU:=Encryption
   TITLE+= (certool utility)
   DEPENDS+= +libgnutls
 endef
@@ -83,6 +78,7 @@ define Package/gnutls-utils
 $(call Package/gnutls/Default)
   SECTION:=utils
   CATEGORY:=Utilities
+  SUBMENU:=Encryption
   TITLE+= (utilities)
   DEPENDS+= +libgnutls
 endef
