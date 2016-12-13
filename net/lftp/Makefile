@@ -8,14 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lftp
-PKG_VERSION:=4.7.3
+PKG_VERSION:=4.7.4
 PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=http://lftp.yar.ru/ftp \
-		http://lftp.yar.ru/ftp/old \
-		http://lftp.cybermirror.org \
-		http://lftp.cybermirror.org/old
-PKG_MD5SUM:=23deda16014412c802f095fbaa0bebee
+PKG_SOURCE_URL:=http://lftp.tech/ftp/ \
+		ftp://ftp.st.ryukoku.ac.jp/pub/network/ftp/lftp/
+PKG_MD5SUM:=74965c798b1806d0a2659d8a606ea47f
 
 
 
@@ -28,7 +26,7 @@ define Package/lftp
   SUBMENU:=File Transfer
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libncurses +libopenssl +libreadline +libstdcpp +libexpat
+  DEPENDS:=+libncurses +libopenssl +libreadline +libstdcpp +libexpat +zlib
   TITLE:=a sophisticated file transfer program with command line interface.
   MAINTAINER:=Federico Di Marco <fededim@gmail.com>
   URL:=http://lftp.yar.ru/
@@ -60,8 +58,8 @@ CONFIGURE_ARGS += \
 	--without-libidn \
 	--without-libresolv \
 	--with-openssl="$(STAGING_DIR)/opt" \
-	--with-zlib="$(STAGING_DIR)/opt" \
 	--with-readline="$(STAGING_DIR)/opt" \
+	--with-zlib="$(STAGING_DIR)/opt" \
 	--disable-static
 
 TARGET_CFLAGS += -DNDEBUG
