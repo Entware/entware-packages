@@ -29,7 +29,7 @@ define Package/pillow
     TITLE:=The friendly PIL fork
     MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
     URL:=https://python-pillow.org/
-    DEPENDS:=+python +libfreetype +libjpeg +zlib +lcms
+    DEPENDS:=+python +libfreetype +libjpeg +zlib +lcms +libtiff
 endef
 
 define Package/pillow/description
