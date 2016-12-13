@@ -27,7 +27,8 @@ include $(INCLUDE_DIR)/package.mk
 define Package/gnupg/Default
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libbz2 +zlib +libncurses +libreadline
+  SUBMENU:=Encryption
+  DEPENDS:=+zlib +libncurses +libreadline
   TITLE:=GNU privacy guard - a free PGP replacement
   URL:=http://www.gnupg.org/
 endef
@@ -64,6 +65,7 @@ CONFIGURE_ARGS += \
 	--disable-gnupg-iconv \
 	--disable-card-support \
 	--disable-agent-support \
+	--disable-bzip2 \
 	--disable-ldap \
 	--disable-finger \
 	--disable-dns-srv \
