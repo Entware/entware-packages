@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
 PKG_VERSION:=1.5.10
-PKG_RELEASE:=1
+PKG_RELEASE:=5
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
@@ -27,10 +27,9 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 
 define Package/unbound/Default
-  TITLE:=A validating, recursive & caching DNS resolver
+  TITLE:=Unbound is a validating, recursive, and caching DNS resolver.
   URL:=http://www.unbound.net/
   DEPENDS:=+libopenssl
-  USERID:=unbound:unbound
 endef
 
 define Package/unbound
@@ -38,6 +37,7 @@ define Package/unbound
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
+  USERID:=unbound=553:unbound=553
   TITLE+= (daemon)
   DEPENDS+= +libunbound
 endef
