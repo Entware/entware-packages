@@ -126,9 +126,8 @@ CONFIGURE_ARGS+= \
 	--without-cxx-main \
 	--with-threads \
 	--with-system-ffi="$(STAGING_DIR)/opt" \
-	--with-system-expat="$(STAGING_DIR)/opt" \
 	--without-pymalloc \
-	--without-ensurepip \
+	--with-ensurepip=no \
 	$(ENABLE_IPV6) \
 	CONFIG_SITE="$(PKG_BUILD_DIR)/config.site" \
 	OPT="$(TARGET_CFLAGS)"
@@ -160,7 +159,7 @@ define Build/InstallDev
 		$(PKG_INSTALL_DIR)/opt/include/python$(PYTHON_VERSION) \
 		$(1)/opt/include/
 	$(CP) \
-		$(STAGING_DIR)/host/lib/python$(PYTHON_VERSION) \
+		$(HOST_PYTHON3_LIB_DIR) \
 		$(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* \
 		$(1)/opt/lib/
 	$(CP) \
@@ -226,14 +225,11 @@ HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \
 	--without-pymalloc \
 	--with-threads \
-	--prefix=$(STAGING_DIR)/host \
-	--exec-prefix=$(STAGING_DIR)/host \
-	--sysconfdir=$(STAGING_DIR_HOST)/host/etc \
-	--localstatedir=$(STAGING_DIR)/host/var \
-	--sbindir=$(STAGING_DIR)/host/bin \
-	--with-system-expat=$(STAGING_DIR)/host \
-	--with-system-ffi=$(STAGING_DIR)/host \
-	--with-ensurepip=upgrade \
+	--prefix=$(HOST_PYTHON3_DIR) \
+	--exec-prefix=$(HOST_PYTHON3_DIR) \
+	--with-system-expat=$(STAGING_DIR_HOSTPKG) \
+	--with-system-ffi=$(STAGING_DIR_HOSTPKG) \
+	--with-ensurepip=no \
 	CONFIG_SITE= \
 	CFLAGS="$(HOST_CFLAGS)"
 
@@ -243,10 +239,11 @@ define Host/Compile
 endef
 
 define Host/Install
-	$(INSTALL_DIR) $(STAGING_DIR)/host/bin/
 	$(MAKE) -C $(HOST_BUILD_DIR) install
-	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Parser/pgen $(STAGING_DIR)/host/bin/pgen3
-	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Programs/_freeze_importlib $(STAGING_DIR)/host/bin/_freeze_importlib
+
+	$(INSTALL_DIR) $(HOST_PYTHON3_DIR)/bin/
+	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Parser/pgen $(HOST_PYTHON3_DIR)/bin/pgen3
+	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Programs/_freeze_importlib $(HOST_PYTHON3_DIR)/bin/_freeze_importlib
 endef
 
 $(eval $(call HostBuild))

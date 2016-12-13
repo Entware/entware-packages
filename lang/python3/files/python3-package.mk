@@ -5,6 +5,12 @@
 # See /LICENSE for more information.
 #
 
+# Compatibility fallback for older OpenWrt and LEDE versions
+ifeq ($(STAGING_DIR_HOSTPKG),)
+  $(warning STAGING_DIR_HOSTPKG is unset - falling back to $$(STAGING_DIR)/host)
+  STAGING_DIR_HOSTPKG := $(STAGING_DIR)/host
+endif
+
 PYTHON3_VERSION_MAJOR:=3
 PYTHON3_VERSION_MINOR:=5
 PYTHON3_VERSION_MICRO:=2
@@ -20,8 +26,9 @@ PYTHON3_PKG_DIR:=/opt/lib/python$(PYTHON3_VERSION)/site-packages
 
 PYTHON3:=python$(PYTHON3_VERSION)
 
-HOST_PYTHON3_LIB_DIR:=$(STAGING_DIR)/host/lib/python$(PYTHON3_VERSION)
-HOST_PYTHON3_BIN:=$(STAGING_DIR)/host/bin/python3
+HOST_PYTHON3_DIR:=$(STAGING_DIR_HOSTPKG)
+HOST_PYTHON3_LIB_DIR:=$(HOST_PYTHON3_DIR)/lib/python$(PYTHON3_VERSION)
+HOST_PYTHON3_BIN:=$(HOST_PYTHON3_DIR)/bin/python3
 
 PYTHON3PATH:=$(PYTHON3_LIB_DIR):$(STAGING_DIR)$(PYTHON3_PKG_DIR):$(PKG_INSTALL_DIR)$(PYTHON3_PKG_DIR)
 define HostPython3
