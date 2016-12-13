@@ -10,8 +10,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.9.9-P3
-PKG_RELEASE:=1
+PKG_VERSION:=9.10.4-P4
+PKG_RELEASE:=2
 USERID:=bind=57:bind=57
 
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>
@@ -21,7 +21,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION) \
 	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_MD5SUM:=98d46cebb3fac3c6f282e8467424821b
+PKG_MD5SUM:=e110904a1d54f83f01d4be8bcd842927
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
@@ -116,7 +116,8 @@ CONFIGURE_ARGS += \
 	--with-gost=no \
 	--with-gssapi=no \
 	--with-ecdsa=$(if $(CONFIG_OPENSSL_WITH_EC),yes,no) \
-	--with-readline=no
+	--with-readline=no \
+	--sysconfdir=/opt/etc/bind
 
 ifdef CONFIG_BIND_ENABLE_FILTER_AAAA
 	CONFIGURE_ARGS += \
@@ -153,9 +154,9 @@ define Package/bind-server/install
 		./files/bind/db.root \
 		$(1)/opt/etc/bind/
 	$(CP) ./files/bind/named.conf.example $(1)/opt/etc/bind/named.conf
-	find $(1)/opt/etc/bind/ -name ".svn" | xargs rm -rf
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S09named $(1)/opt/etc/init.d
+	find $(1)/opt/etc/bind/ -name ".svn" | xargs rm -rf
 endef
 
 define Package/bind-server/conffiles
