@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=znc
 PKG_VERSION:=1.6.3
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://znc.in/releases \
@@ -236,6 +236,9 @@ $(eval $(call module,partyline,Allows ZNC users to join internal channels and \
 
 $(eval $(call module,perform,Performs commands on connect.))
 
+$(eval $(call module,playback,Avoid repetitive playback buffers on re-connect \
+	with supported clients (e.g. mutter, colluquy)))
+
 $(eval $(call module,q,Auths you with Q (and a little more).))
 
 $(eval $(call module,raw,View all of the raw traffic.))
@@ -278,7 +281,7 @@ include $(INCLUDE_DIR)/package.mk
 CONFIGURE_VARS += \
 	CXXFLAGS="$(TARGET_CFLAGS) -fno-builtin -fno-rtti" \
 	CPPFLAGS="-I$(STAGING_DIR)/opt/include -I$(STAGING_DIR)/include" \
-	LDFLAGS="$(TARGET_LDFLAGS) -nodefaultlibs -lc" \
+	LDFLAGS="-nodefaultlibs -lc -L$(STAGING_DIR)/opt/lib -L$(STAGING_DIR)/lib" \
 	LIBS="-lstdc++ -lm -lssl -lcrypto $(LIBGCC_S) -lc"
 
 CONFIGURE_ARGS += \
