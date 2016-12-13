@@ -10,14 +10,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ruby
-PKG_VERSION:=2.3.1
+PKG_VERSION:=2.3.3
 PKG_RELEASE:=1
 
 PKG_LIBVER:=2.3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://cache.ruby-lang.org/pub/ruby/$(PKG_LIBVER)/
-PKG_MD5SUM:=c194281f63d7fcd816747fe78474be5e
+PKG_MD5SUM:=882e6146ed26c6e78c02342835f5d46b86de95f0dc4e16543294bc656594cc5b
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=COPYING
@@ -629,8 +629,8 @@ define RubyBuildPackage/install
 	( \
 	  cd $(PKG_INSTALL_DIR) && \
 	  $(TAR) -cf - \
-	    --files-from <(ls -1d $(patsubst /%,%,$(RUBY_FILES))) \
 	    $(if $(RUBY_FILES_EXCLUDED),--exclude-from <(ls -1d $(patsubst /%,%,$(RUBY_FILES_EXCLUDED)))) \
+	    --files-from <(ls -1d $(patsubst /%,%,$(RUBY_FILES))) \
 	) | ( \
 	  [ -n "$(2)" ] && cd $(2) && $(TAR) -xf - \
 	)
