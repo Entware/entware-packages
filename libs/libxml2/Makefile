@@ -131,8 +131,8 @@ define Package/libxml2/install
 endef
 
 define Host/Install
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(HOST_BUILD_DIR)/xml2-config
 	$(call Host/Install/Default)
-	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(STAGING_DIR)/host/bin/xml2-config
 endef
 
 $(eval $(call HostBuild))
