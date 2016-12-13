@@ -27,6 +27,7 @@ TARGET_LDFLAGS+=-Wl,-rpath-link=$(STAGING_DIR)/opt/lib
 define Package/cryptsetup/Default
   SECTION:=utils
   CATEGORY:=Utilities
+  SUBMENU:=Encryption
   TITLE:=Cryptsetup
   DEPENDS:=+libblkid +libuuid +libpopt +libdevmapper
   URL:=http://code.google.com/p/cryptsetup/
