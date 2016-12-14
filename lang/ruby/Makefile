@@ -153,6 +153,12 @@ define Package/ruby/config
 
 endef
 
+define Build/Clean
+	$(call Build/Clean/Default)
+	rm -f $(STAGING_DIR)/pkginfo/ruby*
+	rm -f $(STAGING_DIR)/pkginfo/libruby*
+endef
+
 define Package/ruby/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/lib/ruby/$(PKG_LIBVER)
