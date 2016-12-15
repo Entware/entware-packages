@@ -1,0 +1,25 @@
+--- a/utils/mount/network.c
++++ b/utils/mount/network.c
+@@ -38,7 +38,7 @@
+ #include <sys/socket.h>
+ #include <sys/wait.h>
+ #include <sys/stat.h>
+-#include <linux/in6.h>
++
+ #include <netinet/in.h>
+ #include <rpc/rpc.h>
+ #include <rpc/pmap_prot.h>
+@@ -1125,13 +1125,6 @@
+ 		if (bind(sock, SAFE_SOCKADDR(&sin), sizeof(sin)) < 0)
+ 			goto out;
+ 		break;
+-	case AF_INET6:
+-		/* Make sure the call-back address is public/permanent */
+-		val = IPV6_PREFER_SRC_PUBLIC;
+-		setsockopt(sock, SOL_IPV6, IPV6_ADDR_PREFERENCES, &val, sizeof(val));
+-		if (bind(sock, SAFE_SOCKADDR(&sin6), sizeof(sin6)) < 0)
+-			goto out;
+-		break;
+ 	default:
+ 		errno = EAFNOSUPPORT;
+ 		goto out;
