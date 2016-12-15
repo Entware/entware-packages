@@ -1,7 +1,8 @@
-commit 78d163bdea65c3cd74ebfc6ed0ee3d9bd35fb78a
-Author: Peter Wagner <tripolar@gmx.at>
-Date:   Fri Oct 21 00:35:15 2016 +0200
+commit 2becb18c5292858cc3508cc607e77a22ccbfc9b5
+Merge: 18ce1a8 5f6e865
+Author: Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
+Date:   Sat Dec 10 19:00:55 2016 +0100
 
-    git: update to 2.10.1
-
-    Signed-off-by: Peter Wagner <tripolar@gmx.at>
+    Merge pull request #3639 from kholk/master
+    
+    ocserv: Add libev prefix to stop configure stage failure
