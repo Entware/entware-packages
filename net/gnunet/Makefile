@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnunet
-PKG_SOURCE_VERSION:=38151
-PKG_VERSION:=0.10.1-svn$(PKG_SOURCE_VERSION)
+PKG_SOURCE_VERSION:=948983f991c6fa623cf008826b62a6142dafa189
+PKG_VERSION:=0.10.2-git-20161127-$(PKG_SOURCE_VERSION)
 PKG_RELEASE:=1
 
 # ToDo:
@@ -17,8 +17,8 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_URL:=https://gnunet.org/svn/gnunet/
-PKG_SOURCE_PROTO:=svn
+PKG_SOURCE_URL:=https://gnunet.org/git/gnunet.git
+PKG_SOURCE_PROTO:=git
 
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=COPYING
@@ -79,6 +79,8 @@ define Package/gnunet/description
 endef
 
 define BuildComponent
+  PKG_CONFIG_DEPENDS+=CONFIG_PACKAGE_$(PKG_NAME)-$(1)
+
   define Package/gnunet-$(1)
     $$(call Package/gnunet/Default)
     TITLE+= $(2)
@@ -143,7 +145,7 @@ define Package/gnunet/install
 	done )
 
 	( for lib in arm ats block cadet core datacache dht \
-	    dns dnsparser fragmentation friends hello identity nat nse \
+	    dns dnsparser fragmentation friends hello identity nat natnew nse \
 	    peerinfo regexblock regex revocation scalarproduct set \
 	    statistics transport util; do \
 		$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgnunet$$$$lib.so* $(1)/usr/lib/ ; \

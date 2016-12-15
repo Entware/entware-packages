@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=logrotate
 PKG_VERSION:=3.10.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= https://github.com/logrotate/logrotate/releases/download/$(PKG_VERSION)
@@ -40,7 +40,7 @@ endef
 
 CONFIGURE_ARGS += --with-acl=no
 
-EXTRA_CFLAGS += $(TARGET_CPPFLAGS)
+EXTRA_CFLAGS += $(TARGET_CPPFLAGS) -Wno-nonnull-compare
 EXTRA_LDFLAGS += $(TARGET_LDFLAGS)
 
 define Build/Compile

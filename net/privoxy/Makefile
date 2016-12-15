@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=privoxy
 PKG_VERSION:=3.0.26
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=privoxy-$(PKG_VERSION)-stable-src.tar.gz
 PKG_SOURCE_URL:=@SF/ijbswa
@@ -106,7 +106,6 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_PRIVOXY_enable-accept-filter),--enable-accept-filter) \
 	$(if $(CONFIG_PRIVOXY_enable-strptime-sanity-checks),--enable-strptime-sanity-checks) \
 	$(if $(CONFIG_PRIVOXY_enable-compression),--enable-compression)
-
 
 # needed otherwise errors during compile
 MAKE_FLAGS:=
