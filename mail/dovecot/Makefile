@@ -5,7 +5,7 @@
 # See /LICENSE for more information.
 #
 # LDAP is always turned on. MySQL variant added.
-
+# XXX new version`s broken for some ARCH
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dovecot
