@@ -331,7 +331,7 @@ endef
 CONFIGURE_PREFIX:=$(PKG_INSTALL_DIR)
 TARGET_LDFLAGS += -pthread -lrt
 
-TARGET_CFLAGS += \
+TARGET_CFLAGS += -std=c++11 \
 	$(if $(CONFIG_PACKAGE_boost-python), -I$(STAGING_DIR)/opt/include/python2.7/) \
 	$(if $(CONFIG_PACKAGE_boost-python3), -I$(STAGING_DIR)/opt/include/python3.5/) \
 	$(if $(CONFIG_SOFT_FLOAT),-DBOOST_NO_FENV_H) -fPIC
