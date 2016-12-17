@@ -36,7 +36,7 @@ ifneq ($(CONFIG_SOFT_FLOAT)$(findstring $(call qstrip,$(CONFIG_CPU_TYPE)),$(CPU_
   MAKE_FLAGS+= AS= 
   CONFIGURE_ARGS += --disable-asm
 else
-ifneq ($(CONFIG_TARGET_x86),)
+ifeq ($(CONFIG_TARGET_x64_3x),y)
 ifeq ($(CONFIG_YASM),y)
   CONFIGURE_VARS+= AS=yasm
   MAKE_FLAGS+= AS=yasm
