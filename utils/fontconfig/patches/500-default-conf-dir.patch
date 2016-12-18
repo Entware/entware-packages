@@ -1,0 +1,13 @@
+--- a/configure.ac
++++ a/configure.ac
+@@ -440,8 +440,8 @@
+ 		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "WINDOWSFONTDIR", 
+ 				   [Windows font directory])
+ 	else
+-		FC_DEFAULT_FONTS="/usr/share/fonts"
+-		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "/usr/share/fonts", 
++		FC_DEFAULT_FONTS="/opt/share/fonts"
++		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "/opt/share/fonts", 
+ 				   [System font directory])
+ 	fi
+ 	;;
