@@ -9,7 +9,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=iotivity
 PKG_VERSION:=1.1.0
-PKG_RELEASE=1
+#boost was upgraded
+PKG_RELEASE=1a
 
 PKG_SOURCE:=${PKG_NAME}-${PKG_VERSION}.tar.gz
 PKG_SOURCE_URL:=http://mirrors.kernel.org/${PKG_NAME}/${PKG_VERSION}/
