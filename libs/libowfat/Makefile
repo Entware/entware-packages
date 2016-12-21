@@ -37,7 +37,7 @@ endef
 
 TARGET_CFLAGS += $(FPIC)
 LOWFAT_MAKEOPTS = $(TARGET_CONFIGURE_OPTS) \
-	CFLAGS="$(TARGET_CFLAGS) -I$(PKG_BUILD_DIR) -I$(STAGING_DIR)/usr/include" \
+	CFLAGS="$(TARGET_CFLAGS) -I$(PKG_BUILD_DIR) -I$(STAGING_DIR)/opt/include" \
 	DEBUG="$(DEBUG)" \
 	VERSION="$(LOWFAT_VERSION)" \
 	OS="Linux"
@@ -52,10 +52,10 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	mkdir -p $(1)/usr/include/libowfat
-	$(CP) $(PKG_BUILD_DIR)/*.h $(1)/usr/include/libowfat
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/*.a $(1)/usr/lib
+	mkdir -p $(1)/opt/include/libowfat
+	$(CP) $(PKG_BUILD_DIR)/*.h $(1)/opt/include/libowfat
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/*.a $(1)/opt/lib
 endef
 
 $(eval $(call BuildPackage,libowfat))

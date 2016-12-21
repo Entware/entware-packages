@@ -70,36 +70,36 @@ define Package/opentracker6/description
 endef
 
 
-MAKE_FLAGS += PREFIX="$(STAGING_DIR)/usr"
+MAKE_FLAGS += PREFIX="$(STAGING_DIR)/opt"
 
 ifeq ($(BUILD_VARIANT),ipv6)
   MAKE_FLAGS += FEATURES="-DWANT_V6"
 endif
 
 define Package/opentracker/conffiles
-/etc/opentracker.conf
+/opt/etc/opentracker.conf
 endef
 
 define Package/opentracker6/conffiles
-/etc/opentracker6.conf
+/opt/etc/opentracker6.conf
 endef
 
 define Package/opentracker/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/opentracker $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/opentracker.conf.sample $(1)/etc/opentracker.conf
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/opentracker.init $(1)/etc/init.d/opentracker
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/opentracker $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/opentracker.conf.sample $(1)/opt/etc/opentracker.conf
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S78opentracker $(1)/opt/etc/init.d
 endef
 
 define Package/opentracker6/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/opentracker $(1)/usr/bin/opentracker6
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/opentracker.conf.sample $(1)/etc/opentracker6.conf
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/opentracker6.init $(1)/etc/init.d/opentracker6
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/opentracker $(1)/opt/bin/opentracker6
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/opentracker.conf.sample $(1)/opt/etc/opentracker6.conf
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S78opentracker6 $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,opentracker))
