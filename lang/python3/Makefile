@@ -14,7 +14,7 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
@@ -126,6 +126,7 @@ CONFIGURE_ARGS+= \
 	--without-cxx-main \
 	--with-threads \
 	--with-system-ffi="$(STAGING_DIR)/opt" \
+	--with-system-expat="$(STAGING_DIR)/opt" \
 	--without-pymalloc \
 	--with-ensurepip=no \
 	$(ENABLE_IPV6) \
