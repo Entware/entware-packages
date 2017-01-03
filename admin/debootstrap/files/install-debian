@@ -1,0 +1,51 @@
+#!/bin/sh
+
+ARCH=@ARCH@
+#ARCH=amd64, armel, armhf, mips, mipsel
+#form armv7 and higher cpu with hardfloat support use armhf
+
+## debian codenames
+DISTRO=jessie
+#DISTRO=oldstable - The previous stable release (wheezy).
+#DISTRO=stable - The current stable release (jessie).
+#DISTRO=testing - The next generation release (stretch).
+#DISTRO=unstable - The unstable development release (sid).
+
+## target installation folder
+TARGET=/opt/debian
+
+## extra packages to install
+#INCLUDE="--include=sudo,nano,wget"
+INCLUDE=
+
+## varaint
+VARIANT=
+#VARIANT=minbase
+
+#unofficial mirror
+#MIRROR=http://mirror.yandex.ru/debian/
+#official mirror
+MIRROR=http://ftp.debian.org/debian
+
+unset LD_LIBRARY_PATH
+unset LD_PRELOAD
+DEBOOTSTRAP_DIR=/opt/share/debootstrap \
+PATH=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/sbin:/opt/bin \
+/opt/sbin/debootstrap $VARIANT $INCLUDE --arch $ARCH $DISTRO $TARGET $MIRROR
+
+#disable services autostart
+cat > /opt/debian/usr/sbin/policy-rc.d <<EOF
+#!/bin/sh
+exit 101
+EOF
+chmod a+x /opt/debian/usr/sbin/policy-rc.d
+
+# add Entware path at the end
+echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /opt/debian/etc/profile
+# add more secure tty's
+echo "pts/0" >> /opt/debian/etc/securetty
+echo "pts/1" >> /opt/debian/etc/securetty
+echo "pts/2" >> /opt/debian/etc/securetty
+
+echo "Please run /opt/etc/init.d/S99debian start"
+echo "Please run start-debian,change password with passwd command and run 'apt-get update'"

@@ -1,0 +1,98 @@
+#!/bin/sh
+
+# Based on the script from https://github.com/DontBeAPadavan/chroot-debian
+
+PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Debian folder
+CHROOT_DIR=`readlink -f /opt/debian`
+
+CHROOT_SERVICES_LIST=$CHROOT_DIR/chroot-services.list
+
+MountedDirCount="$(mount | grep $CHROOT_DIR | wc -l)"
+
+start() {
+	if [ -f /etc/hosts ]; then
+		cp /etc/hosts $CHROOT_DIR/etc/hosts
+	fi
+	if [ -f /etc/resolve.conf ]; then
+		cp /etc/resolve.conf $CHROOT_DIR/etc/resolve.conf
+	fi
+
+	if [ $MountedDirCount -gt 0 ]; then
+		echo 'Debian services have already started, exiting...'
+		exit 1
+	fi
+	echo 'Starting Debian services...'
+	for dir in dev dev/pts proc sys opt; do
+		mount -o bind /$dir $CHROOT_DIR/$dir
+	done
+	if [ ! -e "$CHROOT_SERVICES_LIST" ]; then
+		echo 'WARNING: No Debian serices defined.'
+		echo "Please, define Debian services to start in $CHROOT_SERVICES_LIST file!"
+		echo 'One service per line. Hint: these are script names from Debian /etc/init.d/'
+	else
+		for item in $(cat $CHROOT_SERVICES_LIST); do
+			PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/sbin \
+			LC_ALL=C \
+			LANGUAGE=C \
+			LANG=C \
+			chroot $CHROOT_DIR /etc/init.d/$item start
+		done
+	fi
+
+# You can add mounting of your device strorages here, if you need.
+# For QNAP it may look something like
+# mkdir -p $CHROOT_DIR/media/disk1
+# mount -o bind /share/HDA_DATA $CHROOT_DIR/media/disk1
+# or
+# mount -o bind /share/CACHEDEV1_DATA $CHROOT_DIR/media/disk1
+}
+
+stop() {
+	if [ $MountedDirCount -eq 0 ]; then
+		echo 'Debian services have been already stopped, exiting...'
+		exit 1
+	fi
+	if [ -e "$CHROOT_SERVICES_LIST" ]; then
+		echo 'Stopping Debian services...'
+		for item in $(cat $CHROOT_SERVICES_LIST); do
+			PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/sbin \
+			LC_ALL=C \
+			LANGUAGE=C \
+			LANG=C \
+			chroot $CHROOT_DIR /etc/init.d/$item stop
+		done
+	fi
+	umount $CHROOT_DIR/dev/pts
+	mount | grep $CHROOT_DIR | awk "{print \$3}" | xargs umount
+}
+
+status() {
+	if [ $MountedDirCount -gt 0 ]; then
+		echo 'Debian services are running'
+	else
+		echo 'Debian services are stopped'
+	fi
+}
+
+case "$1" in
+	start)
+		start
+	;;
+	stop)
+		stop
+	;;
+	restart)
+		stop
+		sleep 5
+		start
+	;;
+	status)
+		status
+	;;
+	*)
+		echo "Usage: $0 (start|stop|restart|status)"
+		exit 1
+		;;
+esac

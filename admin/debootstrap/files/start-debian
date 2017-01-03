@@ -1,0 +1,9 @@
+#!/bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/sbin:/opt/bin \
+HOME=/root \
+SHELL=/bin/bash \
+TERMINFO=/usr/share/terminfo \
+TEMP=/tmp \
+TMP=/tmp \
+/opt/sbin/chroot /opt/debian /bin/bash
