@@ -4,16 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# 1.4.42 suffers from segfaults from mod_cgi
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lighttpd
-PKG_VERSION:=1.4.42
-PKG_RELEASE:=2
+PKG_VERSION:=1.4.44
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://download.lighttpd.net/lighttpd/releases-1.4.x
-PKG_MD5SUM:=53c55d7e1dac7adec161cd5490491f6d
+PKG_MD5SUM:=adb66ca985651957feb209c91c55ebbf917d23630bfc3a216a2f70043c7b5422
 
 PKG_LICENSE:=BSD-3c
 PKG_LICENSE_FILES:=COPYING
@@ -54,20 +55,16 @@ CONFIGURE_ARGS+= \
 	--sysconfdir=/opt/etc/lighttpd \
 	--enable-shared \
 	--enable-static \
-	--disable-rpath \
 	--without-attr \
 	--without-bzip2 \
 	--without-fam \
-	--without-gdbm \
+	--with-gdbm \
 	--without-ldap \
 	--with-lua \
-	--without-memcache \
+	--without-memcached \
 	--with-pcre \
 	--without-valgrind \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6)
-
-CONFIGURE_VARS+= \
-	PCRE_LIB="-lpcre" \
 
 ifneq ($(strip $(CONFIG_LIGHTTPD_SSL)),)
   CONFIGURE_ARGS+= \
@@ -77,7 +74,7 @@ else
 	--without-openssl
 endif
 
-ifneq ($(SDK)$(CONFIG_PACKAGE_lighttpd-mod-mysql-vhost),)
+ifneq ($(SDK)$(CONFIG_PACKAGE_lighttpd-mod-mysql_vhost),)
   CONFIGURE_ARGS+= \
 	--with-mysql
 else
@@ -97,13 +94,6 @@ else
 	--without-webdav-locks \
 	--without-webdav-props
 endif
-
-define Build/Configure
-$(call Build/Configure/Default)
-	# XXX: override pcre (mis)detection by ./configure when cross-compiling
-	echo "#define HAVE_LIBPCRE 1" >>$(PKG_BUILD_DIR)/config.h
-	echo "#define HAVE_PCRE_H 1" >>$(PKG_BUILD_DIR)/config.h
-endef
 
 define Package/lighttpd/conffiles
 /opt/etc/lighttpd/lighttpd.conf
@@ -211,7 +201,7 @@ $(eval $(call BuildPlugin,setenv,Environment variable setting,,30))
 $(eval $(call BuildPlugin,simple_vhost,Simple virtual hosting,,30))
 $(eval $(call BuildPlugin,ssi,SSI,+libpcre,30))
 $(eval $(call BuildPlugin,status,Server status display,,30))
-$(eval $(call BuildPlugin,trigger_b4_dl,Trigger before download,+PACKAGE_lighttpd-mod-trigger_b4_dl:libpcre,30))
+$(eval $(call BuildPlugin,trigger_b4_dl,Trigger before download,+PACKAGE_lighttpd-mod-trigger_b4_dl:libgdbm,30))
 $(eval $(call BuildPlugin,userdir,User directory,,30))
 $(eval $(call BuildPlugin,usertrack,User tracking,,30))
 $(eval $(call BuildPlugin,webdav,WebDAV,+PACKAGE_lighttpd-mod-webdav:libsqlite3 +PACKAGE_lighttpd-mod-webdav:libuuid +PACKAGE_lighttpd-mod-webdav:libxml2,30))
