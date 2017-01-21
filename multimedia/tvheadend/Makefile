@@ -75,6 +75,10 @@ CONFIGURE_ARGS += \
 	--disable-libav \
 	--enable-bundle
 
+ifeq ($(CONFIG_GCC_VERSION_6_3_0),y)
+TARGET_CFLAGS+=-Wno-error=misleading-indentation
+endif
+
 define Build/Prepare
 	$(call Build/Prepare/Default)
 	echo 'Tvheadend $(shell echo $(PKG_SOURCE_VERSION) | sed "s/^v//")~openwrt$(PKG_RELEASE)' \
