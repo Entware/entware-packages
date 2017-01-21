@@ -66,7 +66,7 @@ endef
 
 
 define Package/emailrelay/conffiles
-/etc/emailrelay.auth
+/opt/etc/emailrelay.auth
 endef
 
 
@@ -98,18 +98,15 @@ ifeq ($(CONFIG_OPENSSL_WITH_SSL3),y)
 endif
 
 define Package/emailrelay/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-filter-copy $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-passwd $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-poke $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-submit $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/tmp/spool
-	$(INSTALL_DIR) $(1)/tmp/spool/emailrelay
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) files/$(PKG_NAME).auth $(1)/etc/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) files/$(PKG_NAME).init $(1)/etc/init.d/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-filter-copy $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-passwd $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-poke $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/main/emailrelay-submit $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/var/spool/emailrelay
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) files/$(PKG_NAME).auth $(1)/opt/etc/
 endef
 
 
