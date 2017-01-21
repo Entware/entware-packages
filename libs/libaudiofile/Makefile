@@ -42,7 +42,7 @@ CONFIGURE_ARGS+= \
 	--disable-examples \
 	--with-build-cc="$(HOSTCC)"
 
-TARGET_CFLAGS+= $(FPIC)
+TARGET_CFLAGS+= $(FPIC) -fpermissive
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
