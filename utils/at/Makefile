@@ -61,9 +61,9 @@ define Package/at/postinst
 #!/bin/sh
 mkdir -m 0755 -p /opt/var/spool/cron/atjobs
 touch /opt/var/spool/cron/atjobs/.SEQ
-chown -R nobody:nobody /opt/var/spool/cron/atjobs
+chown -R nobody:nobody /opt/var/spool/cron/atjobs || echo 'check owner of /opt/var/spool/cron/atjobs'
 mkdir -m 0755 -p /opt/var/spool/cron/atspool
-chown -R nobody:nobody /opt/var/spool/cron/atspool
+chown -R nobody:nobody /opt/var/spool/cron/atspool || echo 'check owner of /opt/var/spool/cron/atspool'
 endef
 
 $(eval $(call BuildPackage,at))

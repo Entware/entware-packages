@@ -1,14 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=https_dns_proxy
-PKG_VERSION:=2016-09-04
+PKG_VERSION:=2017-01-10
 PKG_RELEASE=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/aarond10/https_dns_proxy/
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=9e617b76bfd97adfff23e0e8bf2862ce4aee8682
+PKG_SOURCE_VERSION:=04095e002fb1b36b4308629a8a7b01c93bacae79
 PKG_MAINTAINER:=Aaron Drew <aarond10@gmail.com>
 PKG_LICENSE:=MIT
 
@@ -19,14 +19,14 @@ define Package/https_dns_proxy
   SECTION:=net
   CATEGORY:=Network
   TITLE:=DNS over HTTPS proxy server
-  DEPENDS:=+libcares +libcurl +libev
+  DEPENDS:=+libcares +libcurl +libev +ca-certificates
 endef
 
 define Package/https_dns_proxy/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d ${1}/etc/config
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/https_dns_proxy $(1)/usr/sbin/
-	$(INSTALL_BIN) ./files/https_dns_proxy.init $(1)/etc/init.d/https_dns_proxy
-	$(INSTALL_CONF) ./files/https_dns_proxy.config $(1)/etc/config/https_dns_proxy
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/https_dns_proxy $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S09https_dns_proxy $(1)/opt/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,https_dns_proxy))

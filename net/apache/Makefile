@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apache
-PKG_VERSION:=2.2.31
-PKG_RELEASE:=2
+PKG_VERSION:=2.4.25
+PKG_RELEASE:=1
 PKG_SOURCE_NAME:=httpd
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
 PKG_LICENSE:=Apache License
 
 PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/httpd/
-PKG_MD5SUM:=6c10e15835ab214464228a9beb7afba8
+PKG_MD5SUM:=2826f49619112ad5813c0be5afcc7ddb
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_NAME)-$(PKG_VERSION)
 
@@ -80,6 +80,7 @@ endef
 
 TARGET_CFLAGS += $(FPIC)
 TARGET_CPPFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
+TARGET_LDFLAGS += -lpthread
 
 define Build/Configure
 	$(call Build/Configure/Default, \
@@ -87,10 +88,15 @@ define Build/Configure
 		--with-apr-util="$(STAGING_DIR)/opt/bin/apu-1-config" \
 		--with-pcre="$(STAGING_DIR)/opt/bin/pcre-config" \
 		--enable-http \
+		--with-crypto \
+		--with-sqlit3="$(STAGING_DIR)/opt" \
+		--with-openssl="$(STAGING_DIR)/opt" \
 		--enable-ssl \
 		--enable-proxy \
 		--disable-disk-cache \
 		--enable-maintainer-mode \
+		--with-mpm=prefork \
+		--with-mpm=worker \
 		--enable-mime-magic \
 		--without-suexec-bin \
 		--sysconfdir=/opt/etc/apache \
@@ -98,6 +104,7 @@ define Build/Configure
 		ap_cv_void_ptr_lt_long=no \
 		logfiledir="/opt/var/log" \
 		runtimedir="/opt/var/run" \
+		EXTRA_LIBS="-ldl -lpthread -lcrypto -lrt -lssl" \
 	)
 endef
 
@@ -125,7 +132,8 @@ endef
 define Package/apache/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	# we don't need apxs on the router, it's just for building apache modules.
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{ab,apachectl,checkgid,dbmmanage,envvars,envvars-std,htcacheclean,htdbm,htdigest,htpasswd,httpd,httxt2dbm,logresolve,rotatelogs} $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{ab,dbmmanage,htdbm,htdigest,htpasswd,httxt2dbm,logresolve} $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{apachectl,checkgid,envvars,envvars-std,htcacheclean,httpd,rotatelogs} $(1)/opt/sbin/
 	$(SED) 's,$(STAGING_DIR_HOST)/bin/perl,/opt/bin/perl,g' $(1)/opt/sbin/dbmmanage
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/httpd.exp $(1)/opt/lib/

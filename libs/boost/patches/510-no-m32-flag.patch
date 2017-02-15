@@ -1,6 +1,6 @@
 --- a/tools/build/src/tools/gcc.jam
 +++ b/tools/build/src/tools/gcc.jam
-@@ -468,7 +468,7 @@
+@@ -477,7 +477,7 @@
              # For darwin, the model can be 32_64. darwin.jam will handle that
              # on its own.
          }

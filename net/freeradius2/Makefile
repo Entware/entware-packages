@@ -4,12 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware: use libtool from libtool package (trunk/libs/libtool) in Build/Compile
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=freeradius2
 PKG_VERSION:=2.2.9
 PKG_RELEASE:=1
+PKG_BUILD_DEPENDS:=libtool
 
 PKG_SOURCE:=freeradius-server-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=\
@@ -535,7 +537,7 @@ CONFIGURE_VARS+= \
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		R="$(PKG_INSTALL_DIR)" \
-		INSTALLSTRIP="" \
+		INSTALLSTRIP="" LIBTOOL:="$(STAGING_DIR)/host/libltdl/bin/libtool" \
 		all certs install
 endef
 

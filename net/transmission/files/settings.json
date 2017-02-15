@@ -22,6 +22,7 @@
     "incomplete-dir-enabled": false,
     "lpd-enabled": true,
     "message-level": 1,
+    "peer-congestion-algorithm": "",
     "peer-id-ttl-hours": 6,
     "peer-limit-global": 40,
     "peer-limit-per-torrent": 8,

@@ -6,7 +6,7 @@
 # (Loosely) based on the script on the one posted by exobyte in the forums here:
 # http://forum.openwrt.org/viewtopic.php?id=14040
 # extended and partial rewritten
-#.2014-2016 Christian Schoenebeck <christian dot schoenebeck at gmail dot com>
+#.2014-2017 Christian Schoenebeck <christian dot schoenebeck at gmail dot com>
 #
 # function timeout
 # copied from http://www.ict.griffith.edu.au/anthony/software/timeout.sh
@@ -23,7 +23,7 @@
 # GLOBAL VARIABLES #
 VERSION="2.7.6"
 SECTION_ID=""		# hold config's section name
-VERBOSE=1		# default mode is log to console, but easily changed with parameter
+VERBOSE=0		# default mode is log to console, but easily changed with parameter
 MYPROG=$(basename $0)	# my program call name
 
 LOGFILE=""		# logfile - all files are set in dynamic_dns_updater.sh
@@ -89,22 +89,22 @@ UCLIENT_FETCH_SSL=$(find /lib /usr/lib -name libustream-ssl.so* 2>/dev/null)
 
 # Global configuration settings
 # allow NON-public IP's
-upd_privateip=$(uci -q get ddns.global.allow_local_ip) || upd_privateip=0
+upd_privateip=$(uci -q get ddns.global.upd_privateip) || upd_privateip=0
 
 # directory to store run information to.
-ddns_rundir=$(uci -q get ddns.global.run_dir) || ddns_rundir="/var/run/ddns"
+ddns_rundir=$(uci -q get ddns.global.ddns_rundir) || ddns_rundir="/var/run/ddns"
 [ -d $ddns_rundir ] || mkdir -p -m755 $ddns_rundir
 
 # directory to store log files
-ddns_logdir=$(uci -q get ddns.global.log_dir) || ddns_logdir="/var/log/ddns"
+ddns_logdir=$(uci -q get ddns.global.ddns_logdir) || ddns_logdir="/var/log/ddns"
 [ -d $ddns_logdir ] || mkdir -p -m755 $ddns_logdir
 
 # number of lines to before rotate logfile
-ddns_loglines=$(uci -q get ddns.global.log_lines) || ddns_loglines=250
+ddns_loglines=$(uci -q get ddns.global.ddns_loglines) || ddns_loglines=250
 ddns_loglines=$((ddns_loglines + 1))	# correct sed handling
 
 # format to show date information in log and luci-app-ddns default ISO 8601 format
-ddns_dateformat=$(uci -q get ddns.global.date_format) || ddns_dateformat="%F %R"
+ddns_dateformat=$(uci -q get ddns.global.ddns_dateformat) || ddns_dateformat="%F %R"
 DATE_PROG="date +'$ddns_dateformat'"
 
 # USE_CURL if GNU Wget and cURL installed normally Wget is used by do_transfer()
@@ -886,7 +886,7 @@ send_update() {
 get_local_ip () {
 	# $1	Name of Variable to store local IP (LOCAL_IP)
 	local __CNT=0	# error counter
-	local __RUNPROG __DATA __URL __ERR
+	local __RUNPROG __DATA __URL __ERR __TMP
 
 	[ $# -ne 1 ] && write_log 12 "Error calling 'get_local_ip()' - wrong number of parameters"
 	write_log 7 "Detect local IP on '$ip_source'"
@@ -907,6 +907,8 @@ get_local_ip () {
 				__ERR=$?
 				if [ $__ERR -eq 0 ]; then
 					# DATFILE (sample)
+					# 10: l2tp-inet: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1456 qdisc fq_codel state UNKNOWN qlen 3\    link/ppp
+					# 10: l2tp-inet    inet 95.30.176.51 peer 95.30.176.1/32 scope global l2tp-inet\       valid_lft forever preferred_lft forever
 					# 5: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP qlen 1000\    link/ether 08:00:27:d0:10:32 brd ff:ff:ff:ff:ff:ff
 					# 5: eth1    inet 172.27.10.128/24 brd 172.27.10.255 scope global eth1\       valid_lft forever preferred_lft forever
 					# 5: eth1    inet 172.55.55.155/24 brd 172.27.10.255 scope global eth1\       valid_lft 12345sec preferred_lft 12345sec
@@ -915,9 +917,11 @@ get_local_ip () {
 					# 5: eth1    inet6 fd43:5368:6f6d:6500:a00:27ff:fed0:1032/64 scope global dynamic \       valid_lft 14352sec preferred_lft 14352sec
 					# 5: eth1    inet6 2002:b0c7:f326::a00:27ff:fed0:1032/64 scope global dynamic \       valid_lft 14352sec preferred_lft 14352sec
 
-					#        remove         remove     remove      replace          remove                  remove
-					#	BROADCAST     inet6 fxxx    sec      forever=>-1    between / and pref..      linestart to inet
-					sed -i "/BROADCAST/d; /inet6 f/d; s/sec//g; s/forever/-1/g; s/\/.*preferred_lft//g; s/^.*$ip_interface *//g" $DATFILE
+					#    remove      remove     remove      replace     replace
+					#     link     inet6 fxxx    sec      forever=>-1   / => ' ' to separate subnet from ip
+					sed "/link/d; /inet6 f/d; s/sec//g; s/forever/-1/g; s/\// /g" $DATFILE | \
+						awk '{ print $3" "$4" "$NF }' > ${DATFILE}_tmp
+					# we only need    inet?   IP  prefered time
 
 					local __TIME4=0;  local __TIME6=0
 					local __TYP __ADR __TIME
@@ -932,7 +936,8 @@ get_local_ip () {
 							__DATA4="$__ADR"
 							__TIME4="$__TIME"
 						}
-					done < $DATFILE
+					done < ${DATFILE}_tmp
+					rm ${DATFILE}_tmp
 				else
 					write_log 3 "ip Error: '$__ERR'"
 					write_log 7 "$(cat $ERRFILE)"		# report error
@@ -1121,18 +1126,16 @@ get_registered_ip() {
 			write_log 3 "$__PROG error: '$__ERR'"
 			write_log 7 "$(cat $ERRFILE)"
 		else
-			if [ -n "$BIND_HOST" ]; then
+			if [ -n "$BIND_HOST" -o -n "$KNOT_HOST" ]; then
 				if [ $is_glue -eq 1 ]; then
-					__DATA=$(cat $DATFILE | grep "^$lookup_host" | grep -m 1 -o "$__REGEX" )
+					__DATA=$(cat $DATFILE | grep "^$lookup_host" | grep -om1 "$__REGEX" )
 				else
 					__DATA=$(cat $DATFILE | awk -F "address " '/has/ {print $2; exit}' )
 				fi
-			elif [ -n "$KNOT_HOST" ]; then
-				__DATA=$(cat $DATFILE | awk -F "address " '/has/ {print $2; exit}' )
 			elif [ -n "$DRILL" ]; then
 				__DATA=$(cat $DATFILE | awk '/^'"$lookup_host"'/ {print $5; exit}' )
 			elif [ -n "$HOSTIP" ]; then
-				__DATA=$(cat $DATFILE | grep -m 1 -o "$__REGEX")
+				__DATA=$(cat $DATFILE | grep -om1 "$__REGEX")
 			elif [ -n "$NSLOOKUP" ]; then
 				__DATA=$(cat $DATFILE | sed -ne "/^Name:/,\$ { s/^Address[0-9 ]\{0,\}: \($__REGEX\).*$/\\1/p }" )
 			fi

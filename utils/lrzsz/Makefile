@@ -38,10 +38,10 @@ define Package/lrzsz/description
 endef
 
 define Package/lrzsz/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/lrz $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/lsz $(1)/usr/bin/
-	(cd $(1)/usr/bin; \
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lrz $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lsz $(1)/opt/bin/
+	(cd $(1)/opt/bin; \
 		ln -fs lrz lrx; \
 		ln -fs lrz lrb; \
 		ln -fs lrz rz; \

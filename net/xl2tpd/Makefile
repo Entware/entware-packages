@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Upgraded from devel-20151125 rev. e2065bf0fc22ba33001ad503c01bba01648024a8
 
 include $(TOPDIR)/rules.mk
 

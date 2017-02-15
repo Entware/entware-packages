@@ -1,0 +1,11 @@
+--- a/osdep/OSUtils.cpp
++++ b/osdep/OSUtils.cpp
+@@ -245,7 +245,7 @@
+ 	return std::string("/var/db/zerotier-one");
+ #else
+ 	// Use /var/lib for Linux and other *nix
+-	return std::string("/var/lib/zerotier-one");
++	return std::string("/opt/var/lib/zerotier-one");
+ #endif
+ 
+ #endif

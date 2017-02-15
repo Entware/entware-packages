@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2006-2015 OpenWrt.org
+# Copyright (C) 2006-2017 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,16 +9,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-snmp
-PKG_VERSION:=5.4.4
-PKG_RELEASE:=2a
+PKG_VERSION:=5.7.3
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
-PKG_MD5SUM:=95aa054f3c99a1ce242807d7eaf98619
-PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
+PKG_MD5SUM:=d4a3459e1577d0efa8d96ca70a885e53
+PKG_MAINTAINER:=Stijn Tintel <stijn@linux-ipv6.be>
 PKG_LICENSE:=MIT BSD-3-Clause-Clear
 
-PKG_FIXUP = patch-libtool
+PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -52,6 +52,18 @@ $(call Package/net-snmp/Default/description)
 endef
 
 
+define Package/snmp-mibs
+$(call Package/net-snmp/Default)
+  TITLE:=Open source SNMP implementation (MIB-files)
+endef
+
+define Package/snmp-mibs/description
+$(call Package/net-snmp/Default/description)
+ .
+ This package contains SNMP MIB-Files.
+endef
+
+
 define Package/snmp-utils
 $(call Package/net-snmp/Default)
   DEPENDS:=+libnetsnmp
@@ -80,18 +92,15 @@ endef
 
 define Package/snmpd-static
 $(call Package/net-snmp/Default)
+  DEPENDS:=+snmpd
   TITLE:=Open source SNMP implementation (daemon)
   DEPENDS:=+libopenssl
 endef
 
-define Package/snmpd-static/description
-$(call Package/net-snmp/Default/description)
- .
- This package contains the SNMP agent, statically linked.
-endef
 
 
 SNMP_MIB_MODULES_INCLUDED = \
+	agentx \
 	host/hr_device \
 	host/hr_disk \
 	host/hr_filesys \
@@ -133,7 +142,6 @@ SNMP_MIB_MODULES_INCLUDED = \
 
 SNMP_MIB_MODULES_EXCLUDED = \
 	agent_mibs \
-	agentx \
 	disman/event \
 	disman/schedule \
 	hardware \
@@ -149,11 +157,12 @@ SNMP_MIB_MODULES_EXCLUDED = \
 	udp-mib \
 	utilities \
 
-SNMP_TRANSPORTS_INCLUDED = Callback UDP
+SNMP_TRANSPORTS_INCLUDED = Callback UDP Unix
 
-SNMP_TRANSPORTS_EXCLUDED = TCP TCPIPv6 Unix
+SNMP_TRANSPORTS_EXCLUDED = TCP TCPIPv6
 
 TARGET_CFLAGS += $(FPIC)
+#TARGET_CPPFLAGS += -I$(STAGING_DIR)/opt/include/libnl-tiny
 
 CONFIGURE_ARGS += \
 	--enable-mfd-rewrites \
@@ -169,30 +178,30 @@ CONFIGURE_ARGS += \
 	--disable-debugging \
 	--disable-manuals \
 	--disable-scripts \
+	--with-out-mib-modules="$(SNMP_MIB_MODULES_EXCLUDED)" \
+	--with-mib-modules="$(SNMP_MIB_MODULES_INCLUDED)" \
+	--with-out-transports="$(SNMP_TRANSPORTS_EXCLUDED)" \
+	--with-transports="$(SNMP_TRANSPORTS_INCLUDED)" \
 	--without-libwrap \
 	--without-rpm \
 	--without-zlib \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6) \
 
+#CONFIGURE_VARS += \
+#	ac_cv_header_netlink_netlink_h=yes \
+#	netsnmp_cv_func_nl_connect_LIBS=-lnl-tiny \
+
 ifeq ($(CONFIG_IPV6),y)
 SNMP_TRANSPORTS_INCLUDED+= UDPIPv6
 endif
 
-ifdef CONFIG_PACKAGE_snmpd-static
-  define Build/Compile/static
-	$(MAKE) -C $(PKG_BUILD_DIR)/agent \
-		LDFLAGS="$(TARGET_LDFLAGS) -lm -static" \
-		EXEEXT="-static" \
-		snmpd-static
-  endef
-endif
+TARGET_LDFLAGS += -L$(TOOLCHAIN_DIR)/opt/lib
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		INSTALL_PREFIX="$(PKG_INSTALL_DIR)" \
 		LDFLAGS="$(TARGET_LDFLAGS) -lm -lc" \
 		all install
-	$(Build/Compile/static)
 endef
 
 define Build/InstallDev
@@ -211,36 +220,30 @@ define Package/libnetsnmp/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnetsnmp{,agent,helpers,mibs}.so.* $(1)/opt/lib/
 endef
 
-define Package/snmpd/conffiles
-/opt/etc/snmp/snmpd.config
-endef
-
-define Package/snmpd/install
-	$(INSTALL_DIR) $(1)/opt/etc/snmp
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/snmpd $(1)/opt/sbin/snmpd
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S47snmpd $(1)/opt/etc/init.d
-endef
-
-define Package/snmpd-static/conffiles
-/opt/etc/snmp/snmpd.config
-endef
-
-define Package/snmpd-static/install
-	$(INSTALL_DIR) $(1)/opt/etc/snmp
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/agent/snmpd-static $(1)/opt/sbin/snmpd
+define Package/snmp-mibs/install
+	$(INSTALL_DIR) $(1)/opt/share/snmp/mibs
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/snmp/mibs/* $(1)/opt/share/snmp/mibs/
 endef
 
 define Package/snmp-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/snmp{bulkget,bulkwalk,delta,df,get,getnext,netstat,set,status,table,test,trap,translate,usm,vacm,walk} $(1)/opt/bin/
-	$(INSTALL_DIR) $(1)/opt/share/snmp/mibs
-	$(CP) $(PKG_INSTALL_DIR)/opt/share/snmp/mibs/*.txt $(1)/opt/share/snmp/mibs
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/snmp{get,set,status,test,trap,walk} $(1)/opt/bin/
+endef
+
+#define Package/snmpd/conffiles
+#/opt/etc/config/snmpd
+#endef
+
+define Package/snmpd/install
+	$(INSTALL_DIR) $(1)/opt/etc/snmp
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S47snmpd $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/snmpd $(1)/opt/sbin/snmpd
 endef
 
 $(eval $(call BuildPackage,libnetsnmp))
+$(eval $(call BuildPackage,snmp-mibs))
 $(eval $(call BuildPackage,snmp-utils))
 $(eval $(call BuildPackage,snmpd))
 $(eval $(call BuildPackage,snmpd-static))

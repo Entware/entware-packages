@@ -10,22 +10,23 @@ include $(TOPDIR)/rules.mk
 # For PYTHON_VERSION
 include ./files/python-version.mk
 
+PKG_NAME:=python
+PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
+PKG_RELEASE:=4
+
+PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
+PKG_MD5SUM:=53b43534153bb2a0363f08bae8b9d990
+PKG_HASH:=35d543986882f78261f97787fd3e06274bfa6df29fac9b4a94f73930ff98f731
+
+PKG_LICENSE:=PSF
+PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
+
 # This file provides the necsessary host build variables
 include ./files/python-host.mk
 
 # For PyPackage
 include ./files/python-package.mk
-
-PKG_NAME:=python
-PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=2
-
-PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_MD5SUM:=57dffcee9cee8bb2ab5f82af1d8e9a69
-
-PKG_LICENSE:=PSF
-PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -35,7 +36,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=python/host
-HOST_BUILD_DEPENDS:=bzip2/host expat/host libffi/host
+HOST_BUILD_DEPENDS:=bzip2/host expat/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -56,6 +57,16 @@ define Package/python/Default/description
  libraries, and can be learned in a few days. Many Python programmers
  report substantial productivity gains and feel the language encourages
  the development of higher quality, more maintainable code.
+endef
+
+define Package/python-pip-conf
+$(call Package/python/Default)
+  TITLE:=Configuration file for pip/pip3
+  URL:=https://pip.pypa.io
+endef
+
+define Package/python-pip-conf/description
+ Configuration file for pip/pip3
 endef
 
 define Package/python-base
@@ -91,7 +102,9 @@ define PyBasePackage
   endif
   PYTHON_LIB_FILES_DEL+=$(2)
   define PyPackage/$(1)/filespec
-    $(subst $(space),$(newline),$(foreach lib_file,$(2),+|$(lib_file)))
+    ifneq ($(2),)
+      $(subst $(space),$(newline),$(foreach lib_file,$(2),+|$(lib_file)))
+    endif
   endef
 endef
 
@@ -122,13 +135,22 @@ ifeq ($(CONFIG_IPV6),y)
 	ENABLE_IPV6 += --enable-ipv6
 endif
 
+PYTHON_FOR_BUILD:= \
+	_PYTHON_PROJECT_BASE=$(PKG_BUILD_DIR) \
+	_PYTHON_HOST_PLATFORM=linux2 \
+	PYTHONPATH="$(PKG_BUILD_DIR)/Lib:$(PKG_BUILD_DIR)/build/lib.linux2-$(PYTHON_VERSION)" \
+	_PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata \
+	$(HOST_PYTHON_BIN)
+
 CONFIGURE_ARGS+= \
 	--sysconfdir=/opt/etc \
 	--enable-shared \
 	--without-cxx-main \
 	--with-threads \
-	--with-system-ffi="$(STAGING_DIR)/opt" \
+	--with-system-ffi \
+	--with-ensurepip=no \
 	--without-pymalloc \
+	PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)" \
 	$(ENABLE_IPV6) \
 	CONFIG_SITE="$(PKG_BUILD_DIR)/config.site" \
 	OPT="$(TARGET_CFLAGS)"
@@ -136,6 +158,31 @@ CONFIGURE_ARGS+= \
 define Build/Prepare
 	$(call Build/Prepare/Default)
 	$(CP) ./files/config.site $(PKG_BUILD_DIR)/config.site
+endef
+
+ifdef CONFIG_PACKAGE_python-setuptools
+define Build/Compile/python-setuptools
+	$(STAGING_DIR_HOSTPKG)/bin/pip install \
+		--ignore-installed \
+		--root=$(PKG_BUILD_DIR)/install-setuptools --prefix=. \
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-*.whl
+endef
+endif # CONFIG_PACKAGE_python-setuptools
+
+ifdef CONFIG_PACKAGE_python-pip
+define Build/Compile/python-pip
+	$(STAGING_DIR_HOSTPKG)/bin/pip install \
+		--ignore-installed \
+		--root=$(PKG_BUILD_DIR)/install-pip --prefix=. \
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-*.whl
+endef
+endif # CONFIG_PACKAGE_python-pip
+
+define Build/Compile
+	$(call Build/Compile/Default)
+	# Use host pip to install python-setuptools
+	$(call Build/Compile/python-setuptools)
+	$(call Build/Compile/python-pip)
 endef
 
 define Build/InstallDev
@@ -203,6 +250,7 @@ define PyPackage/python-light/filespec
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/_testcapi.so
 -|/opt/lib/python$(PYTHON_VERSION)/pdb.doc
 -|/opt/lib/python$(PYTHON_VERSION)/test
+-|/opt/lib/python$(PYTHON_VERSION)/webbrowser.py
 -|/opt/lib/python$(PYTHON_VERSION)/*/test
 -|/opt/lib/python$(PYTHON_VERSION)/*/tests
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/readline.so
@@ -213,21 +261,19 @@ define PyPackage/python-base/install
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python2
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* $(1)/opt/lib/
-	$(SED) "s|-L$(STAGING_DIR)/opt/lib|-L/opt/lib|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-L$(STAGING_DIR)/lib|-L/opt/lib/gcc/$(REAL_GNU_TARGET_NAME)/5.4.0|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-L$(TOOLCHAIN_DIR)/usr/lib||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-L$(TOOLCHAIN_DIR)/lib||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-L$(PKG_BUILD_DIR)||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-rpath-link=$(STAGING_DIR)/opt/lib|-rpath-link=/opt/lib|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-I$(STAGING_DIR)/opt/include|-I/opt/include|g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-I$(STAGING_DIR)/include||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-I$(TOOLCHAIN_DIR)/usr/include||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
-	$(SED) "s|-I$(TOOLCHAIN_DIR)/include||g" $(1)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py
 endef
 
 define PyPackage/python/filespec
 -|$(PYTHON_PKG_DIR)
 endef
+
+define Package/python-pip-conf/install
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(CP) ./files/pip.conf $(1)/opt/etc
+endef
+
+HOST_LDFLAGS += \
+	$$$$(pkg-config --static --libs libcrypto libssl)
 
 HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \
@@ -236,9 +282,9 @@ HOST_CONFIGURE_ARGS+= \
 	--prefix=$(HOST_PYTHON_DIR) \
 	--exec-prefix=$(HOST_PYTHON_DIR) \
 	--with-system-expat=$(STAGING_DIR_HOSTPKG) \
-	--with-system-ffi=$(STAGING_DIR_HOSTPKG) \
-	CONFIG_SITE= \
-	CFLAGS="$(HOST_CFLAGS)"
+	--with-system-ffi=no \
+	--with-ensurepip=install \
+	CONFIG_SITE=
 
 define Host/Install
 	$(MAKE) -C $(HOST_BUILD_DIR) install
@@ -256,6 +302,8 @@ $(foreach package, $(PYTHON_PACKAGES),  \
 $(eval $(call PyPackage,python-base))
 $(eval $(call PyPackage,python-light))
 $(eval $(call PyPackage,python))
+
+$(eval $(call BuildPackage,python-pip-conf))
 
 $(eval $(call BuildPackage,python-base))
 $(eval $(call BuildPackage,python-light))

@@ -38,26 +38,17 @@ endef
 
 ifdef CONFIG_USE_UCLIBC
 CONFIGURE_VARS += \
-    LIBS="-largp"
-endif
-
-ifdef CONFIG_USE_MUSL
-CONFIGURE_VARS += \
-    LIBS="-largp"
+    LIBS="-luargp"
 endif
 
 CONFIGURE_ARGS += \
 	--without-libgcrypt
 
 define Package/rng-tools/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/rngd.init $(1)/etc/init.d/rngd
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/rngd.uci_defaults $(1)/etc/uci-defaults/rngd
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rngtest $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rngd $(1)/sbin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rngtest $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rngd $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,rng-tools))

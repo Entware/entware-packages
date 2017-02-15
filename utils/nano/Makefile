@@ -9,14 +9,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
-PKG_VERSION:=2.7.1
+PKG_VERSION:=2.7.4
 PKG_RELEASE:=1
 PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/nano
-PKG_MD5SUM:=df5cbe69831d7394c0a32fb27373ab313335ea4dc586d6f4be4081eb1de857cd
+PKG_MD5SUM:=c011c7f9e47cb1da27d4e7cc8b56ec6a
+PKG_HASH:=752170643039e2c95a433de357f0c70a8c4c4c561a90a7e7259a63e225b659b9
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -54,7 +55,7 @@ define Package/nano/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME) $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(CP) $(PKG_BUILD_DIR)/doc/nanorc.sample $(1)/opt/etc/nanorc
+	$(CP) $(PKG_BUILD_DIR)/doc/sample.nanorc $(1)/opt/etc/nanorc
 	$(SED) 's,# include "/opt,include "/opt,g' $(1)/opt/etc/nanorc
 	$(INSTALL_DIR) $(1)/opt/share/nano
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/nano/* $(1)/opt/share/nano

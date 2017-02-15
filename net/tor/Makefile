@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tor
-PKG_VERSION:=0.2.8.9
+PKG_VERSION:=0.2.9.8
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://dist.torproject.org/ \
 	https://archive.torproject.org/tor-package-archive
-PKG_MD5SUM:=3f5c273bb887be4aff11f4d99b9e2e52d293b81ff4f6302b730161ff16dc5316
+PKG_MD5SUM:=fbdd33d3384574297b88744622382008d1e0f9ddd300d330746c464b7a7d746a
 PKG_MAINTAINER:=Hauke Mehrtens <hauke@hauke-m.de>
 PKG_LICENSE_FILES:=LICENSE
 
@@ -48,6 +48,28 @@ $(call Package/tor/Default/description)
  This package contains the tor daemon.
 endef
 
+define Package/tor-gencert
+$(call Package/tor/Default)
+  TITLE:=Tor certificate generation
+  DEPENDS:=+tor
+endef
+
+define Package/tor-gencert/description
+$(call Package/tor/Default/description)
+ Generate certs and keys for Tor directory authorities
+endef
+
+define Package/tor-resolve
+$(call Package/tor/Default)
+  TITLE:=tor hostname resolve
+  DEPENDS:=+tor
+endef
+
+define Package/tor-resolve/description
+$(call Package/tor/Default/description)
+ Resolve a hostname to an IP address via tor 
+endef
+
 define Package/tor-geoip
 $(call Package/tor/Default)
   TITLE:=GeoIP db for tor
@@ -61,27 +83,28 @@ endef
 
 define Package/tor/conffiles
 /opt/etc/tor/torrc
+/opt/var/lib/tor/fingerprint
+/opt/var/lib/tor/keys/*
 endef
 
 CONFIGURE_ARGS += \
 	--with-libevent-dir="$(STAGING_DIR)/opt" \
 	--with-ssl-dir="$(STAGING_DIR)/opt" \
-	--enable-upnp \
-	--with-libminiupnpc-dir="$(STAGING_DIR)/opt" \
-	--enable-nat-pmp \
-	--with-libnatpmp-dir="$(STAGING_DIR)/opt" \
+	--with-openssl-dir="$(STAGING_DIR)/opt" \
+	--with-zlib-dir="$(STAGING_DIR)/opt" \
 	--disable-asciidoc \
-	--disable-seccomp
+	--disable-seccomp \
+	--disable-libscrypt \
+	--disable-unittests \
+	--disable-largefile \
+
+EXTRA_CFLAGS += -std=gnu99
 
 ifneq ($(CONFIG_SSP_SUPPORT),y)
 	CONFIGURE_ARGS += \
 		--disable-gcc-hardening
-	MAKE_FLAGS += \
-		CFLAGS="$(TARGET_CFLAGS) -std=gnu99"
 else
-	MAKE_FLAGS += \
-		CFLAGS="$(TARGET_CFLAGS) -fPIC -std=gnu99"
-	TARGET_LDFLAGS += -lssp
+	EXTRA_CFLAGS += -fPIC
 endif
 
 CONFIGURE_VARS += \
@@ -90,21 +113,30 @@ CONFIGURE_VARS += \
 define Package/tor/install
 	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/var/lib/tor
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tor $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/torify $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S35tor $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/etc/tor
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/tor/torrc.sample $(1)/opt/etc/tor/torrc
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S35tor $(1)/opt/etc/init.d/
 endef
 
-define Package/tor-fw-helper/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tor-fw-helper $(1)/opt/bin/
+define Package/tor-gencert/install
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tor-gencert $(1)/opt/sbin/
+endef
+
+define Package/tor-resolve/install
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tor-resolve $(1)/opt/sbin/
 endef
 
 define Package/tor-geoip/install
 	$(INSTALL_DIR) $(1)/opt/share/tor
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/tor/geoip $(1)/opt/share/tor/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/tor/geoip6 $(1)/opt/share/tor/
 endef
 
 $(eval $(call BuildPackage,tor))
+$(eval $(call BuildPackage,tor-gencert))
+$(eval $(call BuildPackage,tor-resolve))
 $(eval $(call BuildPackage,tor-geoip))

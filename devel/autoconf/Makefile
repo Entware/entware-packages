@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autoconf
 PKG_VERSION:=2.69
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE_URL:=@GNU/autoconf
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -66,6 +66,7 @@ define Package/autoconf/install
 	$(INSTALL_DIR) $(1)/opt/share/autoconf/m4sugar
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/autoconf/m4sugar/* \
 	$(1)/opt/share/autoconf/m4sugar/
+	find $(PKG_INSTALL_DIR)/opt/bin -type f | xargs $(SED) 's|/usr/bin/perl|/opt/bin/perl|'
 endef
 
 $(eval $(call BuildPackage,autoconf))

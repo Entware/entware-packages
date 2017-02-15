@@ -1,0 +1,16 @@
+Fixes following linking error while running configure
+
+    /tmp/xxx.o: linking -mnan=2008 module with previous -mnan=legacy modules
+    failed to merge target specific data of file /tmp/xxx.o
+
+--- a/configure
++++ b/configure
+@@ -5279,8 +5279,6 @@
+         enabled mips64r2 && check_inline_asm_flags mips64r2 '"dext $0, $0, 0, 1"' '-mips64r2'
+         disabled mips64r6 && disabled mips64r2 && check_inline_asm_flags mips64r1 '"daddi $0, $0, 0"' '-mips64'
+     else
+-        enabled mips32r6 && check_inline_asm_flags mips32r6 '"aui $0, $0, 0"' '-mips32r6'
+-        enabled mips32r5 && check_inline_asm_flags mips32r5 '"eretnc"' '-mips32r5'
+         enabled mips32r2 && check_inline_asm_flags mips32r2 '"ext $0, $0, 0, 1"' '-mips32r2'
+         disabled mips32r6 && disabled mips32r5 && disabled mips32r2 && check_inline_asm_flags mips32r1 '"addi $0, $0, 0"' '-mips32'
+     fi

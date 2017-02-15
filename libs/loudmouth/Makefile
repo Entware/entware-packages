@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Use release tar ball instead of git rev
 
 include $(TOPDIR)/rules.mk
 

@@ -1,6 +1,6 @@
 --- a/includes/dhcpd.h
 +++ b/includes/dhcpd.h
-@@ -1500,61 +1500,61 @@
+@@ -1524,61 +1524,61 @@
  #else /* !DEBUG */
  
  #ifndef _PATH_DHCPD_CONF

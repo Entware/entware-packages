@@ -1,0 +1,11 @@
+--- a/ext/bigdecimal/bigdecimal.h
++++ b/ext/bigdecimal/bigdecimal.h
+@@ -90,7 +90,7 @@
+ }
+ #endif
+ 
+-#ifndef HAVE_FINITE
++#if 0
+ static int
+ finite(double)
+ {

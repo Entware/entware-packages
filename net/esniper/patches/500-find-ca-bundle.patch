@@ -1,6 +1,6 @@
 --- a/http.c
 +++ b/http.c
-@@ -201,6 +201,9 @@
+@@ -202,6 +202,9 @@
  int
  initCurlStuff(void)
  {
@@ -10,7 +10,7 @@
  	/* list for custom headers */
  	struct curl_slist *slist=NULL;
  
-@@ -242,6 +245,12 @@
+@@ -250,6 +253,12 @@
  	if ((curlrc = curl_easy_setopt(easyhandle, CURLOPT_COOKIEFILE, "")))
  		return initCurlStuffFailed();
  

@@ -1,8 +1,9 @@
-commit 2becb18c5292858cc3508cc607e77a22ccbfc9b5
-Merge: 18ce1a8 5f6e865
-Author: Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
-Date:   Sat Dec 10 19:00:55 2016 +0100
+commit edaa34e946669558070784e16cf982b754cd57f9
+Merge: d2a1976 4224c4c
+Author: Hannu Nyman <hannu.nyman@iki.fi>
+Date:   Thu Jan 26 12:18:11 2017 +0200
 
-    Merge pull request #3639 from kholk/master
-    
-    ocserv: Add libev prefix to stop configure stage failure
+    Merge pull request #3915 from noblepepper/AddArmFpu
+
+    gcc:Add support for Arm with FPU
+

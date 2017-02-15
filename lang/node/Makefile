@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Upgraded from 4.4.5
 
 include $(TOPDIR)/rules.mk
 
@@ -13,6 +14,7 @@ PKG_RELEASE:=1a
 
 PKG_SOURCE:=node-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://nodejs.org/dist/$(PKG_VERSION)
+PKG_HASH:=02b8ee1719a11b9ab22bef9279519efaaf31dd0d39cba4c3a1176ccda400b8d6
 
 HOST_BUILD_DEPENDS:=python/host
 PKG_BUILD_DEPENDS:=python/host
@@ -64,7 +66,7 @@ HOST_CONFIGURE_VARS:=
 HOST_CONFIGURE_ARGS:= \
 	--dest-os=linux \
 	--without-snapshot \
-	--prefix=$(HOST_BUILD_PREFIX)
+	--prefix=$(STAGING_DIR_HOSTPKG)
 
 HOST_CONFIGURE_CMD:=python ./configure
 

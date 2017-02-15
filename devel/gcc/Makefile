@@ -4,17 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Upgraded from 4.8.3 to 5.3.0
+# Our own patch set here.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
-PKG_VERSION:=5.4.0
+PKG_VERSION:=6.3.0
 PKG_RELEASE:=1
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
+PKG_HASH:=f06ae7f3f790fbf0f018f6d40e844451e6bc3b7bc96e128e63b09825c1f8b29f
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_MD5SUM:=4c626ac2a83ef30dfb9260e6f59c2b30
 PATCH_DIR:=$(TOPDIR)/toolchain/gcc/patches/$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_FIXUP:=libtool
@@ -29,17 +29,16 @@ PKGVERSION=OpenWrt GCC $(PKG_VERSION)
 # not using sstrip here as this fucks up the .so's somehow
 STRIP:=$(TOOLCHAIN_DIR)/bin/$(TARGET_CROSS)strip
 RSTRIP:= \
-       NM="$(TOOLCHAIN_DIR)/bin/$(TARGET_CROSS)nm" \
-       STRIP="$(STRIP)" \
-       STRIP_KMOD="$(STRIP) --strip-debug" \
-       $(SCRIPT_DIR)/rstrip.sh
-
+	NM="$(TOOLCHAIN_DIR)/bin/$(TARGET_CROSS)nm" \
+	STRIP="$(STRIP)" \
+	STRIP_KMOD="$(STRIP) --strip-debug" \
+	$(SCRIPT_DIR)/rstrip.sh
 
 define Package/gcc
   SECTION:=devel
   CATEGORY:=Development
   TITLE:=gcc
-  MAINTAINER:=Christian Beier <cb@shoutrlabs.com>
+  MAINTAINER:=Noble Pepper <gccmaintain@noblepepper.com>
   DEPENDS:= +binutils +libstdcpp
 endef
 

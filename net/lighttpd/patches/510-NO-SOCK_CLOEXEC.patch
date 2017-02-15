@@ -1,0 +1,59 @@
+This patch is only needed for old kernels that do not haf SOCK_CLOEXEC flag - used in tomato and keenetic
+diff -Naur src.orig/connections.c src/connections.c
+--- a/src/connections.c	2016-10-16 13:48:26.000000000 +0300
++++ a/src/connections.c	2017-01-05 08:53:55.366121498 +0300
+@@ -39,6 +39,11 @@
+ 
+ #include "sys-socket.h"
+ 
++#if 1 /*def __UCLIBC__*/
++    #undef SOCK_CLOEXEC
++#endif
++
++
+ typedef struct {
+ 	        PLUGIN_DATA;
+ } plugin_data;
+diff -Naur src.orig/fdevent.c src/fdevent.c
+--- a/src/fdevent.c	2016-10-16 13:48:26.000000000 +0300
++++ a/src/fdevent.c	2017-01-05 08:52:18.266121498 +0300
+@@ -13,6 +13,10 @@
+ #include <fcntl.h>
+ #include <assert.h>
+ 
++#if 1 /*def __UCLIBC__*/
++    #undef SOCK_CLOEXEC
++#endif
++
+ 
+ fdevents *fdevent_init(server *srv, size_t maxfds, fdevent_handler_t type) {
+ 	fdevents *ev;
+diff -Naur src.orig/mod_fastcgi.c src/mod_fastcgi.c
+--- a/src/mod_fastcgi.c	2016-10-16 13:48:26.000000000 +0300
++++ a/src/mod_fastcgi.c	2017-01-05 08:53:15.894121498 +0300
+@@ -48,6 +48,10 @@
+ #include <sys/wait.h>
+ #endif
+ 
++#if 1 /*def __UCLIBC__*/
++    #undef SOCK_CLOEXEC
++#endif
++
+ /*
+  *
+  * TODO:
+diff -Naur src.orig/mod_scgi.c src/mod_scgi.c
+--- a/src/mod_scgi.c	2016-10-16 13:48:26.000000000 +0300
++++ a/src/mod_scgi.c	2017-01-05 08:53:35.590121498 +0300
+@@ -38,6 +38,11 @@
+ # include <sys/wait.h>
+ #endif
+ 
++#if 1 /*def __UCLIBC__*/
++    #undef SOCK_CLOEXEC
++#endif
++
++
+ enum {EOL_UNSET, EOL_N, EOL_RN};
+ 
+ /*

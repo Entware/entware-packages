@@ -32,7 +32,7 @@ define Package/twisted
   CATEGORY:=Languages
   TITLE:=Python networking engine
   URL:=http://twistedmatrix.com/
-  DEPENDS:=+python-light +zope-interface python-service-identity
+  DEPENDS:=+python-light +zope-interface +python-service-identity
 endef
 
 define Package/twisted/description

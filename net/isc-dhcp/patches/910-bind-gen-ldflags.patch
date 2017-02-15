@@ -1,6 +1,6 @@
 --- a/bind/Makefile.in
 +++ b/bind/Makefile.in
-@@ -93,7 +93,7 @@
+@@ -96,7 +96,7 @@
  		echo Building BIND Export libraries - this takes some time. ;\
  		(cd ${bindsrcdir}/lib/export/dns ;			     \
  		  echo building gen using ${BUILD_CC} in `pwd` ;             \

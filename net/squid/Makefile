@@ -4,10 +4,9 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# conffile + all files from /opt/lib/sqid added
 
 include $(TOPDIR)/rules.mk
-
-# openwrt difference - conffile + all files from /opt/lib/sqid added to ipk
 
 PKG_NAME:=squid
 PKG_VERSION:=3.5.12

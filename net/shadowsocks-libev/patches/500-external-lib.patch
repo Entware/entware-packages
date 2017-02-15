@@ -8,7 +8,7 @@
 +SUBDIRS = libcork libipset libudns src
  endif
  
- ACLOCAL_AMFLAGS = -I m4
+ if ENABLE_DOCUMENTATION
 --- a/src/Makefile.am
 +++ b/src/Makefile.am
 @@ -3,9 +3,7 @@
@@ -21,10 +21,10 @@
  endif
  AM_CFLAGS += -I$(top_srcdir)/libipset/include
  AM_CFLAGS += -I$(top_srcdir)/libcork/include
-@@ -13,12 +11,7 @@
+@@ -14,12 +12,7 @@
  SS_COMMON_LIBS = $(top_builddir)/libipset/libipset.la \
                   $(top_builddir)/libcork/libcork.la \
-                  $(INET_NTOP_LIB)
+                  $(INET_NTOP_LIB) $(LIBPCRE_LIBS)
 -if USE_SYSTEM_SHARED_LIB
  SS_COMMON_LIBS += -lev -lsodium -lm
 -else

@@ -4,17 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# 1.4.42 suffers from segfaults from mod_cgi
+# Upgraded from 1.4.42 because of CGI seg.faults
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lighttpd
-PKG_VERSION:=1.4.44
-PKG_RELEASE:=1b
+PKG_VERSION:=1.4.45
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://download.lighttpd.net/lighttpd/releases-1.4.x
-PKG_MD5SUM:=adb66ca985651957feb209c91c55ebbf917d23630bfc3a216a2f70043c7b5422
+PKG_MD5SUM:=1c97225deea33eefba6d4158c2cef27913d47553263516bbe9d2e2760fc43a3f
 
 PKG_LICENSE:=BSD-3c
 PKG_LICENSE_FILES:=COPYING

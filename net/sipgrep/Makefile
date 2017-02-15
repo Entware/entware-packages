@@ -27,7 +27,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/sipgrep
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libpcap +libpcre +libncursesw
+  DEPENDS:=+libpcap +libpcre +libncursesw +libpthread
   TITLE:=Display and Troubleshoot SIP signaling in CLI
   URL:=https://github.com/sipcapture/sipgrep
 endef

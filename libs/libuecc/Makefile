@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libuecc
 PKG_VERSION:=7
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Matthias Schiffer <mschiffer@universe-factory.net>
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -35,11 +35,16 @@ CMAKE_OPTIONS += \
 	-DCMAKE_BUILD_TYPE:String="MINSIZEREL"
 
 
+define Package/libuecc/install
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libuecc.so* $(1)/opt/lib/
+endef
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/libuecc-$(PKG_VERSION) $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libuecc.a $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libuecc.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libuecc.pc $(1)/opt/lib/pkgconfig/
 endef

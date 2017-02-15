@@ -5,7 +5,7 @@
 # script for sending updates to cloudflare.com
 #.based on Ben Kulbertis cloudflare-update-record.sh found at http://gist.github.com/benkulbertis
 #.and on George Johnson's cf-ddns.sh found at https://github.com/gstuartj/cf-ddns.sh
-#.2016 Christian Schoenebeck <christian dot schoenebeck at gmail dot com>
+#.2016-2017 Christian Schoenebeck <christian dot schoenebeck at gmail dot com>
 # CloudFlare API documentation at https://api.cloudflare.com/
 #
 # This script is parsed by dynamic_dns_functions.sh inside send_update() function
@@ -29,11 +29,21 @@ local __HOST __DOMAIN __TYPE __URLBASE __PRGBASE __RUNPROG __DATA __IPV6 __ZONEI
 local __URLBASE="https://api.cloudflare.com/client/v4"
 
 # split __HOST __DOMAIN from $domain
+# given data:
+# @example.com for "domain record"
+# host.sub@example.com for a "host record"
 __HOST=$(printf %s "$domain" | cut -d@ -f1)
 __DOMAIN=$(printf %s "$domain" | cut -d@ -f2)
 
-# __HOST != __DOMAIN then host@domain.tld => host.domain.tld
-[ "$__HOST" = "$__DOMAIN" ] || __HOST=$(printf %s "$domain" | tr "@" ".")
+# Cloudflare v4 needs:
+# __DOMAIN = the base domain i.e. example.com
+# __HOST   = the FQDN of record to modify
+# i.e. example.com for the "domain record" or host.sub.example.com for "host record"
+
+# handling domain record then set __HOST = __DOMAIN
+[ -z "$__HOST" ] && __HOST=$__DOMAIN
+# handling host record then rebuild fqdn host@domain.tld => host.domain.tld
+[ "$__HOST" != "$__DOMAIN" ] && __HOST="${__HOST}.${__DOMAIN}"
 
 # set record type
 [ $use_ipv6 -eq 0 ] && __TYPE="A" || __TYPE="AAAA"
@@ -118,23 +128,23 @@ __PRGBASE="$__PRGBASE --header 'Content-Type: application/json' "
 # __PRGBASE="$__PRGBASE --header 'Accept: application/json' "
 
 # read zone id for registered domain.TLD
-__RUNPROG="$__PRGBASE --request GET $__URLBASE/zones?name=$__DOMAIN"
+__RUNPROG="$__PRGBASE --request GET '$__URLBASE/zones?name=$__DOMAIN'"
 cloudflare_transfer || return 1
 # extract zone id
 __ZONEID=$(grep -o '"id":"[^"]*' $DATFILE | grep -o '[^"]*$' | head -1)
 [ -z "$__ZONEID" ] && {
 	write_log 4 "Could not detect 'zone id' for domain.tld: '$__DOMAIN'"
-	return 1
+	return 127
 }
 
 # read record id for A or AAAA record of host.domain.TLD
-__RUNPROG="$__PRGBASE --request GET $__URLBASE/zones/$__ZONEID/dns_records?name=$__HOST&type=$__TYPE"
+__RUNPROG="$__PRGBASE --request GET '$__URLBASE/zones/$__ZONEID/dns_records?name=$__HOST&type=$__TYPE'"
 cloudflare_transfer || return 1
 # extract record id
 __RECID=$(grep -o '"id":"[^"]*' $DATFILE | grep -o '[^"]*$' | head -1)
 [ -z "$__RECID" ] && {
 	write_log 4 "Could not detect 'record id' for host.domain.tld: '$__HOST'"
-	return 1
+	return 127
 }
 
 # extract current stored IP
@@ -153,12 +163,12 @@ __DATA=$(grep -o '"content":"[^"]*' $DATFILE | grep -o '[^"]*$' | head -1)
 		expand_ipv6 $__DATA __DATA
 		[ "$__DATA" = "$__IPV6" ] && {		# IPv6 no update needed
 			write_log 7 "IPv6 at CloudFlare.com already up to date"
-			return 127
+			return 0
 		}
 	else
 		[ "$__DATA" = "$__IP" ] && {		# IPv4 no update needed
 			write_log 7 "IPv4 at CloudFlare.com already up to date"
-			return 127
+			return 0
 		}
 	fi
 }
@@ -171,7 +181,7 @@ cat > $DATFILE << EOF
 EOF
 
 # let's complete transfer command
-__RUNPROG="$__PRGBASE --request PUT --data @$DATFILE $__URLBASE/zones/$__ZONEID/dns_records/$__RECID"
+__RUNPROG="$__PRGBASE --request PUT --data @$DATFILE '$__URLBASE/zones/$__ZONEID/dns_records/$__RECID'"
 cloudflare_transfer || return 1
 
 return 0

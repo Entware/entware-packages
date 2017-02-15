@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# droproot plugin restored
 
 include $(TOPDIR)/rules.mk
 
@@ -31,6 +32,7 @@ define Package/znc/default
   CATEGORY:=Network
   TITLE:=ZNC
   URL:=http://en.znc.in/
+  USERID:=znc:znc
 endef
 
 define Package/znc

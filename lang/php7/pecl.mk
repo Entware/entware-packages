@@ -16,6 +16,9 @@ define Build/Prepare
 	( cd $(PKG_BUILD_DIR); $(STAGING_DIR)/opt/bin/phpize7 )
 endef
 
+CONFIGURE_VARS+= \
+	ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no)
+
 CONFIGURE_ARGS+= \
 	--with-php-config=$(STAGING_DIR)/opt/bin/php7-config
 

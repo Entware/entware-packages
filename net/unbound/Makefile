@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.5.10
-PKG_RELEASE:=5
+PKG_VERSION:=1.6.0
+PKG_RELEASE:=3
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
@@ -17,7 +17,7 @@ PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@hotmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.unbound.net/downloads
-PKG_MD5SUM:=0a3a236811f1ab5c1dc31974fa74e047
+PKG_MD5SUM:=78409eccf7260d260b6463f85e59c66b
 
 PKG_BUILD_DEPENDS:=libexpat
 PKG_BUILD_PARALLEL:=1
@@ -120,6 +120,8 @@ CONFIGURE_ARGS += \
 
 define Package/unbound/conffiles
 /opt/etc/unbound/unbound.conf
+/opt/etc/unbound/unbound_ext.conf
+/opt/etc/unbound/unbound_srv.conf
 endef
 
 define Build/InstallDev
@@ -140,6 +142,8 @@ define Package/unbound/install
 		$(PKG_INSTALL_DIR)/opt/etc/unbound/unbound.conf \
 		$(1)/opt/etc/unbound/
 	$(INSTALL_CONF) ./files/root.key $(1)/opt/etc/unbound/
+	$(INSTALL_DATA) ./files/unbound_ext.conf $(1)/opt/etc/unbound/unbound_ext.conf
+	$(INSTALL_DATA) ./files/unbound_srv.conf $(1)/opt/etc/unbound/unbound_srv.conf
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S61unbound $(1)/opt/etc/init.d/
 endef

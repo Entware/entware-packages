@@ -29,7 +29,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/stunnel
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libopenssl +libpthread
+  DEPENDS:=+libopenssl +zlib +libpthread
   TITLE:=SSL TCP Wrapper
   URL:=http://www.stunnel.org/
 endef

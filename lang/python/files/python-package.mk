@@ -16,7 +16,7 @@ PYTHON_PKG_DIR:=/opt/lib/python$(PYTHON_VERSION)/site-packages
 
 PYTHON:=python$(PYTHON_VERSION)
 
-PYTHONPATH:=$(PYTHON_LIB_DIR):$(STAGING_DIR)$(PYTHON_PKG_DIR):$(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)
+PYTHONPATH:=$(PYTHON_LIB_DIR):$(STAGING_DIR)/$(PYTHON_PKG_DIR):$(PKG_INSTALL_DIR)/$(PYTHON_PKG_DIR)
 
 # These configure args are needed in detection of path to Python header files
 # using autotools.
@@ -38,6 +38,15 @@ define PyPackage
   ifndef PyPackage/$(1)/filespec
     define PyPackage/$(1)/filespec
       +|$(PYTHON_PKG_DIR)
+    endef
+  endif
+
+  ifndef PyPackage/$(1)/install
+    define PyPackage/$(1)/install
+		if [ -d $(PKG_INSTALL_DIR)/opt/bin ]; then \
+			$(INSTALL_DIR) $$(1)/opt/bin \
+			$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $$(1)/opt/bin/
+		fi
     endef
   endif
 
@@ -115,21 +124,15 @@ define Build/Compile/PyMod
 	find $(PKG_INSTALL_DIR) -name "*\.pyc" -o -name "*\.pyo" -o -name "*\.exe" | xargs rm -f
 endef
 
-define PyMod/Default
-  define Build/Compile
-	$$(call Build/Compile/PyMod,,install --prefix=/opt --root=$(PKG_INSTALL_DIR))
-  endef
-
-  define Package/$(PKG_NAME)/install
-	$(INSTALL_DIR) $$(1)$(PYTHON_PKG_DIR) $$(1)/opt/bin
-	if [ -d $(PKG_INSTALL_DIR)/opt/bin ]; then find $(PKG_INSTALL_DIR)/opt/bin -mindepth 1 -maxdepth 1 -type f -exec $(CP) \{\} $$(1)/opt/bin/ \; ; fi
-	find $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR) -mindepth 1 -maxdepth 1 \( -type f -o -type d \) -exec $(CP) \{\} $$(1)$(PYTHON_PKG_DIR)/ \;
-  endef
-
-  define Build/InstallDev
-	$(INSTALL_DIR) $$(1)/opt/bin $$(1)$(PYTHON_PKG_DIR)
-	if [ -d $(PKG_INSTALL_DIR)/opt/bin ]; then find $(PKG_INSTALL_DIR)/opt/bin -mindepth 1 -maxdepth 1 -type f -exec $(CP) \{\} $$(1)/opt/bin/ \; ; fi
-	find $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR) -mindepth 1 -maxdepth 1 \( -type f -o -type d \) -exec $(CP) \{\} $$(1)$(PYTHON_PKG_DIR)/ \;
-  endef
+define PyBuild/Compile/Default
+	$(call Build/Compile/PyMod,, \
+		install --prefix="/opt" --root="$(PKG_INSTALL_DIR)" \
+		--single-version-externally-managed \
+	)
 endef
 
+ifeq ($(BUILD_VARIANT),python)
+define Build/Compile
+	$(call PyBuild/Compile/Default)
+endef
+endif # python

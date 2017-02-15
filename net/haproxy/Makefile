@@ -5,7 +5,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Newer haproxy versions enable extra openssl compile flags that are problematic....
+# Downgraded from 1.7.2.The newer haproxy versions enable extra openssl compile flags
 
 include $(TOPDIR)/rules.mk
 

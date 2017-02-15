@@ -51,12 +51,8 @@ menu "Configuration"
 endmenu
 endef
 
-TARGET_CFLAGS += \
-	-std=gnu99
-
 CONFIGURE_ARGS+= \
 	--disable-ssp \
-	--disable-asm \
 	$(if $(CONFIG_LIBSODIUM_MINIMAL),--enable-minimal=yes,--enable-minimal=no)
 
 define Build/InstallDev

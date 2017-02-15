@@ -2,53 +2,26 @@
 
 PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-NGINX_BIN=/opt/sbin/nginx
-
-start() {
-	$NGINX_BIN && logger "Started nginx"
-}
-
-stop() {
-	$NGINX_BIN -s stop
-}
-
-reload() {
-	$NGINX_BIN -s reload
-}
-
-shutdown() {
-	$NGINX_BIN -s quit
-}
-
-
 case $1 in
 	start)
-	start
-	echo "Started nginx"
+	nginx && echo 'Nginx started.'
 	;;
 	stop)
-	shutdown
-	echo "Stopped nginx"
+	nginx -s quit && echo 'Nginx gracefully stopped.'
 	;;
 	restart)
-	shutdown
-	sleep 1
-	start
-	echo "Restarted nginx"
+	nginx -s stop && nginx && echo 'Nginx restarted.'
 	;;
 	reload)
-        reload
-	echo "Reloaded nginx"
+	nginx -s reload && echo 'Nginx configuration reload.'
 	;;
-	link_up)
+	reopen)
+	nginx -s reopen && echo 'Nginx log files reopened.'
 	;;
-	ppp_up)
-	;;
-	link_down)
-	;;
-	ppp_down)
+	test)
+	nginx -t
 	;;
 	*)
-	echo "Usage: $0 {start|stop|restart|reload|link_up|link_down|ppp_up|ppp_down}"
+	echo "Usage: $0 {start|stop|restart|reload|reopen|test}"
 	;;
 esac
