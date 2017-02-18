@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Don't lose CONFIGURE_ARGS+= --with-system-expat="$(STAGING_DIR)/opt" 
 
 include $(TOPDIR)/rules.mk
 
@@ -14,7 +15,7 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=4
+PKG_RELEASE:=4a
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
@@ -142,6 +143,7 @@ CONFIGURE_ARGS+= \
 	--without-cxx-main \
 	--with-threads \
 	--with-system-ffi \
+	--with-system-expat="$(STAGING_DIR)/opt" \
 	--with-ensurepip=no \
 	--without-pymalloc \
 	PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)" \
