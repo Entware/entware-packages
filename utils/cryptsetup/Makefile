@@ -5,11 +5,13 @@
 # See /LICENSE for more information.
 #
 
+# Entware-3x does not need --disable-kernel_crypto configure option as Entware-ng
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptsetup
 PKG_VERSION:=1.7.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=GPL-2.0+ LGPL-2.1+
 PKG_LICENSE_FILES:=COPYING COPYING.LGPL
 
@@ -61,8 +63,8 @@ $(call Package/cryptsetup/Default/description)
 linked against openssl
 endef
 
-CONFIGURE_ARGS+= \
-	--disable-kernel_crypto
+#CONFIGURE_ARGS+= \
+#	--disable-kernel_crypto
 
 ifeq ($(BUILD_VARIANT),openssl)
 CONFIGURE_ARGS+= \

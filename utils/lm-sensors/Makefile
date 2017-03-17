@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lm-sensors
 PKG_VERSION:=3.3.5
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/groeck/lm-sensors.git
@@ -64,7 +64,7 @@ define Package/libsensors/description
 endef
 
 define Package/lm-sensors/conffiles
-/etc/sensors.conf
+/opt/etc/sensors.conf
 endef
 
 define Build/Compile
@@ -78,7 +78,7 @@ define Build/Compile
 		STAGING_DIR="$(STAGING_DIR)" \
 		PREFIX="/opt" \
 		MACHINE="$(ARCH)" \
-		EXLDFLAGS="" \
+		EXLDFLAGS="$(TARGET_LDFLAGS)" \
 		user
 endef
 
