@@ -38,15 +38,9 @@ define Package/addrwatch/description
   addresses of hosts using IPv6 privacy extensions (RFC4941).
 endef
 
-define Package/addrwatch/conffiles
-	/etc/config/addrwatch
-endef
-
 define Package/addrwatch/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/config $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/addrwatch $(1)/usr/sbin/
-	$(INSTALL_BIN) ./files/addrwatch.init $(1)/etc/init.d/addrwatch
-	$(INSTALL_CONF) ./files/addrwatch.config $(1)/etc/config/addrwatch$
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/addrwatch $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,addrwatch))
