@@ -1,0 +1,11 @@
+--- a/src/tun.c
++++ b/src/tun.c
+@@ -26,7 +26,7 @@
+ #include <fcntl.h>
+ 
+ #ifndef IFCONFIGPATH
+-#define IFCONFIGPATH "PATH=/sbin:/bin "
++#define IFCONFIGPATH "PATH=/opt/sbin:/opt/bin:/sbin:/bin "
+ #endif
+ 
+ #ifdef WINDOWS32
