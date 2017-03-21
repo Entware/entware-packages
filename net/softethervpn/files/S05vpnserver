@@ -14,10 +14,10 @@ case $1 in
 	;;
 	restart)
 	logger "Starting softether vpnserver service."
-	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnserver start
+	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnserver stop
 	sleep 5
 	logger "Stopping softether vpnserver service."
-	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnserver stop
+	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnserver start
 	;;
 	*)
 	echo "Usage: $0 {start|stop|restart}"
