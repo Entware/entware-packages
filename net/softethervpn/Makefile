@@ -77,10 +77,6 @@ TARGET_CFLAGS += \
 MAKE_FLAGS += \
 	-f src/makefiles/linux_$(if $(CONFIG_ARCH_64BIT),64,32)bit.mak
 
-# Map nonstandard CCFLAGS variable to standard TARGET_CFLAGS
-MAKE_VARS += \
-	CCFLAGS="$(TARGET_CFLAGS)"
-
 define Build/Configure
 	# Fetch prebuilt hamcore.se2 from staging dir
 	$(INSTALL_DIR) $(PKG_BUILD_DIR)/src/bin/BuiltHamcoreFiles/unix
@@ -97,7 +93,7 @@ define Package/softethervpn
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=VPN
-  DEPENDS:=+libpthread +librt +libreadline +libopenssl +libncurses +kmod-tun +zlib $(ICONV_DEPENDS)
+  DEPENDS:=+libpthread +librt +libreadline +libopenssl +libncurses +zlib +gconv-modules
   TITLE:=Free Cross-platform Multi-protocol VPN server and client
   URL:=http://www.softether.org/
   MAINTAINER:=Federico Di Marco <fededim@gmail.com>
@@ -114,38 +110,37 @@ endef
 
 
 define Package/softethervpn/conffiles
-/usr/libexec/softethervpn/vpn_server.config
-/usr/libexec/softethervpn/vpn_client.config
-/usr/libexec/softethervpn/vpn_bridge.config
-/usr/libexec/softethervpn/lang.config
+/opt/libexec/softethervpn/vpn_server.config
+/opt/libexec/softethervpn/vpn_client.config
+/opt/libexec/softethervpn/vpn_bridge.config
+/opt/libexec/softethervpn/lang.config
 endef
 
 define Package/softethervpn/install
-	$(INSTALL_DIR) $(1)/usr/libexec/softethervpn
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnserver/vpnserver $(1)/usr/libexec/softethervpn
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnserver/hamcore.se2 $(1)/usr/libexec/softethervpn
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnclient/vpnclient $(1)/usr/libexec/softethervpn
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnbridge/vpnbridge $(1)/usr/libexec/softethervpn
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpncmd/vpncmd $(1)/usr/libexec/softethervpn
-	$(INSTALL_BIN) files/launcher.sh $(1)/usr/libexec/softethervpn
+	$(INSTALL_DIR) $(1)/opt/libexec/softethervpn
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnserver/vpnserver $(1)/opt/libexec/softethervpn
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnserver/hamcore.se2 $(1)/opt/libexec/softethervpn
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnclient/vpnclient $(1)/opt/libexec/softethervpn
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpnbridge/vpnbridge $(1)/opt/libexec/softethervpn
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/vpncmd/vpncmd $(1)/opt/libexec/softethervpn
+	$(INSTALL_BIN) files/launcher.sh $(1)/opt/libexec/softethervpn
 
-	$(INSTALL_DATA) files/dummy $(1)/usr/libexec/softethervpn/vpn_server.config
-	$(INSTALL_DATA) files/dummy $(1)/usr/libexec/softethervpn/vpn_bridge.config
-	$(INSTALL_DATA) files/dummy $(1)/usr/libexec/softethervpn/vpn_client.config
-	$(INSTALL_DATA) files/dummy $(1)/usr/libexec/softethervpn/lang.config
+	$(INSTALL_DATA) files/dummy $(1)/opt/libexec/softethervpn/vpn_server.config
+	$(INSTALL_DATA) files/dummy $(1)/opt/libexec/softethervpn/vpn_bridge.config
+	$(INSTALL_DATA) files/dummy $(1)/opt/libexec/softethervpn/vpn_client.config
+	$(INSTALL_DATA) files/dummy $(1)/opt/libexec/softethervpn/lang.config
 
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
 
-	#$(LN) ../../usr/libexec/softethervpn/launcher.sh $(1)/usr/bin/vpnserver
-	#$(LN) ../../usr/libexec/softethervpn/launcher.sh $(1)/usr/bin/vpnclient
-	#$(LN) ../../usr/libexec/softethervpn/launcher.sh $(1)/usr/bin/vpnbridge
-	$(LN) ../../usr/libexec/softethervpn/launcher.sh $(1)/usr/bin/vpncmd
+	#$(LN) ../../opt/libexec/softethervpn/launcher.sh $(1)/opt/bin/vpnserver
+	#$(LN) ../../opt/libexec/softethervpn/launcher.sh $(1)/opt/bin/vpnclient
+	#$(LN) ../../opt/libexec/softethervpn/launcher.sh $(1)/opt/bin/vpnbridge
+	$(LN) ../../opt/libexec/softethervpn/launcher.sh $(1)/opt/bin/vpncmd
 
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) files/vpnserver.init $(1)/etc/init.d/softethervpnserver
-	$(INSTALL_BIN) files/vpnbridge.init $(1)/etc/init.d/softethervpnbridge
-	$(INSTALL_BIN) files/vpnclient.init $(1)/etc/init.d/softethervpnclient
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) files/S05vpnserver $(1)/opt/etc/init.d/
+	$(INSTALL_BIN) files/S05vpnbridge $(1)/opt/etc/init.d/
+	$(INSTALL_BIN) files/S05vpnclient $(1)/opt/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,softethervpn))
