@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apr
 PKG_VERSION:=1.5.2
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/apr/
@@ -51,6 +51,12 @@ CONFIGURE_VARS += \
 	apr_cv_tcp_nodelay_with_cork=yes \
 	apr_cv_use_lfs64=yes \
 	LDFLAGS="$$$$LDFLAGS -lpthread" \
+
+ifneq ($(CONFIG_ARCH_64BIT),y)
+CONFIGURE_VARS += \
+	ac_cv_sizeof_pid_t=4 \
+
+endif
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/include/apr-1 $(1)/opt/lib $(1)/opt/lib/pkgconfig $(1)/opt/share/build-1
