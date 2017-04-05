@@ -10,17 +10,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnscrypt-proxy
-PKG_VERSION:=1.9.1
-PKG_RELEASE:=1
+PKG_VERSION:=1.9.4
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://download.dnscrypt.org/dnscrypt-proxy
-PKG_MD5SUM:=4f593faeba9facb4718caa011d76497b3e813b110f3a2a44a25c9c950ac74129
+PKG_MD5SUM:=fdf4a708e7922e13b14555f315ca8d5361aec89b0595b06fdbbcaacfa4e6f11e
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
 PKG_MAINTAINER:=Damiano Renfer <damiano.renfer@gmail.com>
 PKG_LICENSE:=ISC
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_DNSCRYPT_ENABLE_PLUGINS
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -34,7 +36,8 @@ endef
 
 define Package/dnscrypt-proxy
   $(call Package/dnscrypt-proxy/Default)
-  DEPENDS:=+libsodium +dnscrypt-proxy-resolvers
+  DEPENDS:=+libsodium +dnscrypt-proxy-resolvers +DNSCRYPT_ENABLE_PLUGINS:libltdl \
+	+DNSCRYPT_ENABLE_PLUGINS:libldns
   TITLE:=A tool for securing communications between a client and a DNS resolver
 endef
 
@@ -68,11 +71,15 @@ define Package/hostip/description
   to IPv4 or IPv6 addresses.
 endef
 
+define Package/dnscrypt-proxy/config
+	source "$(SOURCE)/Config.in"
+endef
+
 define Build/Configure
 	$(call Build/Configure/Default, \
 	--prefix=/opt \
 	--disable-ssp \
-	--disable-plugins \
+	$(if $(CONFIG_DNSCRYPT_ENABLE_PLUGINS),,--disable-plugins) \
 	)
 endef
 
@@ -93,6 +100,12 @@ define Package/dnscrypt-proxy/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/dnscrypt-proxy $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S09dnscrypt-proxy $(1)/opt/etc/init.d/
+	$(if $(CONFIG_DNSCRYPT_ENABLE_PLUGINS), \
+		$(INSTALL_DIR) $(1)/opt/lib/dnscrypt-proxy; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/lib/dnscrypt-proxy/libdcplugin_example_cache.so $(1)/opt/lib/dnscrypt-proxy/; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/lib/dnscrypt-proxy/libdcplugin_example_ldns_aaaa_blocking.so $(1)/opt/lib/dnscrypt-proxy/; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/lib/dnscrypt-proxy/libdcplugin_example_ldns_blocking.so $(1)/opt/lib/dnscrypt-proxy/; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/lib/dnscrypt-proxy/libdcplugin_example_logging.so $(1)/opt/lib/dnscrypt-proxy/)
 endef
 
 define Package/dnscrypt-proxy-resolvers/install

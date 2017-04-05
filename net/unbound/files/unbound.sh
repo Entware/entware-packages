@@ -88,6 +88,29 @@ UNBOUND_CONTROL_CFG="$UNBOUND_CONTROL -c $UNBOUND_CONFFILE"
 
 ##############################################################################
 
+copy_dash_update() {
+  # TODO: remove this function and use builtins when this issues is resovled.
+  # Due to OpenWrt/LEDE divergence "cp -u" isn't yet universally available.
+  local filetime keeptime
+
+
+  if [ -f $UNBOUND_KEYFILE.keep ] ; then
+    # root.key.keep is reused if newest
+    filetime=$( date -r $UNBOUND_KEYFILE +%s )
+    keeptime=$( date -r $UNBOUND_KEYFILE.keep +%s )
+
+
+    if [ $keeptime -gt $filetime ] ; then
+      cp $UNBOUND_KEYFILE.keep $UNBOUND_KEYFILE
+    fi
+
+
+    rm -f $UNBOUND_KEYFILE.keep
+  fi
+}
+
+##############################################################################
+
 create_interface_dns() {
   local cfg="$1"
   local ipcommand logint ignore ifname ifdashname
@@ -292,7 +315,7 @@ unbound_mkdir() {
       # Debian-like package dns-root-data
       cp -p /usr/share/dns/root.hints $UNBOUND_HINTFILE
 
-    else
+    elif [ ! -f "$UNBOUND_TIMEFILE" ] ; then
       logger -t unbound -s "iterator will use built-in root hints"
     fi
   fi
@@ -306,17 +329,13 @@ unbound_mkdir() {
     elif [ -x $UNBOUND_ANCHOR ] ; then
       $UNBOUND_ANCHOR -a $UNBOUND_KEYFILE
 
-    else
+    elif [ ! -f "$UNBOUND_TIMEFILE" ] ; then
       logger -t unbound -s "validator will use built-in trust anchor"
     fi
   fi
 
 
-  if [ -f $UNBOUND_KEYFILE.keep ] ; then
-    # root.key.keep is reused if newest
-    cp -u $UNBOUND_KEYFILE.keep $UNBOUND_KEYFILE
-    rm -f $UNBOUND_KEYFILE.keep
-  fi
+  copy_dash_update
 
 
   # Ensure access and prepare to jail
@@ -507,7 +526,7 @@ unbound_conf() {
       echo
     } >> $UNBOUND_CONFFILE
 
-  else
+  elif [ ! -f "$UNBOUND_TIMEFILE" ] ; then
     logger -t unbound -s "default memory resource consumption"
   fi
 
@@ -583,7 +602,9 @@ unbound_conf() {
       ;;
 
     *)
-      logger -t unbound -s "default recursion configuration"
+      if [ ! -f "$UNBOUND_TIMEFILE" ] ; then
+        logger -t unbound -s "default recursion configuration"
+      fi
       ;;
   esac
 
@@ -803,7 +824,11 @@ unbound_uci() {
 
     if [ "$UNBOUND_B_DNSMASQ" -gt 0 ] ; then
       UNBOUND_D_DHCP_LINK=dnsmasq
-      logger -t unbound -s "Please use 'dhcp_link' selector instead"
+      
+      
+      if [ ! -f "$UNBOUND_TIMEFILE" ] ; then
+        logger -t unbound -s "Please use 'dhcp_link' selector instead"
+      fi
     fi
   fi
 
@@ -816,7 +841,7 @@ unbound_uci() {
     fi
 
 
-    if [ "$UNBOUND_D_DHCP_LINK" = "none" ] ; then
+    if [ "$UNBOUND_D_DHCP_LINK" = "none" -a ! -f "$UNBOUND_TIMEFILE" ] ; then
       logger -t unbound -s "cannot forward to dnsmasq"
     fi
   fi
@@ -830,7 +855,7 @@ unbound_uci() {
     fi
 
 
-    if [ "$UNBOUND_D_DHCP_LINK" = "none" ] ; then
+    if [ "$UNBOUND_D_DHCP_LINK" = "none" -a ! -f "$UNBOUND_TIMEFILE" ] ; then
       logger -t unbound -s "cannot receive records from odhcpd"
     fi
   fi

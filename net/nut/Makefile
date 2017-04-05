@@ -1,5 +1,5 @@
-#
-# Copyright (C) 2006-2015 OpenWrt.org
+
+# Copyright (C) 2006-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
 PKG_MD5SUM:=3ba53656933d7471f95140b32a5b8d5c
-PKG_MAINTAINER:=Martin Rowe <martin.p.rowe@gmail.com>
+PKG_MAINTAINER:=Daniel Dickinson <lede@cshore.thecshore.com>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE-GPL2
 

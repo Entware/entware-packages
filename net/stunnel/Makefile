@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stunnel
-PKG_VERSION:=5.38
+PKG_VERSION:=5.41
 PKG_RELEASE:=1
 
 PKG_LICENSE:=GPL-2.0+
@@ -17,9 +17,10 @@ PKG_LICENSE_FILES:=COPYING COPYRIGHT.GPL
 
 PKG_SOURCE_URL:= \
 	http://ftp.nluug.nl/pub/networking/stunnel/ \
-	http://www.usenix.org.uk/mirrors/stunnel/
+	http://www.usenix.org.uk/mirrors/stunnel/ \
+	https://www.stunnel.org/downloads/
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=09ada29ba1683ab1fd1f31d7bed8305127a0876537e836a40cb83851da034fd5
+PKG_HASH:=f05c6321ee1f6ddebacc234ccf20825971941e831b5beea6d0ce0b8e1668148f
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1

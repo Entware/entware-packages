@@ -1,11 +1,11 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -81,7 +81,7 @@
- endif
- 
+@@ -144,7 +144,7 @@
+ LIBDIR ?= lib
  # install directories
--INSTALLPREFIX ?= $(PREFIX)/usr
-+INSTALLPREFIX ?= $(PREFIX)/opt
- INSTALLDIRINC = $(INSTALLPREFIX)/include/miniupnpc
- INSTALLDIRLIB = $(INSTALLPREFIX)/lib
- INSTALLDIRBIN = $(INSTALLPREFIX)/bin
+ ifeq ($(strip $(PREFIX)),)
+-INSTALLPREFIX ?= /usr
++INSTALLPREFIX ?= /opt
+ else
+ INSTALLPREFIX ?= $(PREFIX)
+ endif

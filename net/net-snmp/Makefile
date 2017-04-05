@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-snmp
 PKG_VERSION:=5.7.3
-PKG_RELEASE:=2a
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
@@ -99,6 +99,7 @@ endef
 
 
 SNMP_MIB_MODULES_INCLUDED = \
+	agent/extend \
 	agentx \
 	host/hr_device \
 	host/hr_disk \
@@ -194,7 +195,7 @@ ifeq ($(CONFIG_IPV6),y)
 SNMP_TRANSPORTS_INCLUDED+= UDPIPv6
 endif
 
-TARGET_LDFLAGS += -L$(TOOLCHAIN_DIR)/opt/lib
+TARGET_LDFLAGS += -L$(TOOLCHAIN_DIR)/lib
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \

@@ -1,0 +1,11 @@
+--- a/basic.cfg
++++ b/basic.cfg
+@@ -12,7 +12,7 @@
+ transparent: false;
+ timeout: 2;
+ user: "nobody";
+-pidfile: "/var/run/sslh.pid";
++pidfile: "/opt/var/run/sslh.pid";
+ 
+ 
+ # Change hostname with your external address name.
