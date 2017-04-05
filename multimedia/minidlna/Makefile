@@ -9,20 +9,25 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minidlna
-PKG_VERSION:=1.1.5
-PKG_RELEASE:=1a
+PKG_VERSION:=1.1.6+git-8a996b
+PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=@SF/minidlna
-PKG_MD5SUM:=1970e553a1eb8a3e7e302e2ce292cbc4
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL=http://git.code.sf.net/p/minidlna/git
+PKG_SOURCE_SUBDIR=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=8a996b4b624ef45538a5de10730b8e94c55e7768
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_MIRROR_HASH:=fddbb7c96b40e335a251b919ff5c674519f266a59b8a43011761ba952c0df1b6
+
 PKG_LICENSE:=GPL-2.0 BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING LICENCE.miniupnpd
 
 PKG_MAINTAINER:=Knyazkov Dmitry <medavedik@gmail.com>
 
+PKG_FIXUP:=autoreconf gettext-version
+
 PKG_BUILD_PARALLEL:=0
 PKG_BUILD_DEPENDS:=util-linux
-PKG_FIXUP:=autoreconf gettext-version
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -32,7 +37,7 @@ define Package/minidlna
   CATEGORY:=Multimedia
   TITLE:=UPnP A/V & DLNA Media Server
   URL:=http://minidlna.sourceforge.net/
-  DEPENDS:= +libexif +libsqlite3 \
+  DEPENDS:= +libpthread +libexif +libjpeg +libsqlite3 +libffmpeg \
   	+libid3tag +libflac +libvorbis +libuuid +libffmpegthumbnailer \
   	$(ICONV_DEPENDS) $(INTL_DEPENDS)
 endef

@@ -1,6 +1,6 @@
 --- a/minidlna.c
 +++ b/minidlna.c
-@@ -492,7 +492,7 @@
+@@ -481,7 +481,7 @@
  	int options_flag = 0;
  	struct sigaction sa;
  	const char * presurl = NULL;
@@ -20,7 +20,7 @@
  
  char uuidvalue[] = "uuid:00000000-0000-0000-0000-000000000000";
  char modelname[MODELNAME_MAX_LEN] = ROOTDEV_MODELNAME;
-@@ -79,7 +79,7 @@
+@@ -76,7 +76,7 @@
  int sssdp = -1;
  
  /* Path of the Unix socket used to communicate with MiniSSDPd */

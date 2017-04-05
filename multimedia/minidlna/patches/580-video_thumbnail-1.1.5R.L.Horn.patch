@@ -84,7 +84,7 @@ diff -ruN 1/albumart.c 2/albumart.c
 diff -ruN 1/configure.ac 2/configure.ac
 --- 1/configure.ac	2015-02-28 20:28:01.000000000 +0200
 +++ 2/configure.ac	2015-02-28 20:39:16.000000000 +0200
-@@ -619,7 +619,22 @@
+@@ -618,7 +618,22 @@
          ]
  )
  
@@ -111,7 +111,7 @@ diff -ruN 1/configure.ac 2/configure.ac
 diff -ruN 1/inotify.c 2/inotify.c
 --- 1/inotify.c	2015-02-28 20:28:01.000000000 +0200
 +++ 2/inotify.c	2015-02-28 20:46:09.000000000 +0200
-@@ -600,6 +600,16 @@
+@@ -603,6 +603,16 @@
  		sql_exec(db, "DELETE from OBJECTS where DETAIL_ID = %lld", detailID);
  	}
  	snprintf(art_cache, sizeof(art_cache), "%s/art_cache%s", db_path, path);
@@ -128,10 +128,10 @@ diff -ruN 1/inotify.c 2/inotify.c
  	remove(art_cache);
  
  	return 0;
-@@ -649,6 +659,11 @@
- 	int length, i = 0;
- 	char * esc_name = NULL;
- 	struct stat st;
+@@ -656,6 +666,11 @@
+ 
+ 	sigfillset(&set);
+ 	pthread_sigmask(SIG_BLOCK, &set, NULL);
 +
 +#ifdef THUMBNAIL_CREATION
 +	char renpath_buf[PATH_MAX];
@@ -140,7 +140,7 @@ diff -ruN 1/inotify.c 2/inotify.c
          
  	pollfds[0].fd = inotify_init();
  	pollfds[0].events = POLLIN;
-@@ -710,6 +725,16 @@
+@@ -717,6 +727,16 @@
  				{
  					DPRINTF(E_DEBUG, L_INOTIFY,  "The directory %s was %s.\n",
  						path_buf, (event->mask & IN_MOVED_TO ? "moved here" : "created"));
@@ -157,7 +157,7 @@ diff -ruN 1/inotify.c 2/inotify.c
  					inotify_insert_directory(pollfds[0].fd, esc_name, path_buf);
  				}
  				else if ( (event->mask & (IN_CLOSE_WRITE|IN_MOVED_TO|IN_CREATE)) &&
-@@ -741,7 +766,18 @@
+@@ -749,7 +769,18 @@
  						(event->mask & IN_ISDIR ? "directory" : "file"),
  						path_buf, (event->mask & IN_MOVED_FROM ? "moved away" : "deleted"));
  					if ( event->mask & IN_ISDIR )
@@ -191,7 +191,7 @@ diff -ruN 1/Makefile.am 2/Makefile.am
 diff -ruN 1/minidlna.c 2/minidlna.c
 --- 1/minidlna.c	2015-02-28 20:28:01.000000000 +0200
 +++ 2/minidlna.c	2015-02-28 20:48:47.000000000 +0200
-@@ -654,6 +654,11 @@
+@@ -643,6 +643,11 @@
  	runtime_vars.max_connections = 50;
  	runtime_vars.root_container = NULL;
  	runtime_vars.ifaces[0] = NULL;
@@ -203,10 +203,10 @@ diff -ruN 1/minidlna.c 2/minidlna.c
  
  	/* read options file first since
  	 * command line arguments have final say */
-@@ -857,6 +862,30 @@
- 			if (strtobool(ary_options[i].value))
- 				SETFLAG(MERGE_MEDIA_DIRS_MASK);
- 			break;
+@@ -853,6 +858,30 @@
+			if (strtobool(ary_options[i].value))
+				SETFLAG(WIDE_LINKS_MASK);
+			break;
 +#ifdef THUMBNAIL_CREATION
 +		case ENABLE_THUMB:
 +			if( (strcmp(ary_options[i].value, "yes") == 0) || atoi(ary_options[i].value) )
@@ -237,11 +237,10 @@ diff -ruN 1/minidlna.c 2/minidlna.c
 diff -ruN 1/minidlna.conf 2/minidlna.conf
 --- 1/minidlna.conf	2015-02-28 20:28:01.000000000 +0200
 +++ 2/minidlna.conf	2015-02-28 20:49:58.000000000 +0200
-@@ -90,3 +90,15 @@
- # colors indicate that a checkerboard background, in those colors, should
+@@ -91,5 +91,17 @@
  # be used.
  #bgcolor=666666,999999
-+
+ 
 +# Suport to Movie Thumbnail generation. To use this option, thumbnail generation must be enable at compile time.
 +enable_thumbnail=yes
 +
@@ -253,6 +252,9 @@ diff -ruN 1/minidlna.conf 2/minidlna.conf
 +
 +# Should the thumbnail have a film strip? To use this option, thumbnail generation must be enable at compile time.
 +enable_thumbnail_filmstrip=yes
++
+ # set this to yes to allow symlinks that point outside user-defined media_dirs.
+ #wide_links=no
 diff -ruN 1/minidlnatypes.h 2/minidlnatypes.h
 --- 1/minidlnatypes.h	2015-02-28 20:28:01.000000000 +0200
 +++ 2/minidlnatypes.h	2015-02-28 20:50:37.000000000 +0200
@@ -275,17 +277,17 @@ diff -ruN 1/options.c 2/options.c
  	{ FORCE_SORT_CRITERIA, "force_sort_criteria" },
  	{ MAX_CONNECTIONS, "max_connections" },
 +#ifndef THUMBNAIL_CREATION	
- 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" }
+ 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" },
 +#else
 +	{ MERGE_MEDIA_DIRS, "merge_media_dirs" },
 +	{ ENABLE_THUMB, "enable_thumbnail" },
 +	{ THUMB_WIDTH, "thumbnail_width" },
 +	{ THUMB_QUALITY, "thumbnail_quality" },
-+	{ ENABLE_THUMB_FILMSTRIP, "enable_thumbnail_filmstrip" }
-+#endif	
++	{ ENABLE_THUMB_FILMSTRIP, "enable_thumbnail_filmstrip" },
++#endif
  #ifdef HAVE_LIBPNG
- 	,{ ICON, "icon" },
- 	{ BGCOLOR, "bgcolor" }
+ 	{ ICON, "icon" },
+ 	{ BGCOLOR, "bgcolor" },
 diff -ruN 1/options.h 2/options.h
 --- 1/options.h	2015-02-28 20:28:01.000000000 +0200
 +++ 2/options.h	2015-02-28 20:52:52.000000000 +0200
@@ -293,36 +295,38 @@ diff -ruN 1/options.h 2/options.h
  	USER_ACCOUNT,			/* user account to run as */
  	FORCE_SORT_CRITERIA,		/* force sorting by a given sort criteria */
  	MAX_CONNECTIONS,		/* maximum number of simultaneous connections */
-+#ifndef THUMBNAIL_CREATION	
- 	MERGE_MEDIA_DIRS		/* don't add an extra directory level when there are multiple media dirs */
++#ifndef THUMBNAIL_CREATION
+ 	MERGE_MEDIA_DIRS,		/* don't add an extra directory level when there are multiple media dirs */
 +#else
 +	MERGE_MEDIA_DIRS,		/* don't add an extra directory level when there are multiple media dirs */
 +	ENABLE_THUMB,                   /* enable thumbnail generation */
 +	THUMB_WIDTH,                    /* thunbnail image with */
 +	THUMB_QUALITY,                  /* thumnail image quality */
-+	ENABLE_THUMB_FILMSTRIP          /* film strip overlay */
-+#endif	
++	ENABLE_THUMB_FILMSTRIP,         /* film strip overlay */
++#endif
  #ifdef HAVE_LIBPNG
- 	,ICON,					/* user-supplied PNG icon */
- 	BGCOLOR					/* user-supplied BG color */
+ 	ICON,				/* user-supplied PNG icon */
+ 	BGCOLOR,			/* user-supplied BG color */
 diff -ruN 1/upnpglobalvars.h 2/upnpglobalvars.h
 --- 1/upnpglobalvars.h	2015-02-28 20:28:01.000000000 +0200
 +++ 2/upnpglobalvars.h	2015-02-28 20:56:11.000000000 +0200
-@@ -191,6 +191,10 @@
+@@ -187,7 +187,11 @@
  #define NO_PLAYLIST_MASK      0x0008
  #define SYSTEMD_MASK          0x0010
  #define MERGE_MEDIA_DIRS_MASK 0x0020
+-#define WIDE_LINKS_MASK       0x0040
 +#ifdef THUMBNAIL_CREATION
 +#define THUMB_MASK            0x0040
 +#define THUMB_FILMSTRIP       0x0080
 +#endif
++#define WIDE_LINKS_MASK       0x0100
  
  #define SETFLAG(mask)	runtime_flags |= mask
  #define GETFLAG(mask)	(runtime_flags & mask)
 diff -ruN 1/utils.c 2/utils.c
 --- 1/utils.c	2015-02-28 20:28:01.000000000 +0200
 +++ 2/utils.c	2015-02-28 20:57:13.000000000 +0200
-@@ -516,3 +516,16 @@
+@@ -518,3 +518,16 @@
  	return type;
  }
  

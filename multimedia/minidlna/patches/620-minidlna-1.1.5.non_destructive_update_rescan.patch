@@ -19,7 +19,7 @@ diff --git a/Makefile.am b/Makefile.am
 index 9273aa5..e8d13b3 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -28,7 +28,7 @@ minidlnad_SOURCES = minidlna.c upnphttp.c upnpdescgen.c upnpsoap.c \
+@@ -29,7 +29,7 @@ minidlnad_SOURCES = minidlna.c upnphttp.c upnpdescgen.c upnpsoap.c \
  			sql.c utils.c metadata.c scanner.c inotify.c \
  			tivo_utils.c tivo_beacon.c tivo_commands.c \
  			playlist.c image_utils.c albumart.c log.c \
@@ -32,7 +32,7 @@ diff --git a/minidlna.c b/minidlna.c
 index c9303b1..94da056 100644
 --- a/minidlna.c
 +++ b/minidlna.c
-@@ -351,12 +351,13 @@ check_db(sqlite3 *db, int new_db, pid_t *scanner_pid)
+@@ -450,12 +450,13 @@ check_db(sqlite3 *db, int new_db, pid_t *scanner_pid)
  	if (ret != 0)
  	{
  rescan:
@@ -48,7 +48,7 @@ index c9303b1..94da056 100644
  		else
  			DPRINTF(E_WARN, L_GENERAL, "Database version mismatch (%d=>%d); need to recreate...\n",
  				ret, DB_VERSION);
-@@ -369,6 +370,9 @@ rescan:
+@@ -468,6 +469,9 @@ rescan:
  		open_db(&db);
  		if (CreateDatabase() != 0)
  			DPRINTF(E_FATAL, L_GENERAL, "ERROR: Failed to create sqlite database!  Exiting...\n");
@@ -58,7 +58,7 @@ index c9303b1..94da056 100644
  #if USE_FORK
  		scanning = 1;
  		sqlite3_close(db);
-@@ -836,6 +840,9 @@ init(int argc, char **argv)
+@@ -1012,6 +1016,9 @@ init(int argc, char **argv)
  		case 'h':
  			runtime_vars.port = -1; // triggers help display
  			break;
@@ -68,7 +68,7 @@ index c9303b1..94da056 100644
  		case 'R':
  			snprintf(buf, sizeof(buf), "rm -rf %s/files.db %s/art_cache", db_path, db_path);
  			if (system(buf) != 0)
-@@ -882,9 +889,9 @@ init(int argc, char **argv)
+@@ -1058,9 +1065,9 @@ init(int argc, char **argv)
  			"\t\t[-t notify_interval] [-P pid_filename]\n"
  			"\t\t[-s serial] [-m model_number]\n"
  #ifdef __linux__
@@ -80,7 +80,7 @@ index c9303b1..94da056 100644
  #endif
  			"\nNotes:\n\tNotify interval is in seconds. Default is 895 seconds.\n"
  			"\tDefault pid file is %s.\n"
-@@ -892,7 +899,8 @@ init(int argc, char **argv)
+@@ -1068,7 +1075,8 @@ init(int argc, char **argv)
  			"\t-w sets the presentation url. Default is http address on port 80\n"
  			"\t-v enables verbose output\n"
  			"\t-h displays this text\n"
@@ -571,7 +571,7 @@ index ee3af48..419bed1 100644
  
  #if SCANDIR_CONST
  typedef const struct dirent scan_filter;
-@@ -848,44 +849,51 @@ start_scanner()
+@@ -851,44 +852,51 @@ start_scanner()
  
  	av_register_all();
  	av_log_set_level(AV_LOG_PANIC);
@@ -661,7 +661,7 @@ diff --git a/upnpglobalvars.c b/upnpglobalvars.c
 index fff02c8..76a529f 100644
 --- a/upnpglobalvars.c
 +++ b/upnpglobalvars.c
-@@ -88,7 +88,7 @@ char db_path[PATH_MAX] = {'\0'};
+@@ -86,7 +86,7 @@ char db_path[PATH_MAX] = {'\0'};
  char log_path[PATH_MAX] = {'\0'};
  struct media_dir_s * media_dirs = NULL;
  struct album_art_name_s * album_art_names = NULL;
@@ -674,7 +674,7 @@ diff --git a/upnpglobalvars.h b/upnpglobalvars.h
 index 224c374..f2ef797 100644
 --- a/upnpglobalvars.h
 +++ b/upnpglobalvars.h
-@@ -231,7 +231,7 @@ extern char db_path[];
+@@ -228,7 +228,7 @@ extern char db_path[];
  extern char log_path[];
  extern struct media_dir_s *media_dirs;
  extern struct album_art_name_s *album_art_names;

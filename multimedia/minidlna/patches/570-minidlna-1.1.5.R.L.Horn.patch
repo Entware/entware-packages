@@ -118,7 +118,7 @@ index 9273aa5..59b0f70 100644
 +AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@ \
 +	    @libpng_CFLAGS@ @opus_CFLAGS@
  
- SUBDIRS=po
+ SUBDIRS=
  
  sbin_PROGRAMS = minidlnad
  check_PROGRAMS = testupnpdescgen
@@ -1283,7 +1283,7 @@ index c08ca3f..09df44c 100644
  int64_t
  GetVideoMetadata(const char *path, char *name)
  {
-@@ -846,6 +1182,8 @@ GetVideoMetadata(const char *path, char *name)
+@@ -845,6 +1181,8 @@ GetVideoMetadata(const char *path, char *name)
  			xasprintf(&m.mime, "video/x-matroska");
  		else if( strcmp(ctx->iformat->name, "flv") == 0 )
  			xasprintf(&m.mime, "video/x-flv");
@@ -1323,7 +1323,7 @@ index c9303b1..1e4f536 100644
  
  #if SQLITE_VERSION_NUMBER < 3005001
  # warning "Your SQLite3 library appears to be too old!  Please use 3.5.1 or newer."
-@@ -278,6 +280,127 @@ getfriendlyname(char *buf, int len)
+@@ -254,6 +256,127 @@ getfriendlyname(char *buf, int len)
  #endif
  }
  
@@ -1451,9 +1451,9 @@ index c9303b1..1e4f536 100644
  static int
  open_db(sqlite3 **sq3)
  {
-@@ -737,6 +860,34 @@ init(int argc, char **argv)
+@@ -730,6 +853,34 @@
  			if (strtobool(ary_options[i].value))
- 				SETFLAG(MERGE_MEDIA_DIRS_MASK);
+ 				SETFLAG(WIDE_LINKS_MASK);
  			break;
 +#ifdef HAVE_LIBPNG
 +		case ICON:
@@ -1490,11 +1490,10 @@ diff --git a/minidlna.conf b/minidlna.conf
 index 7e00e89..ec8a70c 100644
 --- a/minidlna.conf
 +++ b/minidlna.conf
-@@ -81,3 +81,12 @@ model_number=1
- # maximum number of simultaneous connections
+@@ -82,5 +82,14 @@
  # note: many clients open several simultaneous connections while streaming
  #max_connections=50
-+
+ 
 +# PNG image to use for an icon, optionally followed by a hex background
 +# color
 +#icon=myicon.png,7f7f7f
@@ -1503,36 +1502,39 @@ index 7e00e89..ec8a70c 100644
 +# colors indicate that a checkerboard background, in those colors, should
 +# be used.
 +#bgcolor=666666,999999
++
+ # set this to yes to allow symlinks that point outside user-defined media_dirs.
+ #wide_links=no
 diff --git a/options.c b/options.c
 index 2fa8c06..225aca9 100644
 --- a/options.c
 +++ b/options.c
-@@ -65,6 +65,10 @@ static const struct {
+@@ -65,6 +65,10 @@
  	{ FORCE_SORT_CRITERIA, "force_sort_criteria" },
  	{ MAX_CONNECTIONS, "max_connections" },
- 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" }
+ 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" },
 +#ifdef HAVE_LIBPNG
-+	,{ ICON, "icon" },
-+	{ BGCOLOR, "bgcolor" }
++	{ ICON, "icon" },
++	{ BGCOLOR, "bgcolor" },
 +#endif
+ 	{ WIDE_LINKS, "wide_links" }
  };
  
- int
 diff --git a/options.h b/options.h
 index 159255f..8fbfdc9 100644
 --- a/options.h
 +++ b/options.h
-@@ -58,6 +58,10 @@ enum upnpconfigoptions {
+@@ -58,6 +58,10 @@
  	FORCE_SORT_CRITERIA,		/* force sorting by a given sort criteria */
  	MAX_CONNECTIONS,		/* maximum number of simultaneous connections */
- 	MERGE_MEDIA_DIRS		/* don't add an extra directory level when there are multiple media dirs */
+ 	MERGE_MEDIA_DIRS,		/* don't add an extra directory level when there are multiple media dirs */
 +#ifdef HAVE_LIBPNG
-+	,ICON,					/* user-supplied PNG icon */
-+	BGCOLOR					/* user-supplied BG color */
++	ICON,				/* user-supplied PNG icon */
++	BGCOLOR,			/* user-supplied BG color */
 +#endif
+ 	WIDE_LINKS			/* allow following symlinks outside the defined media_dirs */
  };
  
- /* readoptionsfile()
 diff --git a/process.c b/process.c
 index 96ec1c3..926183d 100644
 --- a/process.c
@@ -1956,7 +1958,7 @@ index 794e7b9..9739064 100644
  	{ "flc", _get_flctags, _get_flcfileinfo                                  },
  	{ "ogg", 0,            _get_oggfileinfo                                  },
 +#ifdef HAVE_OPUS
-+	{ "ops", 0,				_get_opusfileinfo								 },
++	{ "ops", 0,	       _get_opusfileinfo				 },
 +#endif
  	{ "asf", 0,            _get_asffileinfo                                  },
  	{ "wav", _get_wavtags, _get_wavfileinfo                                  },
@@ -2075,7 +2077,7 @@ index 418cde4..ee27245 100644
  enum event_type {
  	E_INVALID,
  	E_SUBSCRIBE,
-@@ -1340,29 +1340,29 @@ SendResp_icon(struct upnphttp * h, char * icon)
+@@ -1389,29 +1389,29 @@ SendResp_icon(struct upnphttp * h, char * icon)
  	if( strcmp(icon, "sm.png") == 0 )
  	{
  		DPRINTF(E_DEBUG, L_HTTP, "Sending small PNG icon\n");
@@ -2113,7 +2115,7 @@ index 418cde4..ee27245 100644
  		strcpy(mime+6, "jpeg");
  	}
  	else
-@@ -1575,8 +1575,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1628,8 +1628,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  	int scale = 1;
  	const char *tmode;
  
@@ -2125,7 +2127,7 @@ index 418cde4..ee27245 100644
  	ret = sql_get_table(db, buf, &result, &rows, NULL);
  	if( ret != SQLITE_OK )
  	{
-@@ -1585,9 +1587,9 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1638,9 +1640,9 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  	}
  	if( rows )
  	{
@@ -2138,7 +2140,7 @@ index 418cde4..ee27245 100644
  	}
  	if( !file_path || !resolution || (access(file_path, F_OK) != 0) )
  	{
-@@ -1597,6 +1599,20 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1650,6 +1652,20 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  		return;
  	}
  
@@ -2159,7 +2161,7 @@ index 418cde4..ee27245 100644
  	if( saveptr )
  		saveptr = strchr(saveptr, '?');
  	path = saveptr ? saveptr + 1 : object;
-@@ -1720,7 +1736,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1773,7 +1789,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  	if( strcmp(h->HttpVer, "HTTP/1.0") == 0 )
  	{
  		chunked = 0;
@@ -2173,7 +2175,7 @@ index 418cde4..ee27245 100644
  	}
  	else
  	{
-@@ -1738,6 +1759,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1791,6 +1812,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  		}
  
  		imdst = image_resize(imsrc, dstw, dsth);
@@ -2184,7 +2186,7 @@ index 418cde4..ee27245 100644
  		data = image_save_to_jpeg_buf(imdst, &size);
  
  		strcatf(&str, "Content-Length: %d\r\n\r\n", size);
-@@ -1747,7 +1772,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1800,7 +1825,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  	{
  		if( chunked )
  		{
@@ -2198,7 +2200,7 @@ index 418cde4..ee27245 100644
  			if( !imsrc )
  			{
  				DPRINTF(E_WARN, L_HTTP, "Unable to open image %s!\n", file_path);
-@@ -1755,6 +1785,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1808,6 +1838,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
  				goto resized_error;
  			}
  			imdst = image_resize(imsrc, dstw, dsth);
