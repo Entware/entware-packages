@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.4.0
-PKG_RELEASE:=3
+PKG_VERSION:=1.6.0
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=http://firehol.org/download/netdata/releases/v$(PKG_VERSION)
-PKG_SOURCE_VERSION:=3028b87ee19e8550df6b9decc49733d595e0bd6e
+PKG_SOURCE_URL:=https://github.com/firehol/netdata/releases/download/v$(PKG_VERSION)
+PKG_HASH:=7839491f6e8b297cc8c28ca96845ff087f7961a12b92aa0eea1f66528da8bdaf
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
@@ -47,6 +47,8 @@ define Package/netdata/install
 	$(INSTALL_DIR) $(1)/opt/share/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/netdata $(1)/opt/share
 	rm $(1)/opt/share/netdata/web/images/animated.gif
+	rm -rf $(1)/opt/share/netdata/web/images/seo-*.png
+	rm -rf $(1)/opt/share/netdata/web/images/post.png
 	rm -rf $(1)/opt/share/netdata/web/old
 	rm $(1)/opt/share/netdata/web/demo*html
 	rm $(1)/opt/share/netdata/web/fonts/*.svg
