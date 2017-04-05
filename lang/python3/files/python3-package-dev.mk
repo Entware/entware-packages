@@ -12,10 +12,10 @@ $(call Package/python3/Default)
 endef
 
 define Py3Package/python3-dev/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/python$(PYTHON3_VERSION)-config $(1)/opt/bin
 	$(LN) python$(PYTHON3_VERSION)-config $(1)/opt/bin/python3-config
-	$(LN) python$(PYTHON_VERSION)/config-$(PYTHON_VERSION)/libpython$(PYTHON3_VERSION).a $(1)/opt/lib/libpython$(PYTHON3_VERSION).a
+	$(LN) python$(PYTHON_VERSION)/config-$(PYTHON_VERSION)/libpython$(PYTHON3_VERSION).a $(1)/opt/lib/
 endef
 
 $(eval $(call Py3BasePackage,python3-dev, \

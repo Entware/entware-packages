@@ -42,13 +42,12 @@ define Package/micropython-lib/description
 endef
 
 MAKE_FLAGS:=\
-	-C $(PKG_BUILD_DIR) \
-	PREFIX=$(PKG_BUILD_DIR)/_install_tmp \
+	PREFIX=$(PKG_BUILD_DIR)/_install_tmp/dist \
 	install
 
 define Package/micropython-lib/install
 	$(INSTALL_DIR) $(1)/opt/lib/micropython
-	$(CP) $(PKG_BUILD_DIR)/_install_tmp/* $(1)/opt/lib/micropython
+	$(CP) $(PKG_BUILD_DIR)/_install_tmp/dist/* $(1)/opt/lib/micropython
 	# fix python exec path in scripts
 	find $(PKG_BUILD_DIR) -name *.py | xargs $(SED) 's|/usr/bin/env python|/opt/bin/python|'
 endef
