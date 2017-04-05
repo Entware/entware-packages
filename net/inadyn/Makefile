@@ -39,7 +39,7 @@ define Package/inadyn/description
 endef
 
 define Package/inadyn/conffiles
-/etc/inadyn.conf
+/opt/etc/inadyn.conf
 endef
 
 CONFIGURE_ARGS += --enable-shared --disable-static --enable-openssl
@@ -50,10 +50,6 @@ define Package/inadyn/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/examples/custom.conf $(1)/opt/etc/inadyn.conf
 	$(INSTALL_BIN) ./files/S52inadyn $(1)/opt/etc/init.d
-endef
-
-define Package/inadyn/conffiles
-/opt/etc/inadyn.conf
 endef
 
 $(eval $(call BuildPackage,inadyn))

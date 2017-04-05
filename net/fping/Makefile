@@ -45,8 +45,8 @@ CONFIGURE_ARGS+= \
 	--enable-ipv6
 
 define Package/fping/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{fping,fping6} $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{fping,fping6} $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,fping))
