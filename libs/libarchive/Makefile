@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libarchive
-PKG_VERSION:=3.2.2
+PKG_VERSION:=3.3.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.libarchive.org/downloads
-PKG_MD5SUM:=691c194ee132d1f0f7a42541f091db811bc2e56f7107e9121be2bc8c04f1060f
+PKG_HASH:=29ca5bd1624ca5a007aa57e16080262ab4379dbf8797f5c52f7ea74a3b0424e7
 PKG_MAINTAINER:=Johannes Morgenroth <morgenroth@ibr.cs.tu-bs.de>
 PKG_LICENSE:=BSD-2-Clause
 
@@ -22,7 +22,7 @@ PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/$(PKG_NAME)/Default
+define Package/libarchive/Default
 	SECTION:=libs
 	CATEGORY:=Libraries
 	DEPENDS:=+zlib +liblzma +libbz2 +libexpat
@@ -30,13 +30,13 @@ define Package/$(PKG_NAME)/Default
 	URL:=http://www.libarchive.org/
 endef
 
-define Package/$(PKG_NAME)
-	$(call Package/$(PKG_NAME)/Default)
+define Package/libarchive
+	$(call Package/libarchive/Default)
 	DEPENDS += +libopenssl
 endef
 
-define Package/$(PKG_NAME)-noopenssl
-	$(call Package/$(PKG_NAME)/Default)
+define Package/libarchive-noopenssl
+	$(call Package/libarchive/Default)
 	TITLE += (without OpenSSL dependency)
 	VARIANT:=noopenssl
 endef
@@ -90,7 +90,7 @@ define Package/bsdtar/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bsdtar $(1)/opt/bin
 endef
 
-Package/$(PKG_NAME)-noopenssl/install = $(Package/$(PKG_NAME)/install)
+Package/libarchive-noopenssl/install = $(Package/libarchive/install)
 
 $(eval $(call BuildPackage,libarchive))
 $(eval $(call BuildPackage,libarchive-noopenssl))

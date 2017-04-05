@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libidn
 PKG_VERSION:=1.33
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/libidn
@@ -28,7 +28,7 @@ define Package/idn/Default
   SECTION:=net
   CATEGORY:=Network
   URL:=http://www.gnu.org/software/libidn/
-  MAINTAINER:=Marcel Denia <naoir@gmx.net>
+  MAINTAINER:=Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
 endef
 
 define Package/idn/Default/description
