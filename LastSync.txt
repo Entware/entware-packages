@@ -1,9 +1,20 @@
-commit edaa34e946669558070784e16cf982b754cd57f9
-Merge: d2a1976 4224c4c
-Author: Hannu Nyman <hannu.nyman@iki.fi>
-Date:   Thu Jan 26 12:18:11 2017 +0200
+commit 37e8aa3639b68f185efded52ea1a77f251570a19
+Author: Florian Fainelli <f.fainelli@gmail.com>
+Date:   Mon Apr 3 18:57:59 2017 -0700
 
-    Merge pull request #3915 from noblepepper/AddArmFpu
-
-    gcc:Add support for Arm with FPU
-
+    sslh: Also pass down TARGET_CPPFLAGS
+    
+    Make sure we do pass TARGET_CPPFLAGS using CPPFLAGS (which is supported
+    by sslh's Makefile), fixing build issues with some external toolchains:
+    
+    mipsel-linux-gnu-gcc -Os -pipe -mno-branch-likely -mips32r2 -mtune=24kc
+    -fno-caller-saves -Wno-unused-result  -D_FORTIFY_SOURCE=1 -Wl,-z,now
+    -Wl,-z,relro -DENABLE_REGEX -DLIBCONFIG -c sslh-main.c
+    sslh-main.c:26:23: fatal error: libconfig.h: No such file or directory
+     #include <libconfig.h>
+                           ^
+    compilation terminated.
+    Makefile:63: recipe for target 'sslh-main.o' failed
+    make[4]: *** [sslh-main.o] Error 1
+    
+    Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
