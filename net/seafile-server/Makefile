@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2016 OpenWrt.org
+# Copyright (C) 2007-2017 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -10,14 +10,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-server
-PKG_VERSION:=5.1.4
+PKG_VERSION:=6.0.7
 PKG_RELEASE=1
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/haiwen/seafile.git
+PKG_SOURCE_URL:=https://github.com/haiwen/seafile-server.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=b9dc96ee845bb0148d9075aec597e6e07652cbdc
+PKG_SOURCE_VERSION:=715f072c1bbc78eedddcaf7748e28c83c3f4dbc6
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1

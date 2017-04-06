@@ -8,13 +8,22 @@
  #include <glib/gstdio.h>
  #include "db.h"
  
---- a/daemon/seafile-session.h
-+++ b/daemon/seafile-session.h
+--- a/server/seafile-session.h
++++ b/server/seafile-session.h
 @@ -3,6 +3,7 @@
  #ifndef SEAFILE_SESSION_H
  #define SEAFILE_SESSION_H
  
 +#include <sqlite3.h>
- #include <glib-object.h>
+ #include <ccnet.h>
  #include <ccnet/cevent.h>
- #include <ccnet/mqclient-proc.h>
+ #include <ccnet/job-mgr.h>
+--- a/fuse/seafile-session.h
++++ b/fuse/seafile-session.h
+@@ -1,6 +1,7 @@
+ #ifndef SEAFILE_SESSION_H
+ #define SEAFILE_SESSION_H
+ 
++#include <sqlite3.h>
+ #include <stdint.h>
+ #include <glib.h>

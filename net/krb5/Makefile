@@ -74,54 +74,54 @@ CONFIGURE_ARGS += \
 	--without-system-verto \
 	--without-tcl \
 	--without-libedit \
-	--localstatedir=/etc
+	--localstatedir=/opt/etc
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include \
-		$(1)/usr
-	$(INSTALL_DIR) $(1)/usr
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib \
-		$(1)/usr
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include \
+		$(1)/opt/include
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib \
+		$(1)/opt/lib
 endef
 
 define Package/krb5-libs/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/lib/krb5
-	$(INSTALL_DIR) $(1)/usr/lib/krb5/plugins
-	$(INSTALL_DIR) $(1)/usr/lib/krb5/plugins/kdb
-	$(INSTALL_DIR) $(1)/usr/lib/krb5/plugins/libkrb5
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/krb5/plugins/kdb/db2.so $(1)/usr/lib/krb5/plugins/kdb
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/krb5
+	$(INSTALL_DIR) $(1)/opt/lib/krb5/plugins
+	$(INSTALL_DIR) $(1)/opt/lib/krb5/plugins/kdb
+	$(INSTALL_DIR) $(1)/opt/lib/krb5/plugins/libkrb5
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/krb5/plugins/kdb/db2.so $(1)/opt/lib/krb5/plugins/kdb
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib
 endef
 
 define Package/krb5-client/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/kdestroy $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/kinit $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/klist $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/kpasswd $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/ksu $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/kvno $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/krb5-send-pr $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/kdestroy $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/kinit $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/klist $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/kpasswd $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ksu $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/kvno $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/krb5-send-pr $(1)/opt/sbin
 endef
 
 # Removed some server-side software to reduce package size. This should be
 # put in a separate package if needed.
 define Package/krb5-server/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/krb5kdc $(1)/etc/init.d/krb5kdc
-#	$(INSTALL_DIR) $(1)/usr/bin
-#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/sclient $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kadmin.local $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kadmind $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kdb5_util $(1)/usr/sbin
-#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kprop $(1)/usr/sbin
-#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kpropd $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/krb5kdc $(1)/usr/sbin
-#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/sim_server $(1)/usr/sbin
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+#	$(INSTALL_BIN) ./files/krb5kdc $(1)/opt/etc/init.d/krb5kdc
+#	$(INSTALL_DIR) $(1)/opt/bin
+#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sclient $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kadmin.local $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kadmind $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kdb5_util $(1)/opt/sbin
+#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kprop $(1)/opt/sbin
+#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kpropd $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/krb5kdc $(1)/opt/sbin
+#	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/sim_server $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,krb5-libs))
