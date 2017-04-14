@@ -1,0 +1,11 @@
+--- a/make-linux.mk
++++ b/make-linux.mk
+@@ -118,8 +118,6 @@
+ 
+ # Define some conservative CPU instruction set flags for arm32 since there's a ton of variation out there
+ ifeq ($(ZT_ARCHITECTURE),3)
+-				override CFLAGS+=-march=armv6zk -mcpu=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp
+-				override CXXFLAGS+=-march=armv6zk -mcpu=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp
+ 				override DEFS+=-DZT_NO_TYPE_PUNNING
+ endif
+ 
