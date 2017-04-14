@@ -1,0 +1,22 @@
+--- a/src/apinger.conf
++++ b/src/apinger.conf
+@@ -13,7 +13,7 @@
+ ## Mailer to use (default: "/usr/lib/sendmail -t")
+ #mailer "/var/qmail/bin/qmail-inject" 
+ 
+-## Location of the pid-file (default: "/var/run/apinger.pid")
++## Location of the pid-file (default: "/opt/var/run/apinger.pid")
+ #pid_file "/tmp/apinger.pid"
+ 
+ ## Format of timestamp (%s macro) (default: "%b %d %H:%M:%S")
+@@ -71,8 +71,8 @@
+ 	#mailsubject "%s %r: %a: %T"
+ 
+ 	## Command to execute when alarm is fired
+-	#command on "/usr/local/bin/do_something_about %t"
+-	#command off "/usr/local/bin/thanks_for_fixing %t"
++	#command on "/opt/bin/do_something_about %t"
++	#command off "/opt/bin/thanks_for_fixing %t"
+ 
+ 	## Command the report should be piped to
+ 	#pipe "sms 0-800-my-modem-is-dead"

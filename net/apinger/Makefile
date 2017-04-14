@@ -47,20 +47,24 @@ define Package/apinger/description
 endef
 
 define Package/apinger/conffiles
-/etc/apinger.conf
+/opt/etc/apinger.conf
 endef
+
+CONFIGURE_ARGS += \
+	--with-rrdtool=/opt/bin/rrdtool \
+	--with-rrdcgi=/opt/bin/rrdcgi
 
 define Build/Configure
 	$(call Build/Configure/Default)
 endef
 
 define Package/apinger/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/apinger $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/apinger.conf $(1)/etc/apinger.conf
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/apinger.init $(1)/etc/init.d/apinger
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/apinger $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/apinger.conf $(1)/opt/etc/apinger.conf
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S80apinger $(1)/opt/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,apinger))

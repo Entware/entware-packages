@@ -1,0 +1,30 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -84,7 +84,7 @@
+ 	"nobody",		/* user */
+ 	NULL,			/* group */
+ 	"/usr/lib/sendmail -t",	/* mailer */
+-	"/var/run/apinger.pid", /* pid file */
++	"/opt/var/run/apinger.pid", /* pid file */
+ 	NULL,			/* status file */
+ 	0,			/* status interval */
+ 	"%b %d %H:%M:%S"	/* timestamp format */
+--- a/src/cfgtest.c
++++ b/src/cfgtest.c
+@@ -46,7 +46,7 @@
+ 	0, 			/* debug */
+ 	"nobody",		/* user */
+ 	NULL,			/* group */
+-	"/var/run/apinger.pid"	/* pid file */
++	"/opt/var/run/apinger.pid"	/* pid file */
+ };
+ 
+ int foreground=1;
+@@ -55,6 +55,6 @@
+ int main(int argc,char *argv[]){
+ int ret;
+ 	
+-	ret=load_config("/etc/apinger.conf");
++	ret=load_config("/opt/etc/apinger.conf");
+ 	return ret;
+ }
