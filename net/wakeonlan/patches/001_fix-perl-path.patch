@@ -1,0 +1,8 @@
+--- a/wakeonlan
++++ b/wakeonlan
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl -w
++#!/opt/bin/perl -w
+ #
+ # $Id: wakeonlan,v 1.4.2.3 2005/01/27 16:03:54 jpo Exp $
+ #

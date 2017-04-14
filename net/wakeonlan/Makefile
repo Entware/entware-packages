@@ -43,8 +43,8 @@ define Build/Compile
 endef
 
 define Package/wakeonlan/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/wakeonlan $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/wakeonlan $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,wakeonlan))
