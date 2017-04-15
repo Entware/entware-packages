@@ -41,8 +41,8 @@ define Package/bitlbee/description
 endef
 
 define Package/bitlbee/conffiles
-/etc/bitlbee/bitlbee.conf
-/etc/bitlbee/motd.txt
+/opt/etc/bitlbee/bitlbee.conf
+/opt/etc/bitlbee/motd.txt
 endef
 
 CONFIGURE_ARGS = \
@@ -50,7 +50,7 @@ CONFIGURE_ARGS = \
 	--host=$(GNU_TARGET_NAME) \
 	--build=$(GNU_HOST_NAME) \
 	--prefix=$(CONFIGURE_PREFIX) \
-	--etcdir=/etc/bitlbee \
+	--etcdir=/opt/etc/bitlbee \
 	--ssl=openssl \
 	--msn=0
 
@@ -59,10 +59,10 @@ define Build/Install
 endef
 
 define Package/bitlbee/install	
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/bitlbee $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc/bitlbee
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/bitlbee/{bitlbee.conf,motd.txt} $(1)/etc/bitlbee
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/bitlbee $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/bitlbee
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/bitlbee/{bitlbee.conf,motd.txt} $(1)/opt/etc/bitlbee
 endef
 
 $(eval $(call BuildPackage,bitlbee))
