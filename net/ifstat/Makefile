@@ -21,12 +21,14 @@ PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
 
+CONFIGURE_ARGS += \
+	--without-snmp
+
 define Package/ifstat
   SECTION:=net
   CATEGORY:=Network
   TITLE:=InterFace STATistics Monitoring
   URL:=http://gael.roualland.free.fr/ifstat/
-  DEPENDS:=+libnetsnmp
 endef
 
 define Package/ifstat/description
@@ -37,8 +39,8 @@ define Package/ifstat/description
 endef
 
 define Package/ifstat/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ifstat $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ifstat $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,ifstat))
