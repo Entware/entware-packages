@@ -18,13 +18,7 @@ PKG_HASH:=7959b4a74abdc27b312fed1c21e6caf9309ce0b29ea86b591fd2e99ecdf27f73
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-$(PKG_NAME)-$(PKG_VERSION)
 PKG_UNPACK=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
-HOST_BUILD_DEPENDS:=python-ply/host
-ifdef CONFIG_PACKAGE_python-pycparser
-HOST_BUILD_DEPENDS+=python/host
-endif
-ifdef CONFIG_PACKAGE_python3-pycparser
-HOST_BUILD_DEPENDS+=python3/host
-endif
+HOST_BUILD_DEPENDS:=python-ply/host PACKAGE_python-pycparser:python/host PACKAGE_python3-pycparser:python3/host
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
