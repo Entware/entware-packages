@@ -1,0 +1,13 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -502,7 +502,9 @@
+ 
+     // avoid flood calls to stat(/etc/localtime)
+     // http://stackoverflow.com/questions/4554271/how-to-avoid-excessive-stat-etc-localtime-calls-in-strftime-on-linux
+-    setenv("TZ", ":/etc/localtime", 0);
++
++    // The best place to set environment variables is startup script
++    // setenv("TZ", ":/etc/localtime", 0);
+ 
+     // set the path we need
+     char path[1024 + 1], *p = getenv("PATH");
