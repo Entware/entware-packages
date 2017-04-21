@@ -18,6 +18,7 @@ PKG_HASH:=c321bd46faa7847261b89c0469569530cad5a41976bb6dba8202c0159f476568
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-$(PKG_NAME)-$(PKG_VERSION)
 PKG_UNPACK=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
+PKG_BUILD_DEPENDS:=python python-setuptools
 HOST_BUILD_DEPENDS:=libffi/host python-pycparser/host PACKAGE_python-cffi:python/host PACKAGE_python3-cffi:python3/host 
 
 PKG_LICENSE:=MIT
@@ -28,6 +29,7 @@ include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)
 $(call include_mk, python3-package.mk)
+$(call include_mk, python-host.mk)
 
 define Package/python-cffi/Default
   SECTION:=lang
