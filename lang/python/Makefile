@@ -253,7 +253,6 @@ define PyPackage/python-light/filespec
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/_testcapi.so
 -|/opt/lib/python$(PYTHON_VERSION)/pdb.doc
 -|/opt/lib/python$(PYTHON_VERSION)/test
--|/opt/lib/python$(PYTHON_VERSION)/webbrowser.py
 -|/opt/lib/python$(PYTHON_VERSION)/*/test
 -|/opt/lib/python$(PYTHON_VERSION)/*/tests
 -|/opt/lib/python$(PYTHON_VERSION)/lib-dynload/readline.so
