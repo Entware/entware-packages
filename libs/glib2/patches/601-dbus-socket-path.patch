@@ -1,0 +1,11 @@
+--- a/gio/gdbusaddress.c
++++ b/gio/gdbusaddress.c
+@@ -1601,7 +1601,7 @@
+       ret = g_strdup (g_getenv ("DBUS_SYSTEM_BUS_ADDRESS"));
+       if (ret == NULL)
+         {
+-          ret = g_strdup ("unix:path=/var/run/dbus/system_bus_socket");
++          ret = g_strdup ("unix:path=/opt/var/run/dbus/system_bus_socket");
+         }
+       break;
+ 
