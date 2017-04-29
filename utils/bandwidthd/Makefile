@@ -141,7 +141,7 @@ CONFIGURE_ARGS += \
 endif
 
 EXTRA_CFLAGS+= $(TARGET_CPPFLAGS)
-EXTRA_LDFLAGS+= $(TARGET_LDFLAGS) -Wl,-rpath-link,$(STAGING_DIR)/usr/lib
+EXTRA_LDFLAGS+= $(TARGET_LDFLAGS) -Wl,-rpath-link,$(STAGING_DIR)/opt/lib
 
 define Package/bandwidthd/install
 	$(INSTALL_DIR) $(1)/usr/sbin
@@ -170,23 +170,23 @@ define Package/bandwidthd-pgsql/install
 endef
 
 define Package/bandwidthd-sqlite/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bandwidthd $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/bandwidthd-sqlite.config $(1)/etc/config/bandwidthd
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/bandwidthd-sqlite.init $(1)/etc/init.d/bandwidthd
-	$(INSTALL_DIR) $(1)/www/phphtdocs
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/legend.gif $(1)/www/phphtdocs/
-	$(INSTALL_DATA) ./files/phphtdocs-sqlite/details.php $(1)/www/phphtdocs/
-	$(INSTALL_DATA) ./files/phphtdocs-sqlite/footer.php $(1)/www/phphtdocs/
-	$(INSTALL_DATA) ./files/phphtdocs-sqlite/graph.php $(1)/www/phphtdocs/
-	$(INSTALL_DATA) ./files/phphtdocs-sqlite/include.php $(1)/www/phphtdocs/
-	$(INSTALL_DATA) ./files/phphtdocs-sqlite/index.php $(1)/www/phphtdocs/
-	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/www/phphtdocs/logo.gif
-	ln -s /var/etc/bandwidthd-php.conf $(1)/www/phphtdocs/config.conf.php
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/legend.gif $(1)/www/
-	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/www/logo.gif
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/var/bandwidthd
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bandwidthd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/config
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/bandwidthd.conf $(1)/opt/etc/config/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+#	$(INSTALL_BIN) ./files/bandwidthd-sqlite.init $(1)/opt/etc/init.d/bandwidthd
+	$(INSTALL_DIR) $(1)/opt/share/www/bandwidthd
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/*.gif $(1)/opt/share/www/bandwidthd/
+	$(INSTALL_DATA) ./files/phphtdocs-sqlite/details.php $(1)/opt/share/www/bandwidthd/
+	$(INSTALL_DATA) ./files/phphtdocs-sqlite/footer.php $(1)/opt/share/www/bandwidthd/
+	$(INSTALL_DATA) ./files/phphtdocs-sqlite/graph.php $(1)/opt/share/www/bandwidthd/
+	$(INSTALL_DATA) ./files/phphtdocs-sqlite/include.php $(1)/opt/share/www/bandwidthd/
+	$(INSTALL_DATA) ./files/phphtdocs-sqlite/index.php $(1)/opt/share/www/bandwidthd/
+#	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/opt/share/www/bandwidthd/logo.gif
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/config.conf.php $(1)/opt/share/www/bandwidthd/
+#	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/legend.gif $(1)/opt/share/www/
+#	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/opt/share/www/logo.gif
 endef
 
 define Package/bandwidthd-php/install
@@ -214,14 +214,14 @@ define Package/bandwidthd-pgsql/conffiles
 endef
 
 define Package/bandwidthd-sqlite/conffiles
-/etc/config/bandwidthd
+/opt/etc/config
 endef
 
 define Package/bandwidthd-php/conffiles
 /etc/config/bandwidthd-php
 endef
 
-$(eval $(call BuildPackage,bandwidthd))
-$(eval $(call BuildPackage,bandwidthd-pgsql))
+#$(eval $(call BuildPackage,bandwidthd))
+#$(eval $(call BuildPackage,bandwidthd-pgsql))
 $(eval $(call BuildPackage,bandwidthd-sqlite))
-$(eval $(call BuildPackage,bandwidthd-php))
+#$(eval $(call BuildPackage,bandwidthd-php))
