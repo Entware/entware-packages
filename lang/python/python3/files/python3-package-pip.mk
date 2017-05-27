@@ -12,7 +12,7 @@ $(call Package/python3/Default)
   DEPENDS:=+python3 +python3-setuptools +python-pip-conf
 endef
 
-define Py3Package/python3-pip/install
+define Package/python3-pip/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
 	# Adjust shebang to proper python location on target
 	sed "1s/.*/#\!\/opt\/bin\/python$(PYTHON3_VERSION)/" -i $(PKG_BUILD_DIR)/install-pip/bin/*
