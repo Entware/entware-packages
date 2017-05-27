@@ -4,22 +4,22 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Upgraded from 1.12
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vnstat
-PKG_VERSION:=1.15
+PKG_VERSION:=1.17
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://humdi.net/vnstat
-PKG_MD5SUM:=351051ef3005e3ca99123eec07ac0a7d
+PKG_HASH:=18e4c53576ca9e1ef2f0e063a6d83b0c44e3b1cf008560d658745df5c9aa7971
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
+PKG_BUILD_DEPENDS:=libgd
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -58,6 +58,29 @@ endef
 
 define Package/vnstat/conffiles
 /opt/etc/vnstat.conf
+endef
+
+CONFIGURE_ARGS += \
+	ac_cv_lib_gd_gdImagePng=yes
+
+define Build/Compile/vnstat
+	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS)"
+endef
+
+define Build/Compile/vnstati
+	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include" \
+		LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link,$(STAGING_DIR)/opt/lib" \
+		all
+endef
+
+define Build/Compile
+$(call Build/Compile/vnstat)
+$(call Build/Compile/vnstati)
 endef
 
 define Package/vnstat/install

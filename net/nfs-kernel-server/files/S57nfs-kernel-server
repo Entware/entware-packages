@@ -1,107 +1,78 @@
 #!/bin/sh
 
-# Thanks to Padavan @ http://rt-n56u.googlecode.com/
+prefix="/opt"
+PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 
-func_start()
-{
-	echo starting nfs-kernel-server...
-	# check portmap (needed for NFS)
-	if [ -z "`pidof portmap`" ] ; then
-		echo Error: portmap not started
-		exit 1
-	fi
-	
-	# check NFS server already running
-	if [ -n "`pidof nfsd`" ] && [ -n "`pidof rpc.mountd`" ] ; then
-		# reload exports only
-		/opt/sbin/exportfs -r
-		return 0
-	fi
-	
-	mkdir -p /var/lib/nfs/sm
-	mkdir -p /var/lib/nfs/sm.bak
-	mkdir -p /var/lib/nfs/rpc_pipefs
-	mkdir -p /var/lib/nfs/v4recovery
-	
-	echo -n > /var/lib/nfs/etab
-	echo -n > /var/lib/nfs/rmtab
-	echo -n > /var/lib/nfs/xtab
-	
-	if [ -z "`cat /proc/filesystems | grep nfsd`" ] ; then
-		#modprobe nfsd
-		insmod sunrpc
-		insmod lockd
-		insmod exportfs
-		insmod nfsd
-		mount -t nfsd nfsd /proc/fs/nfsd
-	fi
-	
-	if ! grep -q /var/lib/nfs/rpc_pipefs /proc/mounts ; then
-		mount -t rpc_pipefs rpc_pipefs /var/lib/nfs/rpc_pipefs
-	fi
-	
+if [ -z "`pidof portmap`" ] ; then
+	echo 'Error: portmap not started'
+	exit 1
+fi
+
+start() {
+	echo 'Starting NFS server'
+	modprobe nfsd
+	#for module in sunrpc lockd exportfs nfsd; do
+	#       insmod /lib/modules/3.4.113/${module}.ko
+	#done;
+	mkdir -p /opt/var/lib/nfs/sm
+	mkdir -p /opt/var/lib/nfs/sm.bak
+	mkdir -p /opt/var/lib/nfs/rpc_pipefs
+	echo -n > /opt/var/lib/nfs/etab
+	echo -n > /opt/var/lib/nfs/rmtab
+	echo -n > /opt/var/lib/nfs/xtab
+	mount -t rpc_pipefs rpc_pipefs /opt/var/lib/nfs/rpc_pipefs
+	mount -t nfsd nfsd /proc/fs/nfsd
 	echo 65536 > /proc/fs/nfsd/max_block_size
-	
-	/opt/sbin/exportfs -ra
-	
-	/opt/sbin/rpc.nfsd --no-nfs-version 4 --no-tcp 1
-	/opt/sbin/rpc.mountd --no-nfs-version 4 --no-tcp
-	
-	if [ $? -eq 0 ] ; then
-			echo Done.
-	fi
-}
+	exportfs -ra
+	rpc.nfsd --no-nfs-version 4 --no-tcp 1
+	rpc.mountd --no-nfs-version 4 --no-tcp
+	}
 
-func_reload()
-{
-	echo reloading nfs-kernel-server...
-	if [ -n "`pidof portmap`" ] && [ -f /etc/exports ] ; then
-		/sbin/exportfs -r
-	fi
-	echo Done.
-}
-
-func_stop()
-{
-	echo stopping nfs-kernel-server...
+stop() {
+	echo 'Stopping NFS server'
 	killall -q rpc.mountd
 	killall -q -2 nfsd
-	
-	for i in 1 2 3 ; do
-		[ -z "`pidof nfsd`" ] && break
-		sleep 1
-	done
-	
-	[ -n "`pidof nfsd`" ] && killall -q -9 nfsd
-	
-	if [ -f /var/lib/nfs/etab ] ; then
-		/opt/sbin/exportfs -ua
+	exportfs -ua
+	umount /proc/fs/nfsd 2>/dev/null
+	umount /opt/var/lib/nfs/rpc_pipefs 2>/dev/null
+	rm -f /opt/var/lib/nfs/etab
+	}
+
+status() {
+	if [ -n "`pidof nfsd`" ] && [ -n "`pidof rpc.mountd`" ] ; then
+		echo 'NFS server is running'
+	else
+		echo 'NFS server is stopped'
 	fi
-	
-	umount /var/lib/nfs/rpc_pipefs 2>/dev/null
-	
-	rm -f /var/lib/nfs/etab
-	echo Done.
-}
+	}
+
+reload() {
+	echo 'Reloading /opt/etc/exports'
+	exportfs -r
+	}
 
 case "$1" in
-start)
-	func_start
-	;;
-stop)
-	func_stop
-	;;
-restart)
-	func_stop
-	sleep 1
-	func_start
-	;;
-reconfigure)
-	func_reload
-	;;
-*)
-	echo "Usage: $0 {start|stop|restart|reconfigure}"
-	exit 1
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 2
+		start
+		;;
+	status)
+		status
+		;;
+	reload)
+		reload
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart|reload|status)"
+		exit 1
+		;;
 esac
 
-exit $?
+exit 0

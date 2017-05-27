@@ -1,11 +1,11 @@
 #!/bin/sh
 
-IP4="/usr/bin/ip -4"
-IP6="/usr/bin/ip -6"
-IPS="/usr/sbin/ipset"
-IPT4="/usr/sbin/iptables -t mangle -w"
-IPT6="/usr/sbin/ip6tables -t mangle -w"
-LOG="/usr/bin/logger -t mwan3 -p"
+IP4="ip -4"
+IP6="ip -6"
+IPS="ipset"
+IPT4="iptables -t mangle -w"
+IPT6="ip6tables -t mangle -w"
+LOG="logger -t mwan3 -p"
 CONNTRACK_FILE="/proc/net/nf_conntrack"
 
 mwan3_get_iface_id()
@@ -382,8 +382,7 @@ mwan3_delete_iface_ipset_entries()
 
 mwan3_track()
 {
-	local track_ip track_ips reliability count timeout interval down up size
-	local failure_interval recovery_interval
+	local track_ip track_ips
 
 	mwan3_list_track_ips()
 	{
@@ -391,23 +390,21 @@ mwan3_track()
 	}
 	config_list_foreach $1 track_ip mwan3_list_track_ips
 
-	if [ -e /var/run/mwan3track-$1.pid ] ; then
-		kill $(cat /var/run/mwan3track-$1.pid) &> /dev/null
-		rm /var/run/mwan3track-$1.pid &> /dev/null
-	fi
-
+	kill $(pgrep -f "mwan3track $1") &> /dev/null
 	if [ -n "$track_ips" ]; then
-		config_get reliability $1 reliability 1
-		config_get count $1 count 1
-		config_get timeout $1 timeout 4
-		config_get interval $1 interval 10
-		config_get failure_interval $1 failure_interval $interval
-		config_get recovery_interval $1 recovery_interval $interval
-		config_get down $1 down 5
-		config_get up $1 up 5
-		config_get size $1 size 56
+		[ -x /usr/sbin/mwan3track ] && /usr/sbin/mwan3track $1 $2 $track_ips &
+	fi
+}
 
-		[ -x /usr/sbin/mwan3track ] && /usr/sbin/mwan3track $1 $2 $reliability $count $timeout $interval $down $up $size $failure_interval $recovery_interval $track_ips &
+mwan3_track_signal()
+{
+	local pid
+
+	pid="$(pgrep -f "mwan3track $1")"
+	if [ "${pid}" != "" ]; then
+		kill -USR1 "${pid}"
+	else
+		$LOG warn "Unable to send signal USR1 to mwan3track on interface $1 with pid ${pid}"
 	fi
 }
 

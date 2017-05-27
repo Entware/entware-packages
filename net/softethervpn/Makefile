@@ -77,6 +77,10 @@ TARGET_CFLAGS += \
 MAKE_FLAGS += \
 	-f src/makefiles/linux_$(if $(CONFIG_ARCH_64BIT),64,32)bit.mak
 
+# Map nonstandard CCFLAGS variable to standard TARGET_CFLAGS
+MAKE_VARS += \
+	CCFLAGS="$(TARGET_CFLAGS)"
+
 define Build/Configure
 	# Fetch prebuilt hamcore.se2 from staging dir
 	$(INSTALL_DIR) $(PKG_BUILD_DIR)/src/bin/BuiltHamcoreFiles/unix
