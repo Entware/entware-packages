@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libuv
-PKG_VERSION:=1.10.2
+PKG_VERSION:=1.11.0
 PKG_RELEASE:=1
 
 PKG_LICENSE_FILES:=LICENSE
@@ -16,9 +16,8 @@ PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Luka Perkov <luka.perkov@sartura.hr>
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=fad96b56f517c1ad3f274a19a10c53b2
-PKG_SOURCE_URL:=http://dist.libuv.org/dist/v$(PKG_VERSION) \
-    http://pkgs.fedoraproject.org/repo/pkgs/libuv/$(PKG_SOURCE)/$(PKG_MD5SUM)
+PKG_SOURCE_URL:=http://dist.libuv.org/dist/v$(PKG_VERSION)/
+PKG_MD5SUM:=29bdf5e00fb8e0c8392aac53a2cc380a
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 PKG_BUILD_PARALLEL:=1

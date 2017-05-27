@@ -14,14 +14,18 @@ PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 
-PKG_SOURCE:=loudmouth-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://mcabber.com/files/loudmouth
-PKG_MD5SUM:=0db0ce1c5a57f81b5736be8bd2217a82
-PKG_BUILD_DIR:=$(BUILD_DIR)/loudmouth-$(PKG_VERSION)
+PKG_LICENSE:=LGPLv2.1
+PKG_LICENSE_FILES:=COPYING
 
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_URL:=https://github.com/mcabber/loudmouth.git
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
+PKG_MD5SUM:=7616cf124a8d72d007e7475b5aeb20ad
+
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
-
-PKG_BUILD_DEPENDS:=libopenssl
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -29,7 +33,7 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/loudmouth
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+glib2 +libopenssl +libidn
+  DEPENDS:=+glib2 +libopenssl
   TITLE:=loudmouth
   URL:=https://github.com/mcabber/loudmouth
 endef
@@ -38,13 +42,9 @@ define Package/loudmouth/description
   Lightweight and easy-to-use C library for programming with the Jabber protocol
 endef
 
-CONFIGURE_VARS += \
-	ac_cv_path_KRB5CONFIG=no \
-	LIBS="-liconv -lgobject-2.0 -lintl"
-
 CONFIGURE_ARGS += \
-	--with-compile-warnings=no \
-	--with-ssl=openssl
+	--with-ssl=openssl \
+	--with-idn=no
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/
