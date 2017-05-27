@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=msmtp
 PKG_VERSION:=1.6.2
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/msmtp
@@ -41,7 +41,7 @@ define Package/msmtp/Default/description
  an SMTP server (for example at a free mail provider) which does the
  delivery. To use this program with your mail user agent (MUA), create
  a configuration file with your mail account(s) and tell your MUA to
- call msmtp instead of sendmail.
+ call msmtp instead of /opt/sbin/sendmail.
 endef
 
 define Package/msmtp
@@ -71,9 +71,21 @@ $(call Package/msmtp/Default/description)
  This package is built without SSL support.
 endef
 
+define Package/msmtp-mta
+$(call Package/msmtp/Default)
+  TITLE+= (as MTA)
+  DEPENDS+=@(PACKAGE_msmtp||PACAKGE_msmtp-nossl)
+endef
+
+define Package/msmtp-mta/description
+$(call Package/msmtp/Default/description)
+ This package add a link from sendmail to msmtp
+ and is built with SSL support.
+endef
+
 define Package/msmtp-queue
 $(call Package/msmtp/Default)
-  DEPENDS+= +bash
+  DEPENDS+= +bash @(PACKAGE_msmtp||PACKAGE_msmtp-nossl)
   TITLE+= (queue scripts)
 endef
 
@@ -114,23 +126,14 @@ define Package/msmtp/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/msmtp $(1)/opt/bin/
 endef
 
-define Package/msmtp/postinst
-	[ -e $${IPKG_INSTROOT}/opt/sbin/sendmail ] || {
-		mkdir -p $${IPKG_INSTROOT}/opt/sbin
-		ln -sf ../bin/msmtp $${IPKG_INSTROOT}/opt/sbin/sendmail
-	}
-endef
-
-define Package/msmtp/prerm
-	[ ! -z "$(ls -l /opt/sbin/sendmail | grep '../bin/msmtp')" ] && {
-		rm -f $${IPKG_INSTROOT}/opt/sbin/sendmail
-	}
+define Package/msmtp-mta/install
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/lib
+	ln -sf ../bin/msmtp $(1)/opt/sbin/sendmail
+	ln -sf ../bin/msmtp $(1)/opt/lib/sendmail
 endef
 
 Package/msmtp-nossl/conffiles = $(Package/msmtp/conffiles)
 Package/msmtp-nossl/install = $(Package/msmtp/install)
-Package/msmtp-nossl/postinst = $(Package/msmtp/postinst)
-Package/msmtp-nossl/prerm = $(Package/msmtp/prerm)
 
 define Package/msmtp-queue/install
 	$(INSTALL_DIR) $(1)/opt/bin
@@ -141,3 +144,4 @@ endef
 $(eval $(call BuildPackage,msmtp))
 $(eval $(call BuildPackage,msmtp-nossl))
 $(eval $(call BuildPackage,msmtp-queue))
+$(eval $(call BuildPackage,msmtp-mta))
