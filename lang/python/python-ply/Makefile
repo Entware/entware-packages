@@ -18,8 +18,13 @@ PKG_HASH:=0d7e2940b9c57151392fceaa62b0865c45e06ce1e36687fd8d03f011a907f43e
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-$(PKG_NAME)-$(PKG_VERSION)
 PKG_UNPACK=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
-PKG_BUILD_DEPENDS:=python python-setuptools
-HOST_BUILD_DEPENDS:=PACKAGE_python-ply:python/host PACKAGE_python3-ply:python3/host
+HOST_BUILD_DEPENDS:=
+ifdef CONFIG_PACKAGE_python-ply
+HOST_BUILD_DEPENDS+=python/host
+endif
+ifdef CONFIG_PACKAGE_python3-ply
+HOST_BUILD_DEPENDS+=python3/host
+endif
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=README.md
@@ -29,7 +34,6 @@ include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 $(call include_mk, python-package.mk)
 $(call include_mk, python3-package.mk)
-$(call include_mk, python-host.mk)
 
 define Package/python-ply/Default
   SECTION:=lang

@@ -39,7 +39,7 @@ verifying whether a certificate is valid for the intended purposes.
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/opt --root=$(PKG_INSTALL_DIR))
+	$(call Build/Compile/PyMod,,install --prefix="/opt" --root="$(PKG_INSTALL_DIR)")
 endef
 
 $(eval $(call PyPackage,python-service-identity))

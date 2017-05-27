@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=7.1.3
+PKG_VERSION:=7.1.5
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
@@ -17,8 +17,8 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_MD5SUM:=d604d688be17f4a05b99dbb7fb9581f4
-PKG_HASH:=e4887c2634778e37fd962fbdf5c4a7d32cd708482fe07b448804625570cb0bb0
+PKG_MD5SUM:=fb0702321c7aceac68c82b8c7a10d196
+PKG_HASH:=d149a3c396c45611f5dc6bf14be190f464897145a76a8e5851cf18ff7094f6ac
 
 PKG_FIXUP:=libtool autoreconf
 PKG_BUILD_PARALLEL:=1
@@ -67,6 +67,7 @@ define Package/php7/config
 	config PHP7_FILTER
 		bool "PHP7 Filter support"
 		depends on PACKAGE_php7-cli || PACKAGE_php7-cgi
+		default y
 
 	config PHP7_LIBXML
 		bool "PHP7 LIBXML support"
@@ -96,7 +97,7 @@ define Package/php7/description
   your PHP flavour (cli, cgi or fastcgi).
 
   Please note, that installing php5 and php7 in parallel on the same target
-  is not supported in OpenWrt/LEDE.
+  is not supported in OpenWrt/LEDE/Entware.
 endef
 
 define Package/php7-cli
@@ -142,6 +143,8 @@ define Package/php7-fpm/description
   $(call Package/php7/Default/description)
   This package contains the FastCGI Process Manager of the PHP7 interpreter.
 endef
+
+TARGET_LDFLAGS += -lpthread
 
 CONFIGURE_ARGS+= \
 	--enable-cli \
@@ -243,6 +246,7 @@ endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-intl),)
   CONFIGURE_ARGS+= --enable-intl=shared
+  TARGET_CXXFLAGS+= -std=c++0x
 else
   CONFIGURE_ARGS+= --disable-intl
 endif
@@ -562,12 +566,12 @@ $(eval $(call BuildModule,json,JSON))
 $(eval $(call BuildModule,ldap,LDAP,+PACKAGE_php7-mod-ldap:libopenldap +PACKAGE_php7-mod-ldap:libsasl2))
 $(eval $(call BuildModule,mbstring,MBString))
 $(eval $(call BuildModule,mcrypt,Mcrypt,+PACKAGE_php7-mod-mcrypt:libmcrypt +PACKAGE_php7-mod-mcrypt:libltdl))
-$(eval $(call BuildModule,mysqli,MySQL Improved Extension,+PACKAGE_php7-mod-mysqli:libmysqlclient))
+$(eval $(call BuildModule,mysqli,MySQL Improved Extension,+PACKAGE_php7-mod-mysqli:libmariadb))
 $(eval $(call BuildModule,opcache,OPcache,,,zend))
 $(eval $(call BuildModule,openssl,OpenSSL,+PACKAGE_php7-mod-openssl:libopenssl))
 $(eval $(call BuildModule,pcntl,PCNTL))
 $(eval $(call BuildModule,pdo,PHP Data Objects))
-$(eval $(call BuildModule,pdo-mysql,PDO driver for MySQL,+php7-mod-pdo +PACKAGE_php7-mod-pdo-mysql:libmysqlclient))
+$(eval $(call BuildModule,pdo-mysql,PDO driver for MySQL,+php7-mod-pdo +PACKAGE_php7-mod-pdo-mysql:libmariadb))
 $(eval $(call BuildModule,pdo-pgsql,PDO driver for PostgreSQL,+php7-mod-pdo +PACKAGE_php7-mod-pdo-pgsql:libpq))
 $(eval $(call BuildModule,pdo-sqlite,PDO driver for SQLite 3.x,+php7-mod-pdo +PACKAGE_php7-mod-pdo-sqlite:libsqlite3 +PACKAGE_php7-mod-pdo-sqlite:librt))
 $(eval $(call BuildModule,pgsql,PostgreSQL,+PACKAGE_php7-mod-pgsql:libpq))

@@ -23,6 +23,7 @@ define Py3Package/python3-setuptools/install
 		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON3_VERSION)/site-packages/setuptools \
 		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON3_VERSION)/site-packages/easy_install.py \
 		$(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
+	find $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages/ -name __pycache__ | xargs rm -rf
 endef
 
 $(eval $(call Py3BasePackage,python3-setuptools, \
