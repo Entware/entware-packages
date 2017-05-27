@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
 PKG_VERSION:=4.8.19
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 PKG_LICENSE:=GPL-3.0+
 
@@ -65,10 +65,10 @@ CONFIGURE_ARGS += \
 	--with-slang-libs="$(STAGING_DIR)/opt/lib" \
 	--with-search-engine=glib \
 
-
 CONFIGURE_VARS += \
 	ac_cv_search_addwstr=no \
 	fu_cv_sys_stat_statfs2_bsize=yes \
+	ac_cv_path_GREP=grep \
 
 ifeq ($(CONFIG_MC_DIFFVIEWER),)
 CONFIGURE_ARGS += \
@@ -120,10 +120,13 @@ endif
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/mc/* $(1)/opt/lib/mc/
 	$(INSTALL_DIR) $(1)/opt/share $(1)/opt/share/mc $(1)/opt/share/mc/help $(1)/opt/share/mc/skins $(1)/opt/share/mc/hints $(1)/opt/share/mc/syntax
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/mc/* $(1)/opt/share/mc/
+	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/lib/mc/ext.d/*
+	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/lib/mc/extfs.d/*
 	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/share/mc/syntax/Syntax
 endef
 
 define Package/mc/conffiles
+/opt/etc/mc/mc.keymap
 /opt/etc/mc/mc.menu
 /opt/etc/mc/skins/default.ini
 endef

@@ -37,6 +37,7 @@ define Package/libmysqlclient/Default
   DEPENDS:=$(CXX_DEPENDS) +zlib
   TITLE:=MySQL client library
   URL:=http://dev.mysql.com/
+  CONFLICTS:=libmariadb
 endef
 
 define Package/mysql-server
@@ -46,6 +47,7 @@ define Package/mysql-server
   TITLE:=MySQL Server
   URL:=http://dev.mysql.com/
   SUBMENU:=database
+  CONFLICTS:=mariadb-server
 endef
 
 define Package/libmysqlclient
@@ -186,6 +188,6 @@ define Package/mysql-server/conffiles
 /opt/etc/my.cnf
 endef
 
-$(eval $(call BuildPackage,mysql-server))
-$(eval $(call BuildPackage,libmysqlclient))
-$(eval $(call BuildPackage,libmysqlclient-r))
+#$(eval $(call BuildPackage,mysql-server))
+#$(eval $(call BuildPackage,libmysqlclient))
+#$(eval $(call BuildPackage,libmysqlclient-r))
