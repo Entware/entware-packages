@@ -43,22 +43,22 @@ CONFIGURE_ARGS+= \
       --enable-olt=no
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_BUILD_DIR)/src/havege.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/src/.libs/libhavege.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_BUILD_DIR)/src/havege.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/src/.libs/libhavege.{a,so*} $(1)/opt/lib/
 endef
 
 define Package/haveged/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/haveged.init $(1)/etc/init.d/haveged
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/.libs/haveged $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S02haveged $(1)/opt/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/.libs/haveged $(1)/opt/sbin/
 endef
 
 define Package/libhavege/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/src/.libs/libhavege.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/src/.libs/libhavege.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,haveged))
