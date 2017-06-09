@@ -6,12 +6,13 @@
 # See /LICENSE for more information.
 #
 # Downgraded from 1.7.2.The newer haproxy versions enable extra openssl compile flags
+# USE_GETADDRINFO=1 option added
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=haproxy
 PKG_VERSION:=1.5.18
-PKG_RELEASE:=04
+PKG_RELEASE:=04a
 PKG_SOURCE:=haproxy-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://haproxy.1wt.eu/download/1.5/src/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
@@ -92,7 +93,7 @@ define Build/Compile
 		PCREDIR="$(STAGING_DIR)/opt" \
 		SMALL_OPTS="-DBUFSIZE=16384 -DMAXREWRITE=1030 -DSYSTEM_MAXCONN=165530 " \
 		USE_LINUX_TPROXY=1 USE_LINUX_SPLICE=1 USE_REGPARM=1 $(USE_OPENSSL) \
-		USE_ZLIB=yes USE_PCRE=1 \
+		USE_ZLIB=yes USE_PCRE=1 USE_GETADDRINFO=1 \
 		VERSION="$(PKG_VERSION)-patch$(PKG_RELEASE)" \
 		install
 
