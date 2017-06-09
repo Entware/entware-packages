@@ -61,9 +61,9 @@ project:
 endef
 
 define Package/lcdproc-clients/conffiles
-/etc/lcdproc.conf
-/etc/lcdexec.conf
-/etc/lcdvc.conf
+/opt/etc/lcdproc.conf
+/opt/etc/lcdexec.conf
+/opt/etc/lcdvc.conf
 endef
 
 
@@ -91,7 +91,7 @@ $(LCDPROC_CORE_DRIVERS_TEXT)
 endef
 
 define Package/lcdproc-server/conffiles
-/etc/LCDd.conf
+/opt/etc/LCDd.conf
 endef
 
 
@@ -135,39 +135,37 @@ TARGET_CFLAGS+=-Wall
 
 MAKE_FLAGS += \
         CFLAGS="$(TARGET_CFLAGS)" \
-        LDFLAGS="$(TARGET_LDLAGS)"
+        LDFLAGS="$(TARGET_LDFLAGS)"
 
 
 define Package/lcdproc-clients/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clients/lcdproc/lcdproc $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clients/lcdexec/lcdexec $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clients/lcdvc/lcdvc $(1)/usr/bin/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/clients/lcdproc/lcdproc.conf $(1)/etc/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/clients/lcdexec/lcdexec.conf $(1)/etc/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/clients/lcdvc/lcdvc.conf $(1)/etc/
-	$(INSTALL_BIN) ./files/lcd* $(1)/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clients/lcdproc/lcdproc $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clients/lcdexec/lcdexec $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/clients/lcdvc/lcdvc $(1)/opt/bin/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/clients/lcdproc/lcdproc.conf $(1)/opt/etc/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/clients/lcdexec/lcdexec.conf $(1)/opt/etc/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/clients/lcdvc/lcdvc.conf $(1)/opt/etc/
 endef
 
 define Package/lcdproc-server/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_DIR) $(1)/usr/lib/lcdproc
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/server/LCDd $(1)/usr/sbin/
-	$(CP) $(foreach driver,$(LCDPROC_CORE_DRIVERS),$(PKG_BUILD_DIR)/server/drivers/$(driver).so) $(1)/usr/lib/lcdproc/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/lib/lcdproc
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/server/LCDd $(1)/opt/sbin/
+	$(CP) $(foreach driver,$(LCDPROC_CORE_DRIVERS),$(PKG_BUILD_DIR)/server/drivers/$(driver).so) $(1)/opt/lib/lcdproc/
 	$(CP) -p $(PKG_BUILD_DIR)/LCDd.conf $(PKG_BUILD_DIR)/LCDd.conf.orig
 	sed -i -r \
-		-e 's!^(DriverPath=).*$$$$!\1/usr/lib/lcdproc/!' \
+		-e 's!^(DriverPath=).*$$$$!\1/opt/lib/lcdproc/!' \
 		-e 's!^(Driver=)curses$$$$!\1sdeclcd!' \
 		$(PKG_BUILD_DIR)/LCDd.conf
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/LCDd.conf $(1)/etc/
-	$(INSTALL_BIN) ./files/LCDd $(1)/etc/init.d/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/LCDd.conf $(1)/opt/etc/
 endef
 
 define Package/lcdproc-drivers/install
-	$(INSTALL_DIR) $(1)/usr/lib/lcdproc
-	$(CP) $(foreach driver,$(LCDPROC_OTHER_DRIVERS),$(PKG_BUILD_DIR)/server/drivers/$(driver).so) $(1)/usr/lib/lcdproc/
+	$(INSTALL_DIR) $(1)/opt/lib/lcdproc
+	$(CP) $(foreach driver,$(LCDPROC_OTHER_DRIVERS),$(PKG_BUILD_DIR)/server/drivers/$(driver).so) $(1)/opt/lib/lcdproc/
 endef
 
 

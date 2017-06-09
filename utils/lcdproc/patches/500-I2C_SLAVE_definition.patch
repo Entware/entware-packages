@@ -1,0 +1,15 @@
+--- a/server/drivers/hd44780-piplate.c
++++ b/server/drivers/hd44780-piplate.c
+@@ -41,6 +41,12 @@
+  * port=0x20           # the i2c address of the i2c port expander
+  */
+ 
++/* I2C_SLAVE is missing in linux/i2c-dev.h from kernel headers of 2.4.x kernels
++*/
++#ifndef I2C_SLAVE
++#define I2C_SLAVE 0x0703  /* ioctl to change slave address */
++#endif
++
+ #ifdef HAVE_CONFIG_H
+ # include "config.h"
+ #endif
