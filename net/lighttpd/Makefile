@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Upgraded from 1.4.42 because of CGI seg.faults
 
 include $(TOPDIR)/rules.mk
 

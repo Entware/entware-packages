@@ -1,5 +1,4 @@
 #
-# Copyright (C) 2015 OpenWrt.org
 # Copyright (C) 2017 Yousong Zhou <yszhou4tech@gmail.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
@@ -8,52 +7,99 @@
 
 include $(TOPDIR)/rules.mk
 
+# Checklist when bumping versions
+#
+# - update cipher list by checking src/crypto.c:crypto_init()
+# - check if default mode has changed from TCP_ONLY
+# - check if ss-rules has been upstreamed
+#
+# TODO
+#
+# - add validate type: user
+#
 PKG_NAME:=shadowsocks-libev
 PKG_VERSION:=3.0.6
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
 PKG_HASH:=7d9b43b0235a57c115bfe160efd54abef96bffcbfff61c5496e7c2800f0734ca
 
-PKG_MAINTAINER:=Jian Chang <aa65535@live.com>
-PKG_LICENSE:=GPLv2
+PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
+
+PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/shadowsocks-libev
-	SECTION:=net
-	CATEGORY:=Network
-	TITLE:=Lightweight Secured Socks5 Proxy
-	URL:=https://github.com/shadowsocks/shadowsocks-libev
-	DEPENDS:=+libev +libmbedtls +libpthread +libsodium +libudns \
-		+libpcre +zlib
+
+define Package/shadowsocks-libev-config
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=Web Servers/Proxies
+  TITLE:=shadowsocks-libev config scripts
+  URL:=https://github.com/shadowsocks/shadowsocks-libev
 endef
 
-define Package/shadowsocks-libev/description
-Shadowsocks-libev is a lightweight secured socks5 proxy for embedded devices and low end boxes.
-endef
-
-define Package/shadowsocks-libev/conffiles
-/opt/etc/shadowsocks.json
-endef
-
-define Package/shadowsocks-libev/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ss-{redir,tunnel} $(1)/opt/bin
-	$(INSTALL_BIN) ./files/ss-rules $(1)/opt/bin
+define Package/shadowsocks-libev-config/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S22shadowsocks $(1)/opt/etc/init.d
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/debian/config.json $(1)/opt/etc/shadowsocks.json
-	$(INSTALL_DIR) $(1)/opt/share/shadowsocks-libev
+endef
+
+define Package/shadowsocks-libev-config/conffiles
+/opt/etc/shadowsocks.json
+endef
+
+define Package/shadowsocks-libev/Default
+  define Package/shadowsocks-libev-$(1)
+    SECTION:=net
+    CATEGORY:=Network
+    SUBMENU:=Web Servers/Proxies
+    TITLE:=shadowsocks-libev $(1)
+    URL:=https://github.com/shadowsocks/shadowsocks-libev
+    DEPENDS:=+libev +libmbedtls +libpcre +libpthread +libsodium +libudns +shadowsocks-libev-config +zlib
+  endef
+
+  define Package/shadowsocks-libev-$(1)/install
+	$$(INSTALL_DIR) $$(1)/opt/bin
+	$$(INSTALL_BIN) $$(PKG_INSTALL_DIR)/opt/bin/$(1) $$(1)/opt/bin
+  endef
+
+endef
+
+SHADOWSOCKS_COMPONENTS:=ss-local ss-redir ss-tunnel ss-server
+define shadowsocks-libev/templates
+  $(foreach component,$(SHADOWSOCKS_COMPONENTS),
+    $(call Package/shadowsocks-libev/Default,$(component))
+  )
+endef
+$(eval $(call shadowsocks-libev/templates))
+
+
+define Package/shadowsocks-libev-ss-rules
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=Web Servers/Proxies
+  TITLE:=shadowsocks-libev ss-rules
+  URL:=https://github.com/shadowsocks/shadowsocks-libev
+  DEPENDS:=+shadowsocks-libev-ss-redir +shadowsocks-libev-config
+endef
+
+define Package/shadowsocks-libev-ss-rules/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) ./files/ss-rules $(1)/opt/bin
 endef
 
 CONFIGURE_ARGS += --disable-documentation
 
-$(eval $(call BuildPackage,shadowsocks-libev))
+$(eval $(call BuildPackage,shadowsocks-libev-config))
+$(eval $(call BuildPackage,shadowsocks-libev-ss-rules))
+$(foreach component,$(SHADOWSOCKS_COMPONENTS), \
+  $(eval $(call BuildPackage,shadowsocks-libev-$(component))) \
+)

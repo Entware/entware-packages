@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=4
+PKG_RELEASE:=4a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -336,6 +336,10 @@ CONFIGURE_ARGS += \
 	--with-htmlpath=/opt/share/www/nut \
 	--with-user=root \
 	--with-group=root
+
+ifeq ($(CONFIG_NUT_DRIVER_SNMP),y)
+        CONFIGURE_ARGS += --with-snmp-libs="$(TARGET_LDFAGS) -lnetsnmp"
+endif
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib/pkgconfig

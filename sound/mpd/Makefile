@@ -2,6 +2,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# mpd uses signalfd() and epoll() in some strange way, so we disabled it
 
 include $(TOPDIR)/rules.mk
 
