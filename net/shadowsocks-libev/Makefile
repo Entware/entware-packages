@@ -10,20 +10,15 @@ include $(TOPDIR)/rules.mk
 # Checklist when bumping versions
 #
 # - update cipher list by checking src/crypto.c:crypto_init()
-# - check if default mode has changed from TCP_ONLY
-# - check if ss-rules has been upstreamed
-#
-# TODO
-#
-# - add validate type: user
+# - check if default mode has changed from being tcp_only
 #
 PKG_NAME:=shadowsocks-libev
-PKG_VERSION:=3.0.6
-PKG_RELEASE:=2
+PKG_VERSION:=3.0.8
+PKG_RELEASE:=15
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
-PKG_HASH:=7d9b43b0235a57c115bfe160efd54abef96bffcbfff61c5496e7c2800f0734ca
+PKG_HASH:=3bdf7f8f89050aee896496fd86b6b7ef694754f0b8cd97c4b5a04d1d3e5c2e5b
 
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 
@@ -47,9 +42,10 @@ define Package/shadowsocks-libev-config
 endef
 
 define Package/shadowsocks-libev-config/install
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/debian/config.json $(1)/opt/etc/shadowsocks.json
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S22shadowsocks $(1)/opt/etc/init.d
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/debian/config.json $(1)/opt/etc/shadowsocks.json
 endef
 
 define Package/shadowsocks-libev-config/conffiles
@@ -94,9 +90,26 @@ endef
 define Package/shadowsocks-libev-ss-rules/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) ./files/ss-rules $(1)/opt/bin
+#	$(INSTALL_DIR) $(1)/etc
+#	$(INSTALL_DATA) ./files/firewall.ss-rules $(1)/etc
+#	$(INSTALL_BIN) ./files/ss-rules.defaults $(1)/etc/uci-defaults
 endef
 
-CONFIGURE_ARGS += --disable-documentation
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	$(FIND) $(PKG_BUILD_DIR) \
+			   -name '*.o' \
+			-o -name '*.lo' \
+			-o -name '.deps' \
+			-o -name '.libs' \
+		| $(XARGS) rm -rvf
+endef
+
+CONFIGURE_ARGS += \
+	--disable-documentation \
+	--disable-silent-rules \
+	--disable-assert \
+	--disable-ssp \
 
 $(eval $(call BuildPackage,shadowsocks-libev-config))
 $(eval $(call BuildPackage,shadowsocks-libev-ss-rules))
