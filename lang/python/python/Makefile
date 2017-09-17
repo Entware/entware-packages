@@ -12,11 +12,10 @@ include ./files/python-version.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=5
+PKG_RELEASE:=7
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_MD5SUM:=53b43534153bb2a0363f08bae8b9d990
 PKG_HASH:=35d543986882f78261f97787fd3e06274bfa6df29fac9b4a94f73930ff98f731
 
 PKG_LICENSE:=PSF
@@ -34,6 +33,8 @@ HOST_BUILD_PARALLEL:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
+
+PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_python-setuptools CONFIG_PACKAGE_python-pip
 
 PKG_BUILD_DEPENDS:=python/host
 HOST_BUILD_DEPENDS:=bzip2/host expat/host
@@ -187,16 +188,19 @@ define Build/Compile
 	$(call Build/Compile/python-pip)
 endef
 
-define Build/InstallDev
+define Build/InstallMkFiles
 	$(INSTALL_DIR) $(STAGING_DIR)/mk/
-	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/ $(1)/opt/lib/pkgconfig
-	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
 	$(INSTALL_DATA) \
 		./files/python-package.mk \
 		./files/python-host.mk \
 		./files/python-version.mk \
 		./files/python-package-install.sh \
 		$(STAGING_DIR)/mk/
+endef
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/ $(1)/opt/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/include/python$(PYTHON_VERSION) \
 		$(1)/opt/include/
@@ -212,6 +216,7 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config \
 		$(1)/opt/lib/python$(PYTHON_VERSION)/
+	$(call Build/InstallMkFiles)
 endef
 
 PYTHON_BASE_LIB_FILES:= \
@@ -276,6 +281,7 @@ define Package/python-pip-conf/install
 endef
 
 HOST_LDFLAGS += \
+	-Wl,--no-as-needed -lrt \
 	$$$$(pkg-config --static --libs libcrypto libssl)
 
 HOST_CONFIGURE_ARGS+= \
@@ -290,6 +296,7 @@ HOST_CONFIGURE_ARGS+= \
 	CONFIG_SITE=
 
 define Host/Install
+	$(call Build/InstallMkFiles)
 	$(MAKE) -C $(HOST_BUILD_DIR) install
 	$(INSTALL_DIR) $(HOST_PYTHON_DIR)/bin/
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Parser/pgen $(HOST_PYTHON_DIR)/bin/pgen2

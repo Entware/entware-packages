@@ -37,21 +37,26 @@ define HostPython
 	$(HOST_PYTHON_BIN) $(2);
 endef
 
+define host_python_settings
+	ARCH="$(HOST_ARCH)" \
+	CC="$(HOSTCC)" \
+	CCSHARED="$(HOSTCC) $(HOST_FPIC)" \
+	CXX="$(HOSTCXX)" \
+	LD="$(HOSTCC)" \
+	LDSHARED="$(HOSTCC) -shared" \
+	CFLAGS="$(HOST_CFLAGS)" \
+	CPPFLAGS="$(HOST_CPPFLAGS) -I$(HOST_PYTHON_INC_DIR)" \
+	LDFLAGS="$(HOST_LDFLAGS) -lpython$(PYTHON_VERSION) -Wl$(comma)-rpath=$(STAGING_DIR_HOSTPKG)/lib" \
+	_PYTHON_HOST_PLATFORM=linux2
+endef
+
 # $(1) => commands to execute before running pythons script
 # $(2) => python script and its arguments
 # $(3) => additional variables
 define Build/Compile/HostPyRunHost
 	$(call HostPython, \
 		$(if $(1),$(1);) \
-		CC="$(HOSTCC)" \
-		CCSHARED="$(HOSTCC) $(HOST_FPIC)" \
-		CXX="$(HOSTCXX)" \
-		LD="$(HOSTCC)" \
-		LDSHARED="$(HOSTCC) -shared" \
-		CFLAGS="$(HOST_CFLAGS)" \
-		CPPFLAGS="$(HOST_CPPFLAGS) -I$(HOST_PYTHON_INC_DIR)" \
-		LDFLAGS="$(HOST_LDFLAGS) -lpython$(PYTHON_VERSION) -Wl$(comma)-rpath=$(STAGING_DIR_HOSTPKG)/lib" \
-		_PYTHON_HOST_PLATFORM=linux2 \
+		$(call host_python_settings) \
 		$(3) \
 		, \
 		$(2) \
@@ -60,6 +65,20 @@ define Build/Compile/HostPyRunHost
 	)
 endef
 
+# Note: I shamelessly copied this from Yousong's logic (from python-packages);
+HOST_PYTHON_PIP:=$(STAGING_DIR_HOSTPKG)/bin/pip$(PYTHON_VERSION)
+define host_python_pip_install
+	$(call host_python_settings) \
+	$(HOST_PYTHON_PIP) install \
+		--root=$(1) \
+		--prefix=$(2) \
+		--ignore-installed \
+		$(3)
+endef
+
+define host_python_pip_install_host
+$(call host_python_pip_install,$(STAGING_DIR_HOSTPKG),"",$(1))
+endef
 
 # $(1) => build subdir
 # $(2) => additional arguments to setup.py
@@ -69,13 +88,6 @@ define Build/Compile/HostPyMod
 		cd $(HOST_BUILD_DIR)/$(strip $(1)), \
 		./setup.py $(2), \
 		$(3))
-endef
-
-define HostPy/Compile/Default
-	$(call Build/Compile/HostPyMod,,\
-		install --root="$(STAGING_DIR_HOSTPKG)" --prefix="" \
-		--single-version-externally-managed \
-	)
 endef
 
 endif # __python_host_mk_inc
