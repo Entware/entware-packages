@@ -210,12 +210,74 @@ snmpd_engineid_add() {
 	[ -n "$engineidnic" ] && echo "engineIDNic $engineidnic" >> $CONFIGFILE
 }
 
+snmpd_sink_add() {
+	local cfg="$1"
+	local section="$2"
+	local community
+	local port
+	local host
+
+	config_get host "$cfg" host
+	[ -n "section" -a -n "$host" ] || return 0
+	# optional community
+	config_get community "$cfg" community
+	# optional port
+	config_get port "$cfg" port
+	port=${port:+:$port}
+	echo "$section $host$port $community" >> $CONFIGFILE
+}
+
+append_parm() {
+	local section="$1"
+	local option="$2"
+	local switch="$3"
+	local _loctmp
+	config_get _loctmp "$section" "$option"
+	[ -z "$_loctmp" ] && return 0
+	echo "$switch $_loctmp" >> $CONFIGFILE
+}
+
+append_authtrapenable() {
+	local section="$1"
+	local option="$2"
+	local switch="$3"
+	local _loctmp
+	config_get_bool _loctmp "$section" "$option"
+	[ -z "$_loctmp" ] && return 0
+	[ "$_loctmp" -gt 0 ] && echo "$switch $_loctmp" >> $CONFIGFILE
+}
+
+snmpd_setup_fw_rules() {
+	local net="$1"
+	local zone
+
+	zone=$(fw3 -q network "$net" 2>/dev/null)
+
+	local handled_zone
+	for handled_zone in $HANDLED_SNMP_ZONES; do
+		[ "$handled_zone" = "$zone" ] && return
+	done
+
+	json_add_object ""
+	json_add_string type rule
+	json_add_string src "$zone"
+	json_add_string proto udp
+	json_add_string dest_port 161
+	json_add_string target ACCEPT
+	json_close_object
+
+	HANDLED_SNMP_ZONES="$HANDLED_SNMP_ZONES $zone"
+}
+
 start_service() {
 	[ -f "$CONFIGFILE" ] && rm -f "$CONFIGFILE"
 
-	procd_open_instance
-
 	config_load snmpd
+
+	config_get_bool snmp_enabled general enabled 1
+	[ "$snmp_enabled" -eq 0 ] && return
+
+	procd_open_instance
 
 	config_foreach snmpd_agent_add agent
 	config_foreach snmpd_agentx_add agentx
@@ -234,7 +296,14 @@ start_service() {
 	config_foreach snmpd_exec_add exec
 	config_foreach snmpd_disk_add disk
 	config_foreach snmpd_engineid_add engineid
-	
+	append_parm trapcommunity community trapcommunity
+	config_foreach snmpd_sink_add trapsink trapsink
+	config_foreach snmpd_sink_add trap2sink trap2sink
+	config_foreach snmpd_sink_add informsink informsink
+	append_authtrapenable authtrapenable enable authtrapenable
+	append_parm v1trapaddress host v1trapaddress
+	append_parm trapsess trapsess trapsess
+
 	procd_set_param command $PROG -Lf /dev/null -f
 	procd_set_param file $CONFIGFILE
 	procd_set_param respawn
@@ -242,6 +311,14 @@ start_service() {
 	for iface in $(ls /sys/class/net 2>/dev/null); do
 		procd_append_param netdev "$iface"
 	done
+
+	procd_open_data
+
+	json_add_array firewall
+	config_list_foreach general network snmpd_setup_fw_rules
+	json_close_array
+
+	procd_close_data
 
 	procd_close_instance
 }
