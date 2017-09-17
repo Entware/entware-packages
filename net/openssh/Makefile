@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
 PKG_VERSION:=7.5p1
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
@@ -93,6 +93,8 @@ endef
 
 define Package/openssh-server/conffiles
 /opt/etc/ssh/sshd_config
+/opt/etc/ssh/ssh_host_*_key
+/opt/etc/ssh/ssh_host_*_key.pub
 endef
 
 define Package/openssh-server-pam
@@ -231,6 +233,7 @@ define Package/openssh-server/install
 	$(INSTALL_DIR) $(1)/opt/etc/ssh
 	chmod 0700 $(1)/opt/etc/ssh
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/ssh/sshd_config $(1)/opt/etc/ssh/
+	sed -r -i 's,^#(HostKey /opt/etc/ssh/ssh_host_(rsa|ecdsa|ed25519)_key)$$$$,\1,' $(1)/opt/etc/ssh/sshd_config
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S40sshd $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/sbin
