@@ -9,23 +9,6 @@
  
  # locale (LC_ALL) ("-" = use system locale)
  Locale "-"
-@@ -87,13 +87,13 @@
- DaemonGroup ""
- 
- # how often (in seconds) interface data is updated
--UpdateInterval 30
-+UpdateInterval 60
- 
- # how often (in seconds) interface status changes are checked
--PollInterval 5
-+PollInterval 30
- 
- # how often (in minutes) data is saved to file
--SaveInterval 5
-+SaveInterval 30
- 
- # how often (in minutes) data is saved when all interface are offline
- OfflineSaveInterval 30
 @@ -115,10 +115,10 @@
  UpdateFileOwner 1
  
