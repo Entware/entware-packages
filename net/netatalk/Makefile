@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netatalk
-PKG_VERSION:=3.1.10
-PKG_RELEASE:=1
+PKG_VERSION:=3.1.11
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/netatalk
-PKG_MD5SUM:=2b40161985bb32cff5660bf689a4704f15c33bb87565efc7805dd5c75ad1fcc7
+PKG_HASH:=3434472ba96d3bbe3b024274438daad83b784ced720f7662a4c1d0a1078799a6
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -28,7 +28,7 @@ define Package/netatalk
   DEPENDS:=+libevent2 +libdb47 +libgcrypt +libopenssl
   TITLE:=netatalk
   URL:=http://netatalk.sourceforge.net
-  MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
+  MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 endef
 
 define Package/netatalk/decription
@@ -37,48 +37,59 @@ define Package/netatalk/decription
   Protocol Suite.
 endef
 
-define Package/netatalk/conffiles
-/opt/etc/afp.conf
-/opt/etc/dbus-session.conf
-/opt/etc/extmap.conf
-endef
+TARGET_CFLAGS += -std=gnu99
+#TARGET_LDFLAGS += $(LIBRPC)
 
 CONFIGURE_ARGS += \
-	--disable-admin-group \
-	--disable-zeroconf \
+	--disable-afs \
+	--enable-hfs \
 	--disable-debugging \
-	--disable-tcp-wrappers \
 	--disable-shell-check \
-	--with-mysql-config=false \
+	--disable-timelord \
+	--disable-a2boot \
+	--disable-cups \
+	--disable-tcp-wrappers \
 	--with-cnid-default-backend=dbd \
-	--without-pam \
-	$(if $(CONFIG_SHADOW_PASSWORDS),--with-shadow,--without-shadow) \
-	--with-uams-path="/opt/lib/uams" \
+	--with-bdb="$(STAGING_DIR)/opt/" \
 	--with-libgcrypt-dir="$(STAGING_DIR)/opt" \
 	--with-ssl-dir="$(STAGING_DIR)/opt" \
-	--with-bdb="$(STAGING_DIR)/opt/" \
-	--without-ldap \
+	--with-uams-path="/opt/lib/uams" \
 	--without-acls \
 	--without-kerberos \
+	--without-mysql \
+	--with-mysql-config=false \
+	--without-pam \
+	--disable-admin-group \
+	--disable-srvloc \
+	--disable-zeroconf \
+	$(if $(CONFIG_SHADOW_PASSWORDS),--with-shadow,--without-shadow) \
+	--without-ldap \
 	--with-libevent-header="$(STAGING_DIR)/opt/include/event2" \
 	--with-libevent-lib="$(STAGING_DIR)/opt/lib" \
 	--with-lockfile=/opt/var/lock
 
+define Package/netatalk/conffiles
+/opt/etc/afp.conf
+/opt/etc/extmap.conf
+/opt/etc/dbus-session.conf
+endef
+
 define Package/netatalk/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) \
-	    $(PKG_INSTALL_DIR)/opt/bin/{ad,afpldaptest,afppasswd,dbd} \
-	    $(1)/opt/bin
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/*.conf $(1)/opt/etc
-	$(INSTALL_BIN) ./files/{S26cnid_metad,S27afpd} $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/lib/uams
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/uams/*.so $(1)/opt/lib/uams
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) \
-	    $(PKG_INSTALL_DIR)/opt/sbin/{afpd,cnid_dbd,cnid_metad,netatalk} \
-	    $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/lib/uams
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libatalk.so* $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/dbd $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ad $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/afppasswd $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/afpd $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/cnid_dbd $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/cnid_metad $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/uams/*.so $(1)/opt/lib/uams/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/*.conf $(1)/opt/etc/
+	$(INSTALL_BIN) ./files/{S26cnid_metad,S27afpd} $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/var/netatalk/CNID
 endef
 
