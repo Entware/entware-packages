@@ -15,13 +15,14 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=2
+# XXX: reset PKG_RELEASE to 1 only if Python's pip & setuptools versions have also bumped;
+#      otherwise, keep bumping PKG_RELEASE
+PKG_RELEASE:=6
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_MD5SUM:=692b4fc3a2ba0d54d1495d4ead5b0b5c
-PKG_HASH:=a01810ddfcec216bcdb357a84bfaafdfaa0ca42bbdaa4cb7ff74f5a9961e4041
+PKG_HASH:=9229773be41ed144370f47f0f626a1579931f5a390f1e8e3853174d52edd64a9
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
@@ -38,6 +39,8 @@ HOST_BUILD_PARALLEL:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
+
+PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_python3-setuptools CONFIG_PACKAGE_python3-pip
 
 PKG_BUILD_DEPENDS:=python3/host
 HOST_BUILD_DEPENDS:=bzip2/host expat/host libffi/host
@@ -183,16 +186,19 @@ define Build/Compile
 	$(call Build/Compile/python3-pip)
 endef
 
-define Build/InstallDev
+define Build/InstallMkFiles
 	$(INSTALL_DIR) $(STAGING_DIR)/mk/
-	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
 	$(INSTALL_DATA) \
 		./files/python3-package.mk \
 		./files/python3-host.mk \
 		./files/python3-version.mk \
 		./files/python3-package-install.sh \
 		$(STAGING_DIR)/mk/
+endef
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/include/python$(PYTHON_VERSION) \
 		$(1)/opt/include/
@@ -203,6 +209,7 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config-$(PYTHON_VERSION) \
 		$(1)/opt/lib/python$(PYTHON_VERSION)/
+	$(call Build/InstallMkFiles)
 endef
 
 PYTHON3_BASE_LIB_FILES:= \
@@ -260,6 +267,7 @@ define Py3Package/python3/filespec
 endef
 
 HOST_LDFLAGS += \
+	-Wl,--no-as-needed -lrt \
 	$$$$(pkg-config --static --libs libcrypto libssl)
 
 HOST_CONFIGURE_ARGS+= \
@@ -279,11 +287,10 @@ define Host/Compile
 endef
 
 define Host/Install
+	$(call Build/InstallMkFiles)
 	$(MAKE) -C $(HOST_BUILD_DIR) install
-
 	$(INSTALL_DIR) $(HOST_PYTHON3_DIR)/bin/
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Parser/pgen $(HOST_PYTHON3_DIR)/bin/pgen3
-	$(INSTALL_BIN) $(HOST_BUILD_DIR)/Programs/_freeze_importlib $(HOST_PYTHON3_DIR)/bin/_freeze_importlib
 endef
 
 $(eval $(call HostBuild))

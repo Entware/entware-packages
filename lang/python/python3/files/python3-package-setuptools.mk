@@ -15,7 +15,7 @@ endef
 define Py3Package/python3-setuptools/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
 	# Adjust shebang to proper python location on target
-	sed "1s/.*/#\!\/opt\/bin\/python$(PYTHON3_VERSION)/" -i $(PKG_BUILD_DIR)/install-setuptools/bin/*
+	sed "1s@.*@#\!/opt/bin/python$(PYTHON3_VERSION)@" -i $(PKG_BUILD_DIR)/install-setuptools/bin/*
 	$(CP) $(PKG_BUILD_DIR)/install-setuptools/bin/easy_install-* $(1)/opt/bin
 	$(LN) easy_install-$(PYTHON3_VERSION) $(1)/opt/bin/easy_install-3
 	$(CP) \
