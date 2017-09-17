@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.12.2
-PKG_RELEASE:=1
+PKG_VERSION:=2.14.1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=d21a9e23506e618d561fb25a8a7bd6134f927b86147930103487117a7a678c4a
+PKG_HASH:=6f724c6d0e9e13114ab35db6f67e1b2c1934b641e89366e6a0e37618231f2cc6
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -83,7 +83,7 @@ MAKE_FLAGS := \
 	NO_PYTHON="YesPlease" \
 	NO_TCLTK="YesPlease" \
 	NO_INSTALL_HARDLINKS="yes" \
-	gitwebdir="/opt/share/www/gitweb/cgi-bin" \
+	gitwebdir="/opt/share/www/cgi-bin" \
 	GITWEB_JS="/gitweb/gitweb.js" \
 	GITWEB_CSS="/gitweb/gitweb.css" \
 	GITWEB_LOGO="/gitweb/gitweb-logo.png" \
@@ -100,7 +100,7 @@ define Build/Configure
 endef
 
 define Build/Compile
-	mkdir -p $(PKG_INSTALL_DIR)/opt/share/www/gitweb/cgi-bin
+	mkdir -p $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin $(PKG_INSTALL_DIR)/opt/share/www/gitweb
 	$(call Build/Compile/Default,DESTDIR=$(PKG_INSTALL_DIR) all install gitweb install-gitweb)
 endef
 
@@ -135,9 +135,9 @@ define Package/git-http/install
 endef
 
 define Package/git-gitweb/install
-	$(INSTALL_DIR) $(1)/opt/share/www/gitweb/cgi-bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/www/gitweb/cgi-bin/gitweb.cgi $(1)/opt/share/www/gitweb/cgi-bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/gitweb/cgi-bin/static/* $(1)/opt/share/www/gitweb/
+	$(INSTALL_DIR) $(1)/opt/share/www/cgi-bin $(1)//opt/share/www/gitweb
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/gitweb.cgi $(1)/opt/share/www/cgi-bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/static/* $(1)/opt/share/www/gitweb/
 endef
 
 $(eval $(call BuildPackage,git))
