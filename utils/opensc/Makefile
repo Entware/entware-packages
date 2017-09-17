@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=opensc
 PKG_VERSION:=0.16.0
 PKG_RELEASE:=1
-PKG_MD5SUM:=3ac8c29542bb48179e7086d35a1b8907a4e86aca3de3323c2f48bd74eaaf5729
+PKG_HASH:=3ac8c29542bb48179e7086d35a1b8907a4e86aca3de3323c2f48bd74eaaf5729
 
 PKG_LICENSE:=LGPL-2.1+
 PKG_LICENSE_FILES:=COPYING
@@ -92,7 +92,7 @@ define ProfileGen
 define Package/libopensc-profile-$(subst _,-,$(firstword $(subst :, ,$(1))))
   TITLE:=$(firstword $(subst :, ,$(1))) card profile for opensc
   URL:=https://github.com/OpenSC/OpenSC/wiki
-  SECTION:=lib
+  SECTION:=libs
   CATEGORY:=Libraries
   DEPENDS:=libopensc
 endef
