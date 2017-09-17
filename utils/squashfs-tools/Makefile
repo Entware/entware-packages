@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=squashfs-tools
 PKG_VERSION:=4.3
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
 
@@ -18,6 +18,7 @@ PKG_SOURCE_URL:=https://github.com/plougher/squashfs-tools
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=9c1db6d13a51a2e009f0027ef336ce03624eac0d
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
+PKG_MIRROR_HASH:=4e9a017561b6f9d7b9782c7c672d224726ffd069b0543f310e85ed8ab1c4589b
 
 PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
@@ -69,6 +70,8 @@ endif
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)/squashfs-tools \
 		CC="$(TARGET_CC)" \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
+		EXTRA_LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(MAKE_FLAGS) \
 		mksquashfs unsquashfs
 endef
