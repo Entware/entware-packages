@@ -11,7 +11,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://downloads.xiph.org/releases/ices/
-PKG_MD5SUM:=832c448cc993170a70fd95804fcda5b2
+PKG_HASH:=96458df835033c39236ad3bb099286c033241f8ea7c138e7ccf714e7ade75900
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
@@ -41,7 +41,7 @@ CONFIGURE_ARGS+= \
 	--with-ogg="$(STAGING_DIR)/opt/include" \
 	--with-vorbis="$(STAGING_DIR)/opt/include"
 
-TARGET_LDFLAGS+= -logg
+TARGET_LDFLAGS+= -logg -lvorbisidec
 
 define Package/ices/install
 	$(INSTALL_DIR) $(1)/opt/bin
