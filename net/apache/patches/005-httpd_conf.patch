@@ -26,7 +26,7 @@ Index: httpd-2.4.25/docs/conf/httpd.conf.in
  # alert, emerg.
  #
 -LogLevel warn
-+LogLevel info
++LogLevel debug
  
  <IfModule log_config_module>
      #
