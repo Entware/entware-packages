@@ -9,15 +9,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
-PKG_VERSION:=2.7.5
+PKG_VERSION:=2.8.6
 PKG_RELEASE:=1
 PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/nano
-PKG_MD5SUM:=002703e368e07882f75e304c8860d83d
-PKG_HASH:=a64d24e6bc4fc448376d038f9a755af77f8e748c9051b6f45bf85e783a7e67e4
+PKG_HASH:=9a46962a3ae59db922467a095217ed23280b42d80640f932f3a59ba2a6a85776
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -41,7 +40,6 @@ define Package/nano/description
 endef
 
 CONFIGURE_ARGS += \
-	--disable-glibtest \
 	--enable-utf8 \
 	--enable-wrapping \
 	--enable-wrapping-as-root \

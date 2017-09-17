@@ -1,0 +1,60 @@
+--- a/lib/wctype.in.h
++++ b/lib/wctype.in.h
+@@ -101,16 +101,16 @@
+ #endif
+ 
+ /* Define wint_t and WEOF.  (Also done in wchar.in.h.)  */
+-#if !@HAVE_WINT_T@ && !defined wint_t
++/* #if !@HAVE_WINT_T@ && !defined wint_t
+ # define wint_t int
+ # ifndef WEOF
+ #  define WEOF -1
+ # endif
+-#else
++#else */
+ /* mingw and MSVC define wint_t as 'unsigned short' in <crtdefs.h> or
+    <stddef.h>.  This is too small: ISO C 99 section 7.24.1.(2) says that
+    wint_t must be "unchanged by default argument promotions".  Override it.  */
+-# if @GNULIB_OVERRIDES_WINT_T@
++/* # if @GNULIB_OVERRIDES_WINT_T@
+ #  if !GNULIB_defined_wint_t
+ #   if @HAVE_CRTDEFS_H@
+ #    include <crtdefs.h>
+@@ -126,7 +126,7 @@
+ # ifndef WEOF
+ #  define WEOF ((wint_t) -1)
+ # endif
+-#endif
++#endif */
+ 
+ 
+ #if !GNULIB_defined_wctype_functions
+--- a/lib/wchar.in.h
++++ b/lib/wchar.in.h
+@@ -107,7 +107,7 @@
+ 
+ 
+ /* Define wint_t and WEOF.  (Also done in wctype.in.h.)  */
+-#if !@HAVE_WINT_T@ && !defined wint_t
++/* #if !@HAVE_WINT_T@ && !defined wint_t
+ # define wint_t int
+ # ifndef WEOF
+ #  define WEOF -1
+@@ -116,7 +116,7 @@
+ /* mingw and MSVC define wint_t as 'unsigned short' in <crtdefs.h> or
+    <stddef.h>.  This is too small: ISO C 99 section 7.24.1.(2) says that
+    wint_t must be "unchanged by default argument promotions".  Override it.  */
+-# if @GNULIB_OVERRIDES_WINT_T@
++/* # if @GNULIB_OVERRIDES_WINT_T@
+ #  if !GNULIB_defined_wint_t
+ #   if @HAVE_CRTDEFS_H@
+ #    include <crtdefs.h>
+@@ -132,7 +132,7 @@
+ # ifndef WEOF
+ #  define WEOF ((wint_t) -1)
+ # endif
+-#endif
++#endif */
+ 
+ 
+ /* Override mbstate_t if it is too small.
