@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=5a
+PKG_RELEASE:=6
 PKG_LICENSE:=GPL-2.0
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -83,6 +83,7 @@ CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include"
 
 define Download/usb.ids
   URL:=http://www.linux-usb.org/
+  HASH:=47dc941dca801b89f1529e09f0d338755d8fbb0ce75f526e1dcccc4fbf8fc66c
   FILE:=usb.ids
   MD5SUM:=
 endef
