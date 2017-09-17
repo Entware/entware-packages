@@ -4,16 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# super voodoo dance (((
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ply
-PKG_VERSION:=3.9
-PKG_RELEASE:=2
+PKG_VERSION:=3.10
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.dabeaz.com/ply
-PKG_HASH:=0d7e2940b9c57151392fceaa62b0865c45e06ce1e36687fd8d03f011a907f43e
+PKG_HASH:=96e94af7dd7031d8d6dd6e2a8e0de593b511c211a86e28a9c9621c275ac8bacb
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-$(PKG_NAME)-$(PKG_VERSION)
 PKG_UNPACK=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
