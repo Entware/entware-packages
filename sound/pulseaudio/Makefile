@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pulseaudio
-PKG_VERSION:=10.0
-PKG_RELEASE:=1
+PKG_VERSION:=11.0
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://freedesktop.org/software/pulseaudio/releases/
-PKG_HASH:=a3186824de9f0d2095ded5d0d0db0405dc73133983c2fbb37291547e37462f57
+PKG_HASH:=072305d4018fc5e75bb1b45ee6b938fa52fc9fd27493bf327415ef89ed14c969
 PKG_LICENSE:=LGPL-2.1+
 PKG_LICENSE_FILES:=GPL LICENSE
 
@@ -30,8 +30,8 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/pulseaudio/Default
   SECTION:=sound
   CATEGORY:=Sound
-  DEPENDS:=+libspeexdsp +libsndfile +libltdl +libpthread \
-	+librt +alsa-lib +libopenssl +libwrap +libcap $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS:=+libsndfile +libltdl +libpthread +librt +alsa-lib \
+	+libopenssl +libwrap +libcap $(ICONV_DEPENDS) $(INTL_DEPENDS)
   TITLE:=Network sound server
   MAINTAINER:=Peter Wagner <tripolar@gmx.at>
   URL:=http://www.pulseaudio.org
@@ -99,7 +99,8 @@ CONFIGURE_ARGS += \
 	--without-fftw \
 	--disable-avahi \
 	--disable-dbus \
-	--without-soxr
+	--without-soxr \
+	--without-speex
 
 CONFIGURE_VARS += \
 	PKG_CONFIG_LIBDIR="$(STAGING_DIR)/opt/lib/pkgconfig"
@@ -140,7 +141,7 @@ define Package/pulseaudio-daemon/install
 		$(PKG_INSTALL_DIR)/opt/bin/pulseaudio \
 		$(1)/opt/bin/pulseaudio
 
-	$(INSTALL_CONF) \
+	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/etc/pulse/* \
 		$(1)/opt/etc/pulse
 
@@ -160,7 +161,6 @@ define Package/pulseaudio-daemon/install
 		$(PKG_INSTALL_DIR)/opt/lib/pulse-$(PKG_VERSION)/modules/module*.so \
 		$(1)/opt/lib/pulse-$(PKG_VERSION)/modules/
 
-	chmod -R 0644 $(1)/opt/etc/pulse/*
 endef
 
 define Package/pulseaudio-tools/install
@@ -177,11 +177,11 @@ define Package/pulseaudio-profiles/install
 		$(1)/opt/share/pulseaudio/alsa-mixer/paths \
 		$(1)/opt/share/pulseaudio/alsa-mixer/profile-sets
 
-	$(INSTALL_CONF) \
+	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/share/pulseaudio/alsa-mixer/paths/* \
 		$(1)/opt/share/pulseaudio/alsa-mixer/paths
 
-	$(INSTALL_CONF) \
+	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/share/pulseaudio/alsa-mixer/profile-sets/* \
 		$(1)/opt/share/pulseaudio/alsa-mixer/profile-sets
 endef
