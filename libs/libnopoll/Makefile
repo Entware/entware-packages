@@ -9,13 +9,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nopoll
 PKG_VERSION:=0.4.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/ASPLes/nopoll.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=60a81fbd199551ac5dd017b9a44fb46e8530680b
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
+PKG_MIRROR_HASH:=ce67b91ea54dda6678321e05a3e584648032a31323409a76df5dd60e7bfd17de
 
 PKG_MAINTAINER:=John Clark <inindev@gmail.com>
 
@@ -40,7 +41,7 @@ define Package/libnopoll/description
   This package contains the noPoll C WebSocket library.
 endef
 
-TARGET_LDFLAGS += -lpthread
+TARGET_LDFLAGS += -lcrypto -lpthread
 
 CONFIGURE_ARGS += \
 	--enable-nopoll-log=no \
