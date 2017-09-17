@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=confuse
-PKG_VERSION:=3.0
+PKG_VERSION:=3.2.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/martinh/libconfuse/releases/download/v$(PKG_VERSION)
-PKG_HASH:=bb75174e02aa8b44fa1a872a47beeea1f5fe715ab669694c97803eb6127cc861
+PKG_HASH:=23c63272baf2ef4e2cbbafad2cf57de7eb81f006ec347c00b954819824add25e
 PKG_MAINTAINER:=Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=ISC
 
