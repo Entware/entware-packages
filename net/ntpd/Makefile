@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ntp
 PKG_VERSION:=4.2.8p10
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/
@@ -42,6 +42,7 @@ endef
 
 define Package/ntpd
 $(call Package/ntpd/Default)
+  DEPENDS+= +ntp-utils
   TITLE+= server
   USERID:=ntp=123:ntp=123
 endef
@@ -115,7 +116,6 @@ CONFIGURE_ARGS += \
 define Package/ntpd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ntpd/ntpd $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ntpq/ntpq $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_CONF) ./files/ntp.conf $(1)/opt/etc/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
@@ -135,6 +135,7 @@ endef
 define Package/ntp-utils/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ntpdc/ntpdc $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ntpq/ntpq $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/util/ntptime $(1)/opt/sbin/
 endef
 
