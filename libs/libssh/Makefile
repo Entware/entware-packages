@@ -16,7 +16,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://red.libssh.org/attachments/download/218/
-PKG_MD5SUM:=d3fc864208bf607ad87cdee836894feb
+PKG_HASH:=54e86dd5dc20e5367e58f3caab337ce37675f863f80df85b6b1614966a337095
 
 CMAKE_INSTALL:=1
 
@@ -28,7 +28,7 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libssh
-  SECTION:=lib
+  SECTION:=libs
   CATEGORY:=Libraries
   URL:=$(PKG_SOURCE_URL)
   TITLE:=SSH library
