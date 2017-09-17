@@ -10,8 +10,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.10.5
-PKG_RELEASE:=1
+PKG_VERSION:=9.11.2
+PKG_RELEASE:=2
 USERID:=bind=57:bind=57
 
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>
@@ -19,9 +19,9 @@ PKG_LICENSE := BSD-3-Clause
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
-	ftp://ftp.isc.org/isc/bind9/$(PKG_VERSION) \
-	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_MD5SUM:=8359e000eaec76efd6dfa186c12c3b93
+	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
+	http://ftp.isc.org/isc/bind9/$(PKG_VERSION)
+PKG_HASH:=7f46ad8620f7c3b0ac375d7a5211b15677708fda84ce25d7aeb7222fe2e3c77a
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
@@ -30,7 +30,6 @@ PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
 
 PKG_CONFIG_DEPENDS := \
-	CONFIG_OPENSSL_WITH_EC \
 	CONFIG_BIND_ENABLE_FILTER_AAAA
 
 include $(INCLUDE_DIR)/package.mk
@@ -38,7 +37,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/bind/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+bind-libs
+  DEPENDS:=+bind-libs +@OPENSSL_WITH_EC
   TITLE:=bind
   URL:=https://www.isc.org/software/bind
   SUBMENU:=IP Addresses and Names
@@ -47,7 +46,7 @@ endef
 define Package/bind-libs
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +libxml2
+  DEPENDS:=+libopenssl +zlib
   TITLE:=bind shared libraries
   URL:=https://www.isc.org/software/bind
 endef
@@ -55,6 +54,7 @@ endef
 define Package/bind-server
   $(call Package/bind/Default)
   TITLE+= DNS server
+  DEPENDS+= +@OPENSSL_WITH_DEPRECATED
 endef
 
 define Package/bind-server/config
@@ -83,7 +83,7 @@ endef
 
 define Package/bind-dnssec
   $(call Package/bind/Default)
-  TITLE+= administration tools (dnssec-keygen and dnssec-signzone only)
+  TITLE+= administration tools (dnssec-keygen, dnssec-settime and dnssec-signzone only)
 endef
 
 define Package/bind-host
@@ -110,8 +110,10 @@ CONFIGURE_ARGS += \
 	--disable-threads \
 	--disable-linux-caps \
 	--with-openssl="$(STAGING_DIR)/opt" \
+	--with-libjson=no \
 	--with-libtool \
-	--with-libxml2=yes \
+	--with-libxml2=no \
+	--without-lmdb \
 	--enable-epoll=yes \
 	--with-gost=no \
 	--with-gssapi=no \
@@ -179,6 +181,7 @@ define Package/bind-tools/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/host $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-keygen $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-settime $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-signzone $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/named-checkconf $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/named-checkzone $(1)/opt/sbin/
@@ -201,6 +204,7 @@ endef
 define Package/bind-dnssec/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-keygen $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-settime $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-signzone $(1)/opt/sbin/
 endef
 
