@@ -13,7 +13,7 @@ PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).orig.tar.gz
 PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/e/etherwake
-PKG_MD5SUM:=628e8b2a28d47f262e4c26c989402a59
+PKG_HASH:=54241c7689579dc86e29e6afbc6d60e69f97135091a1395c8a10f6d5a2daec1d
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION).orig
 
@@ -36,7 +36,7 @@ define Package/etherwake/description
 endef
 
 define Build/Compile
-	$(TARGET_CC) $(TARGET_LDFLAGS) $(TARGET_CFLAGS) -D__UCLIBC__ $(PKG_BUILD_DIR)/ether-wake.c -o $(PKG_BUILD_DIR)/etherwake
+	$(TARGET_CC) $(TARGET_CFLAGS) -D__UCLIBC__ $(TARGET_LDFLAGS) $(PKG_BUILD_DIR)/ether-wake.c -o $(PKG_BUILD_DIR)/etherwake
 endef
 
 define Package/etherwake/install
