@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Use release tar ball instead of git rev
 
 include $(TOPDIR)/rules.mk
 
@@ -18,11 +17,11 @@ PKG_LICENSE:=LGPLv2.1
 PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_MIRROR_HASH:=46a3f1a13a6ec5ff5377c028ce25bc723ab86247af40e686aa2b24718a5cd0d1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/mcabber/loudmouth.git
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_MD5SUM:=7616cf124a8d72d007e7475b5aeb20ad
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
