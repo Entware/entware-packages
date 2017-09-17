@@ -4,17 +4,18 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# upgrade to 1.0.13
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libsodium
-PKG_VERSION:=1.0.12
+PKG_VERSION:=1.0.13
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.libsodium.org/libsodium/releases \
 https://github.com/jedisct1/libsodium/releases/download/$(PKG_VERSION)
-PKG_HASH:=b8648f1bb3a54b0251cf4ffa4f0d76ded13977d4fa7517d988f4c902dd8e2f95
+PKG_HASH:=9c13accb1a9e59ab3affde0e60ef9a2149ed4d6e8f99c93c7a5b97499ee323fd
 
 PKG_FIXUP:=libtool autoreconf
 PKG_USE_MIPS16:=0
