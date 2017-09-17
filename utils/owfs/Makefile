@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
-PKG_MD5SUM:=b5c20998e8ffc6fa3974daef99c02402
+PKG_HASH:=f7e11bae6cd29d58726e6d29b297834e5656d6069a407d798067ae25cb0812ea
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=GPL-2.0
 
@@ -206,7 +206,7 @@ TARGET_LDFLAGS += \
 	-liconv \
 
 CONFIGURE_VARS += \
-	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(TOOLCHAIN_DIR)/usr/lib" \
+	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(TOOLCHAIN_DIR)/lib" \
 	lt_cv_sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib" \
 	lt_cv_sys_lib_search_path_spec="$(STAGING_DIR)/opt/lib" \
 	shrext_cmds=".so" \
