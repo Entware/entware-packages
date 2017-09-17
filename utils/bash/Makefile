@@ -11,11 +11,11 @@ BASE_VERSION:=4.3
 
 PKG_NAME:=bash
 PKG_VERSION:=$(BASE_VERSION).42
-PKG_RELEASE:=1a
+PKG_RELEASE:=1b
 
 PKG_SOURCE:=$(PKG_NAME)-$(BASE_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/bash
-PKG_MD5SUM:=81348932d5da294953e15d4814c74dd1
+PKG_HASH:=afc687a28e0e24dc21b988fa159ff9dbcf6b7caa92ade8645cc6d5605cd024d4
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BASE_VERSION)
 
 PKG_LICENSE:=GPL-3.0+
@@ -46,6 +46,7 @@ define Build/Configure
 		--without-bash-malloc \
 		--enable-job-control \
                 --bindir=/opt/bin \
+		bash_cv_getcwd_malloc=yes \
 	)
 endef
 
