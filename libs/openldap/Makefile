@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openldap
-PKG_VERSION:=2.4.44
+PKG_VERSION:=2.4.45
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
@@ -16,7 +16,7 @@ PKG_SOURCE_URL:=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/ \
 	ftp://sunsite.cnlab-switch.ch/mirror/OpenLDAP/openldap-release/ \
 	ftp://ftp.nl.uu.net/pub/unix/db/openldap/openldap-release/ \
 	ftp://ftp.plig.org/pub/OpenLDAP/openldap-release/
-PKG_MD5SUM:=693ac26de86231f8dcae2b4e9d768e51
+PKG_HASH:=cdd6cffdebcd95161a73305ec13fc7a78e9707b46ca9f84fb897cd5626df3824
 
 PKG_FIXUP:=autoreconf
 
@@ -121,7 +121,6 @@ define Build/InstallDev
 endef
 
 define Package/libopenldap/install
-	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DIR) $(1)/opt/etc/openldap
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/openldap/ldap.conf $(1)/opt/etc/openldap/
 	$(INSTALL_DIR) $(1)/opt/lib
@@ -134,6 +133,8 @@ define Package/openldap-utils/install
 endef
 
 define Package/openldap-server/install
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S58slapd $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/etc/openldap/schema
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/openldap/schema/* $(1)/opt/etc/openldap/schema/
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/openldap/slapd.conf $(1)/opt/etc/openldap/
@@ -144,8 +145,6 @@ define Package/openldap-server/install
 	$(SED) 's|^\(database\)\([ \t]\+\)bdb|\1\2ldif|g' \
 	    -e 's|^\(index\)|#\1|g' \
 	    $(1)/opt/etc/openldap/slapd.conf
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S58slapd $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,libopenldap))
