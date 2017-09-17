@@ -9,14 +9,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fossil
 PKG_VERSION:=1.34
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=BSD-2-Clause
 PKG_MAINTAINER:=Luka Perkov <luka@openwrt.org>
 
 PKG_SOURCE:=$(PKG_NAME)-src-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.fossil-scm.org/index.html/uv/download
-PKG_MD5SUM:=3d5a7da5c506a47784942236a788b29b
+PKG_HASH:=53a6b83e878feced9ac7705f87e5b6ea82727314e3e19202ae1c46c7e4dba49f
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-src-$(PKG_VERSION)
 
@@ -42,7 +42,7 @@ endef
 MAKE_FLAGS := \
 	TCC="$(TARGET_CC)" \
 	CFLAGS="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include -DFOSSIL_ENABLE_JSON -DFOSSIL_OMIT_LOAD_AVERAGE" \
-	LDFLAGS="$(TARGET_LDFLAGS) -L$(STAGING_DIR)/lib -L$(STAGING_DIR)/opt/lib -lm" \
+	LDFLAGS="$(TARGET_LDFLAGS) -L$(STAGING_DIR)/opt/lib -lm" \
 
 define Build/Configure
 endef
