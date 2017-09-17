@@ -10,11 +10,11 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=coreutils
 PKG_VERSION:=8.23
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/coreutils
-PKG_MD5SUM:=abed135279f87ad6762ce57ff6d89c41
+PKG_HASH:=ec43ca5bcfc62242accb46b7f121f6b684ee21ecd7d075059bf650ff9e37b82d
 PKG_BUILD_DEPENDS:=libpthread
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 
@@ -43,6 +43,8 @@ DEPENDS_install = +libacl
 DEPENDS_ls = +libacl +libcap
 DEPENDS_mv = +libacl
 DEPENDS_vdir = +libacl +libcap
+
+FILES_stdbuf := opt/lib/coreutils/libstdbuf.so
 
 define Package/coreutils/Default
   SECTION:=utils
@@ -108,6 +110,10 @@ define BuildPlugin
   define Package/$(1)/install
 	$(INSTALL_DIR) $$(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/$(2) $$(1)/opt/bin/
+	$(foreach f,$(FILES_$(2)),
+		$(INSTALL_DIR) $$(1)/$(dir $(f))
+		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/$(f) $$(1)/$(f)
+	)
   endef
 
   $$(eval $$(call BuildPackage,$(1)))
