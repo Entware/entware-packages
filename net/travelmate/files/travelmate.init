@@ -1,6 +1,6 @@
 #!/bin/sh /etc/rc.common
 
-START=35
+START=90
 USE_PROCD=1
 
 EXTRA_COMMANDS="status"
@@ -11,7 +11,7 @@ trm_script="/usr/bin/travelmate.sh"
 
 boot()
 {
-    ubus -t 30 wait_for network.interface 2>/dev/null
+    ubus -t 30 wait_for network.interface network.wireless 2>/dev/null
     rc_procd start_service
 }
 
@@ -43,14 +43,16 @@ status()
 
 service_triggers()
 {
-    local iface="$(uci -q get travelmate.global.trm_iface)"
-    local delay="$(uci -q get travelmate.global.trm_triggerdelay)"
+    local auto="$(uci -q get travelmate.global.trm_automatic)"
 
-    PROCD_RELOAD_DELAY=$((${delay:=2} * 1000))
-    for name in ${iface}
-    do
-        procd_add_interface_trigger "interface.*.down" "${name}" "${trm_init}" start
-    done
+    if [ "${auto}" = "0" ]
+    then
+        local iface="$(uci -q get travelmate.global.trm_iface)"
+        local delay="$(uci -q get travelmate.global.trm_triggerdelay)"
+
+        PROCD_RELOAD_DELAY=$((${delay:=2} * 1000))
+        procd_add_interface_trigger "interface.*.down" "${iface}" "${trm_init}" start
+    fi
     PROCD_RELOAD_DELAY=1000
     procd_add_config_trigger "config.change" "travelmate" "${trm_init}" start
 }
