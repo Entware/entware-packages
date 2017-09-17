@@ -14,7 +14,7 @@ PKG_LICENSE:=LGPL-2.1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNOME/vala/0.34/
-PKG_MD5SUM:=f9b4a0a10b76b56b0b6e914c506a6828
+PKG_HASH:=765e9c2b429a66db93247940f8588319b43f35c173d057bcae5717a97d765c41
 
 PKG_BUILD_DEPENDS:=glib2 glib2/host vala/host
 HOST_BUILD_DEPENDS:=glib2/host
@@ -50,7 +50,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) \
 		$(1)/opt/share/vala-0.34/vapi \
 		$(1)/opt/lib \
-		$(1)/opt/share/pkgconfig
+		$(1)/opt/lib/pkgconfig
 
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/share/vala-0.34/vapi/* \
@@ -62,14 +62,14 @@ define Build/InstallDev
 
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
-		$(1)/opt/share/pkgconfig
+		$(1)/opt/lib/pkgconfig
 endef
 
 define Package/vala/install
 	$(INSTALL_DIR) \
 		$(1)/opt/share/vala-0.34/vapi \
 		$(1)/opt/lib \
-		$(1)/opt/share/pkgconfig \
+		$(1)/opt/lib/pkgconfig \
 		$(1)/opt/bin
 
 	$(INSTALL_DATA) \
@@ -86,7 +86,7 @@ define Package/vala/install
 
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
-		$(1)/opt/share/pkgconfig
+		$(1)/opt/lib/pkgconfig
 endef
 
 $(eval $(call HostBuild))
