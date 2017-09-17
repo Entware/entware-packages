@@ -57,18 +57,18 @@ define perlmod/Configure
 	(cd $(if $(3),$(3),$(PKG_BUILD_DIR)); \
 	PERL_MM_USE_DEFAULT=1 \
 	$(2) \
-	$(PERL_CMD) -MConfig -e '$$$${tied %Config::Config}{cpprun}="$(TARGET_CROSS)cpp -E"; do "Makefile.PL"' \
+	$(PERL_CMD) -MConfig -e '$$$${tied %Config::Config}{cpprun}="$(GNU_TARGET_NAME)-cpp -E"; do "Makefile.PL"' \
 		$(1) \
 		AR=ar \
-		CC=$(TARGET_CROSS)gcc \
+		CC=$(GNU_TARGET_NAME)-gcc \
 		CCFLAGS="$(MOD_CFLAGS_PERL)" \
 		CCCDLFLAGS=-fPIC \
 		CCDLFLAGS=-Wl,-E \
 		DLEXT=so \
 		DLSRC=dl_dlopen.xs \
 		EXE_EXT=" " \
-		FULL_AR=$(TARGET_CROSS)ar \
-		LD=$(TARGET_CROSS)gcc \
+		FULL_AR=$(GNU_TARGET_NAME)-ar \
+		LD=$(GNU_TARGET_NAME)-gcc \
 		LDDLFLAGS="-shared -rdynamic $(TARGET_LDFLAGS)"  \
 		LDFLAGS="$(EXTRA_LIBDIRS:%=-L%) $(EXTRA_LIBS:%=-l%) " \
 		LIBC=" " \
