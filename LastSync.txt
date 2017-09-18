@@ -1,8 +1,8 @@
-commit 63d1cbd899ef91625831e8a8854faaea68063ea0
-Merge: f587c94 2f7782e
-Author: Hannu Nyman <hannu.nyman@iki.fi>
-Date:   Fri May 26 18:22:59 2017 +0300
+commit 5edc198f37e4b05a27644384001196f87ff6661f
+Merge: 3c6b5c77 73dbc6cf
+Author: champtar <champetier.etienne@gmail.com>
+Date:   Fri Sep 15 10:29:48 2017 -0700
 
-    Merge pull request #4389 from sartura/netopeer2-openssl-dependency
+    Merge pull request #4630 from marcin1j/pr/20170725-htpdate-init-scripts
     
-    netopeer2-keystored: add new dependency
+    htpdate: modify init scripts to use procd and uci configuration
