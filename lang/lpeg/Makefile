@@ -9,13 +9,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lpeg
 PKG_VERSION:=0.12.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Dirk Chang <dirk@kooiot.com>
 PKG_LICENSE:=MIT
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.inf.puc-rio.br/~roberto/lpeg/
-PKG_MD5SUM:=fabb614eb46e370d4f6b8fd82d17ca7e
+PKG_HASH:=6aad270b91d1b1c6fd75f68e162329a04a644e50e917d55f46cc8384b7120004
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
@@ -38,7 +38,8 @@ define Build/Configure
 endef
 
 # add make variable overrides here
-MAKE_FLAGS +=
+MAKE_FLAGS += \
+	COPT="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -O2"
 
 define Package/lpeg/install
 	$(INSTALL_DIR) $(1)/usr/lib/lua
