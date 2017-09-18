@@ -51,7 +51,7 @@ GMPSRC=gmp-4.3.2
 define Download/gmp
   URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
   FILE:=$(GMPSRC).tar.bz2
-  MD5SUM:=dd60683d7057917e34630b4a787932e8
+  HASH:=936162c0312886c21581002b79932829aa048cfaf9937c6265aeaa14f1cd1775
 endef
 $(eval $(call Download,gmp))
 
@@ -60,7 +60,7 @@ MPCSRC=mpc-0.8.1
 define Download/mpc
   URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
   FILE:=$(MPCSRC).tar.gz
-  MD5SUM:=5b34aa804d514cc295414a963aedb6bf
+  HASH:=e664603757251fd8a352848276497a4c79b7f8b21fd8aedd5cc0598a38fee3e4
 endef
 $(eval $(call Download,mpc))
 
@@ -69,7 +69,7 @@ MPFRSRC=mpfr-2.4.2
 define Download/mpfr
   URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
   FILE:=$(MPFRSRC).tar.bz2
-  MD5SUM:=89e59fe665e2b3ad44a6789f40b059a0
+  HASH:=c7e75a08a8d49d2082e4caee1591a05d11b9d5627514e678f02d66a124bcf2ba
 endef
 $(eval $(call Download,mpfr))
 
