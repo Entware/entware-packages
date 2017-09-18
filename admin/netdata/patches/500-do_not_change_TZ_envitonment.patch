@@ -1,13 +1,13 @@
 --- a/src/main.c
 +++ b/src/main.c
-@@ -502,7 +502,9 @@
- 
-     // avoid flood calls to stat(/etc/localtime)
-     // http://stackoverflow.com/questions/4554271/how-to-avoid-excessive-stat-etc-localtime-calls-in-strftime-on-linux
--    setenv("TZ", ":/etc/localtime", 0);
-+
-+    // The best place to set environment variables is startup script
-+    // setenv("TZ", ":/etc/localtime", 0);
+@@ -514,8 +514,8 @@
  
      // set the path we need
      char path[1024 + 1], *p = getenv("PATH");
+-    if(!p) p = "/bin:/usr/bin";
+-    snprintfz(path, 1024, "%s:%s", p, "/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin");
++    if(!p) p = "/opt/bin:/opt/usr/bin:/bin:/usr/bin";
++    snprintfz(path, 1024, "%s:%s", p, "/opt/sbin:/opt/usr/sbin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin");
+     setenv("PATH", config_get(CONFIG_SECTION_PLUGINS, "PATH environment variable", path), 1);
+ 
+     // python options
