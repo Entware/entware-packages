@@ -13,6 +13,7 @@ PKG_VERSION:=3.0-rc1-20130909
 PKG_RELEASE:=3a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_MIRROR_HASH:=d2fa075d8bd026c41e0eb1a634ac2ad8115dee8abb070720e8e91fab51f86ee4
 PKG_SOURCE_URL:=https://github.com/diegonehab/luasocket.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
@@ -42,7 +43,7 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)/ \
 		LIBDIR="$(TARGET_LDFLAGS)" \
 		CC="$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -std=gnu99" \
-		LD="$(TARGET_CC) -shared $(TARGET_LDFLAGS)" \
+		LD="$(TARGET_CROSS)ld -shared" \
 		all
 endef
 
