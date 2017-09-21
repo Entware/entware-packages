@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
 PKG_VERSION:=1.4.14
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
 
@@ -157,7 +157,14 @@ define Package/mosquitto-ssl/conffiles
 /opt/etc/config/mosquitto
 endef
 
+TARGET_CFLAGS += -D_DEFAULT_SOURCE
+
 Package/mosquitto-nossl/conffiles = $(Package/mosquitto-ssl/conffiles)
+
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	mv $(PKG_BUILD_DIR)/libwebsockets.h $(PKG_BUILD_DIR)/src
+endef
 
 define Package/mosquitto/install/default
 	$(INSTALL_DIR) $(1)/opt/sbin
