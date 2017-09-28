@@ -14,7 +14,7 @@ PKG_RELEASE:=1
 PKG_LICENSE:=BSD-3-Clause
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/ellzey/libevhtp.git
+PKG_SOURCE_URL:=https://github.com/criticalstack/libevhtp.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=f70c920d4d8d4146ff662867f47c4b5854045b3c
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
