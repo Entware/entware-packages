@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.11.2
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 USERID:=bind=57:bind=57
 
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>
