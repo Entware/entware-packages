@@ -163,7 +163,6 @@ Package/mosquitto-nossl/conffiles = $(Package/mosquitto-ssl/conffiles)
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
-	mv $(PKG_BUILD_DIR)/libwebsockets.h $(PKG_BUILD_DIR)/src
 endef
 
 define Package/mosquitto/install/default
