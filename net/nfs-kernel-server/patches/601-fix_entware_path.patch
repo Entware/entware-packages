@@ -1,0 +1,29 @@
+--- a/utils/statd/statd.c
++++ b/utils/statd/statd.c
+@@ -161,7 +161,7 @@
+ 	fprintf(stderr,"      -H                   Specify a high-availability callout program.\n");
+ }
+ 
+-static const char *pidfile = "/var/run/rpc.statd.pid";
++static const char *pidfile = "/opt/var/run/rpc.statd.pid";
+ 
+ int pidfd = -1;
+ static void create_pidfile(void)
+@@ -196,7 +196,7 @@
+ 	char *av[6];
+ 	int ac = 0;
+ 
+-	av[ac++] = "/usr/sbin/sm-notify";
++	av[ac++] = "/opt/sbin/sm-notify";
+ 	if (run_mode & MODE_NODAEMON)
+ 		av[ac++] = "-d";
+ 	if (outport) {
+@@ -383,7 +383,7 @@
+ 	}
+ 
+ 	if (run_mode & MODE_NOTIFY_ONLY) {
+-		fprintf(stderr, "%s: -N deprecated, consider using /usr/sbin/sm-notify directly\n",
++		fprintf(stderr, "%s: -N deprecated, consider using /opt/sbin/sm-notify directly\n",
+ 			name_p);
+ 		run_sm_notify(out_port);
+ 	}
