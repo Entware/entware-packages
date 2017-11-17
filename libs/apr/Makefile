@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apr
 PKG_VERSION:=1.6.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/apr/
@@ -50,7 +50,8 @@ CONFIGURE_VARS += \
 	apr_cv_mutex_robust_shared=no \
 	apr_cv_tcp_nodelay_with_cork=yes \
 	apr_cv_use_lfs64=yes \
-	LDFLAGS="$$$$LDFLAGS -lpthread" \
+	apr_cv_pthreads_lib="-lpthread" \
+	apr_cv_mutex_recursive=yes \
 
 ifneq ($(CONFIG_ARCH_64BIT),y)
 CONFIGURE_VARS += \
