@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apache
-PKG_VERSION:=2.4.27
+PKG_VERSION:=2.4.28
 PKG_RELEASE:=1
 PKG_SOURCE_NAME:=httpd
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
@@ -16,11 +16,22 @@ PKG_LICENSE:=Apache License
 
 PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/httpd/
-PKG_HASH:=71fcc128238a690515bd8174d5330a5309161ef314a326ae45c7c15ed139c13a
+PKG_HASH:=c1197a3a62a4ab5c584ab89b249af38cf28b4adee9c0106b62999fd29f920666
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_NAME)-$(PKG_VERSION)
 
 PKG_INSTALL:=1
+
+PKG_CONFIG_DEPENDS := \
+	CONFIG_APACHE_HTTP2
+
+ADDITIONAL_MODULES:=
+ifeq ($(CONFIG_APACHE_HTTP2),y)
+  ADDITIONAL_MODULES += --enable-http2
+endif
+ifneq ($(CONFIG_APACHE_HTTP2),y)
+  ADDITIONAL_MODULES += --enable-http2=no
+endif
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -38,9 +49,13 @@ define Package/apache/Default/description
  Server, it has grown to be the most popular web server on the Internet.
 endef
 
+define Package/apache/config
+  source "$(SOURCE)/Config.in"
+endef
+
 define Package/apache
 $(call Package/apache/Default)
-  DEPENDS:=+libapr +libaprutil +libpcre +libopenssl +unixodbc +zlib
+  DEPENDS:=+libapr +libaprutil +libpcre +libopenssl +unixodbc +zlib +APACHE_HTTP2:libnghttp2
 endef
 
 define Package/apache/description
@@ -87,6 +102,7 @@ define Build/Configure
 		--with-apr="$(STAGING_DIR)/opt/bin/apr-1-config" \
 		--with-apr-util="$(STAGING_DIR)/opt/bin/apu-1-config" \
 		--with-pcre="$(STAGING_DIR)/opt/bin/pcre-config" \
+		$(ADDITIONAL_MODULES) \
 		--enable-http \
 		--with-crypto \
 		--with-sqlit3="$(STAGING_DIR)/opt" \
@@ -100,7 +116,6 @@ define Build/Configure
 		--enable-mime-magic \
 		--without-suexec-bin \
 		--sysconfdir=/opt/etc/apache \
-		--enable-modules=all \
 		ap_cv_void_ptr_lt_long=no \
 		logfiledir="/opt/var/log" \
 		runtimedir="/opt/var/run" \
