@@ -25,7 +25,7 @@ PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
-include $(INCLUDE_DIR)/uclibc++.mk
+#include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 
@@ -66,7 +66,7 @@ define Package/v4l-utils
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS := +libv4l $(CXX_DEPENDS) $(ICONV_DEPENDS)
+  DEPENDS := +libv4l +libstdcpp $(ICONV_DEPENDS)
 endef
 
 define Package/v4l-utils/description
