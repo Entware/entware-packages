@@ -1,0 +1,46 @@
+--- a/contrib/i2pd.conf
++++ b/contrib/i2pd.conf
+@@ -7,11 +7,11 @@
+ ## by removing the "#" symbol.
+ 
+ ## Tunnels config file
+-## Default: ~/.i2pd/tunnels.conf or /var/lib/i2pd/tunnels.conf
+-# tunconf = /var/lib/i2pd/tunnels.conf
++## Default: ~/.i2pd/tunnels.conf or /opt/var/lib/i2pd/tunnels.conf
++tunconf = /opt/etc/i2pd_tunnels.conf
+ 
+ ## Where to write pidfile (don't write by default)
+-# pidfile = /var/run/i2pd.pid
++pidfile = /opt/var/run/i2pd.pid
+ 
+ ## Logging configuration section
+ ## By default logs go to stdout with level 'info' and higher
+@@ -20,20 +20,20 @@
+ ##  * stdout - print log entries to stdout
+ ##  * file - log entries to a file
+ ##  * syslog - use syslog, see man 3 syslog
+-# log = file
++log = file
+ ## Path to logfile (default - autodetect)
+-# logfile = /var/log/i2pd.log
++logfile = /opt/var/log/i2pd.log
+ ## Log messages above this level (debug, *info, warn, error)
+-# loglevel = info
++loglevel = warn
+ 
+ ## Path to storage of i2pd data (RI, keys, peer profiles, ...)
+-## Default: ~/.i2pd or /var/lib/i2pd
+-# datadir = /var/lib/i2pd
++## Default: ~/.i2pd or /opt/var/lib/i2pd
++datadir = /opt/var/lib/i2pd
+ 
+ ## Daemon mode. Router will go to background after start
+-# daemon = true
+-## Run as a service. Router will use system folders like ‘/var/lib/i2pd’
+-# service = true
++daemon = true
++## Run as a service. Router will use system folders like ‘/opt/var/lib/i2pd’
++service = true
+ 
+ ## Specify a family, router belongs to (default - none)
+ # family =
