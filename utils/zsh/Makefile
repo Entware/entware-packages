@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zsh
-PKG_VERSION:=5.2
+PKG_VERSION:=5.4.2
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/zsh
-PKG_HASH:=f17916320ffaa844bbd7ce48ceeb5945fc5f3eff64b149b4229bbfbdf3795a9d
+PKG_HASH:=957bcdb2c57f64c02f673693ea5a7518ef24b6557aeb3a4ce222cefa6d74acc9
 PKG_MAINTAINER:=Vadim A. Misbakh-Soloviov <openwrt-zsh@mva.name>
 PKG_LICENSE:=ZSH
 
@@ -26,7 +26,7 @@ define Package/zsh
   CATEGORY:=Utilities
   SUBMENU:=Shells
   TITLE:=The Z shell
-  DEPENDS:=+libncurses +libncursesw +libpcre +librt
+  DEPENDS:=+libncurses +libncursesw +libpcre +librt +libcap
   URL:=http://www.zsh.org/
 endef
 
@@ -44,11 +44,23 @@ define Build/Configure
 		--bindir=/opt/bin \
 		--enable-etcdir=/opt/etc \
 		--disable-gdbm \
+		--enable-dynamic \
 		--enable-pcre \
+		--enable-cap \
 		--enable-multibyte \
+		--enable-unicode9 \
+		--enable-runhelpdir=/opt/share/zsh/$(PKG_VERSION)/help \
+		--enable-fndir=/opt/share/zsh/$(PKG_VERSION)/functions \
+		--enable-site-fndir=/opt/share/zsh/site-functions \
 		--enable-function-subdirs \
 		--with-tcsetpgrp \
 		--with-term-lib="ncursesw", \
+		zsh_cv_shared_environ=yes \
+		zsh_cv_sys_dynamic_clash_ok=yes\
+		zsh_cv_sys_dynamic_execsyms=yes \
+		zsh_cv_sys_dynamic_rtld_global=yes \
+		zsh_cv_sys_dynamic_strip_exe=yes \
+		zsh_cv_sys_dynamic_strip_lib=yes \
 		zsh_cv_sys_nis=no \
 		zsh_cv_sys_nis_plus=no \
 	)
@@ -69,9 +81,13 @@ endef
 
 define Package/zsh/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/zsh $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)//opt/lib/zsh/$(PKG_VERSION)
 	$(INSTALL_DIR) $(1)/opt/share/zsh/$(PKG_VERSION)
+
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/zsh $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/* $(1)/opt/lib/zsh/$(PKG_VERSION)/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/zsh/$(PKG_VERSION)/* $(1)/opt/share/zsh/$(PKG_VERSION)/
 endef
+
 
 $(eval $(call BuildPackage,zsh))
