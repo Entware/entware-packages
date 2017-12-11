@@ -37,20 +37,20 @@ define Package/libhiredis/description
 	Hiredis is a minimalistic C client library for the Redis database.
 endef
 
-MAKE_FLAGS += ARCH="" DEBUG="" PREFIX="/usr"
+MAKE_FLAGS += ARCH="" DEBUG="" PREFIX="/opt"
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/hiredis/adapters
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/hiredis/adapters/* $(1)/usr/include/hiredis/adapters
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/hiredis/*.h $(1)/usr/include/hiredis/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libhiredis.{so*,a} $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/hiredis.pc $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/include/hiredis/adapters
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/hiredis/adapters/* $(1)/opt/include/hiredis/adapters
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/hiredis/*.h $(1)/opt/include/hiredis/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libhiredis.{so*,a} $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/hiredis.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libhiredis/install
-	$(INSTALL_DIR) $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libhiredis.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libhiredis.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libhiredis))
