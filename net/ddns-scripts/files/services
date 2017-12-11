@@ -60,7 +60,7 @@
 
 "ddo.jp"		"http://free.ddo.jp/dnsupdate.php?dn=[DOMAIN]&pw=[PASSWORD]&ip=[IP]"
 
-"desec.io"		"http://[USERNAME]:[PASSWORD]@update.dedyn.io/?hostname=[DOMAIN]&myipv4=[IP]"	"good|nochg"
+"desec.io"		"http://update.dedyn.io/?username=[USERNAME]&password=[PASSWORD]&hostname=[DOMAIN]&myipv4=[IP]"	"good|nochg"
 
 "dhis.org"		"http://[USERNAME]:[PASSWORD]@is.dhis.org/"
 
@@ -84,7 +84,7 @@
 
 "dtdns.com"		"http://www.dtdns.com/api/autodns.cfm?id=[DOMAIN]&pw=[PASSWORD]&ip=[IP]"
 
-"duckdns.org"		"http://www.duckdns.org/update?domains=[USERNAME]&token=[PASSWORD]&ip=[IP]"	"OK"
+"duckdns.org"		"http://www.duckdns.org/update?domains=[DOMAIN]&token=[PASSWORD]&ip=[IP]"	"OK"
 
 "duiadns.net"		"http://ip.duiadns.net/dynamic.duia?host=[DOMAIN]&password=[PASSWORD]&ip4=[IP]"
 
@@ -103,7 +103,7 @@
 
 "dynu.com"		"http://api.dynu.com/nic/update?hostname=[DOMAIN]&myip=[IP]&username=[USERNAME]&password=[PASSWORD]"
 
-"dynv6.com"		"http://dynv6.com/api/update?hostname=[DOMAIN]&token=[PASSWORD]&ipv4=[IP]"	"updated"
+"dynv6.com"		"http://dynv6.com/api/update?hostname=[DOMAIN]&token=[PASSWORD]&ipv4=[IP]"	"updated|unchanged"
 
 "easydns.com"		"http://[USERNAME]:[PASSWORD]@api.cp.easydns.com/dyn/generic.php?hostname=[DOMAIN]&myip=[IP]"	"NOERROR"
 
