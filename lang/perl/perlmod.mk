@@ -1,7 +1,7 @@
 # This makefile simplifies perl module builds.
 #
 
-PERL_VERSION:=5.24
+PERL_VERSION:=5.26
 
 # Build environment
 HOST_PERL_PREFIX:=$(STAGING_DIR_HOSTPKG)/usr
@@ -69,7 +69,7 @@ define perlmod/Configure
 		EXE_EXT=" " \
 		FULL_AR=$(GNU_TARGET_NAME)-ar \
 		LD=$(GNU_TARGET_NAME)-gcc \
-		LDDLFLAGS="-shared -rdynamic $(TARGET_LDFLAGS)"  \
+		LDDLFLAGS="-shared $(TARGET_LDFLAGS)"  \
 		LDFLAGS="$(EXTRA_LIBDIRS:%=-L%) $(EXTRA_LIBS:%=-l%) " \
 		LIBC=" " \
 		LIB_EXT=.a \

@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl
-PKG_VERSION:=5.24.1
+PKG_VERSION:=5.26.1
 PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=\
@@ -20,7 +20,7 @@ PKG_SOURCE_URL:=\
 		https://mirrors.sonic.net/cpan/src/5.0 \
 		https://www.cpan.org/src/5.0
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_HASH:=03a77bac4505c270f1890ece75afc7d4b555090b41aa41ea478747e23b2afb3f
+PKG_HASH:=fe8208133e73e47afc3251c08d2c21c5a60160165a8ab8b669c43a420e4ec680
 
 PKG_LICENSE:=GPL-1.0+ Artistic-1.0-Perl
 PKG_LICENSE_FILES:=Copying Artistic README
@@ -97,7 +97,8 @@ define Build/Configure
 	                                -Dowrt:gccversion=$(CONFIG_GCC_VERSION) \
 	                                -Dowrt:target_cross='$(TARGET_CROSS)' \
 	                                -Dowrt:cflags='$(TARGET_CFLAGS_PERL) $(TARGET_CPPFLAGS_PERL)' \
-	                                -Dowrt:ldflags='-rdynamic $(TARGET_LDFLAGS)' \
+	                                -Dowrt:ccdlflags='-Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)' \
+	                                -Dowrt:ldflags='-L$(STAGING_DIR)/opt/lib -L$(STAGING_DIR)/lib' \
 	                                -Dowrt:libc=$(subst uClibc,uclibc,$(CONFIG_LIBC)) \
 	                                -Dowrt:ipv6='define' \
 	                                -Dowrt:threads=$(if $(CONFIG_PERL_THREADS),yes,no) \
