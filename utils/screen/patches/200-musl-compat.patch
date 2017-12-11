@@ -1,6 +1,6 @@
---- a/configure.orig	2014-11-29 15:28:39.242495795 +0300
-+++ b/configure	2014-11-29 15:29:30.846451320 +0300
-@@ -4155,46 +4155,6 @@
+--- a/configure
++++ b/configure
+@@ -4155,44 +4155,6 @@ fi
  rm -f conftest*
  
  
@@ -42,8 +42,16 @@
 -else
 -  LIBS="$oldlibs"
 -fi
--rm -f core conftest.err conftest.$ac_objext \
--    conftest$ac_exeext conftest.$ac_ext
- for ac_header in string.h strings.h
- do :
-   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ rm -f core conftest.err conftest.$ac_objext \
+     conftest$ac_exeext conftest.$ac_ext
+ for ac_header in stropts.h string.h strings.h
+--- a/utmp.c
++++ b/utmp.c
+@@ -33,6 +33,7 @@
+ #include "config.h"
+ #include "screen.h"
+ #include "extern.h"
++#include "os.h"
+ 
+ #ifdef HAVE_UTEMPTER
+ #include <utempter.h>
