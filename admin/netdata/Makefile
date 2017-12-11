@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.7.0
+PKG_VERSION:=1.8.0
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=GPL-3.0
@@ -16,7 +16,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/firehol/netdata/releases/download/v$(PKG_VERSION)
-PKG_HASH:=7fa23ceaccf6548fba165cd4839ce694784b2fcf7f90de0a0162b9c529805fc0
+PKG_HASH:=1624a3b02f07dc8881b8edd5899049d4d3d53e485424ffb2fb65a322e2ff82c3
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
@@ -36,6 +36,9 @@ define Package/netdata/description
   monitoring for Linux systems, applications and SNMP devices over the web.
 endef
 
+TARGET_CFLAGS += -ffunction-sections -fdata-sections
+TARGET_LDFLAGS += -Wl,--gc-sections
+
 CONFIGURE_ARGS += --with-zlib --with-math --disable-x86-sse --disable-lto
 
 define Package/netdata/conffiles
@@ -43,10 +46,10 @@ define Package/netdata/conffiles
 endef
 
 define Package/netdata/install
-	$(INSTALL_DIR) $(1)/opt/etc/netdata
+	mkdir -p $(1)/opt/etc/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/netdata $(1)/opt/etc
 	$(CP) ./files/netdata.conf $(1)/opt/etc/netdata
-	$(INSTALL_DIR) $(1)/opt/share/netdata
+	mkdir -p $(1)/opt/share/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/netdata $(1)/opt/share
 	rm -rf $(1)/opt/share/netdata/web/images
 	rm -rf $(1)/opt/share/netdata/web/old
@@ -55,15 +58,13 @@ define Package/netdata/install
 	rm $(1)/opt/share/netdata/web/fonts/*.ttf
 	rm $(1)/opt/share/netdata/web/fonts/*.woff
 	rm $(1)/opt/share/netdata/web/fonts/*.otf
-	$(INSTALL_DIR) $(1)/opt/lib/netdata
+	mkdir -p $(1)/opt/lib/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/netdata $(1)/opt/lib
 	rm $(1)/opt/lib/netdata/python.d/python-modules-installer.sh
-	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml2
-	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml3
 	chmod 4755 $(1)/opt/lib/netdata/plugins.d/apps.plugin
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	mkdir -p $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S60netdata $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/sbin
+	mkdir -p $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
 endef
 
