@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minidlna
-PKG_VERSION:=1.2.0
-PKG_RELEASE:=1
+PKG_VERSION:=1.2.1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=@SF/minidlna
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=8d34436580c4c44be25976d5e46bc5b71af69bf441c4492774eac001164c4433
+PKG_HASH:=67388ba23ab0c7033557a32084804f796aa2a796db7bb2b770fb76ac2a742eec
 
 PKG_LICENSE:=GPL-2.0 BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING LICENCE.miniupnpd
@@ -77,8 +77,6 @@ CONFIGURE_ARGS +=\
 	--with-db-path="/opt/var/minidlna" \
 	--with-log-path="/opt/var/minidlna" \
 	--enable-thumbnail \
-	--enable-tivo="no"
-
 
 define Package/minidlna/install
 	$(INSTALL_DIR) $(1)/opt/bin

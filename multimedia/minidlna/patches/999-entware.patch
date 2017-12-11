@@ -1,6 +1,6 @@
 diff -auNp a/albumart.c b/albumart.c
---- a/albumart.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/albumart.c	2017-06-29 12:55:01.151307000 +0300
+--- a/albumart.c	2017-08-24 20:28:25.000000000 +0300
++++ b/albumart.c	2017-10-13 16:52:35.469749817 +0300
 @@ -31,6 +31,9 @@
  #include <errno.h>
  
@@ -56,7 +56,7 @@ diff -auNp a/albumart.c b/albumart.c
  	cache_file = image_save_to_jpeg_file(imdst, cache_file);
  	image_free(imdst);
  	
-@@ -170,6 +189,7 @@ check_embedded_art(const char *path, uin
+@@ -173,6 +192,7 @@ check_embedded_art(const char *path, uin
  	static unsigned int last_hash = 0;
  	static int last_success = 0;
  	unsigned int hash;
@@ -64,7 +64,7 @@ diff -auNp a/albumart.c b/albumart.c
  
  	if( !image_data || !image_size || !path )
  	{
-@@ -204,6 +224,15 @@ check_embedded_art(const char *path, uin
+@@ -207,6 +227,15 @@ check_embedded_art(const char *path, uin
  	}
  	last_hash = hash;
  
@@ -80,7 +80,7 @@ diff -auNp a/albumart.c b/albumart.c
  	imsrc = image_new_from_jpeg(NULL, 0, image_data, image_size, 1, ROTATE_NONE);
  	if( !imsrc )
  	{
-@@ -215,7 +244,7 @@ check_embedded_art(const char *path, uin
+@@ -218,7 +247,7 @@ check_embedded_art(const char *path, uin
  
  	if( width > 160 || height > 160 )
  	{
@@ -89,7 +89,7 @@ diff -auNp a/albumart.c b/albumart.c
  	}
  	else if( width > 0 && height > 0 )
  	{
-@@ -271,6 +300,9 @@ check_for_album_file(const char *path)
+@@ -274,6 +303,9 @@ check_for_album_file(const char *path)
  	const char *dir;
  	struct stat st;
  	int ret;
@@ -99,7 +99,7 @@ diff -auNp a/albumart.c b/albumart.c
  
  	if( stat(path, &st) != 0 )
  		return NULL;
-@@ -328,14 +360,24 @@ existing_file:
+@@ -331,14 +363,24 @@ existing_file:
  				return art_file;
  			}
  			free(art_file);
@@ -125,7 +125,7 @@ diff -auNp a/albumart.c b/albumart.c
  			else
  				art_file = strdup(file);
  			image_free(imsrc);
-@@ -345,6 +387,50 @@ found_file:
+@@ -348,6 +390,50 @@ found_file:
  	return NULL;
  }
  
@@ -176,7 +176,7 @@ diff -auNp a/albumart.c b/albumart.c
  int64_t
  find_album_art(const char *path, uint8_t *image_data, int image_size)
  {
-@@ -353,6 +439,18 @@ find_album_art(const char *path, uint8_t
+@@ -356,6 +442,18 @@ find_album_art(const char *path, uint8_t
  
  	if( (image_size && (album_art = check_embedded_art(path, image_data, image_size))) ||
  	    (album_art = check_for_album_file(path)) )
@@ -196,8 +196,8 @@ diff -auNp a/albumart.c b/albumart.c
  		ret = sql_get_int_field(db, "SELECT ID from ALBUM_ART where PATH = '%q'", album_art);
  		if( !ret )
 diff -auNp a/clients.c b/clients.c
---- a/clients.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/clients.c	2017-06-29 12:55:01.151307000 +0300
+--- a/clients.c	2017-08-24 20:28:25.000000000 +0300
++++ b/clients.c	2017-10-13 16:52:35.469749817 +0300
 @@ -15,6 +15,8 @@
   * You should have received a copy of the GNU General Public License
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
@@ -208,8 +208,8 @@ diff -auNp a/clients.c b/clients.c
  #include <string.h>
  #include <time.h>
 diff -auNp a/configure.ac b/configure.ac
---- a/configure.ac	2017-06-29 15:28:16.551131271 +0300
-+++ b/configure.ac	2017-06-29 13:29:14.061635477 +0300
+--- a/configure.ac	2017-10-13 16:53:33.791279443 +0300
++++ b/configure.ac	2017-10-13 16:52:35.469749817 +0300
 @@ -405,6 +405,11 @@ done
  test x"$ac_cv_lib_jpeg_jpeg_set_defaults" = x"yes" || AC_MSG_ERROR([Could not find libexif])
  AC_SUBST(LIBEXIF_LIBS)
@@ -259,8 +259,8 @@ diff -auNp a/configure.ac b/configure.ac
  case "$target_os" in
  	darwin*)
 diff -auNp a/getifaddr.c b/getifaddr.c
---- a/getifaddr.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/getifaddr.c	2017-06-29 12:55:01.151307000 +0300
+--- a/getifaddr.c	2017-08-24 20:28:25.000000000 +0300
++++ b/getifaddr.c	2017-10-13 16:52:35.469749817 +0300
 @@ -26,6 +26,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -279,8 +279,8 @@ diff -auNp a/getifaddr.c b/getifaddr.c
  # include <ifaddrs.h>
  # ifdef __linux__
 diff -auNp a/icons.c b/icons.c
---- a/icons.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/icons.c	2017-06-29 12:55:01.151307000 +0300
+--- a/icons.c	2017-08-24 20:28:25.000000000 +0300
++++ b/icons.c	2017-10-13 16:52:35.469749817 +0300
 @@ -18,6 +18,8 @@
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -303,7 +303,7 @@ diff -auNp a/icons.c b/icons.c
 +};
 diff -auNp a/icons.h b/icons.h
 --- a/icons.h	1970-01-01 03:00:00.000000000 +0300
-+++ b/icons.h	2017-06-29 12:55:01.151307000 +0300
++++ b/icons.h	2017-10-13 16:52:35.469749817 +0300
 @@ -0,0 +1,24 @@
 +#ifndef __ICONS_H__
 +#define __ICONG_H__
@@ -330,8 +330,8 @@ diff -auNp a/icons.h b/icons.h
 +
 +#endif
 diff -auNp a/image_utils.c b/image_utils.c
---- a/image_utils.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/image_utils.c	2017-06-29 12:55:01.151307000 +0300
+--- a/image_utils.c	2017-08-24 20:28:25.000000000 +0300
++++ b/image_utils.c	2017-10-13 16:52:35.473749922 +0300
 @@ -31,7 +31,15 @@
  #include <stdlib.h>
  #include <string.h>
@@ -832,8 +832,8 @@ diff -auNp a/image_utils.c b/image_utils.c
  image_upsize(image_s * pdest, image_s * psrc, int32_t width, int32_t height)
  {
 diff -auNp a/image_utils.h b/image_utils.h
---- a/image_utils.h	2017-05-17 23:55:17.000000000 +0300
-+++ b/image_utils.h	2017-06-29 12:55:01.151307000 +0300
+--- a/image_utils.h	2017-08-24 20:28:25.000000000 +0300
++++ b/image_utils.h	2017-10-13 16:52:35.473749922 +0300
 @@ -28,6 +28,16 @@
  #define ROTATE_180  0x2
  #define ROTATE_270  0x4
@@ -889,8 +889,8 @@ diff -auNp a/image_utils.h b/image_utils.h
 +image_bgcolor_composite (image_s *img, int32_t bgcolor1, int32_t bgcolor2);
 
 diff -auNp a/Makefile.am b/Makefile.am
---- a/Makefile.am	2017-06-29 15:28:16.551131271 +0300
-+++ b/Makefile.am	2017-06-29 15:27:00.626595352 +0300
+--- a/Makefile.am	2017-10-13 16:53:33.791279443 +0300
++++ b/Makefile.am	2017-10-13 16:52:35.473749922 +0300
 @@ -15,13 +15,14 @@
  # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  # USA.
@@ -927,9 +927,9 @@ diff -auNp a/Makefile.am b/Makefile.am
  minidlnad_LDFLAGS = @STATIC_LDFLAGS@
  
 diff -auNp a/metadata.c b/metadata.c
---- a/metadata.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/metadata.c	2017-06-29 15:46:00.219083281 +0300
-@@ -338,9 +338,53 @@ GetAudioMetadata(const char *path, char
+--- a/metadata.c	2017-08-24 20:28:25.000000000 +0300
++++ b/metadata.c	2017-10-13 16:52:35.473749922 +0300
+@@ -337,9 +337,53 @@ GetAudioMetadata(const char *path, const
  	}
  	else if( ends_with(path, ".ogg") || ends_with(path, ".oga") )
  	{
@@ -984,18 +984,18 @@ diff -auNp a/metadata.c b/metadata.c
  	else if( ends_with(path, ".pcm") )
  	{
  		strcpy(type, "pcm");
-@@ -492,8 +536,8 @@ libjpeg_error_handler(j_common_ptr cinfo
+@@ -493,8 +537,8 @@ libjpeg_error_handler(j_common_ptr cinfo
  	return;
  }
  
 -int64_t
--GetImageMetadata(const char *path, char *name)
+-GetImageMetadata(const char *path, const char *name)
 +static int64_t
 +_get_jpeg_metadata(const char *path, char *name)
  {
  	ExifData *ed;
  	ExifEntry *e = NULL;
-@@ -661,6 +705,298 @@ no_exifdata:
+@@ -663,6 +707,298 @@ no_exifdata:
  	return ret;
  }
  
@@ -1277,7 +1277,7 @@ diff -auNp a/metadata.c b/metadata.c
 +
 +
 +int64_t
-+GetImageMetadata(const char *path, char *name)
++GetImageMetadata(const char *path, const char *name)
 +{
 +	if (ends_with (path, ".jpg") || ends_with (path, ".jpeg"))
 +	{
@@ -1292,9 +1292,9 @@ diff -auNp a/metadata.c b/metadata.c
 +}
 +
  int64_t
- GetVideoMetadata(const char *path, char *name)
+ GetVideoMetadata(const char *path, const char *name)
  {
-@@ -843,6 +1179,8 @@ GetVideoMetadata(const char *path, char
+@@ -844,6 +1180,8 @@ GetVideoMetadata(const char *path, const
  			xasprintf(&m.mime, "video/x-matroska");
  		else if( strcmp(ctx->iformat->name, "flv") == 0 )
  			xasprintf(&m.mime, "video/x-flv");
@@ -1304,8 +1304,8 @@ diff -auNp a/metadata.c b/metadata.c
  			goto video_no_dlna;
  
 diff -auNp a/minidlna.c b/minidlna.c
---- a/minidlna.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/minidlna.c	2017-06-29 14:23:07.917694082 +0300
+--- a/minidlna.c	2017-08-24 20:28:25.000000000 +0300
++++ b/minidlna.c	2017-10-13 16:52:35.473749922 +0300
 @@ -46,6 +46,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1333,8 +1333,8 @@ diff -auNp a/minidlna.c b/minidlna.c
  
  #if SQLITE_VERSION_NUMBER < 3005001
  # warning "Your SQLite3 library appears to be too old!  Please use 3.5.1 or newer."
-@@ -255,6 +257,127 @@ getfriendlyname(char *buf, int len)
- #endif
+@@ -267,6 +269,127 @@ _get_dbtime(void)
+ 	return st.st_mtime;
  }
  
 +#define DESTROY_ICON(s,i) \
@@ -1461,7 +1461,7 @@ diff -auNp a/minidlna.c b/minidlna.c
  static int
  open_db(sqlite3 **sq3)
  {
-@@ -486,7 +609,7 @@ init(int argc, char **argv)
+@@ -499,7 +622,7 @@ init(int argc, char **argv)
  	int options_flag = 0;
  	struct sigaction sa;
  	const char * presurl = NULL;
@@ -1470,7 +1470,7 @@ diff -auNp a/minidlna.c b/minidlna.c
  	char mac_str[13];
  	char *string, *word;
  	char *path;
-@@ -525,6 +648,11 @@ init(int argc, char **argv)
+@@ -538,6 +661,11 @@ init(int argc, char **argv)
  	runtime_vars.max_connections = 50;
  	runtime_vars.root_container = NULL;
  	runtime_vars.ifaces[0] = NULL;
@@ -1482,7 +1482,7 @@ diff -auNp a/minidlna.c b/minidlna.c
  
  	/* read options file first since
  	 * command line arguments have final say */
-@@ -727,6 +855,9 @@ init(int argc, char **argv)
+@@ -740,6 +868,9 @@ init(int argc, char **argv)
  		case MAX_CONNECTIONS:
  			runtime_vars.max_connections = atoi(ary_options[i].value);
  			break;
@@ -1492,7 +1492,7 @@ diff -auNp a/minidlna.c b/minidlna.c
  		case MERGE_MEDIA_DIRS:
  			if (strtobool(ary_options[i].value))
  				SETFLAG(MERGE_MEDIA_DIRS_MASK);
-@@ -739,6 +870,58 @@ init(int argc, char **argv)
+@@ -752,6 +883,58 @@ init(int argc, char **argv)
  			if (strcasecmp(ary_options[i].value, "beacon") == 0)
  				CLEARFLAG(TIVO_BONJOUR_MASK);
  			break;
@@ -1552,8 +1552,8 @@ diff -auNp a/minidlna.c b/minidlna.c
  			DPRINTF(E_ERROR, L_GENERAL, "Unknown option in file %s\n",
  				optionsfile);
 diff -auNp a/minidlna.conf b/minidlna.conf
---- a/minidlna.conf	2017-05-17 23:55:17.000000000 +0300
-+++ b/minidlna.conf	2017-06-29 13:34:09.895771857 +0300
+--- a/minidlna.conf	2017-08-24 20:28:25.000000000 +0300
++++ b/minidlna.conf	2017-10-13 16:52:35.473749922 +0300
 @@ -86,5 +86,26 @@ model_number=1
  # note: many clients open several simultaneous connections while streaming
  #max_connections=50
@@ -1582,8 +1582,8 @@ diff -auNp a/minidlna.conf b/minidlna.conf
  # set this to yes to allow symlinks that point outside user-defined media_dirs.
  #wide_links=no
 diff -auNp a/minidlnatypes.h b/minidlnatypes.h
---- a/minidlnatypes.h	2017-05-17 23:55:17.000000000 +0300
-+++ b/minidlnatypes.h	2017-06-29 13:34:21.295854908 +0300
+--- a/minidlnatypes.h	2017-08-24 20:28:25.000000000 +0300
++++ b/minidlnatypes.h	2017-10-13 16:52:35.473749922 +0300
 @@ -51,6 +51,10 @@ struct runtime_vars_s {
  	int max_connections;	/* max number of simultaneous conenctions */
  	const char *root_container;	/* root ObjectID (instead of "0") */
@@ -1596,8 +1596,8 @@ diff -auNp a/minidlnatypes.h b/minidlnatypes.h
  
  struct string_s {
 diff -auNp a/options.c b/options.c
---- a/options.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/options.c	2017-06-29 12:55:01.155307000 +0300
+--- a/options.c	2017-08-24 20:28:25.000000000 +0300
++++ b/options.c	2017-10-13 16:52:35.473749922 +0300
 @@ -65,6 +65,19 @@ static const struct {
  	{ FORCE_SORT_CRITERIA, "force_sort_criteria" },
  	{ MAX_CONNECTIONS, "max_connections" },
@@ -1619,8 +1619,8 @@ diff -auNp a/options.c b/options.c
  	{ TIVO_DISCOVERY, "tivo_discovery" },
  };
 diff -auNp a/options.h b/options.h
---- a/options.h	2017-05-17 23:55:17.000000000 +0300
-+++ b/options.h	2017-06-29 12:55:01.155307000 +0300
+--- a/options.h	2017-08-24 20:28:25.000000000 +0300
++++ b/options.h	2017-10-13 16:52:35.473749922 +0300
 @@ -58,6 +58,19 @@ enum upnpconfigoptions {
  	FORCE_SORT_CRITERIA,		/* force sorting by a given sort criteria */
  	MAX_CONNECTIONS,		/* maximum number of simultaneous connections */
@@ -1642,8 +1642,8 @@ diff -auNp a/options.h b/options.h
  	TIVO_DISCOVERY,			/* TiVo discovery protocol: bonjour or beacon. Defaults to bonjour if supported */
  };
 diff -auNp a/process.c b/process.c
---- a/process.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/process.c	2017-06-29 12:55:01.155307000 +0300
+--- a/process.c	2017-08-24 20:28:25.000000000 +0300
++++ b/process.c	2017-10-13 16:52:35.473749922 +0300
 @@ -27,6 +27,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1703,8 +1703,8 @@ diff -auNp a/process.c b/process.c
  }
  
 diff -auNp a/scanner.c b/scanner.c
---- a/scanner.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/scanner.c	2017-06-29 15:26:52.838540541 +0300
+--- a/scanner.c	2017-08-24 20:28:25.000000000 +0300
++++ b/scanner.c	2017-10-13 16:52:35.473749922 +0300
 @@ -15,6 +15,8 @@
   * You should have received a copy of the GNU General Public License
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
@@ -1724,8 +1724,8 @@ diff -auNp a/scanner.c b/scanner.c
  #include <libintl.h>
  #endif
 diff -auNp a/testupnpdescgen.c b/testupnpdescgen.c
---- a/testupnpdescgen.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/testupnpdescgen.c	2017-06-29 12:55:01.155307000 +0300
+--- a/testupnpdescgen.c	2017-08-24 20:28:25.000000000 +0300
++++ b/testupnpdescgen.c	2017-10-13 16:52:35.473749922 +0300
 @@ -26,11 +26,12 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1741,8 +1741,8 @@ diff -auNp a/testupnpdescgen.c b/testupnpdescgen.c
  
  char uuidvalue[] = "uuid:12345678-0000-0000-0000-00000000abcd";
 diff -auNp a/upnpdescgen.c b/upnpdescgen.c
---- a/upnpdescgen.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/upnpdescgen.c	2017-06-29 12:55:01.155307000 +0300
+--- a/upnpdescgen.c	2017-08-24 20:28:25.000000000 +0300
++++ b/upnpdescgen.c	2017-10-13 16:52:35.473749922 +0300
 @@ -26,11 +26,12 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1758,8 +1758,8 @@ diff -auNp a/upnpdescgen.c b/upnpdescgen.c
  #include "upnpdescgen.h"
  #include "minidlnapath.h"
 diff -auNp a/upnpglobalvars.c b/upnpglobalvars.c
---- a/upnpglobalvars.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/upnpglobalvars.c	2017-06-29 14:42:39.886069689 +0300
+--- a/upnpglobalvars.c	2017-08-24 20:28:25.000000000 +0300
++++ b/upnpglobalvars.c	2017-10-13 16:52:35.473749922 +0300
 @@ -46,12 +46,13 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1793,35 +1793,35 @@ diff -auNp a/upnpglobalvars.c b/upnpglobalvars.c
  
  /* UPnP-A/V [DLNA] */
  sqlite3 *db;
-@@ -90,3 +91,4 @@ volatile short int quitting = 0;
+@@ -88,3 +89,4 @@ struct album_art_name_s * album_art_name
+ volatile short int quitting = 0;
  volatile uint32_t updateID = 0;
  const char *force_sort_criteria = NULL;
- short int rescan_db = 0;
 +int search_limit = -1;
 diff -auNp a/upnpglobalvars.h b/upnpglobalvars.h
---- a/upnpglobalvars.h	2017-05-17 23:55:17.000000000 +0300
-+++ b/upnpglobalvars.h	2017-06-29 14:42:48.510144316 +0300
-@@ -193,6 +193,10 @@ extern uint32_t runtime_flags;
+--- a/upnpglobalvars.h	2017-08-24 20:28:25.000000000 +0300
++++ b/upnpglobalvars.h	2017-10-13 16:52:35.473749922 +0300
+@@ -64,6 +64,10 @@
  #else
- #define TIVO_BONJOUR_MASK     0x0000
+ # define SERVER_NAME "MiniDLNA"
  #endif
 +#ifdef THUMBNAIL_CREATION
 +#define THUMB_MASK            0x0100
 +#define THUMB_FILMSTRIP       0x0200
 +#endif
  
- #define SETFLAG(mask)	runtime_flags |= mask
- #define GETFLAG(mask)	(runtime_flags & mask)
-@@ -234,5 +238,6 @@ extern volatile short int quitting;
+ #define USE_FORK 1
+ #define DB_VERSION 11
+@@ -234,5 +238,6 @@ extern struct album_art_name_s *album_ar
+ extern volatile short int quitting;
  extern volatile uint32_t updateID;
  extern const char *force_sort_criteria;
- extern short int rescan_db;
 +extern int search_limit;
  
  #endif
 diff -auNp a/upnphttp.c b/upnphttp.c
---- a/upnphttp.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/upnphttp.c	2017-06-29 12:55:01.155307000 +0300
+--- a/upnphttp.c	2017-08-24 20:28:25.000000000 +0300
++++ b/upnphttp.c	2017-10-13 16:52:35.473749922 +0300
 @@ -46,6 +46,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1990,9 +1990,9 @@ diff -auNp a/upnphttp.c b/upnphttp.c
  
  			ret = sprintf(buf, "%x\r\n", size);
 diff -auNp a/upnpsoap.c b/upnpsoap.c
---- a/upnpsoap.c	2017-06-29 15:28:16.551131271 +0300
-+++ b/upnpsoap.c	2017-06-29 13:58:26.502927184 +0300
-@@ -1134,7 +1134,11 @@ callback(void *args, int argc, char **ar
+--- a/upnpsoap.c	2017-08-24 20:28:25.000000000 +0300
++++ b/upnpsoap.c	2017-10-13 16:52:35.477750027 +0300
+@@ -1125,7 +1125,11 @@ callback(void *args, int argc, char **ar
  			if( *mime == 'v' && (passed_args->filter & FILTER_RES) && !(passed_args->flags & FLAG_MS_PFS) ) {
  				ret = strcatf(str, "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN\"&gt;"
  				                   "http://%s:%d/AlbumArt/%s-%s.jpg"
@@ -2002,9 +2002,9 @@ diff -auNp a/upnpsoap.c b/upnpsoap.c
  				                   "&lt;/res&gt;",
 +				                   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID,
  				                   lan_addr[passed_args->iface].str, runtime_vars.port, album_art, detailID);
- 			} else if( passed_args->filter & FILTER_UPNP_ALBUMARTURI ) {
- 				ret = strcatf(str, "&lt;upnp:albumArtURI");
-@@ -1833,6 +1837,15 @@ SearchContentDirectory(struct upnphttp *
+ 				if (passed_args->client == ESamsungSeriesCDE ) {
+ 					ret = strcatf(str, "&lt;res dlna:profileID=\"JPEG_SM\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\""
+@@ -1828,6 +1832,15 @@ SearchContentDirectory(struct upnphttp *
  			goto search_error;
  		}
  	}
@@ -2021,9 +2021,9 @@ diff -auNp a/upnpsoap.c b/upnpsoap.c
  	__SORT_LIMIT
  	orderBy = parse_sort_criteria(SortCriteria, &ret);
 diff -auNp a/utils.c b/utils.c
---- a/utils.c	2017-05-17 23:55:17.000000000 +0300
-+++ b/utils.c	2017-06-29 13:52:01.727789938 +0300
-@@ -343,8 +343,15 @@ mime_to_ext(const char * mime)
+--- a/utils.c	2017-08-24 20:28:25.000000000 +0300
++++ b/utils.c	2017-10-13 16:52:35.477750027 +0300
+@@ -345,8 +345,15 @@ mime_to_ext(const char * mime)
  				return "pcm";
  			else if( strcmp(mime+6, "3gpp") == 0 )
  				return "3gp";
@@ -2041,7 +2041,7 @@ diff -auNp a/utils.c b/utils.c
  			break;
  		case 'v':
  			if( strcmp(mime+6, "avi") == 0 )
-@@ -373,6 +380,8 @@ mime_to_ext(const char * mime)
+@@ -375,6 +382,8 @@ mime_to_ext(const char * mime)
  				return "3gp";
  			else if( strncmp(mime+6, "x-tivo-mpeg", 11) == 0 )
  				return "TiVo";
@@ -2050,7 +2050,7 @@ diff -auNp a/utils.c b/utils.c
  			break;
  		case 'i':
  			if( strcmp(mime+6, "jpeg") == 0 )
-@@ -397,6 +406,7 @@ is_video(const char * file)
+@@ -399,6 +408,7 @@ is_video(const char * file)
  		ends_with(file, ".m2t") || ends_with(file, ".mkv")   ||
  		ends_with(file, ".vob") || ends_with(file, ".ts")    ||
  		ends_with(file, ".flv") || ends_with(file, ".xvid")  ||
@@ -2058,7 +2058,7 @@ diff -auNp a/utils.c b/utils.c
  #ifdef TIVO_SUPPORT
  		ends_with(file, ".TiVo") ||
  #endif
-@@ -412,13 +422,18 @@ is_audio(const char * file)
+@@ -414,13 +424,18 @@ is_audio(const char * file)
  		ends_with(file, ".m4a") || ends_with(file, ".aac")  ||
  		ends_with(file, ".mp4") || ends_with(file, ".m4p")  ||
  		ends_with(file, ".wav") || ends_with(file, ".ogg")  ||
@@ -2078,10 +2078,11 @@ diff -auNp a/utils.c b/utils.c
  }
  
  int
-@@ -517,3 +532,16 @@ resolve_unknown_type(const char * path,
- 	return type;
- }
+@@ -531,3 +546,17 @@ valid_media_types(const char *path)
  
+ 	return ALL_MEDIA;
+ }
++
 +#ifdef THUMBNAIL_CREATION
 +int
 +rename_artcache_dir(const char * oldpath, const char * newpath)
@@ -2095,15 +2096,3 @@ diff -auNp a/utils.c b/utils.c
 +	return rename(old_artcache, new_artcache);
 +}
 +#endif
-diff -auNp a/utils.h b/utils.h
---- a/utils.h	2017-05-17 23:55:17.000000000 +0300
-+++ b/utils.h	2017-06-29 13:52:19.391925359 +0300
-@@ -96,5 +96,8 @@ const char *mime_to_ext(const char * mim
- /* Others */
- int make_dir(char * path, mode_t mode);
- unsigned int DJBHash(uint8_t *data, int len);
-+#ifdef THUMBNAIL_CREATION
-+int rename_artcache_dir(const char * oldpath, const char * newpath);
-+#endif
- 
- #endif
