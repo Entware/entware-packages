@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apache
 PKG_VERSION:=2.4.28
-PKG_RELEASE:=1
+PKG_RELEASE:=2a
 PKG_SOURCE_NAME:=httpd
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
 PKG_LICENSE:=Apache License
@@ -55,7 +55,7 @@ endef
 
 define Package/apache
 $(call Package/apache/Default)
-  DEPENDS:=+libapr +libaprutil +libpcre +libopenssl +unixodbc +zlib +APACHE_HTTP2:libnghttp2
+  DEPENDS:=+libapr +libaprutil +libpcre +libopenssl +unixodbc +zlib +APACHE_HTTP2:libnghttp2 +libxml2
 endef
 
 define Package/apache/description
@@ -92,6 +92,10 @@ $(call Package/apache/Default/description)
  .
  This package contains the icons from Apache.
 endef
+
+CONFIGURE_VARS += \
+	ac_cv_gcc__std_c89=no
+
 
 TARGET_CFLAGS += $(FPIC)
 TARGET_CPPFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
