@@ -1,10 +1,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnunet
-PKG_SOURCE_VERSION:=556ccd6d483b3678867c3829e6979c307df04450
-PKG_MIRROR_HASH:=5ecf15575eccc30135b2dc9871d88de0b32b593dc79cf5b0632a4fe2ffd711df
+PKG_SOURCE_VERSION:=a3dace8401c482f18bddbad37da108433c1b08c7
+PKG_MIRROR_HASH:=00ab1eaed040e8479a38b9bfa2a59f029d6273cb2e275b637d1c501200bbbfd9
 
-PKG_VERSION:=0.10.2-git-20170626-$(PKG_SOURCE_VERSION)
+PKG_VERSION:=0.10.2-git-20171108-$(PKG_SOURCE_VERSION)
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -30,7 +30,7 @@ CONFIGURE_ARGS+= \
 	$(if $(CONFIG_PACKAGE_$(PKG_NAME)-mysql),--with-mysql="$(STAGING_DIR)/usr",--without-mysql) \
 	$(if $(CONFIG_PACKAGE_$(PKG_NAME)-pgsql),--with-postgresql="$(STAGING_DIR)/usr/bin/pg_config",--without-postgresql) \
 	$(if $(CONFIG_PACKAGE_libsqlite3),--with-sqlite="$(STAGING_DIR)/usr",--without-sqlite) \
-	--disable-testing \
+	--enable-testing \
 	--disable-testruns \
 	--enable-experimental \
 	--with-extractor=$(STAGING_DIR)/usr \
