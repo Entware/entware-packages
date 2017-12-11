@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.6.5
+PKG_VERSION:=1.6.7
 PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
@@ -17,7 +17,7 @@ PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@hotmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.unbound.net/downloads
-PKG_HASH:=e297aa1229015f25bf24e4923cb1dadf1f29b84f82a353205006421f82cc104e
+PKG_HASH:=4e7bd43d827004c6d51bef73adf941798e4588bdb40de5e79d89034d69751c9f
 
 PKG_BUILD_DEPENDS:=libexpat
 PKG_BUILD_PARALLEL:=1
