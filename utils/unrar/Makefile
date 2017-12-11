@@ -22,14 +22,14 @@ PKG_LICENSE_FILES:=license.txt
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(BUILD_VARIANT)/unrar
 PKG_INSTALL:=1
 
-include $(INCLUDE_DIR)/uclibc++.mk
+#include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/unrar/Default
   TITLE:=UnRAR
   SUBMENU:=Compression
   URL:=http://www.rarlab.com/
-  DEPENDS:=$(CXX_DEPENDS) +libpthread
+  DEPENDS:=+libstdcpp +libpthread
 endef
 
 define Package/unrar
@@ -58,9 +58,11 @@ define Package/libunrar/description
   archives
 endef
 
+MAKE_FLAGS += \
+	LDFLAGS="$(TARGET_LDFLAGS) -lpthread"
+
 ifeq ($(BUILD_VARIANT),lib)
 define Build/Compile
-	$(call Build/Compile/Default,unrar)
 	$(call Build/Compile/Default,lib)
 endef
 
@@ -91,7 +93,7 @@ endef
 
 define Package/libunrar/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_BUILD_DIR)/libunrar.so $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/lib/libunrar.so $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,unrar))
