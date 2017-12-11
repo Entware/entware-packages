@@ -4,12 +4,11 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Upgraded from devel-20151125 rev. e2065bf0fc22ba33001ad503c01bba01648024a8
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xl2tpd
-PKG_VERSION:=1.3.8
+PKG_VERSION:=1.3.10
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 PKG_LICENSE:=GPL-2.0
@@ -18,8 +17,11 @@ PKG_LICENSE_FILES:=LICENSE
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/xelerance/xl2tpd.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=cec1ebe1523bf248f134647dd6030a333d93e19b
+PKG_SOURCE_VERSION:=090d1bef577cabdb3495d76acd814733fa66ef57
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_MIRROR_HASH:=bcddc10e28a74dec607e67cbbea97220f6bfd696b0378a7c30ec8a3e0ac86be1
+
+PKG_BUILD_DEPENDS:=libpcap
 
 PKG_INSTALL:=1
 
@@ -31,7 +33,7 @@ define Package/xl2tpd
   TITLE:=An L2TP (Layer 2 Tunneling Protocol) daemon
   URL:=http://www.xelerance.com/software/xl2tpd/
   SUBMENU:=VPN
-  DEPENDS:=+ppp
+  DEPENDS:=+ppp +resolveip
 endef
 
 define Package/xl2tpd/description
@@ -39,9 +41,6 @@ l2tpd is the open source implementation of the L2TP tunneling protocol (RFC2661)
 It does implement both LAC and LNS role in a L2TP networking architecture. The
 main goal of this protocol is to tunnel PPP frame trough an IP network.
 endef
-
-# Use optimization options from OpenWrt build system
-MAKE_FLAGS += OFLAGS=""
 
 ifneq (0,0)
   # debugging options from Makefile of xl2tpd package

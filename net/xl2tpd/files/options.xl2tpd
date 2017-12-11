@@ -1,12 +1,22 @@
-lcp-echo-interval 3
-lcp-echo-failure 8
-nodeflate
-noproxyarp
-mtu 1410
-mru 1410
-+chap
-nobsdcomp
+#
+noauth
+debug
+dump
+logfd 2
+logfile /opt/var/log/xl2tpd.log
+noccp
 novj
 novjccomp
+nopcomp
+noaccomp
+mtu 1400
+mru 1400
+require-mschap-v2
+lcp-echo-interval 20
+lcp-echo-failure 5
+connect-delay 5000
+nodefaultroute
+noipdefault
+proxyarp
 ip-up-script /opt/etc/ppp/ip-up.sh
 ip-down-script /opt/etc/ppp/ip-down.sh
