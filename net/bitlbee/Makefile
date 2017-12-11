@@ -52,7 +52,9 @@ CONFIGURE_ARGS = \
 	--prefix=$(CONFIGURE_PREFIX) \
 	--etcdir=/opt/etc/bitlbee \
 	--ssl=openssl \
-	--msn=0
+	--msn=0 \
+	--pidfile=/opt/var/run/bitlbee.pid \
+	--config=/opt/var/lib/bitlbee/
 
 define Build/Install
 	$(call Build/Install/Default,install install-etc)
