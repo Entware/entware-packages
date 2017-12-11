@@ -14,11 +14,11 @@ PKG_RELEASE:=1
 
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_MAINTAINER:=Luka Perkov <luka.perkov@sartura.hr>
+PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dist.libuv.org/dist/v$(PKG_VERSION)/
-PKG_MD5SUM:=29bdf5e00fb8e0c8392aac53a2cc380a
+PKG_HASH:=0f686994dcea6cb5cd3f50e35d5fdda07211b4b3586516df7c39bdbf19acb9a7
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 PKG_BUILD_PARALLEL:=1
