@@ -161,10 +161,6 @@ TARGET_CFLAGS += -D_DEFAULT_SOURCE
 
 Package/mosquitto-nossl/conffiles = $(Package/mosquitto-ssl/conffiles)
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-endef
-
 define Package/mosquitto/install/default
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mosquitto $(1)/opt/sbin/mosquitto
