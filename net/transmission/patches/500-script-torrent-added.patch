@@ -3,468 +3,518 @@ Thanks to @cfpp2p
 
 --- a/libtransmission/quark.c
 +++ b/libtransmission/quark.c
-@@ -300,6 +300,8 @@
-   { "scrape", 6 },
-   { "scrape-paused-torrents-enabled", 30 },
-   { "scrapeState", 11 },
-+  { "script-torrent-added-enabled", 28 },
-+  { "script-torrent-added-filename", 29 },
-   { "script-torrent-done-enabled", 27 },
-   { "script-torrent-done-filename", 28 },
-   { "seconds-active", 14 },
+@@ -299,6 +299,8 @@
+     { "scrape", 6 },
+     { "scrape-paused-torrents-enabled", 30 },
+     { "scrapeState", 11 },
++    { "script-torrent-added-enabled", 28 },
++    { "script-torrent-added-filename", 29 },
+     { "script-torrent-done-enabled", 27 },
+     { "script-torrent-done-filename", 28 },
+     { "seconds-active", 14 },
 --- a/libtransmission/quark.h
 +++ b/libtransmission/quark.h
-@@ -302,6 +302,8 @@
-   TR_KEY_scrape,
-   TR_KEY_scrape_paused_torrents_enabled,
-   TR_KEY_scrapeState,
-+  TR_KEY_script_torrent_added_enabled,
-+  TR_KEY_script_torrent_added_filename,
-   TR_KEY_script_torrent_done_enabled,
-   TR_KEY_script_torrent_done_filename,
-   TR_KEY_seconds_active,
+@@ -301,6 +301,8 @@
+     TR_KEY_scrape,
+     TR_KEY_scrape_paused_torrents_enabled,
+     TR_KEY_scrapeState,
++    TR_KEY_script_torrent_added_enabled,
++    TR_KEY_script_torrent_added_filename,
+     TR_KEY_script_torrent_done_enabled,
+     TR_KEY_script_torrent_done_filename,
+     TR_KEY_seconds_active,
 --- a/libtransmission/rpc-test.c
 +++ b/libtransmission/rpc-test.c
-@@ -133,6 +133,8 @@
-   check (tr_variantDictFind (args, TR_KEY_rename_partial_files) != NULL);
-   check (tr_variantDictFind (args, TR_KEY_rpc_version) != NULL);
-   check (tr_variantDictFind (args, TR_KEY_rpc_version_minimum) != NULL);
-+  check (tr_variantDictFind (args, TR_KEY_script_torrent_added_enabled) != NULL);
-+  check (tr_variantDictFind (args, TR_KEY_script_torrent_added_filename) != NULL);
-   check (tr_variantDictFind (args, TR_KEY_script_torrent_done_enabled) != NULL);
-   check (tr_variantDictFind (args, TR_KEY_script_torrent_done_filename) != NULL);
-   check (tr_variantDictFind (args, TR_KEY_seed_queue_enabled) != NULL);
+@@ -127,6 +127,8 @@
+     check_ptr(tr_variantDictFind(args, TR_KEY_rename_partial_files), !=, NULL);
+     check_ptr(tr_variantDictFind(args, TR_KEY_rpc_version), !=, NULL);
+     check_ptr(tr_variantDictFind(args, TR_KEY_rpc_version_minimum), !=, NULL);
++    check_ptr(tr_variantDictFind(args, TR_KEY_script_torrent_added_enabled), !=, NULL);
++    check_ptr(tr_variantDictFind(args, TR_KEY_script_torrent_added_filename), !=, NULL);
+     check_ptr(tr_variantDictFind(args, TR_KEY_script_torrent_done_enabled), !=, NULL);
+     check_ptr(tr_variantDictFind(args, TR_KEY_script_torrent_done_filename), !=, NULL);
+     check_ptr(tr_variantDictFind(args, TR_KEY_seed_queue_enabled), !=, NULL);
 --- a/libtransmission/session.c
 +++ b/libtransmission/session.c
-@@ -362,6 +362,8 @@
-   tr_variantDictAddInt  (d, TR_KEY_rpc_port,                        atoi (TR_DEFAULT_RPC_PORT_STR));
-   tr_variantDictAddStr  (d, TR_KEY_rpc_url,                         TR_DEFAULT_RPC_URL_STR);
-   tr_variantDictAddBool (d, TR_KEY_scrape_paused_torrents_enabled,  true);
-+  tr_variantDictAddStr  (d, TR_KEY_script_torrent_added_filename,    "");
-+  tr_variantDictAddBool (d, TR_KEY_script_torrent_added_enabled,     false);
-   tr_variantDictAddStr  (d, TR_KEY_script_torrent_done_filename,    "");
-   tr_variantDictAddBool (d, TR_KEY_script_torrent_done_enabled,     false);
-   tr_variantDictAddInt  (d, TR_KEY_seed_queue_size,                 10);
-@@ -434,6 +436,8 @@
-   tr_variantDictAddStr  (d, TR_KEY_rpc_whitelist,                tr_sessionGetRPCWhitelist (s));
-   tr_variantDictAddBool (d, TR_KEY_rpc_whitelist_enabled,        tr_sessionGetRPCWhitelistEnabled (s));
-   tr_variantDictAddBool (d, TR_KEY_scrape_paused_torrents_enabled, s->scrapePausedTorrents);
-+  tr_variantDictAddBool (d, TR_KEY_script_torrent_added_enabled,  tr_sessionIsTorrentAddedScriptEnabled (s));
-+  tr_variantDictAddStr  (d, TR_KEY_script_torrent_added_filename, tr_sessionGetTorrentAddedScript (s));
-   tr_variantDictAddBool (d, TR_KEY_script_torrent_done_enabled,  tr_sessionIsTorrentDoneScriptEnabled (s));
-   tr_variantDictAddStr  (d, TR_KEY_script_torrent_done_filename, tr_sessionGetTorrentDoneScript (s));
-   tr_variantDictAddInt  (d, TR_KEY_seed_queue_size,              tr_sessionGetQueueSize (s, TR_UP));
-@@ -930,6 +934,11 @@
-   ***  Scripts
-   **/
+@@ -374,6 +374,8 @@
+     tr_variantDictAddInt(d, TR_KEY_rpc_port, atoi(TR_DEFAULT_RPC_PORT_STR));
+     tr_variantDictAddStr(d, TR_KEY_rpc_url, TR_DEFAULT_RPC_URL_STR);
+     tr_variantDictAddBool(d, TR_KEY_scrape_paused_torrents_enabled, true);
++    tr_variantDictAddStr(d, TR_KEY_script_torrent_added_filename, "");
++    tr_variantDictAddBool(d, TR_KEY_script_torrent_added_enabled, false);
+     tr_variantDictAddStr(d, TR_KEY_script_torrent_done_filename, "");
+     tr_variantDictAddBool(d, TR_KEY_script_torrent_done_enabled, false);
+     tr_variantDictAddInt(d, TR_KEY_seed_queue_size, 10);
+@@ -445,6 +447,8 @@
+     tr_variantDictAddStr(d, TR_KEY_rpc_whitelist, tr_sessionGetRPCWhitelist(s));
+     tr_variantDictAddBool(d, TR_KEY_rpc_whitelist_enabled, tr_sessionGetRPCWhitelistEnabled(s));
+     tr_variantDictAddBool(d, TR_KEY_scrape_paused_torrents_enabled, s->scrapePausedTorrents);
++    tr_variantDictAddBool(d, TR_KEY_script_torrent_added_enabled,  tr_sessionIsTorrentAddedScriptEnabled (s));
++    tr_variantDictAddStr (d, TR_KEY_script_torrent_added_filename, tr_sessionGetTorrentAddedScript (s));
+     tr_variantDictAddBool(d, TR_KEY_script_torrent_done_enabled, tr_sessionIsTorrentDoneScriptEnabled(s));
+     tr_variantDictAddStr(d, TR_KEY_script_torrent_done_filename, tr_sessionGetTorrentDoneScript(s));
+     tr_variantDictAddInt(d, TR_KEY_seed_queue_size, tr_sessionGetQueueSize(s, TR_UP));
+@@ -1113,6 +1117,16 @@
+     ***  Scripts
+     **/
  
-+  if (tr_variantDictFindBool (settings, TR_KEY_script_torrent_added_enabled, &boolVal))
-+    tr_sessionSetTorrentAddedScriptEnabled (session, boolVal);
-+  if (tr_variantDictFindStr (settings, TR_KEY_script_torrent_added_filename, &str, NULL))
-+    tr_sessionSetTorrentAddedScript (session, str);
-+
-   if (tr_variantDictFindBool (settings, TR_KEY_script_torrent_done_enabled, &boolVal))
-     tr_sessionSetTorrentDoneScriptEnabled (session, boolVal);
-   if (tr_variantDictFindStr (settings, TR_KEY_script_torrent_done_filename, &str, NULL))
-@@ -1963,6 +1972,7 @@
-       tr_free (session->metainfoLookup);
-     }
-   tr_device_info_free (session->downloadDir);
-+  tr_free (session->torrentAddedScript);
-   tr_free (session->torrentDoneScript);
-   tr_free (session->configDir);
-   tr_free (session->resumeDir);
-@@ -2764,6 +2774,43 @@
-     }
- }
- 
-+bool
-+tr_sessionIsTorrentAddedScriptEnabled (const tr_session * session)
-+{
-+  assert (tr_isSession (session));
-+
-+  return session->isTorrentAddedScriptEnabled;
-+}
-+
-+void
-+tr_sessionSetTorrentAddedScriptEnabled (tr_session * session, bool isEnabled)
-+{
-+  assert (tr_isSession (session));
-+  assert (tr_isBool (isEnabled));
-+
-+  session->isTorrentAddedScriptEnabled = isEnabled;
-+}
-+
-+const char *
-+tr_sessionGetTorrentAddedScript (const tr_session * session)
-+{
-+  assert (tr_isSession (session));
-+
-+  return session->torrentAddedScript;
-+}
-+
-+void
-+tr_sessionSetTorrentAddedScript (tr_session * session, const char * scriptFilename)
-+{
-+  assert (tr_isSession (session));
-+
-+  if (session->torrentAddedScript != scriptFilename)
++    if (tr_variantDictFindBool(settings, TR_KEY_script_torrent_added_enabled, &boolVal))
 +    {
-+      tr_free (session->torrentAddedScript);
-+      session->torrentAddedScript = tr_strdup (scriptFilename);
++	tr_sessionSetTorrentAddedScriptEnabled(session, boolVal);
++    }
++
++    if (tr_variantDictFindStr(settings, TR_KEY_script_torrent_added_filename, &str, NULL))
++    {
++	tr_sessionSetTorrentAddedScript(session, str);
++    }
++
+     if (tr_variantDictFindBool(settings, TR_KEY_script_torrent_done_enabled, &boolVal))
+     {
+         tr_sessionSetTorrentDoneScriptEnabled(session, boolVal);
+@@ -2095,6 +2109,7 @@
+     }
+ 
+     tr_device_info_free(session->downloadDir);
++    tr_free(session->torrentAddedScript);
+     tr_free(session->torrentDoneScript);
+     tr_free(session->configDir);
+     tr_free(session->resumeDir);
+@@ -2838,6 +2853,39 @@
+ *****
+ ****/
+ 
++bool tr_sessionIsTorrentAddedScriptEnabled(tr_session const* session)
++{
++    assert(tr_isSession(session));
++
++    return session->isTorrentAddedScriptEnabled;
++}
++
++void tr_sessionSetTorrentAddedScriptEnabled(tr_session* session, bool isEnabled)
++{
++    assert(tr_isSession(session));
++    assert(tr_isBool(isEnabled));
++
++    session->isTorrentAddedScriptEnabled = isEnabled;
++}
++
++const char * tr_sessionGetTorrentAddedScript(tr_session const* session)
++{
++    assert(tr_isSession(session));
++
++    return session->torrentAddedScript;
++}
++
++void tr_sessionSetTorrentAddedScript(tr_session* session, char const* scriptFilename)
++{
++    assert(tr_isSession(session));
++
++    if (session->torrentAddedScript != scriptFilename)
++    {
++	tr_free(session->torrentAddedScript);
++	session->torrentAddedScript = tr_strdup(scriptFilename);
 +    }
 +}
 +
- /***
- ****
- ***/
+ bool tr_sessionIsTorrentDoneScriptEnabled(tr_session const* session)
+ {
+     TR_ASSERT(tr_isSession(session));
 --- a/libtransmission/session.h
 +++ b/libtransmission/session.h
-@@ -105,6 +105,7 @@
-     bool                         isLPDEnabled;
-     bool                         isBlocklistEnabled;
-     bool                         isPrefetchEnabled;
-+    bool                         isTorrentAddedScriptEnabled;
-     bool                         isTorrentDoneScriptEnabled;
-     bool                         isClosing;
-     bool                         isClosed;
+@@ -103,6 +103,7 @@
+     bool isLPDEnabled;
+     bool isBlocklistEnabled;
+     bool isPrefetchEnabled;
++    bool isTorrentAddedScriptEnabled;
+     bool isTorrentDoneScriptEnabled;
+     bool isClosing;
+     bool isClosed;
 @@ -177,6 +178,7 @@
-     int                          torrentCount;
-     tr_torrent *                 torrentList;
+     int torrentCount;
+     tr_torrent* torrentList;
  
-+    char *                       torrentAddedScript;
-     char *                       torrentDoneScript;
++    char* torrentAddedScript;
+     char* torrentDoneScript;
  
-     char *                       configDir;
+     char* configDir;
 --- a/libtransmission/torrent.c
 +++ b/libtransmission/torrent.c
-@@ -848,6 +848,128 @@
-   return disappeared;
+@@ -918,6 +918,151 @@
+     return disappeared;
  }
  
 +#ifndef _WIN32
 +
-+static void
-+onSigCHLD (int i UNUSED)
++static void onSigCHLD(int i UNUSED)
 +{
-+  int rc;
-+  do
-+    rc = waitpid (-1, NULL, WNOHANG);
-+  while (rc>0 || (rc==-1 && errno==EINTR));
++    int rc;
++
++    do
++    {
++        rc = waitpid(-1, NULL, WNOHANG);
++    }
++    while (rc > 0 || (rc == -1 && errno == EINTR));
 +}
 +
 +#endif
 +
-+static void
-+torrentCallScript (const tr_torrent * tor, const char * script)
++static void torrentCallScript(tr_torrent const* tor, char const* script)
 +{
-+  char timeStr[128], * newlinePos;
-+  const time_t now = tr_time ();
++    char timeStr[128];
++    char* newlinePos;
++    time_t const now = tr_time();
 +
-+  tr_strlcpy (timeStr, ctime (&now), sizeof (timeStr));
++    tr_strlcpy(timeStr, ctime(&now), sizeof(timeStr));
 +
-+  /* ctime () includes '\n', but it's better to be safe */
-+  newlinePos = strchr (timeStr, '\n');
-+  if (newlinePos != NULL)
-+    *newlinePos = '\0';
++    /* ctime () includes '\n', but it's better to be safe */
++    newlinePos = strchr(timeStr, '\n');
 +
-+  if (script && *script)
++    if (newlinePos != NULL)
 +    {
-+      size_t i;
-+      char * cmd[] = { tr_strdup (script), NULL };
-+      char * env[] = {
-+        tr_strdup_printf ("TR_APP_VERSION=%s", SHORT_VERSION_STRING),
-+        tr_strdup_printf ("TR_TIME_LOCALTIME=%s", timeStr),
-+        tr_strdup_printf ("TR_TORRENT_DIR=%s", tor->currentDir),
-+        tr_strdup_printf ("TR_TORRENT_HASH=%s", tor->info.hashString),
-+        tr_strdup_printf ("TR_TORRENT_ID=%d", tr_torrentId (tor)),
-+        tr_strdup_printf ("TR_TORRENT_NAME=%s", tr_torrentName (tor)),
-+        NULL };
++        *newlinePos = '\0';
++    }
 +
-+      tr_logAddTorInfo (tor, "Calling script \"%s\"", script);
++    if (script != NULL && *script != '\0')
++    {
++        char* cmd[] =
++        {
++            tr_strdup(script), NULL
++        };
++        char* env[] =
++        {
++            tr_strdup_printf("TR_APP_VERSION=%s", SHORT_VERSION_STRING),
++            tr_strdup_printf("TR_TIME_LOCALTIME=%s", timeStr),
++            tr_strdup_printf("TR_TORRENT_DIR=%s", tor->currentDir),
++            tr_strdup_printf("TR_TORRENT_HASH=%s", tor->info.hashString),
++            tr_strdup_printf("TR_TORRENT_ID=%d", tr_torrentId(tor)),
++            tr_strdup_printf("TR_TORRENT_NAME=%s", tr_torrentName(tor)),
++            NULL
++        };
 +
-+#ifndef NDEBUG
-+      /* Win32 environment block strings should be sorted alphabetically */
-+      for (i = 1; env[i] != NULL; ++i)
-+        assert (strcmp (env[i - 1], env[i]) < 0);
++        tr_logAddTorInfo(tor, "Calling script \"%s\"", script);
++
++#ifdef TR_ENABLE_ASSERTS
++
++        /* Win32 environment block strings should be sorted alphabetically */
++        for (size_t i = 1; env[i] != NULL; ++i)
++        {
++            TR_ASSERT(strcmp(env[i - 1], env[i]) < 0);
++        }
++
 +#endif
 +
 +#ifdef _WIN32
 +
-+      wchar_t * wide_script = tr_win32_utf8_to_native (script, -1);
++        wchar_t* wide_script = tr_win32_utf8_to_native(script, -1);
 +
-+      size_t env_block_size = 0;
-+      char * env_block = NULL;
-+      for (i = 0; env[i] != NULL; ++i)
++        size_t env_block_size = 0;
++        char* env_block = NULL;
++
++        for (size_t i = 0; env[i] != NULL; ++i)
 +        {
-+          const size_t len = strlen (env[i]) + 1;
-+          env_block = tr_renew (char, env_block, env_block_size + len + 1);
-+          memcpy (env_block + env_block_size, env[i], len + 1);
-+          env_block_size += len;
++            size_t const len = strlen(env[i]) + 1;
++            env_block = tr_renew(char, env_block, env_block_size + len + 1);
++            memcpy(env_block + env_block_size, env[i], len + 1);
++            env_block_size += len;
 +        }
 +
-+      wchar_t * wide_env_block = NULL;
-+      if (env_block != NULL)
++        wchar_t* wide_env_block = NULL;
++
++        if (env_block != NULL)
 +        {
-+          env_block[env_block_size] = '\0';
-+          wide_env_block = tr_win32_utf8_to_native (env_block, env_block_size + 1);
-+          tr_free (env_block);
++            env_block[env_block_size] = '\0';
++            wide_env_block = tr_win32_utf8_to_native(env_block, env_block_size + 1);
++            tr_free(env_block);
 +        }
 +
-+      STARTUPINFOW si = { 0, };
-+      si.cb = sizeof (si);
-+      si.dwFlags = STARTF_USESHOWWINDOW;
-+      si.wShowWindow = SW_HIDE;
++        STARTUPINFOW si = { 0, };
++        si.cb = sizeof(si);
++        si.dwFlags = STARTF_USESHOWWINDOW;
++        si.wShowWindow = SW_HIDE;
 +
-+      PROCESS_INFORMATION pi;
++        PROCESS_INFORMATION pi;
 +
-+      if (CreateProcessW (wide_script, NULL, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS |
-+                          CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW | CREATE_DEFAULT_ERROR_MODE |
-+                          DETACHED_PROCESS, wide_env_block, L"\\", &si, &pi))
++        if (CreateProcessW(wide_script, NULL, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS | CREATE_UNICODE_ENVIRONMENT |
++            CREATE_NO_WINDOW | CREATE_DEFAULT_ERROR_MODE | DETACHED_PROCESS, wide_env_block, L"\\", &si, &pi))
 +        {
-+          CloseHandle (pi.hThread);
-+          CloseHandle (pi.hProcess);
++            CloseHandle(pi.hThread);
++            CloseHandle(pi.hProcess);
 +        }
-+      else
++        else
 +        {
-+          char * const message = tr_win32_format_message (GetLastError ());
-+          tr_logAddTorErr (tor, "error executing script \"%s\": %s", script, message);
-+          tr_free (message);
++            char* const message = tr_win32_format_message(GetLastError());
++            tr_logAddTorErr(tor, "error executing script \"%s\": %s", script, message);
++            tr_free(message);
 +        }
 +
-+      tr_free (wide_env_block);
-+      tr_free (wide_script);
++        tr_free(wide_env_block);
++        tr_free(wide_script);
 +
 +#else /* _WIN32 */
 +
-+      signal (SIGCHLD, onSigCHLD);
++        signal(SIGCHLD, onSigCHLD);
 +
-+      if (!fork ())
++        if (fork() == 0)
 +        {
-+          for (i = 0; env[i] != NULL; ++i)
-+            putenv (env[i]);
-+
-+          if (chdir ("/") == -1)
++            for (size_t i = 0; env[i] != NULL; ++i)
 +            {
-+              /* ignore (nice to have but not that critical) */
++                putenv(env[i]);
 +            }
 +
-+          if (execvp (script, cmd) == -1)
-+            tr_logAddTorErr (tor, "error executing script \"%s\": %s", script, tr_strerror (errno));
++            if (chdir("/") == -1)
++            {
++                /* ignore (nice to have but not that critical) */
++            }
 +
-+          _exit (0);
++            if (execvp(script, cmd) == -1)
++            {
++                tr_logAddTorErr(tor, "error executing script \"%s\": %s", script, tr_strerror(errno));
++            }
++
++            _exit(0);
 +        }
 +
 +#endif /* _WIN32 */
 +
-+      for (i = 0; cmd[i] != NULL; ++i)
-+        tr_free (cmd[i]);
-+      for (i = 0; env[i] != NULL; ++i)
-+        tr_free (env[i]);
++        for (size_t i = 0; cmd[i] != NULL; ++i)
++        {
++            tr_free(cmd[i]);
++        }
++
++        for (size_t i = 0; env[i] != NULL; ++i)
++        {
++            tr_free(env[i]);
++        }
 +    }
 +}
 +
- static void
- torrentInit (tr_torrent * tor, const tr_ctor * ctor)
+ static void torrentInit(tr_torrent* tor, tr_ctor const* ctor)
  {
-@@ -963,10 +1085,13 @@
+     tr_session* session = tr_ctorGetSession(ctor);
+@@ -1053,10 +1198,13 @@
  
-   tor->tiers = tr_announcerAddTorrent (tor, onTrackerResponse, NULL);
+     tor->tiers = tr_announcerAddTorrent(tor, onTrackerResponse, NULL);
  
--  if (isNewTorrent)
-+  if ((isNewTorrent) && (tr_torrentHasMetadata (tor)))
+-    if (isNewTorrent)
++    if ((isNewTorrent) && (tr_torrentHasMetadata(tor)))
      {
-       tor->startAfterVerify = doStart;
-       tr_torrentVerify (tor, NULL, NULL);
+         tor->startAfterVerify = doStart;
+         tr_torrentVerify(tor, NULL, NULL);
 +
-+      if (tr_sessionIsTorrentAddedScriptEnabled (tor->session))
-+        torrentCallScript (tor, tr_sessionGetTorrentAddedScript (tor->session));
++    if (tr_sessionIsTorrentAddedScriptEnabled(tor->session))
++        torrentCallScript(tor, tr_sessionGetTorrentAddedScript(tor->session));
      }
-   else if (doStart)
+     else if (doStart)
      {
-@@ -1879,6 +2004,9 @@
-       tr_logAddTorInfo (tor, "%s", "Magnet Verify");
-       refreshCurrentDir (tor);
-       tr_torrentVerify (tor, NULL, NULL);
-+
-+      if (tr_sessionIsTorrentAddedScriptEnabled (tor->session))
-+        torrentCallScript (tor, tr_sessionGetTorrentAddedScript (tor->session));
+@@ -2038,6 +2186,8 @@
+         tr_logAddTorInfo(tor, "%s", "Magnet Verify");
+         refreshCurrentDir(tor);
+         tr_torrentVerify(tor, NULL, NULL);
++    if (tr_sessionIsTorrentAddedScriptEnabled(tor->session))
++	torrentCallScript(tor, tr_sessionGetTorrentAddedScript(tor->session));
      }
  }
  
-@@ -2076,128 +2204,6 @@
-   tr_torrentSetIdleLimitHitCallback (torrent, NULL, NULL);
- }
- 
+@@ -2211,151 +2361,6 @@
+ void tr_torrentClearIdleLimitHitCallback(tr_torrent* torrent)
+ {
+     tr_torrentSetIdleLimitHitCallback(torrent, NULL, NULL);
+-}
+-
 -#ifndef _WIN32
 -
--static void
--onSigCHLD (int i UNUSED)
+-static void onSigCHLD(int i UNUSED)
 -{
--  int rc;
--  do
--    rc = waitpid (-1, NULL, WNOHANG);
--  while (rc>0 || (rc==-1 && errno==EINTR));
+-    int rc;
+-
+-    do
+-    {
+-        rc = waitpid(-1, NULL, WNOHANG);
+-    }
+-    while (rc > 0 || (rc == -1 && errno == EINTR));
 -}
 -
 -#endif
 -
--static void
--torrentCallScript (const tr_torrent * tor, const char * script)
+-static void torrentCallScript(tr_torrent const* tor, char const* script)
 -{
--  char timeStr[128], * newlinePos;
--  const time_t now = tr_time ();
+-    char timeStr[128];
+-    char* newlinePos;
+-    time_t const now = tr_time();
 -
--  tr_strlcpy (timeStr, ctime (&now), sizeof (timeStr));
+-    tr_strlcpy(timeStr, ctime(&now), sizeof(timeStr));
 -
--  /* ctime () includes '\n', but it's better to be safe */
--  newlinePos = strchr (timeStr, '\n');
--  if (newlinePos != NULL)
--    *newlinePos = '\0';
+-    /* ctime () includes '\n', but it's better to be safe */
+-    newlinePos = strchr(timeStr, '\n');
 -
--  if (script && *script)
+-    if (newlinePos != NULL)
 -    {
--      size_t i;
--      char * cmd[] = { tr_strdup (script), NULL };
--      char * env[] = {
--        tr_strdup_printf ("TR_APP_VERSION=%s", SHORT_VERSION_STRING),
--        tr_strdup_printf ("TR_TIME_LOCALTIME=%s", timeStr),
--        tr_strdup_printf ("TR_TORRENT_DIR=%s", tor->currentDir),
--        tr_strdup_printf ("TR_TORRENT_HASH=%s", tor->info.hashString),
--        tr_strdup_printf ("TR_TORRENT_ID=%d", tr_torrentId (tor)),
--        tr_strdup_printf ("TR_TORRENT_NAME=%s", tr_torrentName (tor)),
--        NULL };
+-        *newlinePos = '\0';
+-    }
 -
--      tr_logAddTorInfo (tor, "Calling script \"%s\"", script);
+-    if (script != NULL && *script != '\0')
+-    {
+-        char* cmd[] =
+-        {
+-            tr_strdup(script), NULL
+-        };
+-        char* env[] =
+-        {
+-            tr_strdup_printf("TR_APP_VERSION=%s", SHORT_VERSION_STRING),
+-            tr_strdup_printf("TR_TIME_LOCALTIME=%s", timeStr),
+-            tr_strdup_printf("TR_TORRENT_DIR=%s", tor->currentDir),
+-            tr_strdup_printf("TR_TORRENT_HASH=%s", tor->info.hashString),
+-            tr_strdup_printf("TR_TORRENT_ID=%d", tr_torrentId(tor)),
+-            tr_strdup_printf("TR_TORRENT_NAME=%s", tr_torrentName(tor)),
+-            NULL
+-        };
 -
--#ifndef NDEBUG
--      /* Win32 environment block strings should be sorted alphabetically */
--      for (i = 1; env[i] != NULL; ++i)
--        assert (strcmp (env[i - 1], env[i]) < 0);
+-        tr_logAddTorInfo(tor, "Calling script \"%s\"", script);
+-
+-#ifdef TR_ENABLE_ASSERTS
+-
+-        /* Win32 environment block strings should be sorted alphabetically */
+-        for (size_t i = 1; env[i] != NULL; ++i)
+-        {
+-            TR_ASSERT(strcmp(env[i - 1], env[i]) < 0);
+-        }
+-
 -#endif
 -
 -#ifdef _WIN32
 -
--      wchar_t * wide_script = tr_win32_utf8_to_native (script, -1);
+-        wchar_t* wide_script = tr_win32_utf8_to_native(script, -1);
 -
--      size_t env_block_size = 0;
--      char * env_block = NULL;
--      for (i = 0; env[i] != NULL; ++i)
+-        size_t env_block_size = 0;
+-        char* env_block = NULL;
+-
+-        for (size_t i = 0; env[i] != NULL; ++i)
 -        {
--          const size_t len = strlen (env[i]) + 1;
--          env_block = tr_renew (char, env_block, env_block_size + len + 1);
--          memcpy (env_block + env_block_size, env[i], len + 1);
--          env_block_size += len;
+-            size_t const len = strlen(env[i]) + 1;
+-            env_block = tr_renew(char, env_block, env_block_size + len + 1);
+-            memcpy(env_block + env_block_size, env[i], len + 1);
+-            env_block_size += len;
 -        }
 -
--      wchar_t * wide_env_block = NULL;
--      if (env_block != NULL)
+-        wchar_t* wide_env_block = NULL;
+-
+-        if (env_block != NULL)
 -        {
--          env_block[env_block_size] = '\0';
--          wide_env_block = tr_win32_utf8_to_native (env_block, env_block_size + 1);
--          tr_free (env_block);
+-            env_block[env_block_size] = '\0';
+-            wide_env_block = tr_win32_utf8_to_native(env_block, env_block_size + 1);
+-            tr_free(env_block);
 -        }
 -
--      STARTUPINFOW si = { 0, };
--      si.cb = sizeof (si);
--      si.dwFlags = STARTF_USESHOWWINDOW;
--      si.wShowWindow = SW_HIDE;
+-        STARTUPINFOW si = { 0, };
+-        si.cb = sizeof(si);
+-        si.dwFlags = STARTF_USESHOWWINDOW;
+-        si.wShowWindow = SW_HIDE;
 -
--      PROCESS_INFORMATION pi;
+-        PROCESS_INFORMATION pi;
 -
--      if (CreateProcessW (wide_script, NULL, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS |
--                          CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW | CREATE_DEFAULT_ERROR_MODE |
--                          DETACHED_PROCESS, wide_env_block, L"\\", &si, &pi))
+-        if (CreateProcessW(wide_script, NULL, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS | CREATE_UNICODE_ENVIRONMENT |
+-            CREATE_NO_WINDOW | CREATE_DEFAULT_ERROR_MODE | DETACHED_PROCESS, wide_env_block, L"\\", &si, &pi))
 -        {
--          CloseHandle (pi.hThread);
--          CloseHandle (pi.hProcess);
+-            CloseHandle(pi.hThread);
+-            CloseHandle(pi.hProcess);
 -        }
--      else
+-        else
 -        {
--          char * const message = tr_win32_format_message (GetLastError ());
--          tr_logAddTorErr (tor, "error executing script \"%s\": %s", script, message);
--          tr_free (message);
+-            char* const message = tr_win32_format_message(GetLastError());
+-            tr_logAddTorErr(tor, "error executing script \"%s\": %s", script, message);
+-            tr_free(message);
 -        }
 -
--      tr_free (wide_env_block);
--      tr_free (wide_script);
+-        tr_free(wide_env_block);
+-        tr_free(wide_script);
 -
 -#else /* _WIN32 */
 -
--      signal (SIGCHLD, onSigCHLD);
+-        signal(SIGCHLD, onSigCHLD);
 -
--      if (!fork ())
+-        if (fork() == 0)
 -        {
--          for (i = 0; env[i] != NULL; ++i)
--            putenv (env[i]);
--
--          if (chdir ("/") == -1)
+-            for (size_t i = 0; env[i] != NULL; ++i)
 -            {
--              /* ignore (nice to have but not that critical) */
+-                putenv(env[i]);
 -            }
 -
--          if (execvp (script, cmd) == -1)
--            tr_logAddTorErr (tor, "error executing script \"%s\": %s", script, tr_strerror (errno));
+-            if (chdir("/") == -1)
+-            {
+-                /* ignore (nice to have but not that critical) */
+-            }
 -
--          _exit (0);
+-            if (execvp(script, cmd) == -1)
+-            {
+-                tr_logAddTorErr(tor, "error executing script \"%s\": %s", script, tr_strerror(errno));
+-            }
+-
+-            _exit(0);
 -        }
 -
 -#endif /* _WIN32 */
 -
--      for (i = 0; cmd[i] != NULL; ++i)
--        tr_free (cmd[i]);
--      for (i = 0; env[i] != NULL; ++i)
--        tr_free (env[i]);
--    }
--}
+-        for (size_t i = 0; cmd[i] != NULL; ++i)
+-        {
+-            tr_free(cmd[i]);
+-        }
 -
- void
- tr_torrentRecheckCompleteness (tr_torrent * tor)
- {
+-        for (size_t i = 0; env[i] != NULL; ++i)
+-        {
+-            tr_free(env[i]);
+-        }
+-    }
+ }
+ 
+ void tr_torrentRecheckCompleteness(tr_torrent* tor)
 --- a/libtransmission/transmission.h
 +++ b/libtransmission/transmission.h
-@@ -751,6 +751,14 @@
+@@ -698,6 +698,14 @@
  ***
  **/
  
-+bool tr_sessionIsTorrentAddedScriptEnabled (const tr_session *);
++bool tr_sessionIsTorrentAddedScriptEnabled(tr_session const*);
 +
-+void tr_sessionSetTorrentAddedScriptEnabled (tr_session *, bool isEnabled);
++void tr_sessionSetTorrentAddedScriptEnabled(tr_session*, bool isEnabled);
 +
-+const char * tr_sessionGetTorrentAddedScript (const tr_session *);
++char const* tr_sessionGetTorrentAddedScript(tr_session const*);
 +
-+void tr_sessionSetTorrentAddedScript (tr_session *, const char * scriptFilename);
++void tr_sessionSetTorrentAddedScript(tr_session*, char const* scriptFilename);
 +
- bool tr_sessionIsTorrentDoneScriptEnabled (const tr_session *);
+ bool tr_sessionIsTorrentDoneScriptEnabled(tr_session const*);
  
- void tr_sessionSetTorrentDoneScriptEnabled (tr_session *, bool isEnabled);
+ void tr_sessionSetTorrentDoneScriptEnabled(tr_session*, bool isEnabled);
 --- a/libtransmission/rpcimpl.c
 +++ b/libtransmission/rpcimpl.c
-@@ -1955,6 +1955,12 @@
-   if (tr_variantDictFindInt (args_in, TR_KEY_seed_queue_size, &i))
-     tr_sessionSetQueueSize (session, TR_UP, i);
+@@ -2034,6 +2034,16 @@
+         tr_sessionSetQueueSize(session, TR_UP, i);
+     }
  
-+  if (tr_variantDictFindStr (args_in, TR_KEY_script_torrent_added_filename, &str, NULL))
-+    tr_sessionSetTorrentAddedScript (session, str);
++    if (tr_variantDictFindStr(args_in, TR_KEY_script_torrent_added_filename, &str, NULL))
++    {
++	tr_sessionSetTorrentAddedScript(session, str);
++    }
 +
-+  if (tr_variantDictFindBool (args_in, TR_KEY_script_torrent_added_enabled, &boolVal))
-+    tr_sessionSetTorrentAddedScriptEnabled (session, boolVal);
++    if (tr_variantDictFindBool(args_in, TR_KEY_script_torrent_added_enabled, &boolVal))
++    {
++	tr_sessionSetTorrentAddedScriptEnabled(session, boolVal);
++    }
 +
-   if (tr_variantDictFindStr (args_in, TR_KEY_script_torrent_done_filename, &str, NULL))
-     tr_sessionSetTorrentDoneScript (session, str);
+     if (tr_variantDictFindStr(args_in, TR_KEY_script_torrent_done_filename, &str, NULL))
+     {
+         tr_sessionSetTorrentDoneScript(session, str);
+@@ -2308,6 +2318,14 @@
  
-@@ -2215,6 +2221,14 @@
-         tr_variantDictAddBool (d, key, tr_sessionIsSpeedLimited (s, TR_DOWN));
-         break;
- 
-+      case TR_KEY_script_torrent_added_filename:
-+        tr_variantDictAddStr (d, key, tr_sessionGetTorrentAddedScript (s));
+     case TR_KEY_speed_limit_down_enabled:
+         tr_variantDictAddBool(d, key, tr_sessionIsSpeedLimited(s, TR_DOWN));
 +        break;
 +
-+      case TR_KEY_script_torrent_added_enabled:
-+        tr_variantDictAddBool (d, key, tr_sessionIsTorrentAddedScriptEnabled (s));
++    case TR_KEY_script_torrent_added_filename:
++        tr_variantDictAddStr(d, key, tr_sessionGetTorrentAddedScript(s));
 +        break;
 +
-       case TR_KEY_script_torrent_done_filename:
-         tr_variantDictAddStr (d, key, tr_sessionGetTorrentDoneScript (s));
++    case TR_KEY_script_torrent_added_enabled:
++        tr_variantDictAddBool(d, key, tr_sessionIsTorrentAddedScriptEnabled(s));
          break;
+ 
+     case TR_KEY_script_torrent_done_filename:
