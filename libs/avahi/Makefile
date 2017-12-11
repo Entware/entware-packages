@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=avahi
 PKG_VERSION:=0.6.32
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/lathiat/avahi/releases/download/v$(PKG_VERSION)
@@ -317,8 +317,10 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libavahi-* $(1)/opt/lib/
-ifeq ($(CONFIG_PACKAGE_libavahi-compat-libdnssd)-$(BUILD_VARIANT),y-dbus)
+ifneq ($(CONFIG_PACKAGE_libavahi-compat-libdnssd),)
+ifeq ($(BUILD_VARIANT),dbus)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdns_sd* $(1)/opt/lib/
+endif
 endif
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
