@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-snmp
 PKG_VERSION:=5.7.3
-PKG_RELEASE:=7
+PKG_RELEASE:=9
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
@@ -96,6 +96,18 @@ $(call Package/net-snmp/Default)
   TITLE:=Open source SNMP implementation (daemon)
 endef
 
+
+define Package/snmptrapd
+$(call Package/net-snmp/Default)
+  DEPENDS:=+libnetsnmp
+  TITLE:=Open source SNMP implementation (notification receiver)
+endef
+
+define Package/snmptrapd/description
+$(call Package/net-snmp/Default/description)
+ .
+ This package contains the SNMP notification receiver.
+endef
 
 
 SNMP_MIB_MODULES_INCLUDED = \
@@ -243,8 +255,18 @@ define Package/snmpd/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/snmpd $(1)/opt/sbin/snmpd
 endef
 
+define Package/snmptrapd/install
+	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/snmptrapd.init $(1)/etc/init.d/snmptrapd
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnetsnmptrapd.so.* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/snmptrapd $(1)/opt/sbin/
+endef
+
 $(eval $(call BuildPackage,libnetsnmp))
 $(eval $(call BuildPackage,snmp-mibs))
 $(eval $(call BuildPackage,snmp-utils))
 $(eval $(call BuildPackage,snmpd))
 $(eval $(call BuildPackage,snmpd-static))
+$(eval $(call BuildPackage,snmptrapd))
