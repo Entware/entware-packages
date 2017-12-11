@@ -10,6 +10,7 @@ CONNTRACK_FILE="/proc/net/nf_conntrack"
 
 MWAN3_STATUS_DIR="/var/run/mwan3"
 MWAN3TRACK_STATUS_DIR="/var/run/mwan3track"
+DEFAULT_LOWEST_METRIC=256
 
 [ -d $MWAN3_STATUS_DIR ] || mkdir -p $MWAN3_STATUS_DIR/iface_state
 # mwan3's MARKing mask (at least 3 bits should be set)
@@ -195,7 +196,7 @@ mwan3_set_general_iptables()
 
 mwan3_create_iface_iptables()
 {
-	local id family src_ip src_ipv6
+	local id family
 
 	config_get family $1 family ipv4
 	mwan3_get_iface_id id $1
@@ -203,14 +204,6 @@ mwan3_create_iface_iptables()
 	[ -n "$id" ] || return 0
 
 	if [ "$family" == "ipv4" ]; then
-
-		ubus call network.interface.${1}_4 status &>/dev/null
-		if [ "$?" -eq "0" ]; then
-			network_get_ipaddr src_ip ${1}_4
-		else
-			network_get_ipaddr src_ip $1
-		fi
-
 		$IPS -! create mwan3_connected list:set
 
 		if ! $IPT4 -S mwan3_ifaces_in &> /dev/null; then
@@ -237,21 +230,13 @@ mwan3_create_iface_iptables()
 		$IPT4 -A mwan3_ifaces_in -m mark --mark 0x0/$MMX_MASK -j mwan3_iface_in_$1
 
 		$IPT4 -F mwan3_iface_out_$1
-		$IPT4 -A mwan3_iface_out_$1 -s $src_ip -m mark --mark 0x0/$MMX_MASK -m comment --comment "$1" -j MARK --set-xmark $(mwan3_id2mask id MMX_MASK)/$MMX_MASK
+		$IPT4 -A mwan3_iface_out_$1 -o $2 -m mark --mark 0x0/$MMX_MASK -m comment --comment "$1" -j MARK --set-xmark $(mwan3_id2mask id MMX_MASK)/$MMX_MASK
 
 		$IPT4 -D mwan3_ifaces_out -m mark --mark 0x0/$MMX_MASK -j mwan3_iface_out_$1 &> /dev/null
 		$IPT4 -A mwan3_ifaces_out -m mark --mark 0x0/$MMX_MASK -j mwan3_iface_out_$1
 	fi
 
 	if [ "$family" == "ipv6" ]; then
-
-		ubus call network.interface.${1}_6 status &>/dev/null
-		if [ "$?" -eq "0" ]; then
-			network_get_ipaddr6 src_ipv6 ${1}_6
-		else
-			network_get_ipaddr6 src_ipv6 $1
-		fi
-
 		$IPS -! create mwan3_connected_v6 hash:net family inet6
 
 		if ! $IPT6 -S mwan3_ifaces_in &> /dev/null; then
@@ -278,7 +263,7 @@ mwan3_create_iface_iptables()
 		$IPT6 -A mwan3_ifaces_in -m mark --mark 0x0/$MMX_MASK -j mwan3_iface_in_$1
 
 		$IPT6 -F mwan3_iface_out_$1
-		$IPT6 -A mwan3_iface_out_$1 -s $src_ipv6 -m mark --mark 0x0/$MMX_MASK -m comment --comment "$1" -j MARK --set-xmark $(mwan3_id2mask id MMX_MASK)/$MMX_MASK
+		$IPT6 -A mwan3_iface_out_$1 -o $2 -m mark --mark 0x0/$MMX_MASK -m comment --comment "$1" -j MARK --set-xmark $(mwan3_id2mask id MMX_MASK)/$MMX_MASK
 
 		$IPT6 -D mwan3_ifaces_out -m mark --mark 0x0/$MMX_MASK -j mwan3_iface_out_$1 &> /dev/null
 		$IPT6 -A mwan3_ifaces_out -m mark --mark 0x0/$MMX_MASK -j mwan3_iface_out_$1
@@ -322,32 +307,37 @@ mwan3_create_iface_route()
 	[ -n "$id" ] || return 0
 
 	if [ "$family" == "ipv4" ]; then
-		ubus call network.interface.${1}_4 status &>/dev/null
-		if [ "$?" -eq "0" ]; then
+		if ubus call network.interface.${1}_4 status &>/dev/null; then
 			network_get_gateway route_args ${1}_4
 		else
 			network_get_gateway route_args $1
 		fi
 
-		route_args="via $route_args dev $2"
+		if [ -n "$route_args" -a "$route_args" != "0.0.0.0" ]; then
+			route_args="via $route_args"
+		else
+			route_args=""
+		fi
 
 		$IP4 route flush table $id
-		$IP4 route add table $id default $route_args
+		$IP4 route add table $id default $route_args dev $2
 	fi
 
 	if [ "$family" == "ipv6" ]; then
-
-		ubus call network.interface.${1}_6 status &>/dev/null
-		if [ "$?" -eq "0" ]; then
+		if ubus call network.interface.${1}_6 status &>/dev/null; then
 			network_get_gateway6 route_args ${1}_6
 		else
 			network_get_gateway6 route_args $1
 		fi
 
-		route_args="via $route_args dev $2"
+		if [ -n "$route_args" -a "$route_args" != "::" ]; then
+			route_args="via $route_args"
+		else
+			route_args=""
+		fi
 
 		$IP6 route flush table $id
-		$IP6 route add table $id default $route_args
+		$IP6 route add table $id default $route_args dev $2
 	fi
 }
 
@@ -491,6 +481,7 @@ mwan3_set_policy()
 	config_get weight $1 weight 1
 
 	[ -n "$iface" ] || return 0
+	[ "$metric" -gt $DEFAULT_LOWEST_METRIC ] && $LOG warn "Member interface $iface has >$DEFAULT_LOWEST_METRIC metric. Not appending to policy" && return 0
 
 	mwan3_get_iface_id id $iface
 
@@ -598,10 +589,10 @@ mwan3_create_policies_iptables()
 		esac
 	done
 
-	lowest_metric_v4=256
+	lowest_metric_v4=$DEFAULT_LOWEST_METRIC
 	total_weight_v4=0
 
-	lowest_metric_v6=256
+	lowest_metric_v6=$DEFAULT_LOWEST_METRIC
 	total_weight_v6=0
 
 	config_list_foreach $1 use_member mwan3_set_policy
