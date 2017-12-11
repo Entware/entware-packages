@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.14.1
-PKG_RELEASE:=1a
+PKG_VERSION:=2.15.1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=6f724c6d0e9e13114ab35db6f67e1b2c1934b641e89366e6a0e37618231f2cc6
+PKG_HASH:=999c90fd7d45066992cdb87dda35bdff6dfc1d01496118ea718dfb866da4045c
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -43,7 +43,7 @@ endef
 
 define Package/git-http
 $(call Package/git/Default)
-  DEPENDS+=git +libcurl +ca-certificates
+  DEPENDS+= +git +libcurl +ca-certificates
   TITLE:=Git HTTP commands
 endef
 
@@ -56,7 +56,7 @@ endef
 define Package/git-gitweb
 $(call Package/git/Default)
   TITLE:=Git repository web interface
-  DEPENDS:=git +perlbase-essential +perlbase-file +perlbase-fcntl +perlbase-encode +perlbase-digest +perlbase-time +perl-cgi
+  DEPENDS+= +git +perlbase-essential +perlbase-file +perlbase-fcntl +perlbase-encode +perlbase-digest +perlbase-time +perl-cgi
 endef
 
 define Package/git-gitweb/description
