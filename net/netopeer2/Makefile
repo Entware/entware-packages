@@ -14,14 +14,14 @@ PKG_NAME:=netopeer2
 PKG_LICENSE:=BSD-3-Clause
 PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
 
-PKG_VERSION:=0.3.65
+PKG_VERSION:=0.4.3
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=c204b59f9c2bb7e63eb907f33c44adbf208295ee
-PKG_MIRROR_HASH:=61a2b3e0ee9a3cf2f73715843f059c79292446ad3643f4eeb85d48d1e185c3b9
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_VERSION).tar.bz2
+PKG_SOURCE_VERSION:=e7c821cde14df31a03d23293f84e0aed9cb1a457
+PKG_MIRROR_HASH:=88a4c06e9cdb81879de7311138acbfe9fe5207db14fbb93c5ba4d6947d616aec
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/CESNET/Netopeer2.git
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_SOURCE_VERSION)
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 
 PKG_BUILD_ROOT:=$(BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
 PKG_BUILD_DIR:=$(PKG_BUILD_ROOT)
@@ -34,10 +34,6 @@ CMAKE_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-define Package/netopeer2-server/config
-  source "$(SOURCE)/Config_server.in"
-endef
-
 define Package/netopeer2-keystored/config
   source "$(SOURCE)/Config_keystored.in"
 endef
@@ -47,7 +43,7 @@ define Package/netopeer2-server
   CATEGORY:=Utilities
   TITLE:=NETCONF server
   URL:=$(PKG_SOURCE_URL)
-  DEPENDS:=+libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo +SSH_SERVER:openssh-server
+  DEPENDS:=+libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo
   MENU:=1
 endef
 
