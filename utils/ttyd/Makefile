@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ttyd
 PKG_VERSION:=1.3.3+git-04d5bc
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/tsl0922/ttyd.git
@@ -30,7 +30,7 @@ define Package/ttyd
 	SECTION:=utils
 	CATEGORY:=Utilities
 	TITLE:=Command-line tool for sharing terminal over the web
-	DEPENDS:=+libopenssl +libjson-c +libpthread +libwebsockets-wolfssl
+	DEPENDS:=+libopenssl +libjson-c +libpthread +libwebsockets-openssl
 	URL:=https://github.com/tsl0922/ttyd
 	SUBMENU:=Terminal
 	MAINTAINER:=Shuanglei Tao <tsl0922@gmail.com>
