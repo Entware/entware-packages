@@ -97,7 +97,7 @@ define Package/softethervpn
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=VPN
-  DEPENDS:=+libpthread +librt +libreadline +libopenssl +libncurses +zlib +gconv-modules
+  DEPENDS:=+libpthread +librt +libreadline +libopenssl +libncurses +zlib +USE_GLIBC:gconv-modules
   TITLE:=Free Cross-platform Multi-protocol VPN server and client
   URL:=http://www.softether.org/
   MAINTAINER:=Federico Di Marco <fededim@gmail.com>
