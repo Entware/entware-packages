@@ -2,13 +2,12 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# libfreetype support added for php7-mod-gd
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=7.1.9
-PKG_RELEASE:=1
+PKG_VERSION:=7.1.12
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 
@@ -17,7 +16,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=ec9ca348dd51f19a84dc5d33acfff1fba1f977300604bdac08ed46ae2c281e8c
+PKG_HASH:=a0118850774571b1f2d4e30b4fe7a4b958ca66f07d07d65ebdc789c54ba6eeb3
 
 PKG_FIXUP:=libtool autoreconf
 PKG_BUILD_PARALLEL:=1
@@ -31,7 +30,7 @@ PHP7_MODULES = \
 	ftp \
 	gettext gd gmp \
 	hash \
-	iconv intl \
+	iconv imap intl \
 	json \
 	ldap \
 	mbstring mcrypt mysqli \
@@ -43,7 +42,7 @@ PHP7_MODULES = \
 
 PKG_CONFIG_DEPENDS:= \
 	$(patsubst %,CONFIG_PACKAGE_php7-mod-%,$(PHP7_MODULES)) \
-	CONFIG_PHP7_FILTER CONFIG_PHP7_LIBXML CONFIG_PHP7_SYSTEMTZDATA
+	CONFIG_PHP7_FILTER CONFIG_PHP7_LIBXML CONFIG_PHP7_SYSTEMTZDATA CONFIG_PHP7_LIBFREETYPE
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -134,13 +133,20 @@ endef
 
 define Package/php7-fpm
   $(call Package/php7/Default)
-  DEPENDS+= +php7-cgi
+  DEPENDS+= +PACKAGE_php7-mod-intl:libstdcpp
   TITLE+= (FPM)
 endef
 
 define Package/php7-fpm/description
   $(call Package/php7/Default/description)
   This package contains the FastCGI Process Manager of the PHP7 interpreter.
+endef
+
+define Package/php7-mod-gd/config
+  config PHP7_LIBFREETYPE
+	bool "Enable Freetype 2 support in php7-mod-gd"
+	depends on PACKAGE_php7-mod-gd
+	default y
 endef
 
 # not everything groks --disable-nls
@@ -215,7 +221,6 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-gd),)
   CONFIGURE_ARGS+= \
 	--with-gd=shared \
-	--with-freetype-dir="$(STAGING_DIR)/opt" \
 	--with-jpeg-dir="$(STAGING_DIR)/opt" \
 	--with-png-dir="$(STAGING_DIR)/opt" \
 	--without-xpm-dir \
@@ -223,6 +228,11 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-gd),)
 	--disable-gd-jis-conv
 else
   CONFIGURE_ARGS+= --without-gd
+endif
+ifneq ($(CONFIG_PHP7_LIBFREETYPE),)
+  CONFIGURE_ARGS+= --with-freetype-dir="$(STAGING_DIR)/opt"
+else
+  CONFIGURE_ARGS+= --without-freetype-dir
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-gmp),)
@@ -241,6 +251,15 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-iconv),)
   CONFIGURE_ARGS+= --with-iconv=shared,"$(ICONV_PREFIX)"
 else
   CONFIGURE_ARGS+= --without-iconv
+endif
+
+ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-imap),)
+  CONFIGURE_ARGS+= \
+		--with-imap=shared,"$(STAGING_DIR)/opt" \
+		--with-imap-kerberos=no \
+		--with-imap-ssl="$(STAGING_DIR)/opt"
+else
+  CONFIGURE_ARGS+= --without-imap
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-intl),)
@@ -446,20 +465,22 @@ else
   CONFIGURE_ARGS+= --disable-libxml
 endif
 
-#ifneq ($(CONFIG_PHP7_SYSTEMTZDATA),)
-#  CONFIGURE_ARGS+= --with-system-tzdata
-#else
-#  CONFIGURE_ARGS+= --without-system-tzdata
-#endif
+ifneq ($(CONFIG_PHP7_SYSTEMTZDATA),)
+  CONFIGURE_ARGS+= --with-system-tzdata
+else
+  CONFIGURE_ARGS+= --without-system-tzdata
+endif
 
 CONFIGURE_VARS+= \
 	ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no) \
 	php_cv_cc_rpath="no" \
 	iconv_impl_name="gnu_libiconv" \
 	ac_cv_php_xml2_config_path="$(STAGING_DIR)/host/bin/xml2-config" \
+	ac_cv_u8t_decompose=yes \
 
 define Package/php7/conffiles
 /opt/etc/php.ini
+/opt/etc/php7/
 endef
 
 define Package/php7/install
@@ -494,6 +515,11 @@ define Package/php7-fpm/install
 
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S79php7-fpm $(1)/opt/etc/init.d
+endef
+
+define Package/php7-fpm/conffiles
+/opt/etc/php7-fpm.conf
+/opt/etc/php7-fpm.d/
 endef
 
 define Build/Prepare
@@ -563,11 +589,12 @@ $(eval $(call BuildModule,dom,DOM,+@PHP7_LIBXML +PACKAGE_php7-mod-dom:libxml2))
 $(eval $(call BuildModule,exif,EXIF))
 $(eval $(call BuildModule,fileinfo,Fileinfo))
 $(eval $(call BuildModule,ftp,FTP,+PACKAGE_php7-mod-ftp:libopenssl))
-$(eval $(call BuildModule,gd,GD graphics,+PACKAGE_php7-mod-gd:libjpeg +PACKAGE_php7-mod-gd:libpng +PACKAGE_php7-mod-gd:libfreetype))
+$(eval $(call BuildModule,gd,GD graphics,+PACKAGE_php7-mod-gd:libjpeg +PACKAGE_php7-mod-gd:libpng +PHP7_LIBFREETYPE:libfreetype))
 $(eval $(call BuildModule,gettext,Gettext,+PACKAGE_php7-mod-gettext:libintl-full))
 $(eval $(call BuildModule,gmp,GMP,+PACKAGE_php7-mod-gmp:libgmp))
 $(eval $(call BuildModule,hash,Hash))
 $(eval $(call BuildModule,iconv,iConv,$(ICONV_DEPENDS)))
+$(eval $(call BuildModule,imap,IMAP,+PACKAGE_php7-mod-imap:libopenssl +PACKAGE_libpam:libpam +PACKAGE_php7-mod-imap:uw-imap))
 $(eval $(call BuildModule,intl,Internationalization Functions,+PACKAGE_php7-mod-intl:icu))
 $(eval $(call BuildModule,json,JSON))
 $(eval $(call BuildModule,ldap,LDAP,+PACKAGE_php7-mod-ldap:libopenldap +PACKAGE_php7-mod-ldap:libsasl2))
