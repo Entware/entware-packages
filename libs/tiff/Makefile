@@ -25,7 +25,7 @@ PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_libtiffxx
 
-include $(INCLUDE_DIR)/uclibc++.mk
+#include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/tiff/Default
@@ -47,7 +47,7 @@ $(call Package/tiff/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= library(c++ bindings)
-  DEPENDS:=+libtiff $(CXX_DEPENDS)
+  DEPENDS:=+libtiff +libstdcpp
 endef
 
 define Package/tiff-utils
