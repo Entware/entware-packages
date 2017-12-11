@@ -53,24 +53,24 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/portaudio.h \
-		$(PKG_INSTALL_DIR)/usr/include/pa_linux_alsa.h \
-		$(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
+		$(PKG_INSTALL_DIR)/opt/include/portaudio.h \
+		$(PKG_INSTALL_DIR)/opt/include/pa_linux_alsa.h \
+		$(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libportaudio.{a,so*} \
-		$(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+		$(PKG_INSTALL_DIR)/opt/lib/libportaudio.{a,so*} \
+		$(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/portaudio-*.pc \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/portaudio-*.pc \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/portaudio/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libportaudio.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libportaudio.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,portaudio))
