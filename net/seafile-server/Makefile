@@ -10,16 +10,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-server
-PKG_VERSION:=6.0.7
+PKG_VERSION:=6.2.2
 PKG_RELEASE=1
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/haiwen/seafile-server.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=715f072c1bbc78eedddcaf7748e28c83c3f4dbc6
+PKG_SOURCE_VERSION:=6978d2cb2e05cc774370b4d06c9f0a864df71936
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
-PKG_MIRROR_HASH:=eaba9296a1fbc4429bacc6234e3e643da7b8f7950ba42c9b9b5b1d58c38c4273
+PKG_MIRROR_HASH:=99aa9c41641d7c0ffe18bbab75418b1347dd9e156124472bbee5a6dda09a8057
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
@@ -103,7 +103,6 @@ define Package/seafile-server/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/seafile/ $(1)$(PYTHON_PKG_DIR)/
 	$(CP) $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/seaserv/ $(1)$(PYTHON_PKG_DIR)/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libseafile.so* $(1)/opt/lib/
 	$(CP) $(PKG_BUILD_DIR)/scripts/sea{f-gc,f-fsck,file,hub}.sh $(1)/opt/share/seafile/seafile-server/
 ifeq ($(CONFIG_SEAFILE_FUSE_SUPPORT),y)
 	$(CP) $(PKG_BUILD_DIR)/scripts/seaf-fuse.sh $(1)/opt/share/seafile/seafile-server/
@@ -129,7 +128,6 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/seafile/ $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libseafile.pc $(1)/opt/lib/pkgconfig/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libseafile.so* $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/seafile/ $(1)$(PYTHON_PKG_DIR)/
 	$(CP) $(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/seaserv/ $(1)$(PYTHON_PKG_DIR)/
 endef
