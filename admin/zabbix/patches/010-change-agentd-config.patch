@@ -11,7 +11,7 @@
 -# Default:
 -# PidFile=/tmp/zabbix_agentd.pid
 +# We do not need PidFile with procd
-+# PidFile=/var/run/zabbix_agentd.pid
++# PidFile=/opt/var/run/zabbix_agentd.pid
 +
 +# use syslog
 +LogType=system
