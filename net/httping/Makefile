@@ -65,6 +65,7 @@ endef
 TARGET_LDFLAGS += $(INTL_LDFLAGS) $(if $(INTL_FULL),-lintl)
 
 MAKE_FLAGS += \
+	PREFIX?=/opt \
 	DEBUG="no" \
 	FW="no" \
 	NC="no" \
@@ -80,8 +81,8 @@ ifeq ($(BUILD_VARIANT),nossl)
 endif
 
 define Package/httping/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/httping $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/httping $(1)/opt/bin/
 endef
 
 Package/httping-nossl/install = $(Package/httping/install)
