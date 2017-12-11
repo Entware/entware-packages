@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
-PKG_VERSION:=5.7.2
-PKG_RELEASE:=2
+PKG_VERSION:=5.8.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
 	https://github.com/collectd/collectd/releases/download/collectd-$(PKG_VERSION)
-PKG_HASH:=9d20a0221569a8d6b80bbc52b86e5e84965f5bafdbf5dfc3790e0fed0763e592
+PKG_HASH:=b06ff476bbf05533cb97ae6749262cc3c76c9969f032bd8496690084ddeb15c9
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libltdl/aclocal.m4
@@ -29,13 +29,13 @@ COLLECTD_PLUGINS_DISABLED:= \
 	apple_sensors \
 	aquaero \
 	barometer \
-	battery \
 	ceph \
 	cgroups \
 	cpusleep \
 	curl_json \
 	curl_xml \
 	dbi \
+	dpdkevents \
 	dpdkstat \
 	drbd \
 	ethstat \
@@ -46,6 +46,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	grpc \
 	hddtemp \
 	hugepages \
+	intel_pmu \
 	intel_rdt \
 	ipc \
 	ipmi \
@@ -57,8 +58,8 @@ COLLECTD_PLUGINS_DISABLED:= \
 	lua \
 	lvm \
 	lpar \
-	madwifi \
 	mbmon \
+	mcelog \
 	md \
 	memcachec \
 	memcached \
@@ -75,6 +76,8 @@ COLLECTD_PLUGINS_DISABLED:= \
 	openldap \
 	openvz \
 	oracle \
+	ovs_events \
+	ovs_stats \
 	perl \
 	pf \
 	pinba \
@@ -85,7 +88,9 @@ COLLECTD_PLUGINS_DISABLED:= \
 	serial \
 	sigrok \
 	smart \
+	snmp_agent \
 	statsd \
+	synproxy \
 	tape \
 	tokyotyrant \
 	turbostat \
@@ -189,7 +194,7 @@ endef
 
 define Package/collectd
 $(call Package/collectd/Default)
-  DEPENDS:= +libpthread +zlib +libltdl +libgcrypt +libgpg-error
+  DEPENDS:= +libpthread +zlib +libltdl +libip4tc +libgcrypt +libgpg-error
   MENU:=1
 endef
 
@@ -275,7 +280,7 @@ define Package/collectd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{collectd,collectdmon} $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/{libcollectdclient.so,libcollectdclient.so.1,libcollectdclient.so.1.0.0} $(1)/opt/lib/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libcollectdclient.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/share/collectd
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/collectd/types.db $(1)/opt/share/collectd/
 	$(INSTALL_DIR) $(1)/opt/etc
