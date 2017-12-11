@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=m4
 PKG_VERSION:=1.4.18
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE_URL:=@GNU/m4
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -26,12 +26,15 @@ define Package/m4
   CATEGORY:=Development
   TITLE:=m4
   URL:=https://www.gnu.org/software/m4/
+  DEPENDS:=+librt
 endef
 
 define Package/m4/description
   GNU M4 is an implementation of the traditional Unix macro processor.
   It is used by GNU Autoconf and Automake.
 endef
+
+TARGET_LDFLAGS+= -lrt
 
 define Package/m4/install
 	$(INSTALL_DIR) $(1)/opt/bin
