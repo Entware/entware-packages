@@ -34,7 +34,7 @@ define Package/automake/description
   with the GNU Coding Standards.
 endef
 
-FIX_PATHS = $(SED) '1c \#!/usr/bin/perl' -e 's| /[^ ]*/bin/perl| /opt/bin/perl|g'
+FIX_PATHS = $(SED) '1c\#!/opt/bin/perl' -e 's| /[^ ]*/bin/perl| /opt/bin/perl|g'
 
 define Package/automake/install
 	$(INSTALL_DIR) $(1)/opt/bin
