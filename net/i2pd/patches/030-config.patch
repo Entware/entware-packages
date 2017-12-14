@@ -15,7 +15,7 @@
  
  ## Logging configuration section
  ## By default logs go to stdout with level 'info' and higher
-@@ -20,20 +20,20 @@
+@@ -20,21 +20,21 @@
  ##  * stdout - print log entries to stdout
  ##  * file - log entries to a file
  ##  * syslog - use syslog, see man 3 syslog
@@ -24,14 +24,14 @@
  ## Path to logfile (default - autodetect)
 -# logfile = /var/log/i2pd.log
 +logfile = /opt/var/log/i2pd.log
- ## Log messages above this level (debug, *info, warn, error)
+ ## Log messages above this level (debug, *info, warn, error, none)
+ ## If you set it to none, logging will be disabled
 -# loglevel = info
 +loglevel = warn
  
  ## Path to storage of i2pd data (RI, keys, peer profiles, ...)
--## Default: ~/.i2pd or /var/lib/i2pd
+ ## Default: ~/.i2pd or /var/lib/i2pd
 -# datadir = /var/lib/i2pd
-+## Default: ~/.i2pd or /opt/var/lib/i2pd
 +datadir = /opt/var/lib/i2pd
  
  ## Daemon mode. Router will go to background after start

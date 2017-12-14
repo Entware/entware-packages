@@ -9,15 +9,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=i2pd
-PKG_VERSION:=2.16.0
+PKG_VERSION:=2.17.0
+PKG_REV:=1c970b07147908fd2351577f09298fa82601f7a2
 PKG_RELEASE:=1
 PKG_BUILD_PARALLEL:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_URL:=https://github.com/PurpleI2P/i2pd.git
-PKG_SOURCE_VERSION:=$(PKG_VERSION)
+PKG_SOURCE_URL:=https://github.com/orignal/i2pd
+PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_MIRROR_HASH:=e9dee670dc53d258919e1fb9444fcaeab0d380c438e71cd5323f08332b937918
 PKG_LICENSE:=BSD-3-clause
 
@@ -29,7 +30,7 @@ define Package/i2pd
 	DEPENDS:=+libopenssl +boost +boost-system +boost-filesystem +boost-regex \
 		 +boost-program_options +boost-date_time +libatomic +zlib
 	TITLE:=full-featured C++ implementation of I2P client
-	URL:=https://github.com/PurpleI2P/i2pd
+	URL:=$(PKG_SOURCE_URL)
 	MAINTAINER:=David Yang <mmyangfl@gmail.com>
 endef
 
