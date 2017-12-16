@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-image-exiftool
-PKG_VERSION:=10.51
+PKG_VERSION:=10.68
 PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=http://www.sno.phy.queensu.ca/~phil/exiftool
 PKG_SOURCE:=Image-ExifTool-$(PKG_VERSION).tar.gz
-PKG_MD5SUM:=9a400a6c66caa75789d0be6722723672
+PKG_HASH:=e06d299f7bc33c726bfd14b41e8efc14130a497086f06b8923993cf65ca1305c
 
 PKG_LICENSE:=GPL-1.0+ Artistic-1.0-Perl
 
@@ -27,7 +27,7 @@ define Package/perl-image-exiftool
   SECTION:=lang
   CATEGORY:=Languages
   TITLE:=Perl library and command-line application for reading, writing and editing meta information
-  URL:=http://exiftool.sourceforge.net/
+  URL:=https://www.sno.phy.queensu.ca/~phil/exiftool/
   DEPENDS:=perl +perlbase-base +perlbase-encode +perlbase-essential +perlbase-file
 endef
 
