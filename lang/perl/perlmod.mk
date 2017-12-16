@@ -57,7 +57,7 @@ define perlmod/Configure
 	(cd $(if $(3),$(3),$(PKG_BUILD_DIR)); \
 	PERL_MM_USE_DEFAULT=1 \
 	$(2) \
-	$(PERL_CMD) -MConfig -e '$$$${tied %Config::Config}{cpprun}="$(GNU_TARGET_NAME)-cpp -E"; do "Makefile.PL"' \
+	$(PERL_CMD) -MConfig -e '$$$${tied %Config::Config}{cpprun}="$(GNU_TARGET_NAME)-cpp -E"; unshift(@INC, "."); unless (defined (do "./Makefile.PL")) { if ($$$$@) { die "couldn\047t parse Makefile.PL: $$$$@"; } elsif ($$$$!) { die "Could\047t run Makefile.PL: $$$$!"; } }; die "No Makefile generated!" unless -f "Makefile";' \
 		$(1) \
 		AR=ar \
 		CC=$(GNU_TARGET_NAME)-gcc \
@@ -69,7 +69,7 @@ define perlmod/Configure
 		EXE_EXT=" " \
 		FULL_AR=$(GNU_TARGET_NAME)-ar \
 		LD=$(GNU_TARGET_NAME)-gcc \
-		LDDLFLAGS="-shared $(TARGET_LDFLAGS)"  \
+		LDDLFLAGS="-shared -rdynamic $(TARGET_LDFLAGS)"  \
 		LDFLAGS="$(EXTRA_LIBDIRS:%=-L%) $(EXTRA_LIBS:%=-l%) " \
 		LIBC=" " \
 		LIB_EXT=.a \
