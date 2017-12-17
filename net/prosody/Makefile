@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=prosody
 PKG_VERSION:=0.9.12
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://prosody.im/downloads/source
@@ -105,6 +105,10 @@ define Package/prosody/install
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/prosody/util/sasl/*.lua $(1)/opt/lib/prosody/util/sasl/
 	#$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/prosody/util/sasl/*.so $(1)/opt/lib/prosody/util/sasl/
 	$(INSTALL_DIR) $(1)/opt/var/{log,run}/prosody
+	# fix opt paths
+	$(SED) '1c\#!/opt/bin/lua' $(1)/opt/bin/prosody{,ctl}
+	$(SED) 's|/etc/ssl/certs|/opt/etc/ssl/certs|' $(1)/opt/lib/prosody/core/certmanager.lua
+	$(SED) 's|/etc/mime.types|/opt/etc/mime.types|' $(1)/opt/lib/prosody/modules/mod_http_files.lua
 endef
 
 $(eval $(call BuildPackage,prosody))
