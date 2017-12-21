@@ -28,7 +28,7 @@ define Package/libtalloc
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Core memory allocator used in Samba
-  DEPENDS:=+USE_GLIBC:libbsd $(ICONV_DEPENDS) +libattr
+  DEPENDS:=$(ICONV_DEPENDS) +libattr
   URL:=https://talloc.samba.org/talloc/doc/html/index.html
 endef
 
@@ -85,9 +85,9 @@ define Build/Configure
 		\n" ; \
 		$(CONFIGURE_VARS) \
 		./buildtools/bin/waf configure \
-			--prefix=/usr \
-			--sysconfdir=/etc \
-			--localstatedir=/var \
+			--prefix=/opt \
+			--sysconfdir=/opt/etc \
+			--localstatedir=/opt/var \
 			--with-libiconv="$(ICONV_PREFIX)" \
 			--cross-compile \
 			--cross-answers=$(PKG_BUILD_DIR)/cache.txt \
@@ -97,16 +97,16 @@ define Build/Configure
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/bin/default/libtalloc.so $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_BUILD_DIR)/*.h $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/bin/default/libtalloc.so $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_BUILD_DIR)/*.h $(1)/opt/include/
 endef
 
 define Package/libtalloc/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/bin/default/libtalloc.so $(1)/usr/lib/libtalloc.so.$(MAJOR_VERSION)
-	(cd $(1)/usr/lib; ln -sf libtalloc.so.$(MAJOR_VERSION) libtalloc.so)
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/bin/default/libtalloc.so $(1)/opt/lib/libtalloc.so.$(MAJOR_VERSION)
+	(cd $(1)/opt/lib; ln -sf libtalloc.so.$(MAJOR_VERSION) libtalloc.so)
 endef
 
 $(eval $(call BuildPackage,libtalloc))
