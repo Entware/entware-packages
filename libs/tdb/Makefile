@@ -31,6 +31,7 @@ define Package/tdb
   CATEGORY:=Libraries
   TITLE:=Trivial Database
   URL:=http://sourceforge.net/projects/tdb/
+  DEPENDS:=+libattr
   MAINTAINER:=Dmitry V. Zimin <pfzim@mail.ru>
 endef
 
@@ -42,11 +43,13 @@ define Package/tdb/description
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/tdb.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/tdb.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
 endef
+
+CONFIGURE_PREFIX = /opt
 
 CONFIGURE_ARGS = \
 	--target=$(GNU_TARGET_NAME) \
@@ -59,9 +62,9 @@ CONFIGURE_ARGS = \
 	--bindir=$(CONFIGURE_PREFIX)/bin \
 	--sbindir=$(CONFIGURE_PREFIX)/sbin \
 	--libexecdir=$(CONFIGURE_PREFIX)/lib \
-	--sysconfdir=/etc \
+	--sysconfdir=/opt/etc \
 	--datadir=$(CONFIGURE_PREFIX)/share \
-	--localstatedir=/var \
+	--localstatedir=/opt/var \
 	--mandir=$(CONFIGURE_PREFIX)/man \
 	--infodir=$(CONFIGURE_PREFIX)/info \
 	$(DISABLE_IPV6)
@@ -82,10 +85,10 @@ define Build/Configure
 endef
 
 define Package/tdb/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,tdb))
