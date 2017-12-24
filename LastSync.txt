@@ -1,8 +1,8 @@
-commit 1484eee7598763b599d1721ba8650cdbf22a47c7
-Merge: 56d5ede 04f6b4c
+commit 8c69bc44364441157ecf61707bc7ce4c74ea4746
+Merge: c4e270e 764fdfd
 Author: champtar <champetier.etienne@gmail.com>
-Date:   Sun Dec 10 16:51:32 2017 -0800
+Date:   Sat Dec 23 15:29:21 2017 -0800
 
-    Merge pull request #5259 from valdi74/update_python-curl
+    Merge pull request #5061 from mrkiko/hostside-luarocks
     
-    python-curl: update to 7.43.0.1
+    luarocks: Allow building luarocks for the host
