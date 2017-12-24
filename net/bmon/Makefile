@@ -45,8 +45,8 @@ CONFIGURE_VARS += \
 TARGET_CFLAGS+= -std=gnu99
 
 define Package/bmon/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/bmon $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/bmon $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,bmon))
