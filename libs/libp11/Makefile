@@ -42,7 +42,7 @@ CONFIGURE_ARGS += --with-enginesdir=/opt/lib/engines
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/libp11.h $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libp11.{a,so} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libp11.so* $(1)/opt/lib/
