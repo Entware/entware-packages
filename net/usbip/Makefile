@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010-2015 OpenWrt.org
+# Copyright (C) 2010-2017 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=6
+PKG_RELEASE:=8
 PKG_LICENSE:=GPL-2.0
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -30,7 +30,6 @@ define prepare_source_directory
 endef
 Hooks/Prepare/Pre += prepare_source_directory
 
-PKG_BUILD_DEPENDS:=eudev
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_FLAGS:=nonshared
@@ -81,9 +80,13 @@ endef
 
 CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include"
 
+USB_IDS_REV:=0a6be488b4c1485d30c9efee1cc895af5d4a1383
+USB_IDS_FILE:=usb.ids.$(USB_IDS_REV)
 define Download/usb.ids
-  URL:=http://www.linux-usb.org/
-  FILE:=usb.ids
+  FILE:=$(USB_IDS_FILE)
+  URL_FILE:=usb.ids
+  URL:=@GITHUB/gentoo/hwids/$(USB_IDS_REV)
+  HASH:=2d0403ffccc0ff7150e32c0bf8e2878816b76ba08d2c3bb1059f33627a3da30f
 endef
 
 define Package/usbip/install
