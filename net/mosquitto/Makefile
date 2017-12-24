@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
 PKG_VERSION:=1.4.14
-PKG_RELEASE:=1a
+PKG_RELEASE:=3
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
 
@@ -144,7 +144,7 @@ endef
 define Package/libmosquittopp
     SECTION:=libs
     CATEGORY:=Libraries
-    DEPENDS:=+libmosquitto-ssl +libstdcpp
+    DEPENDS:=libmosquitto +libstdcpp
     TITLE:= mosquitto - client c++ library
 endef
 
@@ -156,8 +156,6 @@ define Package/mosquitto-ssl/conffiles
 /opt/etc/mosquitto/mosquitto.conf
 /opt/etc/config/mosquitto
 endef
-
-TARGET_CFLAGS += -D_DEFAULT_SOURCE
 
 Package/mosquitto-nossl/conffiles = $(Package/mosquitto-ssl/conffiles)
 
