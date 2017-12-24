@@ -13,7 +13,7 @@ PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.5
+PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v3.5
 PKG_HASH:=0924dec90c37c05f49fec966eba3672dab4d336d879e5c06e06e13325cbfec25
 #PKG_FIXUP:=autoreconf gettext-version
 PKG_MAINTAINER:=Nikos Mavrogiannopoulos <nmav@gnutls.org>
@@ -96,7 +96,7 @@ endef
 define Package/libgnutls
 $(call Package/gnutls/Default)
   TITLE+= (library)
-  DEPENDS+= +libnettle +!LIBNETTLE_MINI:libgmp +GNUTLS_EXT_LIBTASN1:libtasn1 +GNUTLS_PKCS11:p11-kit +libidn
+  DEPENDS+= +libnettle +!LIBNETTLE_MINI:libgmp +GNUTLS_EXT_LIBTASN1:libtasn1 +GNUTLS_PKCS11:p11-kit
 endef
 
 define Package/libgnutls/description
@@ -113,8 +113,8 @@ CONFIGURE_ARGS+= \
 	--with-included-unistring \
 	--disable-guile \
 	--disable-nls \
+	--without-idn \
 	--without-zlib \
-	--disable-cxx \
 	--enable-local-libopts \
 	--disable-doc \
 	--disable-tests \
