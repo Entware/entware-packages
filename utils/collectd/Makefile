@@ -194,7 +194,7 @@ endef
 
 define Package/collectd
 $(call Package/collectd/Default)
-  DEPENDS:= +libpthread +zlib +libltdl +libip4tc +libgcrypt +libgpg-error
+  DEPENDS:= +libpthread +zlib +libltdl +libgcrypt +libgpg-error
   MENU:=1
 endef
 
