@@ -4,12 +4,11 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Downgraded...
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libuv
-PKG_VERSION:=1.11.0
+PKG_VERSION:=1.17.0
 PKG_RELEASE:=1
 
 PKG_LICENSE_FILES:=LICENSE
@@ -18,7 +17,7 @@ PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://dist.libuv.org/dist/v$(PKG_VERSION)/
-PKG_HASH:=0f686994dcea6cb5cd3f50e35d5fdda07211b4b3586516df7c39bdbf19acb9a7
+PKG_HASH:=ab9eb5355eb868e970a02022e0371d819251df6bbb88aada630cfcf8ac7b1c9b
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 PKG_BUILD_PARALLEL:=1
