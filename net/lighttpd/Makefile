@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lighttpd
 PKG_VERSION:=1.4.48
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://download.lighttpd.net/lighttpd/releases-1.4.x
@@ -20,6 +20,10 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
+
+REBUILD_MODULES=authn_gssapi authn_ldap authn_mysql cml magnet mysql_vhost trigger_b4_dl webdav
+
+PKG_CONFIG_DEPENDS:=CONFIG_LIGHTTPD_SSL $(patsubst %,CONFIG_PACKAGE_lighttpd-mod-%,$(REBUILD_MODULES))
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -49,6 +53,8 @@ config LIGHTTPD_SSL
 	  lighttpd confguration file.
 endef
 
+BASE_MODULES:=dirlisting indexfile staticfile
+
 CONFIGURE_ARGS+= \
 	--libdir=/opt/lib/lighttpd \
 	--sysconfdir=/opt/etc/lighttpd \
@@ -68,6 +74,7 @@ CONFIGURE_VARS+= \
 ifneq ($(strip $(CONFIG_LIGHTTPD_SSL)),)
   CONFIGURE_ARGS+= \
 	--with-openssl="$(STAGING_DIR)/opt"
+  BASE_MODULES+= openssl
 else
   CONFIGURE_ARGS+= \
 	--without-openssl
@@ -182,7 +189,7 @@ define Package/lighttpd/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S80lighttpd $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/lib/lighttpd
-	for m in dirlisting indexfile staticfile; do \
+	for m in $(BASE_MODULES); do \
 		$(CP) $(PKG_INSTALL_DIR)/opt/lib/lighttpd/mod_$$$${m}.so $(1)/opt/lib/lighttpd/ ; \
 	done
 	$(INSTALL_DIR) $(1)/opt/sbin
