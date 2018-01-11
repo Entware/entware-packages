@@ -1,0 +1,13 @@
+--- a/src/fdevent.c
++++ b/src/fdevent.c
+@@ -17,9 +17,7 @@
+ #include <fcntl.h>
+ #include <time.h>
+ 
+-#ifdef SOCK_CLOEXEC
+-static int use_sock_cloexec;
+-#endif
++#undef SOCK_CLOEXEC
+ 
+ int fdevent_config(server *srv) {
+ 	static const struct ev_map { fdevent_handler_t et; const char *name; } event_handlers[] =
