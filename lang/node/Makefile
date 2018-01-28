@@ -105,6 +105,10 @@ ifneq ($(findstring neon,$(CONFIG_CPU_TYPE)),)
 ARM_FPU=neon
 endif
 
+ifeq ($(ARCH),aarch64)
+ARM_FPU=neon
+endif
+
 CONFIGURE_ARGS+= --with-arm-fpu=$(ARM_FPU)
 endif
 endif

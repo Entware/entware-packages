@@ -43,7 +43,7 @@ endef
 define Package/pgsql-cli
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libpq +librt
+  DEPENDS:=+libpq +librt +libreadline +libncursesw 
   TITLE:=Command Line Interface (CLI) to PostgreSQL databases
   URL:=http://www.postgresql.org/
   SUBMENU:=database
@@ -179,7 +179,7 @@ define Build/Configure
 	$(SED) 's@ECPG = ../../preproc/ecpg@ECPG = $(STAGING_DIR_HOSTPKG)/bin/ecpg@' $(PKG_BUILD_DIR)/src/interfaces/ecpg/test/Makefile.regress
 endef
 
-TARGET_CFLAGS += $(FPIC) -lpthread
+TARGET_CFLAGS += -fPIC -lpthread
 
 # because PROFILE means something else in the project Makefile
 unexport PROFILE
