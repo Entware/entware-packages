@@ -148,7 +148,7 @@ define Build/Compile
 			DESTDIR="$(PKG_INSTALL_DIR)" $(MAKE_ARGS) all install
 endef
 
-ENVCFLAGS:="$(TARGET_OPTIMIZATION) $(EXTRA_OPTIMIZATION)
+ENVCFLAGS:="$(TARGET_OPTIMIZATION) $(call qstrip,$(CONFIG_EXTRA_OPTIMIZATION))
 ifeq ($(CONFIG_SOFT_FLOAT),y)
     ifeq ($(CONFIG_arm),y)
 	ENVCFLAGS+= -mfloat-abi=soft
