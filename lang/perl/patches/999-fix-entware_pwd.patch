@@ -1,0 +1,10 @@
+--- a/dist/PathTools/Cwd.pm
++++ b/dist/PathTools/Cwd.pm
+@@ -182,6 +182,7 @@
+     foreach my $try ('/bin/pwd',
+ 		     '/usr/bin/pwd',
+ 		     '/QOpenSys/bin/pwd', # OS/400 PASE.
++		     '/opt/bin/pwd', # Entware.
+ 		    ) {
+ 	if( -x $try ) {
+ 	    $pwd_cmd = $try;
