@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pulseaudio
 PKG_VERSION:=11.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://freedesktop.org/software/pulseaudio/releases/
@@ -21,6 +21,8 @@ PKG_BUILD_DEPENDS:=intltool/host
 
 PKG_FIXUP:=autoreconf
 PKG_USE_MIPS16:=0
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_INSTALL = 1
 
@@ -41,6 +43,15 @@ endef
 
 define Package/pulseaudio-daemon
   $(call Package/pulseaudio/Default)
+  VARIANT:=noavahi
+endef
+
+define Package/pulseaudio-daemon-avahi
+  $(call Package/pulseaudio/Default)
+  DEPENDS+=+dbus +libavahi-client +sbc
+#  DEPENDS+=+avahi-daemon 
+  TITLE+= (avahi/bluez)
+  VARIANT:=avahi
 endef
 
 define Package/pulseaudio/Default/description
@@ -51,7 +62,19 @@ define Package/pulseaudio-daemon/description
   $(call Package/pulseaudio/Default/description)
 endef
 
+define Package/pulseaudio-daemon-avahi/description
+  $(call Package/pulseaudio/Default/description)
+  This package enables avahi,bluez and is compiled against dbus, sbc, and avahi.
+endef
+
 define Package/pulseaudio-daemon/conffiles
+/opt/etc/pulse/client.conf
+/opt/etc/pulse/daemon.conf
+/opt/etc/pulse/default.pa
+/opt/etc/pulse/system.pa
+endef
+
+define Package/pulseaudio-daemon-avahi/conffiles
 /opt/etc/pulse/client.conf
 /opt/etc/pulse/daemon.conf
 /opt/etc/pulse/default.pa
@@ -64,6 +87,7 @@ define Package/pulseaudio-tools
   DEPENDS:=+libsndfile +pulseaudio
   TITLE:=Tools for Pulseaudio
   URL:=http://www.pulseaudio.org
+  VARIANT:=noavahi
 endef
 
 define Package/pulseaudio-profiles
@@ -94,13 +118,23 @@ CONFIGURE_ARGS += \
 	--disable-jack \
 	--disable-asyncns \
 	--disable-lirc \
-	--disable-bluez \
 	--disable-udev \
 	--without-fftw \
-	--disable-avahi \
-	--disable-dbus \
 	--without-soxr \
 	--without-speex
+# --disable-bluez
+
+ifeq ($(BUILD_VARIANT),avahi)
+CONFIGURE_ARGS += \
+	--enable-avahi \
+	--enable-dbus
+endif
+
+ifeq ($(BUILD_VARIANT),noavahi)
+CONFIGURE_ARGS += \
+	--disable-avahi \
+	--disable-dbus
+endif
 
 CONFIGURE_VARS += \
 	PKG_CONFIG_LIBDIR="$(STAGING_DIR)/opt/lib/pkgconfig"
@@ -141,6 +175,10 @@ define Package/pulseaudio-daemon/install
 		$(PKG_INSTALL_DIR)/opt/bin/pulseaudio \
 		$(1)/opt/bin/pulseaudio
 
+#	$(INSTALL_BIN) \
+#		./files/pulseaudio.init \
+#		$(1)/etc/init.d/pulseaudio
+
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/etc/pulse/* \
 		$(1)/opt/etc/pulse
@@ -161,6 +199,49 @@ define Package/pulseaudio-daemon/install
 		$(PKG_INSTALL_DIR)/opt/lib/pulse-$(PKG_VERSION)/modules/module*.so \
 		$(1)/opt/lib/pulse-$(PKG_VERSION)/modules/
 
+endef
+
+define Package/pulseaudio-daemon-avahi/install
+	$(INSTALL_DIR) \
+		$(1)/opt/etc/pulse \
+		$(1)/opt/etc/init.d \
+		$(1)/opt/bin \
+		$(1)/opt/lib \
+		$(1)/opt/lib/pulseaudio \
+		$(1)/opt/lib/pulse-$(PKG_VERSION)/modules \
+		$(1)/opt/etc/dbus-1/system.d
+
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/opt/bin/pulseaudio \
+		$(1)/opt/bin/pulseaudio
+
+#	$(INSTALL_BIN) \
+#		./files/pulseaudio.init \
+#		$(1)/etc/init.d/pulseaudio
+
+	$(INSTALL_DATA) \
+		$(PKG_INSTALL_DIR)/opt/etc/pulse/* \
+		$(1)/opt/etc/pulse
+
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/lib/*.so* \
+		$(1)/opt/lib/
+
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/lib/pulseaudio/* \
+		$(1)/opt/lib/pulseaudio/
+
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/lib/pulse-$(PKG_VERSION)/modules/lib*.so \
+		$(1)/opt/lib/
+
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/lib/pulse-$(PKG_VERSION)/modules/module*.so \
+		$(1)/opt/lib/pulse-$(PKG_VERSION)/modules/
+
+	$(INSTALL_DATA) \
+		$(PKG_INSTALL_DIR)/opt/etc/dbus-1/system.d/pulseaudio-system.conf \
+		$(1)/opt/etc/dbus-1/system.d/pulseaudio-system.conf
 endef
 
 define Package/pulseaudio-tools/install
@@ -187,5 +268,6 @@ define Package/pulseaudio-profiles/install
 endef
 
 $(eval $(call BuildPackage,pulseaudio-daemon))
+$(eval $(call BuildPackage,pulseaudio-daemon-avahi))
 $(eval $(call BuildPackage,pulseaudio-tools))
 $(eval $(call BuildPackage,pulseaudio-profiles))
