@@ -43,4 +43,4 @@ define Package/luai2c/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/examples/* $(1)/usr/lib/lua/i2c
 endef
 
-$(eval $(call BuildPackage,luai2c))
+#$(eval $(call BuildPackage,luai2c))
