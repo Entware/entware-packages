@@ -43,5 +43,5 @@ define Package/sqm-scripts-extra/install
 	$(INSTALL_DATA) ./src/* $(1)/usr/lib/sqm/
 endef
 
-$(eval $(call BuildPackage,sqm-scripts-extra))
+#$(eval $(call BuildPackage,sqm-scripts-extra))
 
