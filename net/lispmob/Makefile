@@ -54,4 +54,4 @@ define Package/lispd/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/openWRT/openwrt.init.script $(1)/etc/init.d/lisp
 endef
 
-$(eval $(call BuildPackage,lispd))
+#$(eval $(call BuildPackage,lispd))
