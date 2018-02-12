@@ -43,4 +43,4 @@ define Package/beep/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/beep $(1)/usr/bin
 endef
 
-$(eval $(call BuildPackage,beep))
+#$(eval $(call BuildPackage,beep))
