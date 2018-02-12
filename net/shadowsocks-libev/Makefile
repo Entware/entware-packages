@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 Yousong Zhou <yszhou4tech@gmail.com>
+# Copyright (C) 2017-2018 Yousong Zhou <yszhou4tech@gmail.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -13,12 +13,12 @@ include $(TOPDIR)/rules.mk
 # - check if default mode has changed from being tcp_only
 #
 PKG_NAME:=shadowsocks-libev
-PKG_VERSION:=3.1.1
-PKG_RELEASE:=1
+PKG_VERSION:=3.1.3
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
-PKG_HASH:=24a002c100fbe9b4481e3134273cb1a2f25a4026eb030760e7e7eb57f8466ef6
+PKG_HASH:=58fb438d2cfe33cfa6ac8c50e587e2138c50e59a4b943f88d22883bf2e192a96
 
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 
@@ -90,7 +90,7 @@ endef
 define Package/shadowsocks-libev-ss-rules/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) ./files/ss-rules $(1)/opt/bin
-#	$(INSTALL_DIR) $(1)/etc
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
 #	$(INSTALL_DATA) ./files/firewall.ss-rules $(1)/etc
 #	$(INSTALL_BIN) ./files/ss-rules.defaults $(1)/etc/uci-defaults
 endef
