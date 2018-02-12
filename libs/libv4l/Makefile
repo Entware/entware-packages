@@ -25,6 +25,8 @@ PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
+#PKG_BUILD_DEPENDS:=argp-standalone
+
 #include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -54,7 +56,7 @@ define Package/libv4l
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= wrapper libraries
-  DEPENDS := +libpthread +librt $(ICONV_DEPENDS)
+  DEPENDS := +libpthread +librt $(ICONV_DEPENDS) $(INTL_DEPENDS)
 endef
 
 define Package/libv4l/description
@@ -66,7 +68,7 @@ define Package/v4l-utils
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS := +libv4l +libstdcpp $(ICONV_DEPENDS)
+  DEPENDS := +libv4l +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS)
 endef
 
 define Package/v4l-utils/description
@@ -75,6 +77,7 @@ define Package/v4l-utils/description
 endef
 
 TARGET_CFLAGS += $(FPIC)
+#TARGET_LDFLAGS += -largp
 
 CONFIGURE_ARGS+= \
 	--disable-doxygen-doc \
@@ -102,8 +105,7 @@ endef
 define Package/v4l-utils/install
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/rc_maps.cfg $(1)/opt/etc/
-	$(INSTALL_DIR) $(1)/opt/lib/udev
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/udev/rc_keymaps $(1)/opt/lib/udev/
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/rc_keymaps $(1)/opt/etc/
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{cx18,ivtv}-ctl $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/decode_tm6000 $(1)/opt/bin/
