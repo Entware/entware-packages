@@ -23,15 +23,15 @@ PKG_LICENSE_FILES:=LICENSES.txt
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
-$(call include_mk, python3-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
 define Package/python-lxml/Default
   SECTION:=lang
   CATEGORY:=Languages
   SUBMENU:=Python
   URL:=http://lxml.de
-  DEPENDS:=+libxml2 +libxslt +libexslt
+  DEPENDS:=+libxml2 +libxslt +libexslt +USE_UCLIBC:librt
 endef
 
 define Package/python-lxml
