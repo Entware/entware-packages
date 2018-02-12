@@ -1,0 +1,30 @@
+--- a/libdm/libdm-string.c
++++ b/libdm/libdm-string.c
+@@ -468,7 +468,9 @@
+ 	unsigned base = BASE_UNKNOWN;
+ 	unsigned s;
+ 	int precision;
++#ifndef __UCLIBC__
+ 	double d;
++#endif
+ 	uint64_t byte = UINT64_C(0);
+ 	uint64_t units = UINT64_C(1024);
+ 	char *size_buf = NULL;
+@@ -587,7 +589,7 @@
+ 
+ 		for (s = 0; s < NUM_UNIT_PREFIXES && size < byte; s++)
+ 			byte /= units;
+-
++#ifndef __UCLIBC__
+ 		if ((s < NUM_UNIT_PREFIXES) &&
+ 		    ((unit_type == 'R') || (unit_type == 'r'))) {
+ 			/* When the rounding would cause difference, add '<' prefix
+@@ -597,7 +599,7 @@
+ 			if (!_close_enough(floorl(d), nearbyintl(d)))
+ 				prefix = "<";
+ 		}
+-
++#endif
+ 		include_suffix = 1;
+ 	}
+ 

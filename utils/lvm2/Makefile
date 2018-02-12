@@ -9,14 +9,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=LVM2
-PKG_VERSION:=2.02.176
+PKG_VERSION:=2.02.177
 PKG_RELEASE:=1
 PKG_LICENSE:=GPL-2.0 LGPL-2.1
 
 PKG_SOURCE:=$(PKG_NAME).$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=ftp://sources.redhat.com/pub/lvm2/releases \
 		http://ftp.gwdg.de/pub/linux/sources.redhat.com/lvm2/
-PKG_HASH:=dece83628c2c78a267a126ce6046d506582185ae5d40fb8d59b56547fccea473
+PKG_HASH:=4025a23ec9b15c2cb7486d151c29dc953b75efc4d452cfe9dbbc7c0fac8e80f2
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME).$(PKG_VERSION)
 
@@ -50,7 +50,7 @@ define Package/lvm2/description
  LVM toolset.
 endef
 
-CONFIGURE_ARGS += --disable-o_direct
+CONFIGURE_ARGS += --disable-o_direct --with-confdir=/opt/etc
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
@@ -76,13 +76,20 @@ endef
 
 define Package/lvm2/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{dmsetup,lvm} $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/lvm $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dmsetup $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/lvm
-	$(SED) '/^[[:space:]]*\(#\|$$$$\)/d; /cache_dir/s@.*@    cache_dir = "/opt/tmp/lvm/cache"@' $(PKG_BUILD_DIR)/conf/example.conf
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/example.conf $(1)/opt/etc/lvm/lvm.conf
+	$(SED) '/^[[:space:]]*\(#\|$$$$\)/d; /cache_dir/s@.*@	cache_dir = "/opt/tmp/lvm/cache"@' $(PKG_INSTALL_DIR)/opt/etc/lvm/lvm.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/lvm/lvm.conf $(1)/opt/etc/lvm/
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/lvm/lvmlocal.conf $(1)/opt/etc/lvm/
+	$(INSTALL_DIR) $(1)/opt/etc/lvm/profile
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/lvm/profile/* $(1)/opt/etc/lvm/profile/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S06lvm2 $(1)/opt/etc/init.d
 	$(FIND) $(PKG_INSTALL_DIR)/opt/sbin/ -type l -exec $(CP) -a {} $(1)/opt/sbin/ \;
+	#fix /opt
+	$(SED) 's|/etc/lvm|/opt/etc/lvm|g' $(1)/opt/etc/lvm/lvm.conf
+	$(SED) 's|/run/lock|/opt/run/lock|' $(1)/opt/etc/lvm/lvm.conf
 endef
 
 define Package/lvm2/conffiles
