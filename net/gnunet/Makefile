@@ -1,10 +1,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnunet
-PKG_SOURCE_VERSION:=311658e2bab990bbdb68607295e5a79fe082b384
-PKG_MIRROR_HASH:=f85d52f576a84744a9e7a311448fb887ac2b6689f45096ebe663fcd1268b179e
+PKG_SOURCE_VERSION:=b673e9c3ed4a211b974bc602b893a427533566d7
+PKG_MIRROR_HASH:=89bc8cb5813bd38e0006d91fcd091b0eef533d6ff8462c800bf37d2e19966beb
 
-PKG_VERSION:=0.10.2-git-20171219-$(PKG_SOURCE_VERSION)
+PKG_VERSION:=0.10.2-git-20180205-$(PKG_SOURCE_VERSION)
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -228,7 +228,7 @@ DEPENDS_gns:=+gnunet-vpn +iptables-mod-extra
 USERID_gns:=gnunet=958:gnunetdns=452
 BIN_gns:=gns gns-import.sh namecache namestore resolver
 LIB_gns:=gns gnsrecord namecache namestore
-PLUGIN_gns:=block_dns block_gns gnsrecord_dns gnsrecord_gns gnsrecord_identity
+PLUGIN_gns:=block_dns block_gns gnsrecord_conversation gnsrecord_dns gnsrecord_gns
 LIBEXEC_gns:=dns2gns helper-dns service-dns service-gns service-namecache service-namestore service-resolver service-zonemaster
 CONF_gns:=dns gns namecache namestore resolver zonemaster
 
@@ -382,48 +382,48 @@ define PostInstFixSUIDPerms
   endef
 endef
 
-$(eval $(call PostInstFixSUIDPerms,gnunet))
-$(eval $(call PostInstFixSUIDPerms,gnunet-gns))
-$(eval $(call PostInstFixSUIDPerms,gnunet-transport-bluetooth))
-$(eval $(call PostInstFixSUIDPerms,gnunet-transport-wlan))
-$(eval $(call PostInstFixSUIDPerms,gnunet-vpn))
+#$(eval $(call PostInstFixSUIDPerms,gnunet))
+#$(eval $(call PostInstFixSUIDPerms,gnunet-gns))
+#$(eval $(call PostInstFixSUIDPerms,gnunet-transport-bluetooth))
+#$(eval $(call PostInstFixSUIDPerms,gnunet-transport-wlan))
+#$(eval $(call PostInstFixSUIDPerms,gnunet-vpn))
 
-$(eval $(call BuildPackage,gnunet))
-$(eval $(call BuildComponent,conversation,conversation component,))
-$(eval $(call BuildComponent,datastore,data storage components,))
-$(eval $(call BuildComponent,dht-cli,DHT command line clients,))
-# $(eval $(call BuildComponent,dv,distance-vector routing component,y))
-$(eval $(call BuildComponent,experiments,experimental components,))
-$(eval $(call BuildComponent,fs,file-sharing components,))
-$(eval $(call BuildComponent,gns,name resolution components,y))
-$(eval $(call BuildComponent,gns-proxy,gns-proxy component,))
-$(eval $(call BuildComponent,hostlist,HTTP bootstrap hostlist client and server,y))
-$(eval $(call BuildComponent,peerstore,peerstore local persistency component,))
-$(eval $(call BuildComponent,rest,REST interface,))
-$(eval $(call BuildComponent,rps,RPS routing component,y))
-$(eval $(call BuildComponent,social,social components,))
-$(eval $(call BuildComponent,namestore-fcfsd,first-come-first-serve registration server,))
-$(eval $(call BuildComponent,dhtcache-heap,heap-based dhtcache plugin,y))
-$(eval $(call BuildComponent,fs-heap,heap-based filesharing plugin,))
-$(eval $(call BuildComponent,gns-flat,flat storage GNS plugins,y))
-$(eval $(call BuildComponent,peerstore-flat,flat storage peerstore plugin,))
-$(eval $(call BuildComponent,mysql,mySQL backend,))
-$(eval $(call BuildComponent,fs-mysql,mySQL filesharing plugins,))
-$(eval $(call BuildComponent,social-mysql,mySQL social plugins,))
-$(eval $(call BuildComponent,pgsql,PostgreSQL backend,))
-$(eval $(call BuildComponent,dhtcache-pgsql,PostgreSQL dhtcache plugin,))
-$(eval $(call BuildComponent,fs-pgsql,PostgreSQL filesharing plugin,))
-$(eval $(call BuildComponent,gns-pgsql,PostgreSQL GNS plugins,))
-$(eval $(call BuildComponent,social-pgsql,PostgreSQL social plugin,))
-$(eval $(call BuildComponent,sqlite,libsqlite3 backend,))
-$(eval $(call BuildComponent,dhtcache-sqlite,libsqlite3 dhtcache plugin,))
-$(eval $(call BuildComponent,fs-sqlite,libsqlite3 filesharing plugin,))
-$(eval $(call BuildComponent,gns-sqlite,libsqlite3 gns plugins,))
-$(eval $(call BuildComponent,peerstore-sqlite,libsqlite3 peerstore plugin,))
-$(eval $(call BuildComponent,social-sqlite,libsqlite3 social plugins,))
-$(eval $(call BuildComponent,transport-bluetooth,bluetooth transport,))
-$(eval $(call BuildComponent,transport-http_client,HTTP/HTTPS client transport,y))
-$(eval $(call BuildComponent,transport-http_server,HTTP/HTTPS server transport,))
-$(eval $(call BuildComponent,transport-wlan,WLAN transport,y))
-$(eval $(call BuildComponent,utils,administration utililties,))
-$(eval $(call BuildComponent,vpn,vpn components,y))
+#$(eval $(call BuildPackage,gnunet))
+#$(eval $(call BuildComponent,conversation,conversation component,))
+#$(eval $(call BuildComponent,datastore,data storage components,))
+#$(eval $(call BuildComponent,dht-cli,DHT command line clients,))
+## $(eval $(call BuildComponent,dv,distance-vector routing component,y))
+#$(eval $(call BuildComponent,experiments,experimental components,))
+#$(eval $(call BuildComponent,fs,file-sharing components,))
+#$(eval $(call BuildComponent,gns,name resolution components,y))
+#$(eval $(call BuildComponent,gns-proxy,gns-proxy component,))
+#$(eval $(call BuildComponent,hostlist,HTTP bootstrap hostlist client and server,y))
+#$(eval $(call BuildComponent,peerstore,peerstore local persistency component,))
+#$(eval $(call BuildComponent,rest,REST interface,))
+#$(eval $(call BuildComponent,rps,RPS routing component,y))
+#$(eval $(call BuildComponent,social,social components,))
+#$(eval $(call BuildComponent,namestore-fcfsd,first-come-first-serve registration server,))
+#$(eval $(call BuildComponent,dhtcache-heap,heap-based dhtcache plugin,y))
+#$(eval $(call BuildComponent,fs-heap,heap-based filesharing plugin,))
+#$(eval $(call BuildComponent,gns-flat,flat storage GNS plugins,y))
+#$(eval $(call BuildComponent,peerstore-flat,flat storage peerstore plugin,))
+#$(eval $(call BuildComponent,mysql,mySQL backend,))
+#$(eval $(call BuildComponent,fs-mysql,mySQL filesharing plugins,))
+#$(eval $(call BuildComponent,social-mysql,mySQL social plugins,))
+#$(eval $(call BuildComponent,pgsql,PostgreSQL backend,))
+#$(eval $(call BuildComponent,dhtcache-pgsql,PostgreSQL dhtcache plugin,))
+#$(eval $(call BuildComponent,fs-pgsql,PostgreSQL filesharing plugin,))
+#$(eval $(call BuildComponent,gns-pgsql,PostgreSQL GNS plugins,))
+#$(eval $(call BuildComponent,social-pgsql,PostgreSQL social plugin,))
+#$(eval $(call BuildComponent,sqlite,libsqlite3 backend,))
+#$(eval $(call BuildComponent,dhtcache-sqlite,libsqlite3 dhtcache plugin,))
+#$(eval $(call BuildComponent,fs-sqlite,libsqlite3 filesharing plugin,))
+#$(eval $(call BuildComponent,gns-sqlite,libsqlite3 gns plugins,))
+#$(eval $(call BuildComponent,peerstore-sqlite,libsqlite3 peerstore plugin,))
+#$(eval $(call BuildComponent,social-sqlite,libsqlite3 social plugins,))
+#$(eval $(call BuildComponent,transport-bluetooth,bluetooth transport,))
+#$(eval $(call BuildComponent,transport-http_client,HTTP/HTTPS client transport,y))
+#$(eval $(call BuildComponent,transport-http_server,HTTP/HTTPS server transport,))
+#$(eval $(call BuildComponent,transport-wlan,WLAN transport,y))
+#$(eval $(call BuildComponent,utils,administration utililties,))
+#$(eval $(call BuildComponent,vpn,vpn components,y))
