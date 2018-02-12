@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postfix
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_VERSION:=3.2.4
 PKG_SOURCE_URL:= \
 	https://cdn.postfix.johnriley.me/mirrors/postfix-release/official/ \
@@ -19,7 +19,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_MAINTAINER:=Denis Shulyaka <Shulyaka@gmail.com>
 PKG_LICENSE:=IPL-1.0
 PKG_LICENSE_FILES:=LICENSE
-PKG_BUILD_DEPENDS:=+POSTFIX_CDB:tinycdb
+PKG_BUILD_DEPENDS:=POSTFIX_CDB:tinycdb
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_POSTFIX_TLS \
 	CONFIG_POSTFIX_SASL \
@@ -37,6 +37,9 @@ define Package/postfix
   SECTION:=mail
   CATEGORY:=Mail
   TITLE:=Postfix Mail Transmit Agent
+#  USERID:= \
+#  	postfix=25:postfix=25 \
+#  	postdrop=26:postdrop=26
   URL:=http://www.postfix.org/
   DEPENDS:=+POSTFIX_TLS:libopenssl +POSTFIX_SASL:libsasl2 +POSTFIX_LDAP:libopenldap +POSTFIX_DB:libdb47 +POSTFIX_SQLITE:libsqlite3 +POSTFIX_PGSQL:libpq +POSTFIX_EAI:icu +POSTFIX_PCRE:libpcre
 endef
@@ -100,8 +103,10 @@ define Package/postfix/config
 	endmenu
 endef
 
-CCARGS=-DNO_NIS
-AUXLIBS=-L$(STAGING_DIR)/opt/lib -lresolv
+CCARGS=-DNO_NIS -I$(STAGING_DIR)/opt/include
+AUXLIBS=$(TARGET_LDFLAGS)
+AUXLIBS+=-lresolv
+
 
 ifdef CONFIG_POSTFIX_TLS
   CCARGS+=-DUSE_TLS
