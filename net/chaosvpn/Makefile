@@ -53,5 +53,5 @@ define Package/chaosvpn/install
 		$(INSTALL_CONF) $(PKG_BUILD_DIR)/chaosvpn.conf $(1)/etc/tinc/chaosvpn.conf
 endef
 
-$(eval $(call BuildPackage,chaosvpn))
+#$(eval $(call BuildPackage,chaosvpn))
 
