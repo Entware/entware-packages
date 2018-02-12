@@ -33,7 +33,7 @@ define Package/zabbix/Default
   SUBMENU:=zabbix
   MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
   USERID:=zabbix=53:zabbix=53
-  DEPENDS += $(ICONV_DEPENDS)
+  DEPENDS += $(ICONV_DEPENDS) $(INTL_DEPENDS)
 endef
 
 define Package/zabbix-agentd
