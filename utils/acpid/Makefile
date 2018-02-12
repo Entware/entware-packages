@@ -65,4 +65,4 @@ define Package/acpid/postinst
 }
 endef
 
-$(eval $(call BuildPackage,acpid))
+#$(eval $(call BuildPackage,acpid))
