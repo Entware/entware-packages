@@ -1,3 +1,4 @@
+This patch is only needed for old kernels that do not have SOCK_CLOEXEC flag - used in tomato and keenetic
 --- a/src/fdevent.c
 +++ b/src/fdevent.c
 @@ -17,9 +17,7 @@
