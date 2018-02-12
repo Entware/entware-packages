@@ -44,4 +44,4 @@ define Package/cifsmount/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mount.cifs $(1)/usr/sbin/
 endef
 
-$(eval $(call BuildPackage,cifsmount))
+#$(eval $(call BuildPackage,cifsmount))
