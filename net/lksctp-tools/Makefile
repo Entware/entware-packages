@@ -87,6 +87,6 @@ define Package/sctp-tools/install
 		$(1)/usr/bin/
 endef
 
-$(eval $(call BuildPackage,libsctp))
-$(eval $(call BuildPackage,sctp))
-$(eval $(call BuildPackage,sctp-tools))
+#$(eval $(call BuildPackage,libsctp))
+#$(eval $(call BuildPackage,sctp))
+#$(eval $(call BuildPackage,sctp-tools))
