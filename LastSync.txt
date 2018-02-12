@@ -1,23 +1,9 @@
-commit ffbdc7e4fdd825fdaa371ea6c00c06a0b830f422
-Author: Yousong Zhou <yszhou4tech@gmail.com>
-Date:   Fri Jan 26 16:05:58 2018 +0800
+commit 07390cecdc2b90e3bcd73740bb3c23ba3a8220ac
+Merge: 10df6c1 c60d59c
+Author: Michael Heimpold <mhei@heimpold.de>
+Date:   Mon Feb 12 19:41:40 2018 +0100
 
-    node: depends on availability of fpu
+    Merge pull request #5607 from tru7/knxd
     
-    It requires either hardware or software emulated fpu, otherwise program
-    can fail with SIGILL for fp instructions emitted by the JIT compiler
-    
-    See #1937, #2633, #2442, FS#1257 for details
-    
-    From code snippet at deps/v8/src/mips/constants-mips.h
-    
-        #elif(defined(__mips_soft_float) && __mips_soft_float != 0)
-        // This flag is raised when -msoft-float is passed to the compiler.
-        // // Although FPU is a base requirement for v8, soft-float ABI is used
-        // // on soft-float systems with FPU kernel emulation.
-        // const bool IsMipsSoftFloatABI = true;
-    
-    [1] https://bugs.chromium.org/p/v8/issues/detail?id=4704
-    
-    Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
+    knxd: bump to upstream version 0.14.24
 
