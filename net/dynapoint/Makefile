@@ -44,4 +44,4 @@ define Package/dynapoint/install
 	$(INSTALL_DATA) ./src/dynapoint.config $(1)/etc/config/dynapoint
 endef
 
-$(eval $(call BuildPackage,dynapoint))
+#$(eval $(call BuildPackage,dynapoint))
