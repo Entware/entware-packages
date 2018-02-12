@@ -21,7 +21,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/pyserial-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=python
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
 
 define Package/python-pyserial
   SUBMENU:=Python
@@ -37,7 +37,7 @@ define Package/python-pyserial/description
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix=/usr --root="$(PKG_INSTALL_DIR)")
+	$(call Build/Compile/PyMod,,install --prefix=/opt --root="$(PKG_INSTALL_DIR)")
 endef
 
 define Package/python-pyserial/install
