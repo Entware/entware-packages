@@ -31,7 +31,7 @@ define Package/tdb
   CATEGORY:=Libraries
   TITLE:=Trivial Database
   URL:=http://sourceforge.net/projects/tdb/
-  DEPENDS:=+libattr
+  DEPENDS:=+libattr +USE_UCLIBC:libpthread
   MAINTAINER:=Dmitry V. Zimin <pfzim@mail.ru>
 endef
 
@@ -49,7 +49,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
 endef
 
-CONFIGURE_PREFIX = /opt
+CONFIGURE_PREFIX:=/opt
 
 CONFIGURE_ARGS = \
 	--target=$(GNU_TARGET_NAME) \
