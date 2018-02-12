@@ -469,351 +469,351 @@ MAKE_FLAGS += \
 TARGET_CFLAGS += $(FPIC)
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/gphoto2{,-port}-config $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/gphoto2 $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2{,_port}.{a,so*} $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libgphoto2.pc $(1)/usr/lib/pkgconfig/
-	$(SED) 's,-I$$$${prefix}/include/gphoto2,,g' $(1)/usr/bin/gphoto2{,-port}-config
-	$(SED) 's,-I$$$${prefix}/include,,g' $(1)/usr/bin/gphoto2{,-port}-config
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/gphoto2{,-port}-config $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/gphoto2 $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2{,_port}.{a,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libgphoto2.pc $(1)/opt/lib/pkgconfig/
+	$(SED) 's,-I$$$${prefix}/include/gphoto2,,g' $(1)/opt/bin/gphoto2{,-port}-config
+	$(SED) 's,-I$$$${prefix}/include,,g' $(1)/opt/bin/gphoto2{,-port}-config
 	# remove annoying recursive symlink
-	rm -f $(1)/usr/include/gphoto2/gphoto2
+	rm -f $(1)/opt/include/gphoto2/gphoto2
 endef
 
 define Package/libgphoto2/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2{,_port}.so.* $(1)/usr/lib/
-	ln -s $(1)/usr/lib/libgphoto2_port.so.12 $(1)/usr/lib/libgphoto2_port.so.10
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/print-camera-list $(1)/usr/lib/libgphoto2/print-camera-list
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2{,_port}.so.* $(1)/opt/lib/
+	ln -s $(1)/opt/lib/libgphoto2_port.so.12 $(1)/opt/lib/libgphoto2_port.so.10
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/print-camera-list $(1)/opt/lib/libgphoto2/print-camera-list
 endef
 
 define Package/libgphoto2-port/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2_port/$(PORT_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2_port/$(PORT_VERSION)/*.so $(1)/usr/lib/libgphoto2_port/$(PORT_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2_port/$(PORT_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2_port/$(PORT_VERSION)/*.so $(1)/opt/lib/libgphoto2_port/$(PORT_VERSION)
 endef
 
 define Package/libgphoto2-drivers-adc65/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/adc65.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/adc65.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-agfa_cl20/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/agfa_cl20.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/agfa_cl20.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-aox/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/aox.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/aox.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-ax203/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/ax203.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/ax203.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-barbie/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/barbie.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/barbie.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-canon/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/canon.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/canon.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-casio_qv/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/casio_qv.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/casio_qv.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-clicksmart310/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/clicksmart310.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/clicksmart310.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-digigr8/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/digigr8.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/digigr8.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-digita/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/digita.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/digita.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-dimera3500/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/dimera3500.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/dimera3500.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-directory/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/directory.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/directory.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-enigma13/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/enigma13.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/enigma13.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-fuji/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/fuji.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/fuji.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-gsmart300/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/gsmart300.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/gsmart300.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-hp215/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/hp215.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/hp215.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-iclick/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/iclick.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/iclick.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-jamcam/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/jamcam.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/jamcam.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-jd11/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/jd11.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/jd11.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-jl2005a/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/jl2005a.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/jl2005a.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-jl2005c/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/jl2005c.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/jl2005c.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-kodak_dc120/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/kodak_dc120.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/kodak_dc120.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-kodak_dc210/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/kodak_dc210.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/kodak_dc210.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-kodak_dc240/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/kodak_dc240.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/kodak_dc240.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-kodak_dc3200/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/kodak_dc3200.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/kodak_dc3200.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-kodak_ez200/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/kodak_ez200.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/kodak_ez200.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-konica/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/konica.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/konica.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-konica_qm150/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/konica_qm150.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/konica_qm150.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-largan/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/largan.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/largan.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-lg_gsm/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/lg_gsm.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/lg_gsm.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-mars/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/mars.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/mars.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-dimagev/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/dimagev.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/dimagev.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-mustek/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/mustek.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/mustek.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-panasonic_coolshot/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/panasonic_coolshot.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/panasonic_coolshot.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-panasonic_l859/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/panasonic_l859.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/panasonic_l859.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-panasonic_dc1000/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/panasonic_dc1000.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/panasonic_dc1000.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-panasonic_dc1580/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/panasonic_dc1580.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/panasonic_dc1580.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-pccam300/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/pccam300.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/pccam300.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-pccam600/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/pccam600.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/pccam600.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-pentax/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/pentax.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/pentax.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-polaroid_pdc320/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/polaroid_pdc320.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/polaroid_pdc320.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-polaroid_pdc640/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/polaroid_pdc640.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/polaroid_pdc640.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-polaroid_pdc700/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/polaroid_pdc700.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/polaroid_pdc700.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-ptp2/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/ptp2.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/ptp2.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-ricoh/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/ricoh.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/ricoh.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-ricoh_g3/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/ricoh_g3.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/ricoh_g3.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-samsung/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/samsung.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/samsung.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sierra/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sierra.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sierra.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sipix_blink2/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sipix_blink2.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sipix_blink2.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sipix_web2/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sipix_web2.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sipix_web2.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-smal/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/smal.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/smal.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sonix/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sonix.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sonix.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sony_dscf1/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sony_dscf1.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sony_dscf1.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sony_dscf55/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sony_dscf55.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sony_dscf55.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-soundvision/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/soundvision.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/soundvision.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-spca50x/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/spca50x.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/spca50x.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sq905/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sq905.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sq905.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-st2205/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/st2205.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/st2205.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-stv0674/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/stv0674.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/stv0674.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-stv0680/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/stv0680.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/stv0680.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-sx330z/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/sx330z.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/sx330z.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-topfield/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/topfield.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/topfield.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-toshiba_pdrm11/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/toshiba_pdrm11.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/toshiba_pdrm11.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 define Package/libgphoto2-drivers-tp6801/install
-	$(INSTALL_DIR) $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgphoto2/$(PKG_VERSION)/tp6801.so $(1)/usr/lib/libgphoto2/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2/$(PKG_VERSION)/tp6801.so $(1)/opt/lib/libgphoto2/$(PKG_VERSION)
 endef
 
 $(eval $(call BuildPackage,libgphoto2))
