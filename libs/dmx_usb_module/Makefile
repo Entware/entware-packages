@@ -53,4 +53,4 @@ define Build/Compile
   $(MAKE) $(DMX_MAKE_OPTS) M=$(PKG_BUILD_DIR)
 endef
 
-$(eval $(call KernelPackage,usb-serial-dmx_usb_module))
+#$(eval $(call KernelPackage,usb-serial-dmx_usb_module))
