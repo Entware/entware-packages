@@ -22,6 +22,7 @@ PKG_LICENSE_FILES:=COPYING
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/lrzsz
   SECTION:=utils
@@ -36,6 +37,8 @@ define Package/lrzsz/description
 	You just need a terminal client that can do
 	either X, Y or Z-modem file transfers.
 endef
+
+DISABLE_NLS:=--disable-nls
 
 define Package/lrzsz/install
 	$(INSTALL_DIR) $(1)/opt/bin
