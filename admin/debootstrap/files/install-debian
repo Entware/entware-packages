@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ARCH=@ARCH@
-#ARCH=amd64, armel, armhf, mips, mipsel
+#ARCH=amd64, armel, armhf, mips, mipsel, aarch64
 #form armv7 and higher cpu with hardfloat support use armhf
 
 ## debian codenames

@@ -5,21 +5,22 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware-3x: upgraded version to 1.0.87, removed dependencies (using installed busybox)
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=debootstrap
-PKG_VERSION:=1.0.87
-PKG_RELEASE:=1a
+PKG_VERSION:=1.0.93
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 
-PKG_SOURCE=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://anonscm.debian.org/git/d-i/debootstrap.git
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_SUBDIR=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=c4ad96b3972426df3d261d33a5025335fef86f79
+http://ftp.ru.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.93.tar.gz
+PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/d/debootstrap
+PKG_HASH:=cdad4d2be155bd933acbe4f3479e1765e5f4447fb50564e30e33f7b3b84bd7db
 PKG_LICENSE:=Unique
 PKG_LICENSE_FILES:=debian/copyright
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+PKG_UNPACK:=tar -C $(PKG_BUILD_DIR)  -xzf $(DL_DIR)/$(PKG_SOURCE) --strip-components 1
 
 DEBIAN_ARCH:=$(subst x86_64,amd64,$(subst arm,armel,$(ARCH)))
 
@@ -30,6 +31,7 @@ define Package/debootstrap
   CATEGORY:=Administration
   TITLE:=Bootstrap a basic Debian system
   URL:=http://wiki.debian.org/Debootstrap
+  DEPENDS:= +coreutils +coreutils-chroot +coreutils-sha1sum +ar +xz
 endef
 
 define Package/debootstrap/description
