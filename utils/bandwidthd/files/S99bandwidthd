@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/opt/bin:/opt/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=/opt/sbin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 BINFILE='/opt/sbin/bandwidthd'
 PIDFILE='/opt/var/run/bandwidthd.pid'
