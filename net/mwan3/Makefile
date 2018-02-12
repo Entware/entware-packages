@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mwan3
-PKG_VERSION:=2.6.9
+PKG_VERSION:=2.6.10
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Florian Eckert <fe@dev.tdt.de>
 PKG_LICENSE:=GPLv2
@@ -59,4 +59,4 @@ define Package/mwan3/install
 $(CP) ./files/* $(1)
 endef
 
-$(eval $(call BuildPackage,mwan3))
+#$(eval $(call BuildPackage,mwan3))
