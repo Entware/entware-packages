@@ -32,7 +32,7 @@ PKG_INSTALL:=1
 SUPPORTED_KERNELS:=LINUX_3_18||LINUX_4_1||LINUX_4_3||LINUX_4_4||LINUX_4_9
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../../lang/python/python-package.mk
 
 define Package/openvswitch/Default
   SECTION:=net
@@ -159,6 +159,7 @@ TARGET_CFLAGS += -flto -std=gnu99
 CONFIGURE_VARS += \
 	ovs_cv_flake8=no \
 	ovs_cv_python3=no \
+	ovs_cv_sphinx=no \
 	KARCH=$(LINUX_KARCH)
 
 MAKE_FLAGS += \
@@ -245,37 +246,37 @@ define Package/openvswitch/install
 	:
 endef
 
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-appctl,Open vSwitch app control utility))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-ofctl,Open vSwitch OpenFlow control utility))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-dpctl,Open vSwitch datapath management utility))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-vsctl,Open vSwitch ovs-vswitchd management utility))
-$(eval $(call OvsBinUtility,openvswitch-base,ovsdb-client,Open vSwitch database JSON-RPC client))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-l3ping,Check network deployment for L3 tunneling problems))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-docker,Open vSwitch docker tool))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-dpctl-top,Top like behavior for ovs-dpctl dump-flows))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-pki,OpenFlow public key infrastructure management utility))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-tcpdump,Dump traffic from an Open vSwitch port using tcpdump))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-tcpundump,Convert ``tcpdump -xx`` output to hex strings))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-pcap,Print packets from a pcap file as hex))
-$(eval $(call OvsBinUtility,openvswitch-base,ovs-parse-backtrace,parses ovs-appctl backtrace output))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-appctl,Open vSwitch app control utility))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-ofctl,Open vSwitch OpenFlow control utility))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-dpctl,Open vSwitch datapath management utility))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-vsctl,Open vSwitch ovs-vswitchd management utility))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovsdb-client,Open vSwitch database JSON-RPC client))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-l3ping,Check network deployment for L3 tunneling problems))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-docker,Open vSwitch docker tool))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-dpctl-top,Top like behavior for ovs-dpctl dump-flows))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-pki,OpenFlow public key infrastructure management utility))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-tcpdump,Dump traffic from an Open vSwitch port using tcpdump))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-tcpundump,Convert ``tcpdump -xx`` output to hex strings))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-pcap,Print packets from a pcap file as hex))
+#$(eval $(call OvsBinUtility,openvswitch-base,ovs-parse-backtrace,parses ovs-appctl backtrace output))
 
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-controller,Open Virtual Network local controller))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-controller-vtep,Open Virtual Network local controller for vtep enabled physical switches,+openvswitch-vtep))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-detrace,Convert ``ovs-appctl ofproto/trace`` output to combine OVN logical flow information))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-docker-overlay-driver,OVN Docker overlay driver utility))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-docker-underlay-driver,OVN Docker underlay driver utility))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-nbctl,Open Virtual Network northbound db management utility))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-sbctl,Utility for querying and configuring OVN_Southbound data‐base))
-$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-trace,Open Virtual Network logical network tracing utility))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-controller,Open Virtual Network local controller))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-controller-vtep,Open Virtual Network local controller for vtep enabled physical switches,+openvswitch-vtep))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-detrace,Convert ``ovs-appctl ofproto/trace`` output to combine OVN logical flow information))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-docker-overlay-driver,OVN Docker overlay driver utility))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-docker-underlay-driver,OVN Docker underlay driver utility))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-nbctl,Open Virtual Network northbound db management utility))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-sbctl,Utility for querying and configuring OVN_Southbound data‐base))
+#$(eval $(call OvsBinUtility,openvswitch-ovn-base,ovn-trace,Open Virtual Network logical network tracing utility))
 
-$(foreach t,$(OVS_BIN_TOOLS),$(eval $(call BuildPackage,openvswitch-$(t))))
-$(foreach t,$(OVN_BIN_TOOLS),$(eval $(call BuildPackage,openvswitch-$(t))))
+#$(foreach t,$(OVS_BIN_TOOLS),$(eval $(call BuildPackage,openvswitch-$(t))))
+#$(foreach t,$(OVN_BIN_TOOLS),$(eval $(call BuildPackage,openvswitch-$(t))))
 
-$(eval $(call BuildPackage,openvswitch-base))
-$(eval $(call BuildPackage,openvswitch-ovn-base))
-$(eval $(call BuildPackage,openvswitch-ovn))
-$(eval $(call BuildPackage,openvswitch-vtep))
-$(eval $(call BuildPackage,openvswitch-python))
-$(eval $(call BuildPackage,openvswitch))
-$(eval $(call KernelPackage,openvswitch))
+#$(eval $(call BuildPackage,openvswitch-base))
+#$(eval $(call BuildPackage,openvswitch-ovn-base))
+#$(eval $(call BuildPackage,openvswitch-ovn))
+#$(eval $(call BuildPackage,openvswitch-vtep))
+#$(eval $(call BuildPackage,openvswitch-python))
+#$(eval $(call BuildPackage,openvswitch))
+#$(eval $(call KernelPackage,openvswitch))
 
