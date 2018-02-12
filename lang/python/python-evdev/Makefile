@@ -22,8 +22,8 @@ PKG_HASH:=57edafc469a414f58b51af1bfb9ee2babb9f626dd2df530d71c1176871850aa1
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-evdev-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
-$(call include_mk, python3-package.mk)
+include ../python-package.mk
+include ../python3-package.mk
 
 PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
@@ -67,14 +67,14 @@ define PyBuild/Compile
 	$(call Build/Compile/PyMod,, build \
 		build_ecodes  --evdev-headers="$(LINUX_DIR)/include/uapi/linux/input.h:$(LINUX_DIR)/include/uapi/linux/input-event-codes.h" \
 		build_ext \
-		install --root="$(PKG_INSTALL_DIR)" --prefix="/usr")
+		install --root="$(PKG_INSTALL_DIR)" --prefix="/opt")
 endef
 
 define Py3Build/Compile
 	$(call Build/Compile/Py3Mod,, build \
 		build_ecodes  --evdev-headers="$(LINUX_DIR)/include/uapi/linux/input.h:$(LINUX_DIR)/include/uapi/linux/input-event-codes.h" \
 		build_ext \
-		install --root="$(PKG_INSTALL_DIR)" --prefix="/usr")
+		install --root="$(PKG_INSTALL_DIR)" --prefix="/opt")
 endef
 
 $(eval $(call PyPackage,python-evdev))
