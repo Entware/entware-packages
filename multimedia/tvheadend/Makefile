@@ -76,8 +76,12 @@ CONFIGURE_ARGS += \
 	--disable-libav \
 	--enable-bundle
 
-ifeq ($(CONFIG_GCC_VERSION_6_3_0),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_6_3_0)$(CONFIG_GCC_USE_VERSION_7_3_0),y)
 TARGET_CFLAGS+=-Wno-error=misleading-indentation
+endif
+
+ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
+TARGET_CFLAGS+=-Wno-error=format-truncation -Wno-error=pointer-compare
 endif
 
 define Build/Prepare
