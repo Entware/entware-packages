@@ -22,7 +22,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/egenix-mx-base-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=python
 
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
 
 define Package/python-egenix-mx-base
   SUBMENU:=Python
@@ -41,7 +41,7 @@ define Package/python-egenix-mx-base/description
 endef
 
 define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix="$(PKG_INSTALL_DIR)/usr")
+	$(call Build/Compile/PyMod,,install --prefix="$(PKG_INSTALL_DIR)/opt")
 endef
 
 define PyPackage/python-egenix-mx-base/install
