@@ -47,4 +47,4 @@ define Build/Compile
 			modules
 endef
 
-$(eval $(call KernelPackage,mtd-rw))
+#$(eval $(call KernelPackage,mtd-rw))
