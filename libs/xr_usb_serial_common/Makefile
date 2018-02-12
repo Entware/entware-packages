@@ -38,4 +38,4 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,usb-serial-xr_usb_serial_common))
+#$(eval $(call KernelPackage,usb-serial-xr_usb_serial_common))
