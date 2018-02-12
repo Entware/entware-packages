@@ -53,6 +53,8 @@ CONFIGURE_ARGS += \
 	--with-vpnc-script=/opt/lib/netifd/vpnc-script \
 	--without-libpcsclite \
 	--without-stoken \
+	--without-libpskc \
+	--without-gssapi \
 	--without-lz4
 
 ifeq ($(CONFIG_OPENCONNECT_OPENSSL),y)
@@ -72,6 +74,8 @@ define Package/openconnect/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/openconnect $(1)/opt/sbin/
 	$(INSTALL_BIN) ./files/openconnect-wrapper $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/lib/upgrade/keep.d
+	$(INSTALL_DATA) ./files/openconnect.upgrade $(1)/opt/lib/upgrade/keep.d/openconnect
 endef
 
 $(eval $(call BuildPackage,openconnect))
