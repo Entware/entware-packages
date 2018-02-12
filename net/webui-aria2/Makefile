@@ -40,17 +40,17 @@ endef
 
 define Package/webui-aria2/install
 	$(INSTALL_DIR) \
-		$(1)/www/webui-aria2 \
-		$(1)/www/webui-aria2/flags/4x3
+		$(1)/opt/share/www/webui-aria2 \
+		$(1)/opt/share/www/webui-aria2/flags/4x3
 
 	$(CP) \
 		$(PKG_BUILD_DIR)/{css,fonts,js} \
 		$(PKG_BUILD_DIR)/{LICENSE,configuration.js,favicon.ico,index.html} \
-		$(1)/www/webui-aria2
+		$(1)/opt/share/www/webui-aria2
 
 	$(CP) \
 		$(PKG_BUILD_DIR)/flags/4x3/{cn,cz,de,es,fr,it,nl,pl,ru,th,tr,tw,us}.svg \
-		$(1)/www/webui-aria2/flags/4x3
+		$(1)/opt/share/www/webui-aria2/flags/4x3
 endef
 
 $(eval $(call BuildPackage,webui-aria2))
