@@ -100,5 +100,5 @@ endef
 
 Package/wifidog-tls/install = $(Package/wifidog/install)
 
-$(eval $(call BuildPackage,wifidog))
-$(eval $(call BuildPackage,wifidog-tls))
+#$(eval $(call BuildPackage,wifidog))
+#$(eval $(call BuildPackage,wifidog-tls))
