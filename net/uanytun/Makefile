@@ -169,7 +169,7 @@ define Package/uanytun-nocrypt/install
 endef
 
 
-$(eval $(call BuildPackage,uanytun))
-$(eval $(call BuildPackage,uanytun-nettle))
-$(eval $(call BuildPackage,uanytun-sslcrypt))
-$(eval $(call BuildPackage,uanytun-nocrypt))
+#$(eval $(call BuildPackage,uanytun))
+#$(eval $(call BuildPackage,uanytun-nettle))
+#$(eval $(call BuildPackage,uanytun-sslcrypt))
+#$(eval $(call BuildPackage,uanytun-nocrypt))
