@@ -223,7 +223,7 @@
 -# SysV.4 Solaris 2.x OSF AIX
 -#REAL_DAEMON_DIR=/usr/sbin
 +# SysV.4 Solaris 2.x OSF AIX Linux
-+REAL_DAEMON_DIR=/usr/sbin
++REAL_DAEMON_DIR=/opt/sbin
  #
  # BSD 4.4
  #REAL_DAEMON_DIR=/usr/libexec
@@ -437,29 +437,29 @@
 +install: install-lib install-bin install-dev
 +
 +install-lib:
-+	install -o root -g root -m 0644 $(SHLIB) ${DESTDIR}/lib/
-+	ln -s $(notdir $(SHLIB)) ${DESTDIR}/lib/$(notdir $(SHLIBSOMAJ))
++	install -o root -g root -m 0644 $(SHLIB) ${DESTDIR}/opt/lib/
++	ln -s $(notdir $(SHLIB)) ${DESTDIR}/opt/lib/$(notdir $(SHLIBSOMAJ))
 +
 +install-bin:
-+	install -o root -g root -m 0755 tcpd ${DESTDIR}/usr/sbin/
-+	install -o root -g root -m 0755 tcpdchk ${DESTDIR}/usr/sbin/
-+	install -o root -g root -m 0755 tcpdmatch ${DESTDIR}/usr/sbin/
-+	install -o root -g root -m 0755 try-from ${DESTDIR}/usr/sbin/
-+	install -o root -g root -m 0755 safe_finger ${DESTDIR}/usr/sbin/
-+	install -o root -g root -m 0644 tcpd.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 tcpdchk.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 tcpdmatch.8 ${DESTDIR}/usr/share/man/man8/
-+	install -o root -g root -m 0644 hosts_access.5 ${DESTDIR}/usr/share/man/man5/
-+	install -o root -g root -m 0644 hosts_options.5 ${DESTDIR}/usr/share/man/man5/
++	install -o root -g root -m 0755 tcpd ${DESTDIR}/opt/sbin/
++	install -o root -g root -m 0755 tcpdchk ${DESTDIR}/opt/sbin/
++	install -o root -g root -m 0755 tcpdmatch ${DESTDIR}/opt/sbin/
++	install -o root -g root -m 0755 try-from ${DESTDIR}/opt/sbin/
++	install -o root -g root -m 0755 safe_finger ${DESTDIR}/opt/sbin/
++	install -o root -g root -m 0644 tcpd.8 ${DESTDIR}/opt/share/man/man8/
++	install -o root -g root -m 0644 tcpdchk.8 ${DESTDIR}/opt/share/man/man8/
++	install -o root -g root -m 0644 tcpdmatch.8 ${DESTDIR}/opt/share/man/man8/
++	install -o root -g root -m 0644 hosts_access.5 ${DESTDIR}/opt/share/man/man5/
++	install -o root -g root -m 0644 hosts_options.5 ${DESTDIR}/opt/share/man/man5/
 +
 +install-dev:
-+	ln -s /lib/$(notdir $(SHLIBSOMAJ)) ${DESTDIR}/usr/lib/$(notdir $(SHLIBSO))
-+	install -o root -g root -m 0644 hosts_access.3 ${DESTDIR}/usr/share/man/man3/
-+	install -o root -g root -m 0644 tcpd.h ${DESTDIR}/usr/include/
-+	install -o root -g root -m 0644 $(LIB) ${DESTDIR}/usr/lib/
-+	ln -s hosts_access.3 ${DESTDIR}/usr/share/man/man3/hosts_ctl.3
-+	ln -s hosts_access.3 ${DESTDIR}/usr/share/man/man3/request_init.3
-+	ln -s hosts_access.3 ${DESTDIR}/usr/share/man/man3/request_set.3
++	ln -s /opt/lib/$(notdir $(SHLIBSOMAJ)) ${DESTDIR}/opt/lib/$(notdir $(SHLIBSO))
++	install -o root -g root -m 0644 hosts_access.3 ${DESTDIR}/opt/share/man/man3/
++	install -o root -g root -m 0644 tcpd.h ${DESTDIR}/opt/include/
++	install -o root -g root -m 0644 $(LIB) ${DESTDIR}/opt/lib/
++	ln -s hosts_access.3 ${DESTDIR}/opt/share/man/man3/hosts_ctl.3
++	ln -s hosts_access.3 ${DESTDIR}/opt/share/man/man3/request_init.3
++	ln -s hosts_access.3 ${DESTDIR}/opt/share/man/man3/request_set.3
  
  shar:	$(KIT)
  	@shar $(KIT)
@@ -609,8 +609,8 @@
  .nf
 -in.tftpd: ALL: (/some/where/safe_finger -l @%h | \\
 -	/usr/ucb/mail -s %d-%h root) &
-+in.tftpd: ALL: (/usr/sbin/safe_finger -l @%h | \\
-+	/usr/bin/mail -s %d-%h root) &
++in.tftpd: ALL: (/opt/sbin/safe_finger -l @%h | \\
++	/opt/bin/mail -s %d-%h root) &
  .fi
  .PP
  The safe_finger command comes with the tcpd wrapper and should be
@@ -668,7 +668,7 @@
  .sp
  .ti +5
 -finger  stream  tcp  nowait  nobody  /some/where/tcpd     in.fingerd
-+finger  stream  tcp  nowait  nobody  /usr/sbin/tcpd       in.fingerd
++finger  stream  tcp  nowait  nobody  /opt/sbin/tcpd       in.fingerd
  .sp
  .fi
  .PP
@@ -691,7 +691,7 @@
  .nf
  .sp
 -    ntalk  dgram  udp  wait  root  /some/where/tcpd  /usr/local/lib/ntalkd
-+    ntalk  dgram  udp  wait  root  /usr/sbin/tcpd  /usr/sbin/in.ntalkd
++    ntalk  dgram  udp  wait  root  /opt/sbin/tcpd  /opt/sbin/in.ntalkd
  .sp
  .fi
  .PP
@@ -786,7 +786,7 @@
  /* Local stuff */
  
 -char    path[] = "PATH=/bin:/usr/bin:/usr/ucb:/usr/bsd:/etc:/usr/etc:/usr/sbin";
-+char    path[] = "PATH=/bin:/usr/bin:/sbin:/usr/sbin";
++char    path[] = "PATH=/opt/bin:/opt/usr/bin:/opt/sbin:/opt/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin";
  
  #define	TIME_LIMIT	60		/* Do not keep listinging forever */
  #define	INPUT_LENGTH	100000		/* Do not keep listinging forever */
@@ -815,7 +815,7 @@
  .nf
  .ti +3
 -spawn (/some/where/safe_finger -l @%h | /usr/ucb/mail root) &
-+spawn (/usr/sbin/safe_finger -l @%h | /usr/bin/mail root) &
++spawn (/opt/sbin/safe_finger -l @%h | /opt/bin/mail root) &
  .fi
  .sp
  executes, in a background child process, the shell command "safe_finger
