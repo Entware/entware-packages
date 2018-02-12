@@ -46,9 +46,9 @@ define Package/freeradius3
 endef
 
 define Package/freeradius3/conffiles
-/etc/freeradius3/clients.conf
-/etc/freeradius3/radiusd.conf
-/etc/freeradius3/sites/default
+/opt/etc/freeradius3/clients.conf
+/opt/etc/freeradius3/radiusd.conf
+/opt/etc/freeradius3/sites/default
 endef
 
 define Package/freeradius3-common
@@ -101,8 +101,8 @@ define Package/freeradius3-mod-chap
 endef
 
 define Package/freeradius3-mod-chap/conffiles
-/etc/freeradius3/mods-available/chap
-/etc/freeradius3/mods-enabled/chap
+/opt/etc/freeradius3/mods-available/chap
+/opt/etc/freeradius3/mods-enabled/chap
 endef
 
 define Package/freeradius3-mod-detail
@@ -112,8 +112,8 @@ define Package/freeradius3-mod-detail
 endef
 
 define Package/freeradius3-mod-detail/conffiles
-/etc/freeradius3/mods-available/detail
-/etc/freeradius3/mods-enabled/detail
+/opt/etc/freeradius3/mods-available/detail
+/opt/etc/freeradius3/mods-enabled/detail
 endef
 
 define Package/freeradius3-mod-digest
@@ -123,8 +123,8 @@ define Package/freeradius3-mod-digest
 endef
 
 define Package/freeradius3-mod-digest/conffiles
-/etc/freeradius3/mods-available/digest
-/etc/freeradius3/mods-enabled/digest
+/opt/etc/freeradius3/mods-available/digest
+/opt/etc/freeradius3/mods-enabled/digest
 endef
 
 define Package/freeradius3-mod-eap
@@ -134,11 +134,11 @@ define Package/freeradius3-mod-eap
 endef
 
 define Package/freeradius3-mod-eap/conffiles
-/etc/freeradius3/mods-available/eap
-/etc/freeradius3/mods-enabled/eap
-/etc/freeradius3/policy.d/eap
-/etc/freeradius3/sites-enabled/inner-tunnel
-/etc/freeradius3/sites-available/inner-tunnel
+/opt/etc/freeradius3/mods-available/eap
+/opt/etc/freeradius3/mods-enabled/eap
+/opt/etc/freeradius3/policy.d/eap
+/opt/etc/freeradius3/sites-enabled/inner-tunnel
+/opt/etc/freeradius3/sites-available/inner-tunnel
 endef
 
 define Package/freeradius3-mod-eap-gtc
@@ -190,8 +190,8 @@ define Package/freeradius3-mod-exec
 endef
 
 define Package/freeradius3-mod-exec/conffiles
-/etc/freeradius3/mods-available/exec
-/etc/freeradius3/mods-enabled/exec
+/opt/etc/freeradius3/mods-available/exec
+/opt/etc/freeradius3/mods-enabled/exec
 endef
 
 define Package/freeradius3-mod-expiration
@@ -201,8 +201,8 @@ define Package/freeradius3-mod-expiration
 endef
 
 define Package/freeradius3-mod-expiration/conffiles
-/etc/freeradius3/mods-available/expiration
-/etc/freeradius3/mods-enabled/expiration
+/opt/etc/freeradius3/mods-available/expiration
+/opt/etc/freeradius3/mods-enabled/expiration
 endef
 
 define Package/freeradius3-mod-always
@@ -212,8 +212,8 @@ define Package/freeradius3-mod-always
 endef
 
 define Package/freeradius3-mod-always/conffiles
-/etc/freeradius3/mods-available/always
-/etc/freeradius3/mods-enabled/always
+/opt/etc/freeradius3/mods-available/always
+/opt/etc/freeradius3/mods-enabled/always
 endef
 
 define Package/freeradius3-mod-expr
@@ -223,8 +223,8 @@ define Package/freeradius3-mod-expr
 endef
 
 define Package/freeradius3-mod-expr/conffiles
-/etc/freeradius3/mods-available/expr
-/etc/freeradius3/mods-enabled/expr
+/opt/etc/freeradius3/mods-available/expr
+/opt/etc/freeradius3/mods-enabled/expr
 endef
 
 define Package/freeradius3-mod-attr-filter
@@ -234,13 +234,13 @@ define Package/freeradius3-mod-attr-filter
 endef
 
 define Package/freeradius3-mod-attr-filter/conffiles
-/etc/freeradius3/mods-available/attr_filter
-/etc/freeradius3/mods-enabled/attr_filter
-/etc/freeradius3/mods-config/attr_filter/access_challenge
-/etc/freeradius3/mods-config/attr_filter/access_reject
-/etc/freeradius3/mods-config/attr_filter/accounting_response
-/etc/freeradius3/mods-config/attr_filter/post-proxy
-/etc/freeradius3/mods-config/attr_filter/pre-proxy
+/opt/etc/freeradius3/mods-available/attr_filter
+/opt/etc/freeradius3/mods-enabled/attr_filter
+/opt/etc/freeradius3/mods-config/attr_filter/access_challenge
+/opt/etc/freeradius3/mods-config/attr_filter/access_reject
+/opt/etc/freeradius3/mods-config/attr_filter/accounting_response
+/opt/etc/freeradius3/mods-config/attr_filter/post-proxy
+/opt/etc/freeradius3/mods-config/attr_filter/pre-proxy
 endef
 
 define Package/freeradius3-mod-attr-rewrite
@@ -256,11 +256,11 @@ define Package/freeradius3-mod-files
 endef
 
 define Package/freeradius3-mod-files/conffiles
-/etc/freeradius3/mods-available/files
-/etc/freeradius3/mods-enabled/files
-/etc/freeradius3/mods-config/files/accounting
-/etc/freeradius3/mods-config/files/authorize
-/etc/freeradius3/mods-config/files/pre-proxy
+/opt/etc/freeradius3/mods-available/files
+/opt/etc/freeradius3/mods-enabled/files
+/opt/etc/freeradius3/mods-config/files/accounting
+/opt/etc/freeradius3/mods-config/files/authorize
+/opt/etc/freeradius3/mods-config/files/pre-proxy
 endef
 
 define Package/freeradius3-mod-passwd
@@ -270,8 +270,8 @@ define Package/freeradius3-mod-passwd
 endef
 
 define Package/freeradius3-mod-passwd/conffiles
-/etc/freeradius3/mods-available/passwd
-/etc/freeradius3/mods-enabled/passwd
+/opt/etc/freeradius3/mods-available/passwd
+/opt/etc/freeradius3/mods-enabled/passwd
 endef
 
 define Package/freeradius3-mod-ldap
@@ -281,7 +281,7 @@ define Package/freeradius3-mod-ldap
 endef
 
 define Package/freeradius3-mod-ldap/conffiles
-/etc/freeradius3/mods-available/ldap
+/opt/etc/freeradius3/mods-available/ldap
 endef
 
 define Package/freeradius3-mod-logintime
@@ -291,8 +291,8 @@ define Package/freeradius3-mod-logintime
 endef
 
 define Package/freeradius3-mod-logintime/conffiles
-/etc/freeradius3/mods-available/logintime
-/etc/freeradius3/mods-enabled/logintime
+/opt/etc/freeradius3/mods-available/logintime
+/opt/etc/freeradius3/mods-enabled/logintime
 endef
 
 define Package/freeradius3-mod-mschap
@@ -302,8 +302,8 @@ define Package/freeradius3-mod-mschap
 endef
 
 define Package/freeradius3-mod-mschap/conffiles
-/etc/freeradius3/mods-available/mschap
-/etc/freeradius3/mods-enabled/mschap
+/opt/etc/freeradius3/mods-available/mschap
+/opt/etc/freeradius3/mods-enabled/mschap
 endef
 
 define Package/freeradius3-mod-pap
@@ -313,8 +313,8 @@ define Package/freeradius3-mod-pap
 endef
 
 define Package/freeradius3-mod-pap/conffiles
-/etc/freeradius3/mods-available/pap
-/etc/freeradius3/mods-enabled/pap
+/opt/etc/freeradius3/mods-available/pap
+/opt/etc/freeradius3/mods-enabled/pap
 endef
 
 define Package/freeradius3-mod-preprocess
@@ -324,10 +324,10 @@ define Package/freeradius3-mod-preprocess
 endef
 
 define Package/freeradius3-mod-preprocess/conffiles
-/etc/freeradius3/mods-config/preprocess/hints
-/etc/freeradius3/mods-config/preprocess/huntgroups
-/etc/freeradius3/mods-available/preprocess
-/etc/freeradius3/mods-enabled/preprocess
+/opt/etc/freeradius3/mods-config/preprocess/hints
+/opt/etc/freeradius3/mods-config/preprocess/huntgroups
+/opt/etc/freeradius3/mods-available/preprocess
+/opt/etc/freeradius3/mods-enabled/preprocess
 endef
 
 define Package/freeradius3-mod-realm
@@ -337,9 +337,9 @@ define Package/freeradius3-mod-realm
 endef
 
 define Package/freeradius3-mod-realm/conffiles
-/etc/freeradius3/proxy.conf
-/etc/freeradius3/mods-available/realm
-/etc/freeradius3/mods-enabled/realm
+/opt/etc/freeradius3/proxy.conf
+/opt/etc/freeradius3/mods-available/realm
+/opt/etc/freeradius3/mods-enabled/realm
 endef
 
 # SQL support has not been ported
@@ -351,10 +351,10 @@ define Package/freeradius3-mod-radutmp
 endef
 
 define Package/freeradius3-mod-radutmp/conffiles
-/etc/freeradius3/mods-available/radutmp
-/etc/freeradius3/mods-enabled/radutmp
-/etc/freeradius3/mods-available/sradutmp
-/etc/freeradius3/mods-enabled/sradutmp
+/opt/etc/freeradius3/mods-available/radutmp
+/opt/etc/freeradius3/mods-enabled/radutmp
+/opt/etc/freeradius3/mods-available/sradutmp
+/opt/etc/freeradius3/mods-enabled/sradutmp
 endef
 
 define Package/freeradius3-mod-unix
@@ -364,8 +364,8 @@ define Package/freeradius3-mod-unix
 endef
 
 define Package/freeradius3-mod-unix/conffiles
-/etc/freeradius3/mods-available/unix
-/etc/freeradius3/mods-enabled/unix
+/opt/etc/freeradius3/mods-available/unix
+/opt/etc/freeradius3/mods-enabled/unix
 endef
 
 define Package/freeradius3-utils
@@ -375,21 +375,21 @@ define Package/freeradius3-utils
 endef
 
 CONFIGURE_ARGS+= \
-	--libdir=/usr/lib/freeradius3 \
-	--libexecdir=/usr/lib/freeradius3 \
+	--libdir=/opt/lib/freeradius3 \
+	--libexecdir=/opt/lib/freeradius3 \
 	--disable-developer \
 	--with-threads \
 	$(if $(CONFIG_FREERADIUS3_OPENSSL),--with,--without)-openssl \
-	$(if $(CONFIG_FREERADIUS3_OPENSSL),--with-openssl-includes="$(STAGING_DIR)/usr/include",) \
-	$(if $(CONFIG_FREERADIUS3_OPENSSL),--with-openssl-libraries="$(STAGING_DIR)/usr/lib",) \
+	$(if $(CONFIG_FREERADIUS3_OPENSSL),--with-openssl-includes="$(STAGING_DIR)/opt/include",) \
+	$(if $(CONFIG_FREERADIUS3_OPENSSL),--with-openssl-libraries="$(STAGING_DIR)/opt/lib",) \
 	$(if $(CONFIG_FREERADIUS3_OPENSSL),--disable-openssl-version-check,) \
-	--with-talloc-include-dir="$(STAGING_DIR)/usr/include" \
-	--with-talloc-lib-dir="$(STAGING_DIR)/usr/lib" \
+	--with-talloc-include-dir="$(STAGING_DIR)/opt/include" \
+	--with-talloc-lib-dir="$(STAGING_DIR)/opt/lib" \
 	--enable-strict-dependencies \
-	--with-dictdir=/usr/share/freeradius3 \
-	--with-raddbdir=/etc/freeradius3 \
-	--with-radacctdir=/var/db/radacct \
-	--with-logdir=/var/log \
+	--with-dictdir=/opt/share/freeradius3 \
+	--with-raddbdir=/opt/etc/freeradius3 \
+	--with-radacctdir=/opt/var/db/radacct \
+	--with-logdir=/opt/var/log \
 	--without-edir \
 	--without-snmp \
 	--without-rlm_cache \
@@ -441,8 +441,8 @@ PKG_DICTIONARIES:= \
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-eap-peap),)
   CONFIGURE_ARGS+= \
 		--with-rlm_eap_peap \
-		--with-rlm_eap_peap-include-dir="$(STAGING_DIR)/usr/include" \
-		--with-rlm_eap_peap-lib-dir="$(STAGING_DIR)/usr/lib"
+		--with-rlm_eap_peap-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_eap_peap-lib-dir="$(STAGING_DIR)/opt/lib"
   CONFIGURE_LIBS+= -lcrypto -lssl
 else
   CONFIGURE_ARGS+= --without-rlm_eap_peap
@@ -451,8 +451,8 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-eap-tls),)
   CONFIGURE_ARGS+= \
 		--with-rlm_eap_tls \
-		--with-rlm_eap_tls-include-dir="$(STAGING_DIR)/usr/include" \
-		--with-rlm_eap_tls-lib-dir="$(STAGING_DIR)/usr/lib"
+		--with-rlm_eap_tls-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_eap_tls-lib-dir="$(STAGING_DIR)/opt/lib"
   CONFIGURE_LIBS+= -lcrypto -lssl
 else
   CONFIGURE_ARGS+= --without-rlm_eap_tls
@@ -461,8 +461,8 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-eap-ttls),)
   CONFIGURE_ARGS+= \
 		--with-rlm_eap_ttls \
-		--with-rlm_eap_ttls-include-dir="$(STAGING_DIR)/usr/include" \
-		--with-rlm_eap_ttls-lib-dir="$(STAGING_DIR)/usr/lib"
+		--with-rlm_eap_ttls-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_eap_ttls-lib-dir="$(STAGING_DIR)/opt/lib"
   CONFIGURE_LIBS+= -lcrypto -lssl
 else
   CONFIGURE_ARGS+= --without-rlm_eap_ttls
@@ -482,8 +482,8 @@ endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-ldap),)
   CONFIGURE_ARGS+= --with-rlm_ldap \
-		--with-rlm_ldap-include-dir="$(STAGING_DIR)/usr/include" \
-		--with-rlm_ldap-lib-dir="$(STAGING_DIR)/usr/lib"
+		--with-rlm_ldap-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_ldap-lib-dir="$(STAGING_DIR)/opt/lib"
 else
   CONFIGURE_ARGS+= --without-rlm_ldap
 endif
@@ -512,63 +512,63 @@ define Build/Compile
 endef
 
 define Package/freeradius3-common/install
-	$(INSTALL_DIR) $(1)/etc/freeradius3
-	chmod 771 $(1)/etc/freeradius3
-	$(CP) $(PKG_INSTALL_DIR)/etc/freeradius3/dictionary $(1)/etc/freeradius3/ ; \
-	$(INSTALL_DIR) $(1)/usr/lib/freeradius3
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/freeradius3/libfreeradius-{dhcp,eap,radius,server}.so $(1)/usr/lib/freeradius3
-	$(INSTALL_DIR) $(1)/usr/share/freeradius3
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/freeradius3/dictionary $(1)/usr/share/freeradius3/
-	$(SED) "s,^\(\$$$$INCLUDE\),#\1,g" $(1)/usr/share/freeradius3/dictionary
+	$(INSTALL_DIR) $(1)/opt/etc/freeradius3
+	chmod 771 $(1)/opt/etc/freeradius3
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/freeradius3/dictionary $(1)/opt/etc/freeradius3/ ; \
+	$(INSTALL_DIR) $(1)/opt/lib/freeradius3
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/freeradius3/libfreeradius-{dhcp,eap,radius,server}.so $(1)/opt/lib/freeradius3
+	$(INSTALL_DIR) $(1)/opt/share/freeradius3
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/freeradius3/dictionary $(1)/opt/share/freeradius3/
+	$(SED) "s,^\(\$$$$INCLUDE\),#\1,g" $(1)/opt/share/freeradius3/dictionary
 	for f in $(PKG_DICTIONARIES); do \
-		$(CP) $(PKG_INSTALL_DIR)/usr/share/freeradius3/dictionary.$$$${f} $(1)/usr/share/freeradius3/ ; \
-		$(SED) "s,^#\(\$$$$INCLUDE dictionary\.$$$${f}\)$$$$,\1,g" $(1)/usr/share/freeradius3/dictionary ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/share/freeradius3/dictionary.$$$${f} $(1)/opt/share/freeradius3/ ; \
+		$(SED) "s,^#\(\$$$$INCLUDE dictionary\.$$$${f}\)$$$$,\1,g" $(1)/opt/share/freeradius3/dictionary ; \
 	done
 endef
 
 define Package/freeradius3/install
-	$(INSTALL_DIR) $(1)/etc/freeradius3
-	$(INSTALL_DIR) $(1)/etc/freeradius3/policy.d
-	$(INSTALL_DIR) $(1)/etc/freeradius3/sites-available
-	$(INSTALL_DIR) $(1)/etc/freeradius3/sites-enabled
+	$(INSTALL_DIR) $(1)/opt/etc/freeradius3
+	$(INSTALL_DIR) $(1)/opt/etc/freeradius3/policy.d
+	$(INSTALL_DIR) $(1)/opt/etc/freeradius3/sites-available
+	$(INSTALL_DIR) $(1)/opt/etc/freeradius3/sites-enabled
 	for f in clients.conf radiusd.conf proxy.conf; do \
-		$(CP) $(PKG_INSTALL_DIR)/etc/freeradius3/$$$${f} $(1)/etc/freeradius3/ ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/etc/freeradius3/$$$${f} $(1)/opt/etc/freeradius3/ ; \
 	done
 	for f in accounting filter; do \
-		$(CP) $(PKG_INSTALL_DIR)/etc/freeradius3/policy.d/$$$${f} $(1)/etc/freeradius3/policy.d/ ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/etc/freeradius3/policy.d/$$$${f} $(1)/opt/etc/freeradius3/policy.d/ ; \
 	done
 	for f in default; do \
-		$(CP) $(PKG_INSTALL_DIR)/etc/freeradius3/sites-available/$$$${f} $(1)/etc/freeradius3/sites-available/ ; \
-		$(CP) $(PKG_INSTALL_DIR)/etc/freeradius3/sites-enabled/$$$${f} $(1)/etc/freeradius3/sites-enabled/ ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/etc/freeradius3/sites-available/$$$${f} $(1)/opt/etc/freeradius3/sites-available/ ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/etc/freeradius3/sites-enabled/$$$${f} $(1)/opt/etc/freeradius3/sites-enabled/ ; \
 	done
 
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/radiusd $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/radiusd.init $(1)/etc/init.d/radiusd
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/radiusd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S55radiusd $(1)/opt/etc/init.d
 endef
 
 define Package/freeradius3-democerts/install
-	$(INSTALL_DIR) $(1)/etc/freeradius3/certs
+	$(INSTALL_DIR) $(1)/opt/etc/freeradius3/certs
 	$(CP) \
-		$(PKG_INSTALL_DIR)/etc/freeradius3/certs/ca.pem \
-		$(PKG_INSTALL_DIR)/etc/freeradius3/certs/dh \
-		$(PKG_INSTALL_DIR)/etc/freeradius3/certs/server.pem \
-		$(1)/etc/freeradius3/certs/
+		$(PKG_INSTALL_DIR)/opt/etc/freeradius3/certs/ca.pem \
+		$(PKG_INSTALL_DIR)/opt/etc/freeradius3/certs/dh \
+		$(PKG_INSTALL_DIR)/opt/etc/freeradius3/certs/server.pem \
+		$(1)/opt/etc/freeradius3/certs/
 endef
 
 define Package/freeradius3-utils/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
 	for f in radclient radeapclient radwho; do \
-		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$$$${f} $(1)/usr/bin/ ; \
+		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/$$$${f} $(1)/opt/bin/ ; \
 	done
 endef
 
 define BuildPlugin
   define Package/$(1)/install
-	[ -z "$(2)" ] || $(INSTALL_DIR) $$(1)/usr/lib/freeradius3
+	[ -z "$(2)" ] || $(INSTALL_DIR) $$(1)/opt/lib/freeradius3
 	for m in $(2); do \
-		$(CP) $(PKG_INSTALL_DIR)/usr/lib/freeradius3/$$$$$$$${m}.so $$(1)/usr/lib/freeradius3 ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/lib/freeradius3/$$$$$$$${m}.so $$(1)/opt/lib/freeradius3 ; \
 	done
 	# Install configuration files
 	for f in $(strip $(call Package/$(1)/conffiles)); do \
