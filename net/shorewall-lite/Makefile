@@ -10,11 +10,11 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shorewall-lite
 PKG_MAJOR_MINOR_VERSION:=5.1
-PKG_BUGFIX_MAJOR_VERSION:=9
-PKG_BUGFIX_MINOR_VERSION:=
+PKG_BUGFIX_MAJOR_VERSION:=12
+PKG_BUGFIX_MINOR_VERSION:=.1
 PKG_VERSION:=$(PKG_MAJOR_MINOR_VERSION).$(PKG_BUGFIX_MAJOR_VERSION)$(PKG_BUGFIX_MINOR_VERSION)
 PKG_DIRECTORY:=$(PKG_MAJOR_MINOR_VERSION).$(PKG_BUGFIX_MAJOR_VERSION)
-PKG_RELEASE:=3
+PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=http://www.shorewall.net/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/ \
 	http://www1.shorewall.net/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/ \
@@ -22,7 +22,7 @@ PKG_SOURCE_URL:=http://www.shorewall.net/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION
 	http://shorewall.de/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/ \
 	http://www.shorewall.com.au/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_HASH:=ed4041004f03d6d0baefa3c3f5be76c5d2e21ad7004c044a95006e95450404d5
+PKG_HASH:=e19be9dc329757e340abe6b55b665227ecce5adb8866cada525ec523e5e839c3
 
 PKG_MAINTAINER:=Willem van den Akker <wvdakker@wilsoft.nl>
 PKG_LICENSE:=GPL-2.0+
@@ -78,4 +78,4 @@ define Package/shorewall-lite/install
 	$(INSTALL_BIN) ./files/vardir $(1)/etc/shorewall-lite/
 endef
 
-$(eval $(call BuildPackage,shorewall-lite))
+#$(eval $(call BuildPackage,shorewall-lite))
