@@ -6,6 +6,6 @@
  user: "nobody";
 -pidfile: "/var/run/sslh.pid";
 +pidfile: "/opt/var/run/sslh.pid";
+ chroot: "/var/empty";
  
  
- # Change hostname with your external address name.
