@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=btrfs-progs
-PKG_VERSION:=4.14
+PKG_VERSION:=4.15
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/kernel/people/kdave/btrfs-progs/
-PKG_HASH:=09095cbc3bc2b6aa9d09c93146fb4d7437c51d2572f6918b74fe990fcdcb91af
+PKG_HASH:=9e3528c60c76970b73297ea4b01bdc23a70c39c82d540b61cf07a7c0612339e9
 PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 
@@ -22,7 +22,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=libacl
+PKG_BUILD_DEPENDS:=acl
 
 PKG_FIXUP:=autoreconf
 
@@ -54,6 +54,16 @@ CONFIGURE_ARGS += \
 	--disable-zstd
 
 EXTRA_CFLAGS=$(TARGET_CPPFLAGS)
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/usr/include $(1)/usr/lib
+	$(CP) \
+		$(PKG_INSTALL_DIR)/usr/include/* \
+		$(1)/usr/include/
+	$(CP) \
+		$(PKG_INSTALL_DIR)/usr/lib/libbtrfs.{a,so*} \
+		$(1)/usr/lib/
+endef
 
 define Package/btrfs-progs/install
 	$(INSTALL_DIR) $(1)/usr/lib
