@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.8.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -194,13 +194,21 @@ endef
 
 define Package/collectd
 $(call Package/collectd/Default)
-  DEPENDS:= +libpthread +zlib +libltdl +libgcrypt +libgpg-error
+  DEPENDS:= +libpthread +zlib +libltdl +libgpg-error
   MENU:=1
 endef
 
 define Package/collectd/description
  collectd is a small daemon which collects system information periodically
  and provides mechanismns to store the values in a variety of ways.
+endef
+
+define Package/collectd/config
+	config PACKAGE_COLLECTD_ENCRYPTED_NETWORK
+	bool "Enable ability to use encrypted networking"
+	default n
+	depends on PACKAGE_collectd
+	select PACKAGE_collectd-mod-network
 endef
 
 ifneq ($(CONFIG_avr32),)
@@ -214,7 +222,6 @@ CONFIGURE_ARGS+= \
 	--enable-daemon \
 	--with-nan-emulation \
 	--with-libyajl=no \
-	--without-libgcrypt \
 	--without-perl-bindings \
 	--without-libudev
 
@@ -222,6 +229,16 @@ CONFIGURE_VARS+= \
 	CFLAGS="$$$$CFLAGS $(FPIC)" \
 	LDFLAGS="$$$$LDFLAGS -lm -lz" \
 	KERNEL_DIR="$(LINUX_DIR)" \
+
+ifneq ($(CONFIG_PACKAGE_COLLECTD_ENCRYPTED_NETWORK),)
+CONFIGURE_ARGS+= \
+	--with-libgcrypt=$(STAGING_DIR)/opt
+CONFIGURE_VARS+= \
+	GCRYPT_LIBS="-lgcrypt"
+else
+CONFIGURE_ARGS+= \
+	--without-libgcrypt
+endif
 
 CONFIGURE_PLUGIN= \
 	$(foreach m, $(1), \
