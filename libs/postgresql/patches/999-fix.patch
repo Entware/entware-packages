@@ -1,0 +1,68 @@
+From e3fdb7c00e783ed4b490554ab6bbaccad341c244 Mon Sep 17 00:00:00 2001
+From: Andres Freund <andres@anarazel.de>
+Date: Wed, 3 Jan 2018 12:00:11 -0800
+Subject: [PATCH] Rename pg_rewind's copy_file_range() to avoid conflict with
+ new linux syscall.
+
+Upcoming versions of glibc will contain copy_file_range(2), a wrapper
+around a new linux syscall for in-kernel copying of data ranges. This
+conflicts with pg_rewinds function of the same name.
+
+Therefore rename pg_rewinds version. As our version isn't a generic
+copying facility we decided to choose a rewind specific function name.
+
+Per buildfarm animal caiman and subsequent discussion with Tom Lane.
+
+Author: Andres Freund
+Discussion:
+    https://postgr.es/m/20180103033425.w7jkljth3e26sduc@alap3.anarazel.de
+    https://postgr.es/m/31122.1514951044@sss.pgh.pa.us
+Backpatch: 9.5-, where pg_rewind was introduced
+---
+ src/bin/pg_rewind/copy_fetch.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/src/bin/pg_rewind/copy_fetch.c b/src/bin/pg_rewind/copy_fetch.c
+index f7ac5b30b5..a1b85f7706 100644
+--- a/src/bin/pg_rewind/copy_fetch.c
++++ b/src/bin/pg_rewind/copy_fetch.c
+@@ -156,7 +156,7 @@ recurse_dir(const char *datadir, const char *parentpath,
+  * If 'trunc' is true, any existing file with the same name is truncated.
+  */
+ static void
+-copy_file_range(const char *path, off_t begin, off_t end, bool trunc)
++rewind_copy_file_range(const char *path, off_t begin, off_t end, bool trunc)
+ {
+ 	char		buf[BLCKSZ];
+ 	char		srcpath[MAXPGPATH];
+@@ -222,7 +222,7 @@ copy_executeFileMap(filemap_t *map)
+ 				break;
+ 
+ 			case FILE_ACTION_COPY:
+-				copy_file_range(entry->path, 0, entry->newsize, true);
++				rewind_copy_file_range(entry->path, 0, entry->newsize, true);
+ 				break;
+ 
+ 			case FILE_ACTION_TRUNCATE:
+@@ -230,7 +230,8 @@ copy_executeFileMap(filemap_t *map)
+ 				break;
+ 
+ 			case FILE_ACTION_COPY_TAIL:
+-				copy_file_range(entry->path, entry->oldsize, entry->newsize, false);
++				rewind_copy_file_range(entry->path, entry->oldsize,
++									   entry->newsize, false);
+ 				break;
+ 
+ 			case FILE_ACTION_CREATE:
+@@ -257,7 +258,7 @@ execute_pagemap(datapagemap_t *pagemap, const char *path)
+ 	while (datapagemap_next(iter, &blkno))
+ 	{
+ 		offset = blkno * BLCKSZ;
+-		copy_file_range(path, offset, offset + BLCKSZ, false);
++		rewind_copy_file_range(path, offset, offset + BLCKSZ, false);
+ 		/* Ok, this block has now been copied from new data dir to old */
+ 	}
+ 	pg_free(iter);
+-- 
+2.11.0
+
