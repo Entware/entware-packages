@@ -110,6 +110,6 @@ define Package/jool-tools/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/usr/stateless/jool_siit $(1)/usr/sbin/
 endef
 
-$(eval $(call BuildPackage,jool))
-$(eval $(call KernelPackage,jool))
-$(eval $(call BuildPackage,jool-tools))
+#$(eval $(call BuildPackage,jool))
+#$(eval $(call KernelPackage,jool))
+#$(eval $(call BuildPackage,jool-tools))
