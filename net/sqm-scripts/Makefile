@@ -84,5 +84,5 @@ uci -q get ucitrack.@sqm[0] > /dev/null && {
 }
 endef
 
-$(eval $(call BuildPackage,sqm-scripts))
-$(eval $(call BuildPackage,luci-app-sqm))
+#$(eval $(call BuildPackage,sqm-scripts))
+#$(eval $(call BuildPackage,luci-app-sqm))
