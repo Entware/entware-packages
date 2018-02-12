@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 PKG_LICENSE:=GPL-2.0
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -40,7 +40,7 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/usbip/Common
   TITLE:=USB-over-IP
   URL:=http://usbip.sourceforge.net/
-  DEPENDS:=@USB_SUPPORT +libsysfs +glib2
+  DEPENDS:=@USB_SUPPORT +libsysfs +glib2 @!LINUX_2_6_22
 endef
 
 define Package/usbip/Default
@@ -52,7 +52,7 @@ endef
 define Package/usbip
   $(call Package/usbip/Default)
   TITLE+= (common)
-  DEPENDS+= +libwrap +eudev
+  DEPENDS+= +libwrap +USE_GLIBC:libudev-fbsd
 endef
 
 define Package/usbip-client
@@ -70,7 +70,7 @@ endef
 CONFIGURE_PATH:=.
 MAKE_PATH:=.
 LIBTOOL_PATHS:=.
-MAKE_FLAGS+=CFLAGS="-Wno-implicit-function-declaration"
+MAKE_FLAGS+=CFLAGS="-Wno-implicit-function-declaration -Wno-format-truncation -Wno-format-overflow -Wno-implicit-fallthrough"
 CONFIGURE_ARGS += "--with-usbids-dir=/opt/share/hwdata"
 
 define Build/Configure
@@ -93,7 +93,7 @@ define Package/usbip/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libusbip.so.* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/share/hwdata
-	$(CP) $(DL_DIR)/usb.ids $(1)/opt/share/hwdata/
+	$(CP) $(DL_DIR)/usb.ids.$(USB_IDS_REV) $(1)/opt/share/hwdata/
 endef
 
 define Package/usbip-client/install
