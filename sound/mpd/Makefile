@@ -158,6 +158,14 @@ CONFIGURE_ARGS += \
 	--disable-haiku \
 	--disable-soundcloud
 
+ifeq ($(CONFIG_LINUX_2_6_22),y)
+
+  CONFIGURE_ARGS += \
+	--disable-epoll \
+	--disable-signalfd \
+	--disable-eventfd
+endif
+
 
 ifeq ($(BUILD_VARIANT),full)
 
