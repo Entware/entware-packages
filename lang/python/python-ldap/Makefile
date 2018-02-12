@@ -18,10 +18,8 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://pypi.python.org/packages/67/d9/fa0ea70d1792875745116ad62ac8d4bcb07550b15cded591bb57df6a6d9a
 PKG_HASH:=5810f1b5a9ae9255df99fb9c2dcab7352fed325687efda56c0faae1a82c5e3cb
 
-PKG_BUILD_DEPENDS:=python libopenldap
-
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../python-package.mk
 
 define Package/python-ldap
   SUBMENU:=Python
@@ -42,10 +40,10 @@ endef
 
 define Build/Compile
 	$(call Build/Compile/PyMod,,build_ext \
-		--include-dirs="$(STAGING_DIR)/usr/include:$(STAGING_DIR)/usr/include/sasl" \
-		--library-dirs="$(STAGING_DIR)/usr/lib:$(STAGING_DIR)/usr/lib/sasl2" \
+		--include-dirs="$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/sasl" \
+		--library-dirs="$(STAGING_DIR)/opt/lib:$(STAGING_DIR)/opt/lib/sasl2" \
 	build_py \
-	install --prefix="$(PKG_INSTALL_DIR)/usr")
+	install --prefix="$(PKG_INSTALL_DIR)/opt")
 endef
 
 define PyPackage/python-ldap/install
