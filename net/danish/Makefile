@@ -20,10 +20,8 @@ PKG_SOURCE_VERSION:=f726656a4e37c46c037f61334ac48b35b7de25be
 PKG_MIRROR_HASH:=cb0b4bb7a210091d807ee8e4a2876865f32a9bf195836eb2e1edf6c5975d1130
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 
-PKG_BUILD_DEPENDS:=python python-setuptools
-
 include $(INCLUDE_DIR)/package.mk
-$(call include_mk, python-package.mk)
+include ../../lang/python/python-package.mk
 
 define Package/danish
 	SECTION:=net
@@ -54,4 +52,4 @@ define Package/danish/install
 	$(CP) $(PKG_BUILD_DIR)/danish.init $(1)/etc/init.d/danish
 endef
 
-$(eval $(call BuildPackage,danish))
+#$(eval $(call BuildPackage,danish))
