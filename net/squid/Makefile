@@ -56,6 +56,10 @@ define Package/squid/conffiles
 /opt/etc/squid/squid.conf
 endef
 
+ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
+TARGET_CFLAGS += -Werror=format-truncation=0
+endif
+
 CONFIGURE_ARGS += \
 	--config-cache \
 	--datadir=/opt/share/squid \
