@@ -57,4 +57,4 @@ define Package/opennhrp/install
 	$(INSTALL_BIN) ./files/opennhrp.init $(1)/etc/init.d/opennhrp
 endef
 
-$(eval $(call BuildPackage,opennhrp))
+#$(eval $(call BuildPackage,opennhrp))
