@@ -69,4 +69,4 @@ define Package/keepalived/install
 	$(INSTALL_DATA) ./files/hotplug-user $(1)/etc/hotplug.d/keepalived/01-user
 endef
 
-$(eval $(call BuildPackage,keepalived))
+#$(eval $(call BuildPackage,keepalived))
