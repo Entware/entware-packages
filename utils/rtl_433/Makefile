@@ -29,7 +29,7 @@ define Package/rtl_433
   TITLE:=Realtek RTL2832 based 433.92MHz generic data receiver
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+librtlsdr +rtl-sdr +libtool-bin
+  DEPENDS:=+librtlsdr +rtl-sdr +USE_GLIBC:libtool-bin
   URL:=https://github.com/merbanan/rtl_433
   MAINTAINER:=Jasper Scholte <NightNL@outlook.com>
 endef
