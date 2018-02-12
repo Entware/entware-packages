@@ -39,4 +39,4 @@ define Build/Compile
 	$(MAKE) $(KERNEL_MAKEOPTS) SUBDIRS="$(PKG_BUILD_DIR)" modules
 endef
 
-$(eval $(call KernelPackage,siit))
+#$(eval $(call KernelPackage,siit))
