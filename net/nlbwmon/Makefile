@@ -45,4 +45,4 @@ define Package/nlbwmon/conffiles
 endef
 
 
-$(eval $(call BuildPackage,nlbwmon))
+#$(eval $(call BuildPackage,nlbwmon))
