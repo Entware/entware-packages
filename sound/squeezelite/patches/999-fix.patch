@@ -1,0 +1,10 @@
+--- a/output_pack.c
++++ b/output_pack.c
+@@ -21,6 +21,7 @@
+ 
+ // Scale and pack functions
+ 
++#include <stdint.h>
+ #include "squeezelite.h"
+ 
+ #define MAX_SCALESAMPLE 0x7fffffffffffLL
