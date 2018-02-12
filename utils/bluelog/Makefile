@@ -104,5 +104,5 @@ define Package/bluelog-live/install
 	$(CP) $(PKG_INSTALL_DIR)/usr/share/bluelog/cgi-bin/* $(1)/www/cgi-bin/
 endef
 
-$(eval $(call BuildPackage,bluelog))
-$(eval $(call BuildPackage,bluelog-live))
+#$(eval $(call BuildPackage,bluelog))
+#$(eval $(call BuildPackage,bluelog-live))
