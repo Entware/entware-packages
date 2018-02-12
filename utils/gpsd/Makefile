@@ -19,13 +19,11 @@ PKG_MAINTAINER:=Pushpal Sidhu <psidhu.devel@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_DEPENDS:=libncurses libusb-1.0
-
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/scons.mk
 
 define Package/gpsd/Default
-  DEPENDS:= +libusb-1.0
+  DEPENDS+= +libusb-1.0
   URL:=http://catb.org/gpsd/
 endef
 
