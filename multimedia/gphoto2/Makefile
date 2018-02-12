@@ -42,7 +42,7 @@ CONFIGURE_ARGS += \
 	--without-libintl-prefix \
 
 CONFIGURE_VARS += \
-	LIBGPHOTO2_CFLAGS="$$$$CFLAGS -I$(STAGING_DIR)/usr/include/gphoto2 $$$$CPPFLAGS" \
+	LIBGPHOTO2_CFLAGS="$$$$CFLAGS -I$(STAGING_DIR)/opt/include/gphoto2 $$$$CPPFLAGS" \
 	LIBGPHOTO2_LIBS="$$$$LDFLAGS -lgphoto2 -lgphoto2_port -lltdl" \
 	LIBEXIF_CFLAGS="$$$$CFLAGS $$$$CPPFLAGS" \
 	LIBEXIF_LIBS="$$$$LDFLAGS -lexif" \
@@ -50,8 +50,8 @@ CONFIGURE_VARS += \
 	POPT_LIBS="$$$$LDFLAGS -lpopt" \
 
 define Package/gphoto2/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME) $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME) $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,gphoto2))
