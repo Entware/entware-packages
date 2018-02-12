@@ -1,7 +1,7 @@
 --- a/scripts/sendsms	2010-07-08 16:41:13.000000000 +0400
 +++ b/scripts/sendsms	2012-04-12 12:57:14.618746589 +0400
 @@ -1,4 +1,4 @@
--#!/bin/bash
+-#!/bin/ash
 +#!/bin/sh
  # This script send a text sms at the command line by creating
  # a sms file in the outgoing queue.
@@ -10,8 +10,8 @@
  # When creating keys, remember to use -n for echo:
  # echo -n "key" | md5sum
  
--smsd_user="smsd"
-+smsd_user="root"
+-smsd_group="smsd"
++smsd_group="root"
  
  # Will need echo which accepts -n argument:
  ECHO=echo
