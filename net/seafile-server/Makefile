@@ -72,7 +72,7 @@ else
 	CONFIGURE_ARGS += --disable-riak
 endif
 
-PKG_BUILD_DEPENDS:=vala/host libevhtp-1.1
+PKG_BUILD_DEPENDS:=vala/host libevhtp
 
 # This is required as python-package.mk overrides the default setting of having interlinking enabled
 ifdef CONFIG_USE_MIPS16
