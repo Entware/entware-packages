@@ -66,6 +66,8 @@ ifeq ($(BUILD_VARIANT),nossl)
   CMAKE_OPTIONS += -DUWSC_SSL_SUPPORT=off
 endif
 
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include
+
 define Package/libuwsc/default/install
 	$(INSTALL_DIR) $(1)/opt/lib/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libuwsc.so* $(1)/opt/lib/
