@@ -44,7 +44,7 @@ endef
 
 define Package/digitemp/description
 $(call Package/digitemp/Default/description)
-	This package is build without USB support.
+	This package is built without USB support.
 endef
 
 define Package/digitemp-usb
@@ -55,7 +55,7 @@ endef
 
 define Package/digitemp-usb/description
 $(call Package/digitemp/Default/description)
-	This package is build with USB support.
+	This package is built with USB support.
 endef
 
 define Build/Compile
