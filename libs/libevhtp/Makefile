@@ -45,7 +45,7 @@ include $(INCLUDE_DIR)/cmake.mk
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/{include,lib}
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/usr/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
 endef
 
