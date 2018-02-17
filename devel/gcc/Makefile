@@ -95,6 +95,7 @@ define Build/Prepare
 ifdef CONFIG_USE_UCLIBC
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/004-libcc1_uclibc_lm.patch
 endif
+	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/005-ucontext.patch
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpfr/
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/gmp/
