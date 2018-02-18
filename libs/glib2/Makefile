@@ -69,6 +69,8 @@ CONFIGURE_VARS += \
 	ac_cv_func_posix_getpwuid_r=yes \
 	ac_cv_func_posix_getgrgid_r=yes
 
+TARGET_CFLAGS += -Wno-error=missing-include-dirs
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) \
