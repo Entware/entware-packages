@@ -53,8 +53,8 @@ define Build/Compile
 	mv $(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so \
 		$(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so.0
 	ln -s libhidapi-libusb.so.0 $(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so
-	sed    's^@prefix@^/usr^; \
-		s^@exec_prefix@^/usr^; \
+	sed    's^@prefix@^/opt^; \
+		s^@exec_prefix@^/opt^; \
 		s^@libdir@^$$$${exec_prefix}/lib^; \
 		s^@includedir@^$$$${prefix}/include^' \
 		< $(PKG_BUILD_DIR)/pc/hidapi-libusb.pc.in \
@@ -62,17 +62,17 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/hidapi
-	$(CP) $(PKG_BUILD_DIR)/hidapi/hidapi.h $(1)/usr/include/hidapi/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig/
-	$(CP) $(PKG_BUILD_DIR)/pc/hidapi-libusb.pc $(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR) $(1)/opt/include/hidapi
+	$(CP) $(PKG_BUILD_DIR)/hidapi/hidapi.h $(1)/opt/include/hidapi/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_BUILD_DIR)/pc/hidapi-libusb.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/hidapi/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/libusb/libhidapi-libusb.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,hidapi))
