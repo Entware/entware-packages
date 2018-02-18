@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-#XXX ???почему
 
 include $(TOPDIR)/rules.mk
 
@@ -19,7 +18,7 @@ PKG_HASH:=0cbb3d31c9d181bbcc97cba3d9dbe3250f75e2da25e5f7c8bf5a993fe54baf6a
 
 PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=glib2/host gettext #USE_UCLIBC:libintl
+PKG_BUILD_DEPENDS:=glib2/host gettext
 HOST_BUILD_DEPENDS:=gettext-full/host libiconv/host libffi/host
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
@@ -69,7 +68,9 @@ CONFIGURE_VARS += \
 	ac_cv_func_posix_getpwuid_r=yes \
 	ac_cv_func_posix_getgrgid_r=yes
 
+ifeq ($(findstring $(CONFIG_GCC_USE_VERSION),7),)
 TARGET_CFLAGS += -Wno-error=missing-include-dirs
+endif
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
