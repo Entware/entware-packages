@@ -58,3 +58,20 @@
  
  
  /* Override mbstate_t if it is too small.
+--- a/lib/stdint.in.h
++++ b/lib/stdint.in.h
+@@ -85,12 +85,12 @@
+ 
+ /* Override WINT_MIN and WINT_MAX if gnulib's <wchar.h> or <wctype.h> overrides
+    wint_t.  */
+-#if @GNULIB_OVERRIDES_WINT_T@
++/*#if @GNULIB_OVERRIDES_WINT_T@
+ # undef WINT_MIN
+ # undef WINT_MAX
+ # define WINT_MIN 0x0U
+ # define WINT_MAX 0xffffffffU
+-#endif
++#endif*/
+ 
+ #if ! @HAVE_C99_STDINT_H@
+ 
