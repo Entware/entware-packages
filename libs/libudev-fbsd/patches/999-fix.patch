@@ -28,3 +28,13 @@
  
  	for (;;) {
  		ssize_t len;
+--- a/src/libudev.c
++++ b/src/libudev.c
+@@ -2,7 +2,6 @@
+ 
+ #include "libudev.h"
+ 
+-#include <sys/param.h>
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ 
