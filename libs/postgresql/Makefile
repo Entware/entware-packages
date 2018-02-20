@@ -179,7 +179,8 @@ define Build/Configure
 	$(SED) 's@ECPG = ../../preproc/ecpg@ECPG = $(STAGING_DIR_HOSTPKG)/bin/ecpg@' $(PKG_BUILD_DIR)/src/interfaces/ecpg/test/Makefile.regress
 endef
 
-TARGET_CFLAGS += $(FPIC) -lpthread
+# -fPIC requred for Entware (aarch54) !!!
+TARGET_CFLAGS += -fPIC -lpthread
 
 # because PROFILE means something else in the project Makefile
 unexport PROFILE
