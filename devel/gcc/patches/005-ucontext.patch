@@ -74,4 +74,14 @@ diff -urN gcc-6.3.0/libsanitizer/tsan/tsan_platform_linux.cc gcc-6.3.0.new/libsa
 +  struct __res_state *statp = (struct __res_state*)state;
    for (int i = 0; i < MAXNS && cnt < nfd; i++) {
      if (statp->_u._ext.nsaddrs[i] && statp->_u._ext.nssocks[i] != -1)
-       fds[cnt++] = statp->_u._ext.nssocks[i];
+       fds[cnt++] = statp->_u._ext.nssocks[i];--- a/libgcc/config/aarch64/linux-unwind.h
++++ b/libgcc/config/aarch64/linux-unwind.h
+@@ -52,7 +52,7 @@
+   struct rt_sigframe
+   {
+     siginfo_t info;
+-    struct ucontext uc;
++    ucontext_t uc;
+   };
+ 
+   struct rt_sigframe *rt_;
