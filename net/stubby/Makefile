@@ -37,23 +37,23 @@ define Package/stubby
 	CATEGORY:=Network
 	SUBMENU:=IP Addresses and Names
 	TITLE+= - (daemon that uses getdns)
-	USERID:=stubby=410:stubby=410
+#	USERID:=stubby=410:stubby=410
 	DEPENDS:= +libyaml +getdns
 endef
 
 define Package/stubby/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stubby $(1)/usr/sbin/stubby
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN)  ./files/stubby.init $(1)/etc/init.d/stubby
-	$(INSTALL_DIR) $(1)/etc/stubby
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby/stubby.yml.default
-	$(INSTALL_DATA) ./files/stubby.yml $(1)/etc/stubby/stubby.yml
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/stubby $(1)/opt/sbin/stubby
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+#	$(INSTALL_BIN)  ./files/stubby.init $(1)/opt/etc/init.d/stubby
+	$(INSTALL_DIR) $(1)/opt/etc/stubby
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/stubby/stubby.yml $(1)/opt/etc/stubby/stubby.yml.default
+	$(INSTALL_DATA) ./files/stubby.yml $(1)/opt/etc/stubby/stubby.yml
 endef
 
 
 define Package/stubby/conffiles
-	/etc/stubby/stubby.yml
+	/opt/etc/stubby/stubby.yml
 endef
 
 $(eval $(call BuildPackage,stubby))
