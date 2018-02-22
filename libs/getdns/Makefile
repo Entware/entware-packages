@@ -54,20 +54,20 @@ CONFIGURE_ARGS += \
 		$(if $(CONFIG_GETDNS_ENABLE_IDN), , --without-libidn ) 
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/getdns/
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/getdns/getdns*.h $(1)/usr/include/getdns/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgetdns*.{a,so*} $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/getdns*.pc $(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR) $(1)/opt/include/getdns/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/getdns/getdns*.h $(1)/opt/include/getdns/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgetdns*.{a,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/getdns*.pc $(1)/opt/lib/pkgconfig/
 endef
 	
 	
 define Package/getdns/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libgetdns.so.* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/sbin	
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/getdns_query $(1)/usr/sbin/getdns_query
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libgetdns.so.* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/sbin	
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/getdns_query $(1)/opt/sbin/getdns_query
 endef
 
 $(eval $(call BuildPackage,getdns))
