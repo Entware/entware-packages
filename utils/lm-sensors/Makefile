@@ -98,10 +98,10 @@ define Package/lm-sensors/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/prog/sensors/sensors $(1)/opt/sbin
 ifeq ($(ARCH),i386)
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/sensors.conf $(1)/etc/sensors.conf
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) ./files/sensors.conf $(1)/opt/etc/sensors.conf
 endif
-	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 #	$(INSTALL_BIN) ./files/lm-sensors.init $(1)/etc/init.d/lm-sensors
 endef
 
