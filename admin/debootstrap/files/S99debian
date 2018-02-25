@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Based on the script from https://github.com/DontBeAPadavan/chroot-debian
+# umount (3 times with different flags) is from Qdebian.qpkd (qnapclub)
 
 PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 
@@ -9,7 +10,7 @@ CHROOT_DIR=`readlink -f /opt/debian`
 
 CHROOT_SERVICES_LIST=$CHROOT_DIR/chroot-services.list
 
-MountedDirCount="$(mount | grep $CHROOT_DIR | wc -l)"
+MountedDirCount="$(/opt/bin/mount | grep $CHROOT_DIR | wc -l)"
 
 start() {
 	if [ -f /etc/hosts ]; then
@@ -25,10 +26,11 @@ start() {
 	fi
 	echo 'Starting Debian services...'
 	for dir in dev dev/pts proc sys opt; do
-		mount -o bind /$dir $CHROOT_DIR/$dir
+		/opt/bin/mount -o bind /$dir $CHROOT_DIR/$dir
+		sleep 2
 	done
 	if [ ! -e "$CHROOT_SERVICES_LIST" ]; then
-		echo 'WARNING: No Debian serices defined.'
+		echo 'WARNING: No Debian services defined.'
 		echo "Please, define Debian services to start in $CHROOT_SERVICES_LIST file!"
 		echo 'One service per line. Hint: these are script names from Debian /etc/init.d/'
 	else
@@ -64,10 +66,21 @@ stop() {
 			/opt/sbin/chroot $CHROOT_DIR /etc/init.d/$item stop
 		done
 	fi
+	# device can be unstable in case we do not unmount properly
+	#so we try to umount 3 times
 	sleep 1
-	umount $CHROOT_DIR/dev/pts
-	sleep 1
-	mount | grep $CHROOT_DIR | awk "{print \$3}" | xargs umount
+	for dir in dev/pts dev proc sys opt; do
+		/opt/bin/umount $CHROOT_DIR/$dir 2>/dev/null
+		sleep 2
+	done
+	for dir in dev/pts dev proc sys opt; do
+		/opt/bin/umount -lf $CHROOT_DIR/$dir 2>/dev/null
+		sleep 2
+	done
+	for dir in dev/pts dev proc sys opt; do
+		/opt/bin/umount -l $CHROOT_DIR/$dir 2>/dev/null
+		sleep 2
+	done
 }
 
 status() {

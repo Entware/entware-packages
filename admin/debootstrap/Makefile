@@ -22,16 +22,19 @@ PKG_LICENSE_FILES:=debian/copyright
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_UNPACK:=tar -C $(PKG_BUILD_DIR)  -xzf $(DL_DIR)/$(PKG_SOURCE) --strip-components 1
 
-DEBIAN_ARCH:=$(subst x86_64,amd64,$(subst arm,armel,$(ARCH)))
+DEBIAN_ARCH:=$(subst x86_64,amd64,$(subst aarch64,arm64,$(subst arm,armel,$(ARCH))))
 
 include $(INCLUDE_DIR)/package.mk
+
+# on Qnap NASes mount applet from busybox does not work correctly (both from firmare and entware).
+# we will use mount-utils
 
 define Package/debootstrap
   SECTION:=admin
   CATEGORY:=Administration
   TITLE:=Bootstrap a basic Debian system
   URL:=http://wiki.debian.org/Debootstrap
-  DEPENDS:= +coreutils +coreutils-chroot +coreutils-sha1sum +ar +xz
+  DEPENDS:= +coreutils +coreutils-chroot +coreutils-sha1sum +coreutils-readlink +mount-utils +ar +xz
 endef
 
 define Package/debootstrap/description
