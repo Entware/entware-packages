@@ -37,7 +37,7 @@ ifneq ($(CONFIG_SOFT_FLOAT)$(findstring $(call qstrip,$(CONFIG_CPU_TYPE)),$(CPU_
   MAKE_FLAGS+= AS= 
   CONFIGURE_ARGS += --disable-asm
 else
-ifeq ($(CONFIG_TARGET_x64_3x),y)
+ifeq ($(CONFIG_TARGET_x64_3_2),y)
 ifeq ($(CONFIG_YASM),y)
   CONFIGURE_VARS+= AS=yasm
   MAKE_FLAGS+= AS=yasm
@@ -62,7 +62,7 @@ define Package/libx264
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=H264/AVC free codec library.
-  DEPENDS:=+libpthread @BUILD_PATENTED @!TARGET_armv5_3x
+  DEPENDS:=+libpthread @BUILD_PATENTED @!TARGET_armv5_3_2
   URL:=http://www.videolan.org/developers/x264.html
 endef
 
