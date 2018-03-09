@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
 PKG_VERSION:=6.3.0
-PKG_RELEASE:=1a
+PKG_RELEASE:=1b
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
 PKG_HASH:=f06ae7f3f790fbf0f018f6d40e844451e6bc3b7bc96e128e63b09825c1f8b29f
 
@@ -161,15 +161,23 @@ ENVCFLAGS+="
 
 ENVLDFLAGS:="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER) -L/opt/lib"
 
+define Package/gcc/postinst
+#!/bin/sh
+echo "There are no *-dev packages in Entware(with few exceptions)!"
+echo "Please install headers as described in the wiki:"
+echo "https://github.com/Entware/Entware/wiki"
+endef
+
 define Package/gcc/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 	cp -ar $(PKG_INSTALL_DIR)/opt/include $(1)/opt
-	cp -a $(PKG_INSTALL_DIR)/opt/bin/{$(REAL_GNU_TARGET_NAME)-{g++,gcc},cpp,gcov} $(1)/opt/bin
+	cp -a $(PKG_INSTALL_DIR)/opt/bin/{$(REAL_GNU_TARGET_NAME)-{g++,gcc,gcc-ar},cpp,gcov} $(1)/opt/bin
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/c++
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/g++
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/$(REAL_GNU_TARGET_NAME)-c++
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc $(1)/opt/bin/gcc
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc $(1)/opt/bin/$(REAL_GNU_TARGET_NAME)-gcc-$(PKG_VERSION)
+	ln -s $(REAL_GNU_TARGET_NAME)-gcc-ar $(1)/opt/bin/gcc-ar
 	cp -ar $(PKG_INSTALL_DIR)/opt/lib/gcc $(1)/opt/lib
 	cp -ar $(TOOLCHAIN_DIR)/include $(1)/opt
 	cp -a $(TOOLCHAIN_DIR)/lib/*.{o,so*} $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
