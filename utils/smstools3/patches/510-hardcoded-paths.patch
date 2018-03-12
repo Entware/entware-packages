@@ -40,3 +40,26 @@
    }
  
    break_workless_delay = 0;
+--- a/src/smsd_cfg.h
++++ b/src/smsd_cfg.h
+@@ -21,9 +21,9 @@
+ #include <signal.h>
+ 
+ #ifndef __FreeBSD__
+-#define DEFAULT_CONFIGFILE "/etc/smsd.conf"
++#define DEFAULT_CONFIGFILE "/opt/etc/smsd.conf"
+ #else
+-#define DEFAULT_CONFIGFILE "%%PREFIX%%/etc/smsd.conf"
++#define DEFAULT_CONFIGFILE "/opt/etc/smsd.conf"
+ #endif
+ 
+ #define DATETIME_DEFAULT "%y-%m-%d %H:%M:%S"
+@@ -34,7 +34,7 @@
+ 
+ #define CONCATENATED_DIR_FNAME "%s/%s-concatenated"
+ 
+-#define MM_CORE_FNAME "/tmp/mm_smsd_%i" /* %i is PID */
++#define MM_CORE_FNAME "/opt/tmp/mm_smsd_%i" /* %i is PID */
+ 
+ #define NUMS 64
+ #define SIZE_NUM 16
