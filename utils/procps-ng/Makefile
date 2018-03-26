@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware !!! added postinst & postrm for applets, because it does not have alternatives in opkg
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=procps-ng
 PKG_VERSION:=3.3.11
-PKG_RELEASE:=4
+PKG_RELEASE:=4a
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING COPYING.LIB
 
@@ -100,6 +101,16 @@ define BuildPlugin
   define Package/$(1)/install
 	$(INSTALL_DIR) $$(1)$(3)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/$(2) $$(1)$(3)/$(1)
+  endef
+
+  define Package/$(1)/postinst
+#!/bin/sh
+ln -sf $$(1)$(3)/$(1) /opt/bin/$(2)
+  endef
+
+  define Package/$(1)/postrm
+#!/bin/sh
+rm -f /opt/bin/$(2)
   endef
 
   $$(eval $$(call BuildPackage,$(1)))
