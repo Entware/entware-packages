@@ -4,6 +4,10 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+#
+# Entware version! 
+# 002-no-utility.patch removed, flac and metaflac utilities added
+#
 
 include $(TOPDIR)/rules.mk
 
@@ -31,6 +35,14 @@ define Package/libflac
   CATEGORY:=Libraries
   TITLE:=Free Lossless Audio Codec library
   URL:=https://xiph.org/flac
+endef
+
+define Package/flac
+  SECTION:=sound
+  CATEGORY:=Sound
+  TITLE:=flac & metaflac utilities
+  URL:=https://xiph.org/flac
+  DEPENDS += +libflac
 endef
 
 CONFIGURE_ARGS += \
@@ -72,4 +84,10 @@ define Package/libflac/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libFLAC.so* $(1)/opt/lib/
 endef
 
+define Package/flac/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+endef
+
 $(eval $(call BuildPackage,libflac))
+$(eval $(call BuildPackage,flac))
