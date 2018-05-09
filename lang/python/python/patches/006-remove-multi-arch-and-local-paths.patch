@@ -1,6 +1,6 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -454,13 +454,10 @@ class PyBuildExt(build_ext):
+@@ -454,13 +454,8 @@ class PyBuildExt(build_ext):
              os.unlink(tmpfile)
  
      def detect_modules(self):
@@ -11,8 +11,6 @@
          if cross_compiling:
              self.add_gcc_paths()
 -        self.add_multiarch_paths()
-+        else:
-+            self.add_multiarch_paths()
  
          # Add paths specified in the environment variables LDFLAGS and
          # CPPFLAGS for header and library files.

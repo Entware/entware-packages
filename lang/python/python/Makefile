@@ -12,11 +12,11 @@ include ../python-version.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=10a
+PKG_RELEASE:=1
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=71ffb26e09e78650e424929b2b457b9c912ac216576e6bd9e7d204ed03296a66
+PKG_HASH:=22d9b1ac5b26135ad2b8c2901a9413537e08749a753356ee913c84dbd2df5574
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
@@ -40,7 +40,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PYTHON_BLUETOOTH_SUPPORT
 
 PKG_BUILD_DEPENDS:=python/host
-HOST_BUILD_DEPENDS:=bzip2/host expat/host zlib/host
+HOST_BUILD_DEPENDS:=bzip2/host expat/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -267,8 +267,12 @@ define PyPackage/python/filespec
 endef
 
 HOST_LDFLAGS += \
-	-Wl,--no-as-needed -lrt \
 	$$$$(pkg-config --static --libs libcrypto libssl)
+
+ifeq ($(HOST_OS),Linux)
+HOST_LDFLAGS += \
+	-Wl,--no-as-needed -lrt
+endif
 
 HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \
@@ -277,7 +281,6 @@ HOST_CONFIGURE_ARGS+= \
 	--prefix=$(HOST_PYTHON_DIR) \
 	--exec-prefix=$(HOST_PYTHON_DIR) \
 	--with-system-expat=$(STAGING_DIR_HOSTPKG) \
-	--with-system-ffi=no \
 	--with-ensurepip=install \
 	CONFIG_SITE=
 
