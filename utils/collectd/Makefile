@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.8.0
-PKG_RELEASE:=2
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -65,7 +65,6 @@ COLLECTD_PLUGINS_DISABLED:= \
 	memcached \
 	mic \
 	monitorus \
-	mqtt \
 	multimeter \
 	netapp \
 	nfs \
@@ -145,6 +144,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	match_value \
 	memory \
 	modbus \
+	mqtt \
 	mysql \
 	netlink \
 	network \
@@ -295,7 +295,7 @@ endef
 
 define Package/collectd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{collectd,collectdmon} $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/collectd{,mon} $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libcollectdclient.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/share/collectd
@@ -371,9 +371,10 @@ $(eval $(call BuildPlugin,match-hashed,hashed match,match_hashed,))
 $(eval $(call BuildPlugin,match-regex,regex match,match_regex,))
 $(eval $(call BuildPlugin,match-timediff,timediff match,match_timediff,))
 $(eval $(call BuildPlugin,match-value,value match,match_value,))
-#$(eval $(call BuildPlugin,mysql,MySQL status input,mysql,+PACKAGE_collectd-mod-mysql:libmysqlclient-r))
+$(eval $(call BuildPlugin,mysql,MySQL status input,mysql,+PACKAGE_collectd-mod-mysql:libmysqlclient-r))
 $(eval $(call BuildPlugin,memory,physical memory usage input,memory,))
 $(eval $(call BuildPlugin,modbus,read variables through libmodbus,modbus,+PACKAGE_collectd-mod-modbus:libmodbus))
+$(eval $(call BuildPlugin,mqtt,transmit data with MQTT,mqtt,+PACKAGE_collectd-mod-mqtt:libmosquitto))
 $(eval $(call BuildPlugin,netlink,netlink input,netlink,+PACKAGE_collectd-mod-netlink:libmnl))
 $(eval $(call BuildPlugin,network,network input/output,network,+PACKAGE_COLLECTD_ENCRYPTED_NETWORK:libgcrypt))
 $(eval $(call BuildPlugin,nginx,nginx status input,nginx,+PACKAGE_collectd-mod-nginx:libcurl))
