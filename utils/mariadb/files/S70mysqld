@@ -1,0 +1,57 @@
+#!/bin/sh
+
+PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+
+PIDFILE="/opt/var/run/mysqld.pid"
+MYSQLD="/opt/bin/mysqld"
+
+
+mysql_status ()
+{
+	[ -f $PIDFILE ] && [ -d /proc/`cat $PIDFILE` ]
+}
+
+start()
+{
+	$MYSQLD --pid-file=$PIDFILE > /dev/null 2>&1 &
+}
+
+stop()
+{
+	kill `cat $PIDFILE` > /dev/null 2>&1
+}
+case "$1" in
+	start)
+		if mysql_status
+		then
+			echo mysqld is already running
+		else
+			start
+		fi
+		;;
+	stop)
+		if mysql_status
+		then
+			stop
+		else
+			echo mysqld is not running
+		fi
+		;;
+	status)
+		if mysql_status
+		then
+			echo mysqld is already running
+		else
+			echo mysqld is not running
+		fi
+		;;
+
+	restart)
+		stop
+		sleep 3
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart|status}"
+		;;
+esac

@@ -1,0 +1,42 @@
+--- a/cmake/lzma.cmake
++++ b/cmake/lzma.cmake
+@@ -24,10 +24,6 @@
+     IF (HAVE_LZMA_DECODE AND HAVE_LZMA_ENCODE AND HAVE_LZMA_H)
+       ADD_DEFINITIONS(-DHAVE_LZMA=1)
+       LINK_LIBRARIES(lzma) 
+-    ELSE()
+-      IF (WITH_INNODB_LZMA STREQUAL "ON")
+-	MESSAGE(FATAL_ERROR "Required lzma library is not found")
+-      ENDIF()
+     ENDIF()
+   ENDIF()
+ ENDMACRO()
+--- a/client/mysql.cc
++++ b/client/mysql.cc
+@@ -59,10 +59,6 @@
+ #include "sql_string.h"
+ 
+ extern "C" {
+-#if defined(HAVE_CURSES_H) && defined(HAVE_TERM_H)
+-#include <curses.h>
+-#include <term.h>
+-#else
+ #if defined(HAVE_TERMIOS_H)
+ #include <termios.h>
+ #include <unistd.h>
+@@ -73,6 +73,7 @@
+ #else
+ #ifdef HAVE_CURSES_H
+ #include <curses.h>
++#include <term.h>
+ #endif
+ #undef SYSV				// hack to avoid syntax error
+ #ifdef HAVE_TERM_H
+@@ -78,7 +78,6 @@
+ #undef SYSV				// hack to avoid syntax error
+ #ifdef HAVE_TERM_H
+ #include <term.h>
+-#endif
+ #endif
+ #endif /* defined(HAVE_CURSES_H) && defined(HAVE_TERM_H) */
+ 
