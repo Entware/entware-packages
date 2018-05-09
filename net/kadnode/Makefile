@@ -6,15 +6,16 @@ include $(TOPDIR)/rules.mk
 
 
 PKG_NAME:=kadnode
-PKG_VERSION:=2.1.0
-PKG_RELEASE:=1
+PKG_VERSION:=2.2.0
+PKG_RELEASE:=2
 
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/KadNode-$(PKG_VERSION)
-PKG_SOURCE:=v$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://github.com/mwarning/KadNode/archive/
-PKG_HASH:=6d8022c8958c14cefbe0adca75f4d1101a586b5f1f0d7aab64c92ae54d864d98
 PKG_LICENSE:=MIT
+
+PKG_SOURCE_URL:=https://codeload.github.com/mwarning/KadNode/tar.gz/v$(PKG_VERSION)?
+PKG_SOURCE:=KadNode-$(PKG_VERSION).tar.gz
+PKG_HASH:=1b3ccaa01cbb7548ef268d8b562059452826dc774529303c494418d1a450ca97
+PKG_BUILD_DIR:=$(BUILD_DIR)/KadNode-$(PKG_VERSION)
+
 
 PKG_BUILD_PARALLEL:=1
 
@@ -73,9 +74,11 @@ ifeq ($(CONFIG_KADNODE_ENABLE_DEBUG),y)
 FEATURES += debug
 endif
 
-MAKE_FLAGS += \
-	FEATURES="$(FEATURES)" \
-	LFLAGS="$(TARGET_LDFLAGS) -lmbedtls -lmbedx509 -lmbedcrypto"
+MAKE_FLAGS += FEATURES="$(FEATURES)"
+
+# Make binary smaller
+TARGET_CFLAGS += -ffunction-sections -fdata-sections
+TARGET_LDFLAGS += -Wl,--gc-sections
 
 define Package/kadnode/install
 	$(INSTALL_DIR) $(1)/opt/bin
