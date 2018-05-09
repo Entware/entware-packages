@@ -1,6 +1,6 @@
 --- a/src/main.c
 +++ b/src/main.c
-@@ -514,8 +514,8 @@
+@@ -606,8 +606,8 @@ void set_global_environment() {
  
      // set the path we need
      char path[1024 + 1], *p = getenv("PATH");

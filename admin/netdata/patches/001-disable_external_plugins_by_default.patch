@@ -18,5 +18,5 @@
 -enabled: yes
 +enabled: no
  
- # Prevent log flood
- # Define how many log messages can be written to log file in one log_interval
+ # ----------------------------------------------------------------------
+ # Enable / Disable python.d.plugin modules
