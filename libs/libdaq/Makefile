@@ -8,17 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libdaq
-PKG_VERSION:=2.0.4
+PKG_VERSION:=2.0.6
 PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=https://www.snort.org/downloads/snort/ \
 	@SF/snort
 PKG_SOURCE:=daq-$(PKG_VERSION).tar.gz
-PKG_HASH:=a294aa3d01cd8902bf842d320e7f2c043af9ead95d0e7198c3b71a0dbc9d253c
+PKG_HASH:=d41da5f7793e66044e6927dd868c0525e7ee4ec1a3515bf74ef9a30cd9273af0
 PKG_BUILD_DIR:=$(BUILD_DIR)/daq-$(PKG_VERSION)
 
 PKG_LICENSE:=GPL-2.0
-PKG_MAINTAINER:=Luka Perkov <luka@openwrt.org>
+PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
