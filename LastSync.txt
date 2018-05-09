@@ -1,9 +1,7 @@
-commit 07390cecdc2b90e3bcd73740bb3c23ba3a8220ac
-Merge: 10df6c1 c60d59c
-Author: Michael Heimpold <mhei@heimpold.de>
-Date:   Mon Feb 12 19:41:40 2018 +0100
+commit da1912f868924541e7d9333c468f1bfc4bf25f06
+Author: Yousong Zhou <yszhou4tech@gmail.com>
+Date:   Wed May 9 17:01:45 2018 +0800
 
-    Merge pull request #5607 from tru7/knxd
+    treewide: use mirror tag @KERNEL where applicable
     
-    knxd: bump to upstream version 0.14.24
-
+    Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
