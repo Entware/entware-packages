@@ -9,9 +9,9 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smstools3
 PKG_VERSION:=3.1.21
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
-PKG_MAINTAINER:=Gérald Kerma <dreagle@doukki.net>
+PKG_MAINTAINER:=Harald Geyer <harald@ccbib.org>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE
 
@@ -55,11 +55,11 @@ define Package/smstools3/install
 	$(INSTALL_BIN) \
 		$(PKG_BUILD_DIR)/src/smsd \
 		$(PKG_BUILD_DIR)/scripts/sendsms \
-		$(1)/opt/bin
+		$(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S53smstools3 $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(INSTALL_DATA) ./files/smstools3.conf $(1)/opt/etc/smsd.conf
+	$(INSTALL_CONF) ./files/smstools3.conf $(1)/opt/etc/smsd.conf
 endef
 
 $(eval $(call BuildPackage,smstools3))
