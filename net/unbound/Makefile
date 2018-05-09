@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.6.8
+PKG_VERSION:=1.7.1
 PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
@@ -17,7 +17,7 @@ PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@hotmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.unbound.net/downloads
-PKG_HASH:=e3b428e33f56a45417107448418865fe08d58e0e7fea199b855515f60884dd49
+PKG_HASH:=56e085ef582c5372a20207de179d0edb4e541e59f87be7d4ee1d00d12008628d
 
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
@@ -139,10 +139,10 @@ define Package/unbound/install
 		$(PKG_INSTALL_DIR)/opt/sbin/unbound-checkconf \
 		$(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc/unbound
-	$(INSTALL_CONF) \
+	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/etc/unbound/unbound.conf \
 		$(1)/opt/etc/unbound/
-	$(INSTALL_CONF) ./files/root.key $(1)/opt/etc/unbound/
+	$(INSTALL_DATA) ./files/root.key $(1)/opt/etc/unbound/
 	$(INSTALL_DATA) ./files/unbound_ext.conf $(1)/opt/etc/unbound/unbound_ext.conf
 	$(INSTALL_DATA) ./files/unbound_srv.conf $(1)/opt/etc/unbound/unbound_srv.conf
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
