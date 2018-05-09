@@ -44,20 +44,20 @@ define Build/Compile
 		CFLAGS="$(LIBAIO_CFLAGS)" \
 		all
 	$(MAKE) -C $(PKG_BUILD_DIR) \
-		prefix="$(PKG_INSTALL_DIR)/usr" \
+		prefix="$(PKG_INSTALL_DIR)/opt" \
 		install
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libaio.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libaio.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libaio.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libaio.{a,so*} $(1)/opt/lib/
 endef
 
 define Package/libaio/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libaio.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libaio.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libaio))
