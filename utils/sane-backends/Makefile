@@ -126,6 +126,8 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/sane $(1)/opt/include
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsane.{a,so*} $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_BUILD_DIR)/tools/sane-backends.pc $(1)/opt/lib/pkgconfig/
 endef
 
 $(eval $(call BuildPackage,sane-backends))
