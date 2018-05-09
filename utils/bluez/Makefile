@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bluez
-PKG_VERSION:=5.47
+PKG_VERSION:=5.49
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/bluetooth/
-PKG_HASH:=cf75bf7cd5d564f21cc4a2bd01d5c39ce425397335fd47d9bbe43af0a58342c8
+PKG_HASH:=33301d7a514c73d535ee1f91c2aed1af1f2e53efe11d3ac06bcf0d7abed2ce95
 
 PKG_LICENSE:=GPL-2.0+
 PKG_LICENSE_FILES:=COPYING
@@ -55,7 +55,7 @@ $(call Package/bluez/Default)
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS:=+bluez-libs +libpthread +librt +glib2 +libncurses +libreadline $(INTL_DEPENDS) $(ICONV_DEPENDS)
+  DEPENDS:=+bluez-libs +libpthread +librt +glib2 +libncurses +libreadline $(INTL_DEPENDS) $(ICONV_DEPENDS) +dbus
 endef
 
 define Package/bluez-daemon
@@ -70,9 +70,12 @@ define Package/bluez-daemon/conffiles
 /opt/etc/bluetooth/main.conf
 /opt/etc/bluetooth/network.conf
 /opt/etc/bluetooth/input.conf
-/opt/etc/bluetooth/audio.conf
+/opt/etc/bluetooth/keys
 /opt/etc/config/bluetooth
 endef
+
+TARGET_CFLAGS += -D_GNU_SOURCE -ffunction-sections -fdata-sections
+TARGET_LDFLAGS += -Wl,--gc-sections
 
 CONFIGURE_ARGS += \
 	--enable-static \
@@ -93,9 +96,6 @@ CONFIGURE_ARGS += \
 	--disable-test \
 	--disable-udev \
 	--enable-deprecated
-
-TARGET_CPPFLAGS += \
-	-D_GNU_SOURCE
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -121,6 +121,7 @@ define Package/bluez-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bccmd $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bluemoon $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/btattach $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/btmon $(1)/opt/bin/
 	$(CP) $(PKG_BUILD_DIR)/tools/btmgmt $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ciptool $(1)/opt/bin/
@@ -131,6 +132,7 @@ define Package/bluez-utils/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/hex2hcd $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/l2ping $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/l2test $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/mpris-proxy $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/rctest $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/rfcomm $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/sdptool $(1)/opt/bin/
@@ -145,10 +147,10 @@ define Package/bluez-daemon/install
 	$(INSTALL_DIR) $(1)/opt/etc/config
 	$(INSTALL_DATA) ./files/bluetooth.config $(1)/opt/etc/config/bluetooth
 	$(INSTALL_DIR) $(1)/opt/etc/bluetooth
+	$(INSTALL_DIR) $(1)/opt/etc/bluetooth/keys
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/main.conf $(1)/opt/etc/bluetooth/main.conf
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/profiles/network/network.conf $(1)/opt/etc/bluetooth/network.conf
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/profiles/input/input.conf $(1)/opt/etc/bluetooth/input.conf
-	$(INSTALL_DATA) ./files/audio.conf $(1)/opt/etc/bluetooth/audio.conf
 endef
 
 $(eval $(call BuildPackage,bluez-examples))
