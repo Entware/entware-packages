@@ -8,11 +8,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v6.11.2
-PKG_RELEASE:=4
+PKG_VERSION:=v8.10.0
+PKG_RELEASE:=1
 PKG_SOURCE:=node-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://nodejs.org/dist/${PKG_VERSION}
-PKG_HASH:=04af4992238b19124ea56f1bcfda36827613a24eb3b00fc3b50f261a415a26e4
+PKG_HASH:=b72d4e71618d6bcbd039b487b51fa7543631a4ac3331d7caf69bdf55b5b2901a
 
 HOST_BUILD_DEPENDS:=python/host
 PKG_BUILD_DEPENDS:=python/host
@@ -150,13 +150,15 @@ endef
 
 define Package/node-npm/install
 	mkdir -p $(1)/opt/bin $(1)/opt/lib/node_modules/npm/{bin,lib,node_modules}
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/npm $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/{package.json,LICENSE,cli.js} $(1)/opt/lib/node_modules/npm
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{npm,npx} $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/{package.json,LICENSE} $(1)/opt/lib/node_modules/npm
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/bin/npm-cli.js $(1)/opt/lib/node_modules/npm/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/bin/npx-cli.js $(1)/opt/lib/node_modules/npm/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/lib/* $(1)/opt/lib/node_modules/npm/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/node_modules/* $(1)/opt/lib/node_modules/npm/node_modules/
-	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/cli.js
+###
 	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/bin/npm-cli.js
+	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/bin/npx-cli.js
 endef
 
 $(eval $(call HostBuild))
