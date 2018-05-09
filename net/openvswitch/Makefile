@@ -1,4 +1,4 @@
-# 
+#
 # Copyright (C) 2013 Julius Schulz-Zander <julius@net.t-labs.tu-berlin.de>
 # Copyright (C) 2014-2017 OpenWrt.org
 #
@@ -12,26 +12,26 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=openvswitch
 
+PKG_VERSION:=2.8.2
 PKG_RELEASE:=1
-PKG_VERSION:=2.8.1
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=COPYING
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://openvswitch.org/releases/
-PKG_HASH:=8d1c439e26d7044f0ec823c7fef1b00b7c6465da0b83a7d0cf3191ed1dc43893
+PKG_SOURCE_URL:=https://www.openvswitch.org/releases/
+PKG_HASH:=87b4a7e7134a44ce1f808d3415a2244b4518c2b0b2a42fa2f8231e592f13103d
 
 PKG_BUILD_DEPENDS:=python/host python-six/host
-PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_openvswitch-python
 
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
-SUPPORTED_KERNELS:=LINUX_3_18||LINUX_4_1||LINUX_4_3||LINUX_4_4||LINUX_4_9
+PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
+include ../../lang/python/python-host.mk
 include ../../lang/python/python-package.mk
 
 define Package/openvswitch/Default
@@ -39,7 +39,6 @@ define Package/openvswitch/Default
   SUBMENU:=Open vSwitch
   CATEGORY:=Network
   URL:=http://openvswitch.org/
-  MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 endef
 
 define Package/openvswitch/Default/description
@@ -55,7 +54,7 @@ endef
 define Package/openvswitch-base
   $(call Package/openvswitch/Default)
   TITLE:=Open vSwitch Userspace Package (base)
-  DEPENDS:=+libpcap +libopenssl +librt +kmod-openvswitch @($(SUPPORTED_KERNELS))
+  DEPENDS:=+libpcap +libopenssl +librt +kmod-openvswitch
 endef
 
 define Package/openvswitch-base/description
@@ -104,7 +103,7 @@ endef
 define Package/openvswitch-python
   $(call Package/openvswitch/Default)
   TITLE:=Open vSwitch Python Support
-  DEPENDS:=+openvswitch +PACKAGE_openvswitch-python:python +PACKAGE_openvswitch-python:python-six
+  DEPENDS:=+PACKAGE_openvswitch-python:python +PACKAGE_openvswitch-python:python-six
 endef
 
 define Package/openvswitch-python/description
@@ -129,29 +128,49 @@ define KernelPackage/openvswitch
   SECTION:=kernel
   CATEGORY:=Kernel modules
   SUBMENU:=Network Support
-  TITLE:=Open vSwitch Kernel Package
-  KCONFIG:= \
-	CONFIG_BRIDGE \
-	CONFIG_OPENVSWITCH \
-	CONFIG_OPENVSWITCH_GRE=n \
-	CONFIG_OPENVSWITCH_VXLAN=n \
-	CONFIG_OPENVSWITCH_GENEVE=n
+  TITLE:=Open vSwitch kernel datapath
+  KCONFIG:=CONFIG_OPENVSWITCH
   DEPENDS:= \
-	@IPV6 +kmod-gre +kmod-lib-crc32c +kmod-mpls \
-	+kmod-vxlan +kmod-nf-nat +kmod-nf-nat6  \
-	@($(SUPPORTED_KERNELS))
+	+kmod-lib-crc32c +kmod-mpls \
+	+kmod-nf-nat +IPV6:kmod-nf-nat6
   FILES:= $(LINUX_DIR)/net/openvswitch/openvswitch.ko
-  AUTOLOAD:=$(call AutoLoad,21,openvswitch)
+  AUTOLOAD:=$(call AutoProbe,openvswitch)
 endef
 
-define KernelPackage/openvswitch/description
-  This package contains the Open vSwitch kernel moodule and bridge compat
-  module. Furthermore, it supports OpenFlow.
+define KernelPackage/openvswitch-gre
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Support
+  TITLE:=Open vSwitch GRE tunneling support
+  KCONFIG:= CONFIG_OPENVSWITCH_GRE
+  DEPENDS:= +kmod-openvswitch +kmod-gre
+  FILES:= $(LINUX_DIR)/net/openvswitch/vport-gre.ko
+  AUTOLOAD:=$(call AutoProbe,vport-gre)
 endef
 
-CONFIGURE_ARGS += --with-linux=$(LINUX_DIR) --with-rundir=/var/run
+define KernelPackage/openvswitch-vxlan
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Support
+  TITLE:=Open vSwitch VXLAN tunneling support
+  KCONFIG:= CONFIG_OPENVSWITCH_VXLAN
+  DEPENDS:= +kmod-openvswitch +kmod-vxlan
+  FILES:= $(LINUX_DIR)/net/openvswitch/vport-vxlan.ko
+  AUTOLOAD:=$(call AutoProbe,vport-vxlan)
+endef
+
+define KernelPackage/openvswitch-geneve
+  SECTION:=kernel
+  CATEGORY:=Kernel modules
+  SUBMENU:=Network Support
+  TITLE:=Open vSwitch Geneve tunneling support
+  KCONFIG:= CONFIG_OPENVSWITCH_GENEVE
+  DEPENDS:= +kmod-openvswitch +kmod-geneve
+  FILES:= $(LINUX_DIR)/net/openvswitch/vport-geneve.ko
+  AUTOLOAD:=$(call AutoProbe,vport-geneve)
+endef
+
 CONFIGURE_ARGS += --enable-ndebug
-CONFIGURE_ARGS += --disable-ssl
 CONFIGURE_ARGS += --enable-shared
 
 TARGET_CFLAGS += -flto -std=gnu99
@@ -160,12 +179,12 @@ CONFIGURE_VARS += \
 	ovs_cv_flake8=no \
 	ovs_cv_python3=no \
 	ovs_cv_sphinx=no \
+	ovs_cv_python=$(PYTHON) \
+	ovs_cv_python_host=$(HOST_PYTHON_BIN) \
 	KARCH=$(LINUX_KARCH)
 
-MAKE_FLAGS += \
-	ARCH="$(LINUX_KARCH)" \
-	PYTHONPATH="$(HOST_PYTHONPATH)" \
-	PYTHON="$(HOST_PYTHON_BIN)"
+MAKE_VARS += PYTHONPATH="$(HOST_PYTHONPATH)"
+MAKE_FLAGS += ARCH="$(LINUX_KARCH)"
 
 define OvsBinUtility
   define Package/openvswitch-$(2)
@@ -278,5 +297,8 @@ endef
 #$(eval $(call BuildPackage,openvswitch-vtep))
 #$(eval $(call BuildPackage,openvswitch-python))
 #$(eval $(call BuildPackage,openvswitch))
-#$(eval $(call KernelPackage,openvswitch))
 
+#$(eval $(call KernelPackage,openvswitch))
+#$(eval $(call KernelPackage,openvswitch-gre))
+#$(eval $(call KernelPackage,openvswitch-vxlan))
+#$(eval $(call KernelPackage,openvswitch-geneve))
