@@ -9,10 +9,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tiff
 PKG_VERSION:=4.0.9
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://download.osgeo.org/libtiff
+PKG_SOURCE_URL:=https://download.osgeo.org/libtiff
 PKG_HASH:=6e7bdeec2c310734e734d19aae3a71ebe37a4d842e0e23dbb1b8921c0026cfcd
 
 PKG_FIXUP:=autoreconf
@@ -59,44 +59,41 @@ $(call Package/tiff/Default)
   DEPENDS:=+libtiff
 endef
 
-TARGET_CFLAGS += $(FPIC)
+CONFIGURE_ARGS += \
+	$(if $(CONFIG_PACKAGE_libtiffxx),--enable-cxx,--disable-cxx) \
+	--disable-lzma \
+	--enable-ccitt \
+	--enable-packbits \
+	--enable-lzw \
+	--enable-thunder \
+	--enable-next \
+	--enable-logluv \
+	--enable-mdi \
+	--enable-zlib \
+	--enable-jpeg \
+	--disable-old-jpeg \
+	--disable-jbig \
+	--without-x
 
-define Build/Configure
-	$(call Build/Configure/Default, \
-		$(if $(CONFIG_PACKAGE_libtiffxx), \
-			--enable-cxx, \
-			--disable-cxx \
-		) \
-		--disable-lzma \
-		--enable-ccitt \
-		--enable-packbits \
-		--enable-lzw \
-		--enable-thunder \
-		--enable-next \
-		--enable-logluv \
-		--enable-mdi \
-		--enable-zlib \
-		--enable-jpeg \
-		--disable-old-jpeg \
-		--disable-jbig \
-		--without-x \
-	)
+define Build/InstallDev/hxx
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/*.hxx $(1)/opt/include/
 endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/{lib,include}
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib* $(1)/opt/lib/
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
+	$(if $(CONFIG_PACKAGE_libtiffxx), $(call Build/InstallDev/hxx,$(1)))
 endef
 
 define Package/libtiff/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtiff.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtiff.so* $(1)/opt/lib/
 endef
 
 define Package/libtiffxx/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtiffxx.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtiffxx.so* $(1)/opt/lib/
 endef
 
 define Package/tiff-utils/install
