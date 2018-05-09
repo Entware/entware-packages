@@ -1,6 +1,4 @@
 #
-# Copyright (C) 2006-2017 OpenWrt.org
-#
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
@@ -10,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
 PKG_VERSION:=4.8.20
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 PKG_LICENSE:=GPL-3.0+
 
@@ -71,38 +69,31 @@ CONFIGURE_VARS += \
 	ac_cv_path_GREP=grep \
 
 ifeq ($(CONFIG_MC_DIFFVIEWER),)
-CONFIGURE_ARGS += \
-	--without-diff-viewer
+CONFIGURE_ARGS += --without-diff-viewer
 endif
 
 ifeq ($(CONFIG_MC_EDITOR),)
-CONFIGURE_ARGS += \
-	--without-internal-edit
+CONFIGURE_ARGS += --without-internal-edit
 endif
 
 ifeq ($(CONFIG_MC_SUBSHELL),)
-CONFIGURE_ARGS += \
-	--without-subshell
+CONFIGURE_ARGS += --without-subshell
 endif
 
 ifeq ($(CONFIG_MC_LARGEFILE),)
-CONFIGURE_ARGS += \
-	--disable-largefile
+CONFIGURE_ARGS += --disable-largefile
 endif
 
 ifeq ($(CONFIG_MC_BACKGROUND),)
-CONFIGURE_ARGS += \
-	--disable-background
+CONFIGURE_ARGS += --disable-background
 endif
 
 ifeq ($(CONFIG_MC_CHARSET),)
-CONFIGURE_ARGS += \
-	--disable-charset
+CONFIGURE_ARGS += --disable-charset
 endif
 
 ifeq ($(CONFIG_MC_VFS),)
-CONFIGURE_ARGS += \
-	--disable-vfs
+CONFIGURE_ARGS += --disable-vfs
 endif
 
 define Package/mc/install
