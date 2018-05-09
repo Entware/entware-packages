@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vnstat
-PKG_VERSION:=1.17
+PKG_VERSION:=1.18
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://humdi.net/vnstat
-PKG_HASH:=18e4c53576ca9e1ef2f0e063a6d83b0c44e3b1cf008560d658745df5c9aa7971
+PKG_HASH:=d7193592b9e7445fa5cbe8af7d3b39982f165ee8fc58041ff41f509b37c687d5
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 
 PKG_FIXUP:=autoreconf
@@ -44,7 +44,7 @@ endef
 
 define Package/vnstati
 $(call Package/vnstat/Default)
-  DEPENDS:=+vnstat +libgd
+  DEPENDS+=vnstat +libgd
   TITLE:=PNG image output support for vnStat
 endef
 
@@ -85,9 +85,9 @@ endef
 
 define Package/vnstat/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/vnstat $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/vnstat $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/vnstatd $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/vnstatd $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/var/lib/vnstat $(1)/opt/etc/init.d
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/vnstat.conf $(1)/opt/etc/
 	$(INSTALL_BIN) ./files/S32vnstat $(1)/opt/etc/init.d
