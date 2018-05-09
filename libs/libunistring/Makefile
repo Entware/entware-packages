@@ -43,17 +43,17 @@ CONFIGURE_ARGS += \
 	--without-libpth-prefix
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/*.h $(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/include/unistring
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/unistring/*.h $(1)/usr/include/unistring/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libunistring.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/include/unistring
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/unistring/*.h $(1)/opt/include/unistring/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libunistring.{a,so*} $(1)/opt/lib/
 endef
 
 define Package/libunistring/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libunistring.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libunistring.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libunistring))
