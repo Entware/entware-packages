@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+#XXX can't search zlib.h
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=isc-dhcp
 UPSTREAM_NAME:=dhcp
-PKG_VERSION:=4.3.6
+PKG_VERSION:=4.4.1
 PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
@@ -20,7 +21,7 @@ PKG_SOURCE:=$(UPSTREAM_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=ftp://ftp.isc.org/isc/dhcp/$(PKG_VERSION) \
 		http://ftp.funet.fi/pub/mirrors/ftp.isc.org/isc/dhcp/$(PKG_VERSION) \
 		http://ftp.iij.ad.jp/pub/network/isc/dhcp/$(PKG_VERSION)
-PKG_HASH:=a41eaf6364f1377fe065d35671d9cf82bbbc8f21207819b2b9f33f652aec6f1b
+PKG_HASH:=2a22508922ab367b4af4664a0472dc220cc9603482cf3c16d9aff14f3a76b608
 
 PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
@@ -29,12 +30,15 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(UPSTREAM_NAME)-$(PKG_
 
 include $(INCLUDE_DIR)/package.mk
 
+#DISABLE_NLS:=
+
 define Package/isc-dhcp/Default
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
   TITLE:=ISC's DHCP
   URL:=https://www.isc.org/software/dhcp
+#  DEPENDS:=+zlib
 endef
 
 define Package/isc-dhcp-relay-ipv4
@@ -60,9 +64,17 @@ $(call Package/isc-dhcp-relay-ipv6/description)
  This package is compiled with IPv4 support only.
 endef
 
+define Package/isc-dhcp-relay-ipv4/conffiles
+#/etc/config/dhcrelay
+endef
+
 define Package/isc-dhcp-relay-ipv6/description
 $(call Package/isc-dhcp-relay/description)
  This package is compiled with IPv4 and IPv6 support.
+endef
+
+define Package/isc-dhcp-relay-ipv6/conffiles
+#/etc/config/dhcrelay
 endef
 
 define Package/isc-dhcp-client-ipv4
