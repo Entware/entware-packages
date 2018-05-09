@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.16.1
-PKG_RELEASE:=2
+PKG_VERSION:=2.16.3
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=cfad4337f2fdbfc1e2c8abce5e17e1dd4e1718a34ac2cbe3238fbe2426f2ea19
+PKG_HASH:=d65d99e9e5b081c1f14ea018973806e942a2eb7d0da2ebc01bd2525adee62d48
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -110,7 +110,9 @@ define Package/git/install
 	$(RM) $(PKG_INSTALL_DIR)/opt/bin/git-cvsserver
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/git-* $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/lib/git-core
-	$(LN) /opt/bin/git $(1)/opt/lib/git-core/git
+	ln $(1)/opt/bin/git $(1)/opt/lib/git-core/git
+	ln $(1)/opt/bin/git-shell $(1)/opt/lib/git-core/git-shell
+	ln $(1)/opt/bin/git-upload-pack $(1)/opt/lib/git-core/git-upload-pack
 	$(INSTALL_DIR) $(1)/opt/share/git-core/templates
 	( cd $(PKG_INSTALL_DIR); $(TAR) \
 		--exclude=opt/lib/git-core/git-http-backend \
@@ -119,6 +121,9 @@ define Package/git/install
 		--exclude=opt/lib/git-core/git-remote-ftps \
 		--exclude=opt/lib/git-core/git-remote-http \
 		--exclude=opt/lib/git-core/git-remote-https \
+		--exclude=opt/lib/git-core/git \
+		--exclude=opt/lib/git-core/git-shell \
+		--exclude=opt/lib/git-core/git-upload-pack \
 		-cf - \
 		opt/lib/git-core \
 		opt/share/git-core/templates \
