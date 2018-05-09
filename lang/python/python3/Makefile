@@ -15,12 +15,12 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=5
+PKG_RELEASE:=1
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=159b932bf56aeaa76fd66e7420522d8c8853d486b8567c459b84fe2ed13bcaba
+PKG_HASH:=f434053ba1b5c8a5cc597e966ead3c5143012af827fd3f0697d21450bb8d87a6
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
@@ -44,7 +44,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PYTHON3_BLUETOOTH_SUPPORT
 
 PKG_BUILD_DEPENDS:=python3/host
-HOST_BUILD_DEPENDS:=bzip2/host expat/host libffi/host zlib/host
+HOST_BUILD_DEPENDS:=bzip2/host expat/host libffi/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -265,8 +265,12 @@ define Py3Package/python3/filespec
 endef
 
 HOST_LDFLAGS += \
-	-Wl,--no-as-needed -lrt \
 	$$$$(pkg-config --static --libs libcrypto libssl)
+
+ifeq ($(HOST_OS),Linux)
+HOST_LDFLAGS += \
+	-Wl,--no-as-needed -lrt
+endif
 
 HOST_CONFIGURE_ARGS+= \
 	--without-cxx-main \
@@ -275,7 +279,6 @@ HOST_CONFIGURE_ARGS+= \
 	--prefix=$(HOST_PYTHON3_DIR) \
 	--exec-prefix=$(HOST_PYTHON3_DIR) \
 	--with-system-expat=$(STAGING_DIR_HOSTPKG) \
-	--with-system-ffi=no \
 	--with-ensurepip=install \
 	CONFIG_SITE=
 
