@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libxslt
 PKG_VERSION:=1.1.32
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -54,7 +54,7 @@ endef
 define Package/xsltproc
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libxml2 +libxslt +libexslt
+  DEPENDS:=+libxslt +PACKAGE_xsltproc:libexslt
   TITLE:=Gnome XSLT xsltproc Utility
   URL:=http://xmlsoft.org/XSLT/
 endef
@@ -72,8 +72,6 @@ CONFIGURE_ARGS+= \
 	--without-debug \
 	--without-mem-debug \
 	--without-debugger \
-
-TARGET_CFLAGS += $(FPIC)
 
 define Build/InstallDev/Xslt
 	$(INSTALL_DIR) $(1)/opt/bin $(2)/bin $(1)/opt/include/libxslt \
