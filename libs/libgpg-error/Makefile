@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libgpg-error
-PKG_VERSION:=1.27
+PKG_VERSION:=1.31
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error
-PKG_HASH:=4f93aac6fecb7da2b92871bb9ee33032be6a87b174f54abf8ddf0911a22d29d2
+PKG_HASH:=40d0a823c9329478063903192a1f82496083b277265904878f4bc09e0db7a4ef
 PKG_LICENSE:=LGPL-2.1+
 PKG_LICENSE_FILES:=COPYING
 
@@ -58,7 +58,7 @@ define Build/InstallDev
 
 	$(INSTALL_DIR) $(1)/opt/include
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/include/gpg-error.h \
+		$(PKG_INSTALL_DIR)/opt/include/gpg*.h \
 		$(1)/opt/include/
 
 	$(INSTALL_DIR) $(1)/opt/lib
