@@ -1,0 +1,31 @@
+--- a/Process.c
++++ b/Process.c
+@@ -28,12 +28,8 @@
+ #include <time.h>
+ #include <assert.h>
+ #include <math.h>
+-#ifdef MAJOR_IN_MKDEV
+-#include <sys/mkdev.h>
+-#elif defined(MAJOR_IN_SYSMACROS) || \
+-   (defined(HAVE_SYS_SYSMACROS_H) && HAVE_SYS_SYSMACROS_H)
++
+ #include <sys/sysmacros.h>
+-#endif
+ 
+ #ifdef __ANDROID__
+ #define SYS_ioprio_get __NR_ioprio_get
+--- a/linux/LinuxProcessList.c
++++ b/linux/LinuxProcessList.c
+@@ -26,12 +26,7 @@
+ #include <assert.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
+-#ifdef MAJOR_IN_MKDEV
+-#include <sys/mkdev.h>
+-#elif defined(MAJOR_IN_SYSMACROS) || \
+-   (defined(HAVE_SYS_SYSMACROS_H) && HAVE_SYS_SYSMACROS_H)
+ #include <sys/sysmacros.h>
+-#endif
+ 
+ #ifdef HAVE_DELAYACCT
+ #include <netlink/attr.h>

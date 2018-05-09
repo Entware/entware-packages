@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=htop
-PKG_VERSION:=2.0.2
+PKG_VERSION:=2.2.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://hisham.hm/htop/releases/$(PKG_VERSION)/
-PKG_HASH:=179be9dccb80cee0c5e1a1f58c8f72ce7b2328ede30fb71dcdf336539be2f487
+PKG_HASH:=d9d6826f10ce3887950d709b53ee1d8c1849a70fa38e91d5896ad8cbc6ba3c57
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
@@ -43,6 +43,7 @@ CONFIGURE_ARGS += \
 	--disable-hwloc
 
 CONFIGURE_VARS += \
+	LIBS='-L$(STAGING_DIR)/opt/lib'\
 	ac_cv_file__proc_stat=yes \
 	ac_cv_file__proc_meminfo=yes
 
