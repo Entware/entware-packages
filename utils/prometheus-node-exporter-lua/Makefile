@@ -5,7 +5,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=prometheus-node-exporter-lua
 PKG_VERSION:=2017.12.08
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_MAINTAINER:=Christian Simon <simon@swine.de>
 PKG_LICENSE:=Apache-2.0
@@ -58,6 +58,29 @@ define Package/prometheus-node-exporter-lua-wifi_stations
   DEPENDS:=prometheus-node-exporter-lua +libiwinfo-lua +libubus-lua
 endef
 
+define Package/prometheus-node-exporter-lua-bmx6
+  $(call Package/prometheus-node-exporter-lua/Default)
+  TITLE+= (bmx6 links collector)
+  DEPENDS:=prometheus-node-exporter-lua bmx6 +lua-cjson +bmx6-json
+endef
+
+define Package/prometheus-node-exporter-lua-bmx7
+  $(call Package/prometheus-node-exporter-lua/Default)
+  TITLE+= (bmx7 links collector)
+  DEPENDS:=prometheus-node-exporter-lua bmx7 +lua-cjson +bmx7-json
+endef
+
+define Package/prometheus-node-exporter-lua-textfile
+  $(call Package/prometheus-node-exporter-lua/Default)
+  TITLE+= (textfile collector)
+  DEPENDS:=prometheus-node-exporter-lua +luci-lib-nixio
+endef
+
+define Package/prometheus-node-exporter-lua-openwrt
+  $(call Package/prometheus-node-exporter-lua/Default)
+  TITLE+= (openwrt collector)
+endef
+
 Build/Compile=
 
 define Package/prometheus-node-exporter-lua/install
@@ -97,8 +120,32 @@ define Package/prometheus-node-exporter-lua-wifi_stations/install
 	$(INSTALL_BIN) ./files/usr/lib/lua/prometheus-collectors/wifi_stations.lua $(1)/usr/lib/lua/prometheus-collectors/
 endef
 
+define Package/prometheus-node-exporter-lua-bmx6/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/prometheus-collectors
+	$(INSTALL_BIN) ./files/usr/lib/lua/prometheus-collectors/bmx6.lua $(1)/usr/lib/lua/prometheus-collectors/
+endef
+
+define Package/prometheus-node-exporter-lua-bmx7/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/prometheus-collectors
+	$(INSTALL_BIN) ./files/usr/lib/lua/prometheus-collectors/bmx7.lua $(1)/usr/lib/lua/prometheus-collectors/
+endef
+
+define Package/prometheus-node-exporter-lua-textfile/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/prometheus-collectors
+	$(INSTALL_BIN) ./files/usr/lib/lua/prometheus-collectors/textfile.lua $(1)/usr/lib/lua/prometheus-collectors/
+endef
+
+define Package/prometheus-node-exporter-lua-openwrt/install
+	$(INSTALL_DIR) $(1)/usr/lib/lua/prometheus-collectors
+	$(INSTALL_BIN) ./files/usr/lib/lua/prometheus-collectors/openwrt.lua $(1)/usr/lib/lua/prometheus-collectors/
+endef
+
 $(eval $(call BuildPackage,prometheus-node-exporter-lua))
 $(eval $(call BuildPackage,prometheus-node-exporter-lua-nat_traffic))
 $(eval $(call BuildPackage,prometheus-node-exporter-lua-netstat))
 $(eval $(call BuildPackage,prometheus-node-exporter-lua-wifi))
 $(eval $(call BuildPackage,prometheus-node-exporter-lua-wifi_stations))
+#$(eval $(call BuildPackage,prometheus-node-exporter-lua-bmx6))
+#$(eval $(call BuildPackage,prometheus-node-exporter-lua-bmx7))
+#$(eval $(call BuildPackage,prometheus-node-exporter-lua-textfile))
+#$(eval $(call BuildPackage,prometheus-node-exporter-lua-openwrt))
