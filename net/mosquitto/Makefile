@@ -9,14 +9,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
-PKG_VERSION:=1.4.14
+PKG_VERSION:=1.5
 PKG_RELEASE:=3
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://mosquitto.org/files/source/
-PKG_HASH:=156b1fa731d12baad4b8b22f7b6a8af50ba881fc711b81e9919ec103cf2942d1
+PKG_HASH:=80c9606a906c736fe582b67bdfb650ee45239fea058fe34927f81277d3486e21
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
@@ -60,7 +60,8 @@ endef
 
 define Package/mosquitto-ssl/description
 	$(call Package/mosquitto/default/description)
-	This package is built with SSL support
+This package is built with SSL support.  TLS-PSK will be included (in both
+the client and broker) if OpenSSL is built with TLS-PSK support.
 endef
 
 define Package/mosquitto-nossl/description
@@ -164,6 +165,7 @@ define Package/mosquitto/install/default
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mosquitto $(1)/opt/sbin/mosquitto
 	$(INSTALL_DIR) $(1)/opt/etc/mosquitto
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/mosquitto.conf $(1)/opt/etc/mosquitto/mosquitto.conf
+#	$(CP) ./files/* $(1)/
 endef
 
 define Package/mosquitto-nossl/install
@@ -217,6 +219,7 @@ ifeq ($(BUILD_VARIANT),nossl)
 	MAKE_FLAGS += WITH_TLS=no WITH_WEBSOCKETS=no
 else
 	MAKE_FLAGS += WITH_WEBSOCKETS=$(if $(CONFIG_MOSQUITTO_LWS),"yes","no")
+	MAKE_FLAGS += WITH_TLS_PSK=$(if $(CONFIG_OPENSSL_WITH_PSK),"yes","no")
 endif
 
 $(eval $(call BuildPackage,mosquitto-ssl))
