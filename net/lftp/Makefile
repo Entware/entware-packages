@@ -4,14 +4,12 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware!!! 4.8.2 segfaults. We have updated lftp to 4.8.3 before upstream
-#
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lftp
 PKG_VERSION:=4.8.3
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://lftp.tech/ftp/ \
 		https://mirror.csclub.uwaterloo.ca/gentoo-distfiles/distfiles/
@@ -47,7 +45,7 @@ CONFIGURE_ARGS += \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
 	--without-gnutls \
-	--without-libidn \
+	--without-libidn2 \
 	--without-libresolv \
 	--with-openssl="$(STAGING_DIR)/opt" \
 	--with-readline="$(STAGING_DIR)/opt" \
