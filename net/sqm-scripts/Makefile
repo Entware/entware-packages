@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sqm-scripts
-PKG_SOURCE_VERSION:=8217081f7e52af342c362b29480461575c496387
-PKG_VERSION:=1.1.3
+PKG_SOURCE_VERSION:=79c3aa11fed485fca1481b077082e561e5dbceec
+PKG_VERSION:=1.2.2
 PKG_RELEASE:=1
 PKG_LICENSE:=GPLv2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE).tar.xz
-PKG_MIRROR_HASH:=a287ce3bf68ed76f4fd7ae3df5e0066d99105b5c139c88bce99555dcb1d230a3
+PKG_MIRROR_HASH:=0bca492ff5da37923b0d6878f4b53af85e59db03b255ff22bd03c2c0a74e4644
 PKG_SOURCE_URL:=https://github.com/tohojo/sqm-scripts.git
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_RELEASE)
@@ -81,7 +81,7 @@ uci -q get ucitrack.@sqm[0] > /dev/null && {
   uci delete ucitrack.@sqm[0]
   uci del_list ucitrack.@firewall[0].affects=sqm
   uci commit
-}
+} || exit 0
 endef
 
 #$(eval $(call BuildPackage,sqm-scripts))
