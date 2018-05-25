@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# oniguruma dep added
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jq
 PKG_VERSION:=1.5
-PKG_RELEASE:=2a
+PKG_RELEASE:=2b
 PKG_LICENSE:=BSD
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -29,6 +30,7 @@ TARGET_CFLAGS += -D_DEFAULT_SOURCE
 define Package/jq
   SECTION:=utils
   CATEGORY:=Utilities
+  DEPENDS:=+oniguruma
   TITLE:=Lightweight and flexible command-line JSON processor.
   URL:=https://stedolan.github.io/jq/
   MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
