@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific $(INSTALL_DIR) $(1)/opt/var/run/xl2tpd
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xl2tpd
 PKG_VERSION:=1.3.11
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE
@@ -88,7 +89,7 @@ define Package/xl2tpd/install
 	$(INSTALL_DATA) ./files/options.xl2tpd $(1)/opt/etc/ppp/options.xl2tpd
 	$(INSTALL_BIN) ./files/ip-up.sh $(1)/opt/etc/ppp/
 	$(INSTALL_BIN) ./files/ip-down.sh $(1)/opt/etc/ppp/
-	$(INSTALL_DIR) $(1)/opt/var/run
+	$(INSTALL_DIR) $(1)/opt/var/run/xl2tpd
 endef
 
 $(eval $(call BuildPackage,xl2tpd))
