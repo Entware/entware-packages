@@ -1,6 +1,6 @@
 --- a/cmake/lzma.cmake
 +++ b/cmake/lzma.cmake
-@@ -24,10 +24,6 @@
+@@ -24,10 +24,6 @@ MACRO (MYSQL_CHECK_LZMA)
      IF (HAVE_LZMA_DECODE AND HAVE_LZMA_ENCODE AND HAVE_LZMA_H)
        ADD_DEFINITIONS(-DHAVE_LZMA=1)
        LINK_LIBRARIES(lzma) 
@@ -13,7 +13,7 @@
  ENDMACRO()
 --- a/client/mysql.cc
 +++ b/client/mysql.cc
-@@ -59,10 +59,6 @@
+@@ -59,10 +59,6 @@ static char *server_version= NULL;
  #include "sql_string.h"
  
  extern "C" {
@@ -24,7 +24,7 @@
  #if defined(HAVE_TERMIOS_H)
  #include <termios.h>
  #include <unistd.h>
-@@ -73,6 +73,7 @@
+@@ -77,12 +73,12 @@ extern "C" {
  #else
  #ifdef HAVE_CURSES_H
  #include <curses.h>
@@ -32,11 +32,9 @@
  #endif
  #undef SYSV				// hack to avoid syntax error
  #ifdef HAVE_TERM_H
-@@ -78,7 +78,6 @@
- #undef SYSV				// hack to avoid syntax error
- #ifdef HAVE_TERM_H
  #include <term.h>
--#endif
  #endif
+-#endif
  #endif /* defined(HAVE_CURSES_H) && defined(HAVE_TERM_H) */
  
+ #undef bcmp				// Fix problem with new readline
