@@ -1,6 +1,6 @@
 --- a/utils/statd/statd.c
 +++ b/utils/statd/statd.c
-@@ -161,7 +161,7 @@
+@@ -160,7 +160,7 @@ usage(void)
  	fprintf(stderr,"      -H                   Specify a high-availability callout program.\n");
  }
  
@@ -9,7 +9,7 @@
  
  int pidfd = -1;
  static void create_pidfile(void)
-@@ -196,7 +196,7 @@
+@@ -195,7 +195,7 @@ static void run_sm_notify(int outport)
  	char *av[6];
  	int ac = 0;
  
@@ -18,7 +18,7 @@
  	if (run_mode & MODE_NODAEMON)
  		av[ac++] = "-d";
  	if (outport) {
-@@ -383,7 +383,7 @@
+@@ -383,7 +383,7 @@ int main (int argc, char **argv)
  	}
  
  	if (run_mode & MODE_NOTIFY_ONLY) {

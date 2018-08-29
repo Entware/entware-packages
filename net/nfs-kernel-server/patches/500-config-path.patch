@@ -1,6 +1,6 @@
 --- a/support/include/nfslib.h
 +++ b/support/include/nfslib.h
-@@ -23,16 +23,16 @@
+@@ -24,16 +24,16 @@
  #include "xlog.h"
  
  #ifndef _PATH_EXPORTS
@@ -18,5 +18,5 @@
 -#define _PATH_IDMAPDCONF	"/etc/idmapd.conf"
 +#define _PATH_IDMAPDCONF	"/opt/etc/idmapd.conf"
  #endif
- #ifndef _PATH_XTAB
- #define _PATH_XTAB		NFS_STATEDIR "/xtab"
+ #ifndef _PATH_PROC_EXPORTS
+ #define	_PATH_PROC_EXPORTS	"/proc/fs/nfs/exports"

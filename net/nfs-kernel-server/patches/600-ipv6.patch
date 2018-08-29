@@ -15,7 +15,7 @@
  #include <netinet/in.h>
  #include <rpc/rpc.h>
  #include <rpc/pmap_prot.h>
-@@ -1132,13 +1126,6 @@
+@@ -1136,13 +1130,6 @@ static int nfs_ca_sockname(const struct
  		if (bind(sock, SAFE_SOCKADDR(&sin), sizeof(sin)) < 0)
  			goto out;
  		break;
