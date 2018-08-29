@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wget
-PKG_VERSION:=1.19.2
+PKG_VERSION:=1.19.5
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
-PKG_HASH:=4f4a673b6d466efa50fbfba796bd84a46ae24e370fa562ede5b21ab53c11a920
+PKG_HASH:=b39212abe1a73f2b28f4c6cb223c738559caac91d6e416a6d91d4b9d55c9faee
 PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
@@ -67,7 +67,8 @@ CONFIGURE_ARGS+= \
 	--disable-rpath \
 	--disable-iri \
 	--with-included-libunistring \
-	--without-libuuid
+	--without-libuuid \
+	--without-libpsl
 
 CONFIGURE_VARS += \
 	ac_cv_header_uuid_uuid_h=no
@@ -87,7 +88,7 @@ endif
 define Package/wget/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/wget $(1)/opt/bin/wget-ssl
-	$(LN) wget-ssl $(1)/opt/bin/wget
+	ln -sf wget-ssl $(1)/opt/bin/wget
 endef
 
 define Package/wget-nossl/install
