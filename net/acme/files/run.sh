@@ -187,7 +187,7 @@ issue_cert()
         acme_args="$acme_args --dns $dns"
     elif [ -z "$webroot" ]; then
         log "Using standalone mode"
-        acme_args="$acme_args --standalone"
+        acme_args="$acme_args --standalone --listen-v6"
     else
         if [ ! -d "$webroot" ]; then
             err "$main_domain: Webroot dir '$webroot' does not exist!"
@@ -211,6 +211,7 @@ issue_cert()
             err "Restoring staging certificate"
             mv "$STATE_DIR/${main_domain}.staging" "$STATE_DIR/${main_domain}"
         fi
+        post_checks
         return 1
     fi
 
@@ -234,6 +235,7 @@ load_vars()
 
 check_cron
 [ -n "$CHECK_CRON" ] && exit 0
+[ -e "/var/run/acme_boot" ] && rm -f "/var/run/acme_boot" && exit 0
 
 config_load acme
 config_foreach load_vars acme
