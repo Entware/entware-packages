@@ -1,6 +1,6 @@
 --- a/etc/tinyproxy.conf.in
 +++ b/etc/tinyproxy.conf.in
-@@ -92,7 +92,7 @@
+@@ -92,7 +92,7 @@ StatFile "@pkgdatadir@/stats.html"
  # and enable the Syslog directive.  These directives are mutually
  # exclusive.
  #
@@ -9,7 +9,7 @@
  
  #
  # Syslog: Tell tinyproxy to use syslog instead of a logfile.  This
-@@ -122,7 +122,7 @@
+@@ -122,7 +122,7 @@ LogLevel Info
  # PidFile: Write the PID of the main tinyproxy thread to this file so it
  # can be used for signalling purposes.
  #
