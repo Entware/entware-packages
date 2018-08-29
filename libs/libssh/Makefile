@@ -12,7 +12,7 @@ PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
 
 PKG_NAME:=libssh
 PKG_VERSION:=0.7.5
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://red.libssh.org/attachments/download/218/
@@ -68,7 +68,7 @@ define Build/InstallDev
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/libssh/* $(1)/opt/include/libssh/
 
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libssh* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libssh* $(1)/opt/lib/
 
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
@@ -76,7 +76,7 @@ endef
 
 define Package/libssh/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libssh* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libssh* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libssh))
