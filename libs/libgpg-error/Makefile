@@ -4,22 +4,23 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Upgraded from 1.12
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libgpg-error
-PKG_VERSION:=1.31
+PKG_VERSION:=1.32
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error
-PKG_HASH:=40d0a823c9329478063903192a1f82496083b277265904878f4bc09e0db7a4ef
+PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/libgpg-error/
+PKG_HASH:=c345c5e73cc2332f8d50db84a2280abfb1d8f6d4f1858b9daa30404db44540ca
 PKG_LICENSE:=LGPL-2.1+
 PKG_LICENSE_FILES:=COPYING
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
+
+PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
