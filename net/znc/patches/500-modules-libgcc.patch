@@ -1,6 +1,6 @@
 --- a/modules/Makefile.in
 +++ b/modules/Makefile.in
-@@ -25,7 +25,7 @@
+@@ -40,7 +40,7 @@ ISCYGWIN := @ISCYGWIN@
  # LIBS are not and should not be used in here.
  # The znc binary links already against those.
  # ...but not on cygwin!
@@ -9,4 +9,3 @@
  ifeq "$(ISCYGWIN)" "1"
  LIBS     += @LIBS@
  endif
-
