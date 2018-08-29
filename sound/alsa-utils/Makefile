@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=alsa-utils
-PKG_VERSION:=1.1.0
-PKG_RELEASE:=1a
+PKG_VERSION:=1.1.6
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=ftp://ftp.alsa-project.org/pub/utils/ \
-		http://alsa.cybermirror.org/utils/
-PKG_HASH:=3b1c3135b76e14532d3dd23fb15759ddd7daf9ffbc183f7a9a0a3a86374748f1
+		http://distfiles.gentoo.org/distfiles/
+PKG_HASH:=155caecc40b2220f686f34ba3655a53e3bdbc0586adb1056733949feaaf7d36e
 PKG_INSTALL:=1
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 
@@ -49,27 +49,26 @@ CONFIGURE_ARGS+= \
 		--disable-alsatest \
 		--disable-bat \
 		--disable-xmlto \
+		--disable-rst2man \
 		--with-curses=ncursesw
-
-CONFIGURE_VARS+= \
-		ac_cv_prog_ncurses5_config=no \
-		ac_cv_prog_ncursesw5_config=no
 
 define Package/alsa-utils/install
 	$(INSTALL_DIR) $(1)/opt/{s,}bin
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/var/{lock,run}
-	$(INSTALL_DIR) $(1)/opt/var/lib/alsa
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/amixer $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/alsamixer $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/aplay $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/arecord $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/alsactl $(1)/opt/sbin/
-	$(INSTALL_BIN) ./files/S04alsactl $(1)/opt/etc/init.d/
+
 	$(INSTALL_DIR) $(1)/opt/share/alsa/init
 	$(INSTALL_DATA) \
 	    $(PKG_INSTALL_DIR)/opt/share/alsa/init/* \
 	    $(1)/opt/share/alsa/init/
+
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S04alsactl $(1)/opt/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/var/{lock,run}
+	$(INSTALL_DIR) $(1)/opt/var/lib/alsa
 endef
 
 define Package/alsa-utils-seq/install
@@ -78,6 +77,10 @@ define Package/alsa-utils-seq/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/amidi $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/aplaymidi $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/arecordmidi $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/iecset $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/alsaloop $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/alsatplg $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/alsaucm $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/aseqdump $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/aseqnet $(1)/opt/bin/
 endef
