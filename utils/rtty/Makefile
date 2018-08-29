@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtty
-PKG_VERSION:=4.1.1
-PKG_RELEASE:=1
+PKG_VERSION:=5.1.0
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=v$(PKG_VERSION)
 PKG_SOURCE_URL=https://github.com/zhaojh329/rtty.git
-PKG_MIRROR_HASH:=2689ffafc7a6b2e649173edff802ec6d7c8476f1998497fca36a26c21fdcdc1c
+PKG_MIRROR_HASH:=0d81595305abae252b2914e53d0aa8e64de433357c147fd6391363a223c694d8
 
 PKG_BUILD_DIR=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_SOURCE_SUBDIR)
 
@@ -31,7 +31,7 @@ define Package/rtty/default
   CATEGORY:=Utilities
   SUBMENU:=Terminal
   TITLE:=A reverse proxy WebTTY
-  DEPENDS:=+libblobmsg-json
+  DEPENDS:=+libprotobuf-c
 endef
 
 define Package/rtty/default/description
