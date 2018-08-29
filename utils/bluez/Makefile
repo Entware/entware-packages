@@ -8,16 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bluez
-PKG_VERSION:=5.49
+PKG_VERSION:=5.50
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/bluetooth/
-PKG_HASH:=33301d7a514c73d535ee1f91c2aed1af1f2e53efe11d3ac06bcf0d7abed2ce95
+PKG_HASH:=5ffcaae18bbb6155f1591be8c24898dc12f062075a40b538b745bfd477481911
 
 PKG_LICENSE:=GPL-2.0+
 PKG_LICENSE_FILES:=COPYING
-PKG_MAINTAINER:=Nicolas Thill <nico@openwrt.org>
+PKG_MAINTAINER:=
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -144,8 +144,8 @@ define Package/bluez-daemon/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/bluetooth/bluetoothd $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bluetoothctl $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/bluetooth/obexd $(1)/opt/bin/
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_DATA) ./files/bluetooth.config $(1)/opt/etc/config/bluetooth
+	$(INSTALL_DIR) $(1)/opt/etc/dbus-1/system.d/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/bluetooth.conf $(1)/opt/etc/dbus-1/system.d/bluetooth.conf
 	$(INSTALL_DIR) $(1)/opt/etc/bluetooth
 	$(INSTALL_DIR) $(1)/opt/etc/bluetooth/keys
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/main.conf $(1)/opt/etc/bluetooth/main.conf
