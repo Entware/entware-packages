@@ -77,7 +77,7 @@ define Py3Build/Compile
 		install --root="$(PKG_INSTALL_DIR)" --prefix="/opt")
 endef
 
-$(eval $(call PyPackage,python-evdev))
-$(eval $(call BuildPackage,python-evdev))
-$(eval $(call Py3Package,python3-evdev))
-$(eval $(call BuildPackage,python3-evdev))
+#$(eval $(call PyPackage,python-evdev))
+#$(eval $(call BuildPackage,python-evdev))
+#$(eval $(call Py3Package,python3-evdev))
+#$(eval $(call BuildPackage,python3-evdev))
