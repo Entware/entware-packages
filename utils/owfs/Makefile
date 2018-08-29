@@ -8,12 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=owfs
-PKG_VERSION:=2.9p5
+PKG_VERSION:=3.2p2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=@SF/$(PKG_NAME)
-PKG_HASH:=f7e11bae6cd29d58726e6d29b297834e5656d6069a407d798067ae25cb0812ea
+PKG_SOURCE_URL:=https://codeload.github.com/owfs/owfs/tar.gz/v$(PKG_VERSION)?
+PKG_HASH:=904ee3ab1d80e9d3461b310f0cc78b2175e24aa0075edc4f7f92371c667d0bb6
+
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=GPL-2.0
 
@@ -29,7 +30,6 @@ PKG_CONFIG_DEPENDS:= \
   CONFIG_LIBOW_OWTRAFFIC
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/nls.mk
 
 #
 # templates
@@ -37,7 +37,7 @@ include $(INCLUDE_DIR)/nls.mk
 
 define Package/owfs/Default
   TITLE:=OWFS (1-Wire File System)
-  URL:=http://owfs.sourceforge.net/
+  URL:=https://github.com/owfs/owfs
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Filesystem
@@ -84,9 +84,9 @@ endef
 define Package/libow
   $(call Package/owfs/Library)
   DEPENDS:= \
-	+libpthread \
-	$(ICONV_DEPENDS) \
-	+LIBOW_MASTER_USB:libusb-compat
+    +libpthread \
+    +LIBOW_MASTER_USB:libusb-compat \
+    +libavahi-client
   TITLE:=OWFS - common shared library
 endef
 
@@ -130,7 +130,7 @@ endef
 define Package/owfs
   $(call Package/owfs/Utility)
   # libfuse depends on kmod-fuse, no need to declare dependency
-  DEPENDS+= +libfuse +fuse-utils $(ICONV_DEPENDS) +libusb-compat
+  DEPENDS+= +libfuse +fuse-utils
   TITLE:=OWFS - fuse file system
 endef
 
@@ -198,15 +198,8 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_LIBOW_DEBUG),--enable-debug,--disable-debug) \
 	$(if $(CONFIG_LIBOW_OWTRAFFIC),--enable-owtraffic,--disable-owtraffic)
 
-TARGET_CFLAGS += \
-	-I$(ICONV_PREFIX)/include \
-
-TARGET_LDFLAGS += \
-	-L$(ICONV_PREFIX)/lib \
-	-liconv \
-
 CONFIGURE_VARS += \
-	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(TOOLCHAIN_DIR)/lib" \
+	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(STAGING_DIR)/opt/lib -Wl,-rpath-link=$(TOOLCHAIN_DIR)/lib" \
 	lt_cv_sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib" \
 	lt_cv_sys_lib_search_path_spec="$(STAGING_DIR)/opt/lib" \
 	shrext_cmds=".so" \
