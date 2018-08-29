@@ -21,7 +21,7 @@
 . /lib/functions/network.sh
 
 # GLOBAL VARIABLES #
-VERSION="2.7.7-2"
+VERSION="2.7.8-3"
 SECTION_ID=""		# hold config's section name
 VERBOSE=0		# default mode is log to console, but easily changed with parameter
 MYPROG=$(basename $0)	# my program call name
@@ -63,6 +63,12 @@ IPV4_REGEX="[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}"
 # IPv6       ( ( 0-9a-f  1-4char ":") min 1x) ( ( 0-9a-f  1-4char   )optional) ( (":" 0-9a-f 1-4char  ) min 1x)
 IPV6_REGEX="\(\([0-9A-Fa-f]\{1,4\}:\)\{1,\}\)\(\([0-9A-Fa-f]\{1,4\}\)\{0,1\}\)\(\(:[0-9A-Fa-f]\{1,4\}\)\{1,\}\)"
 
+# characters that are dangerous to pass to a shell command line
+SHELL_ESCAPE="[\"\'\`\$\!();><{}?|\[\]\*\\\\]"
+
+# dns character set
+DNS_CHARSET="[@a-zA-Z0-9._-]"
+
 # detect if called by ddns-lucihelper.sh script, disable retrys (empty variable == false)
 LUCI_HELPER=$(printf %s "$MYPROG" | grep -i "luci")
 
@@ -72,7 +78,6 @@ KNOT_HOST=$(which khost)
 DRILL=$(which drill)
 HOSTIP=$(which hostip)
 NSLOOKUP=$(which nslookup)
-NSLOOKUP_MUSL=$($(which nslookup) localhost 2>&1 | grep -F "(null)")	# not empty busybox compiled with musl
 
 # Transfer Programs
 WGET=$(which wget)
@@ -80,13 +85,11 @@ WGET_SSL=$(which wget-ssl)
 
 CURL=$(which curl)
 # CURL_SSL not empty then SSL support available
-CURL_SSL=$($(which curl) -V 2>/dev/null | grep "Protocols:" | grep -F "https")
+CURL_SSL=$($CURL -V 2>/dev/null | grep -F "https")
 # CURL_PROXY not empty then Proxy support available
 CURL_PROXY=$(find /lib /usr/lib -name libcurl.so* -exec strings {} 2>/dev/null \; | grep -im1 "all_proxy")
 
 UCLIENT_FETCH=$(which uclient-fetch)
-# UCLIENT_FETCH_SSL not empty then SSL support available
-UCLIENT_FETCH_SSL=$(find /lib /usr/lib -name libustream-ssl.so* 2>/dev/null)
 
 # Global configuration settings
 # allow NON-public IP's
@@ -228,7 +231,7 @@ stop_daemon_for_all_ddns_sections() {
 #	value +10 will exit the scripts
 # $2..n	text to report
 write_log() {
-	local __LEVEL __EXIT __CMD __MSG
+	local __LEVEL __EXIT __CMD __MSG __MSE
 	local __TIME=$(date +%H%M%S)
 	[ $1 -ge 10 ] && {
 		__LEVEL=$(($1-10))
@@ -262,8 +265,15 @@ write_log() {
 	[ $VERBOSE -gt 0 -o $__EXIT -gt 0 ] && echo -e "$__MSG"
 	# write to logfile
 	if [ ${use_logfile:-1} -eq 1 -o $VERBOSE -gt 1 ]; then
-		[ -n "$password" ] && __MSG=$( printf "%s" "$__MSG" | sed -e "s/$password/*password*/g" )
-		[ -n "$URL_PASS" ] && __MSG=$( printf "%s" "$__MSG" | sed -e "s/$URL_PASS/*URL_PASS*/g" )
+		if [ -n "$password" ]; then
+			# url encode __MSG, password already done
+			urlencode __MSE "$__MSG"
+			# replace encoded password inside encoded message
+			# and url decode (newline was encoded as %00)
+			__MSG=$( echo -e "$__MSE" \
+				| sed -e "s/$URL_PASS/***PW***/g" \
+				| sed -e "s/+/ /g; s/%00/\n/g; s/%/\\\\x/g" | xargs -0 printf "%b" )
+		fi
 		printf "%s\n" "$__MSG" >> $LOGFILE
 		# VERBOSE > 1 then NO loop so NO truncate log to $ddns_loglines lines
 		[ $VERBOSE -gt 1 ] || sed -i -e :a -e '$q;N;'$ddns_loglines',$D;ba' $LOGFILE
@@ -469,6 +479,27 @@ timeout() {
 	# /bin/ps j  # uncomment to show if abort "sleep" is still sleeping
 
 	return $status
+}
+
+# sanitize a variable
+# $1	variable name
+# $2	allowed shell pattern
+# $3	disallowed shell pattern
+sanitize_variable() {
+	local __VAR=$1
+	eval __VALUE=\$$__VAR
+	local __ALLOWED=$2
+	local __REJECT=$3
+
+	# removing all allowed should give empty string
+	if [ -n "$__ALLOWED" ]; then
+		[ -z "${__VALUE//$__ALLOWED}" ] || write_log 12 "sanitize on $__VAR found characters outside allowed subset"
+	fi
+
+	# removing rejected pattern should give the same string as the input
+	if [ -n "$__REJECT" ]; then
+		[ "$__VALUE" = "${__VALUE//$__REJECT}" ] || write_log 12 "sanitize on $__VAR found rejected characters"
+	fi
 }
 
 # verify given host and port is connectable
@@ -765,6 +796,8 @@ do_transfer() {
 
 	# uclient-fetch possibly with ssl support if /lib/libustream-ssl.so installed
 	elif [ -n "$UCLIENT_FETCH" ]; then
+		# UCLIENT_FETCH_SSL not empty then SSL support available
+		UCLIENT_FETCH_SSL=$(find /lib /usr/lib -name libustream-ssl.so* 2>/dev/null)
 		__PROG="$UCLIENT_FETCH -q -O $DATFILE"
 		# force network/ip not supported
 		[ -n "$__BINDIP" ] && \
@@ -877,7 +910,7 @@ send_update() {
 
 		do_transfer "$__URL" || return 1
 
-		write_log 7 "DDNS Provider answered:\n$(cat $DATFILE)"
+		write_log 7 "DDNS Provider answered:${N}$(cat $DATFILE)"
 
 		[ -z "$UPD_ANSWER" ] && return 0	# not set then ignore
 
@@ -1108,6 +1141,7 @@ get_registered_ip() {
 		__RUNPROG="$__PROG $lookup_host >$DATFILE 2>$ERRFILE"
 		__PROG="hostip"
 	elif [ -n "$NSLOOKUP" ]; then	# last use BusyBox nslookup
+		NSLOOKUP_MUSL=$($(which nslookup) localhost 2>&1 | grep -F "(null)")	# not empty busybox compiled with musl
 		[ $force_dnstcp -ne 0 ] && \
 			write_log 14 "Busybox nslookup - no support for 'DNS over TCP'"
 		[ -n "$NSLOOKUP_MUSL" -a -n "$dns_server" ] && \
@@ -1196,17 +1230,17 @@ trap_handler() {
 
 	case $1 in
 		 0)	if [ $__ERR -eq 0 ]; then
-				write_log 5 "PID '$$' exit normal at $(eval $DATE_PROG)\n"
+				write_log 5 "PID '$$' exit normal at $(eval $DATE_PROG)${N}"
 			else
-				write_log 4 "PID '$$' exit WITH ERROR '$__ERR' at $(eval $DATE_PROG)\n"
+				write_log 4 "PID '$$' exit WITH ERROR '$__ERR' at $(eval $DATE_PROG)${N}"
 			fi ;;
 		 1)	write_log 6 "PID '$$' received 'SIGHUP' at $(eval $DATE_PROG)"
 			# reload config via starting the script again
 			/usr/lib/ddns/dynamic_dns_updater.sh -v "0" -S "$__SECTIONID" -- start || true
 			exit 0 ;;	# and leave this one
-		 2)	write_log 5 "PID '$$' terminated by 'SIGINT' at $(eval $DATE_PROG)\n";;
-		 3)	write_log 5 "PID '$$' terminated by 'SIGQUIT' at $(eval $DATE_PROG)\n";;
-		15)	write_log 5 "PID '$$' terminated by 'SIGTERM' at $(eval $DATE_PROG)\n";;
+		 2)	write_log 5 "PID '$$' terminated by 'SIGINT' at $(eval $DATE_PROG)${N}";;
+		 3)	write_log 5 "PID '$$' terminated by 'SIGQUIT' at $(eval $DATE_PROG)${N}";;
+		15)	write_log 5 "PID '$$' terminated by 'SIGTERM' at $(eval $DATE_PROG)${N}";;
 		 *)	write_log 13 "Unhandled signal '$1' in 'trap_handler()'";;
 	esac
 
