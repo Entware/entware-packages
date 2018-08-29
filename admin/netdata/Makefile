@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
 PKG_VERSION:=1.10.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=COPYING
@@ -43,13 +43,15 @@ TARGET_LDFLAGS += -Wl,--gc-sections
 CONFIGURE_ARGS += --with-zlib --with-math --disable-x86-sse --disable-lto
 
 define Package/netdata/conffiles
-/opt/etc/netdata/netdata.conf
+/opt/etc/netdata/
 endef
 
 define Package/netdata/install
 	mkdir -p $(1)/opt/etc/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/netdata $(1)/opt/etc
 	$(CP) ./files/netdata.conf $(1)/opt/etc/netdata
+	mkdir -p $(1)/opt/etc/netdata/custom-plugins.d
+
 	mkdir -p $(1)/opt/share/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/netdata $(1)/opt/share
 	rm -rf $(1)/opt/share/netdata/web/images
@@ -58,12 +60,15 @@ define Package/netdata/install
 	rm $(1)/opt/share/netdata/web/fonts/*.svg
 	rm $(1)/opt/share/netdata/web/fonts/*.ttf
 	rm $(1)/opt/share/netdata/web/fonts/*.woff
+
 	mkdir -p $(1)/opt/lib/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/netdata $(1)/opt/lib
 	rm $(1)/opt/lib/netdata/python.d/python-modules-installer.sh
 	chmod 4755 $(1)/opt/lib/netdata/plugins.d/apps.plugin
+
 	mkdir -p $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S60netdata $(1)/opt/etc/init.d
+
 	mkdir -p $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
 endef
