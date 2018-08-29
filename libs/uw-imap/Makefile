@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=uw-imap
 PKG_VERSION:=2007f
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=imap-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -41,8 +41,8 @@ define Package/uw-imap/description
 endef
 
 TARGET_CFLAGS += \
-	-fPIC -DPIC -D_DEFAULT_SOURCE -D_REENTRANT -DDISABLE_POP_PROXY -fno-strict-aliasing \
-	-Wno-pointer-sign -Wno-implicit-function-declaration -Wno-incompatible-pointer-types
+	-fPIC -DPIC -D_REENTRANT -DDISABLE_POP_PROXY -fno-strict-aliasing -Wno-pointer-sign \
+	-Wno-implicit-function-declaration -Wno-incompatible-pointer-types
 
 MAKE_FLAGS += \
 	SSLINCLUDE=$(STAGING_DIR)/opt/include SSLCERTS=/opt/etc/ssl/certs GCCOPTLEVEL=" -Os" \
