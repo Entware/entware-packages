@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=isc-dhcp
 UPSTREAM_NAME:=dhcp
 PKG_VERSION:=4.4.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
@@ -30,7 +30,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(UPSTREAM_NAME)-$(PKG_
 
 include $(INCLUDE_DIR)/package.mk
 
-#DISABLE_NLS:=
+DISABLE_NLS:=
 
 define Package/isc-dhcp/Default
   SECTION:=net
@@ -38,7 +38,7 @@ define Package/isc-dhcp/Default
   SUBMENU:=IP Addresses and Names
   TITLE:=ISC's DHCP
   URL:=https://www.isc.org/software/dhcp
-#  DEPENDS:=+zlib
+  DEPENDS:=+zlib
 endef
 
 define Package/isc-dhcp-relay-ipv4
