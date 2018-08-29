@@ -1,0 +1,60 @@
+#!/bin/sh
+
+[ -f /opt/etc/samba/smb.conf ] || exit 0
+
+mkdir -p /opt/var/log/samba
+mkdir -p /opt/var/lib/samba/private
+mkdir -p /opt/var/cache/samba
+mkdir -p /opt/var/run/samba/ncalrpc
+
+start() {
+    echo "Starting SMB services: "
+    smbd -D
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+
+    echo "Starting NMB services: "
+    nmbd -D
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+stop() {
+    echo "Shutting down SMB services: "
+    kill -9 `pidof smbd`
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+
+    echo "Shutting down NMB services: "
+    kill -9 `pidof nmbd`
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    echo "Reloading smb.conf file: "
+    kill -HUP `pidof smbd`
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  reload)
+    reload
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload}"
+    exit 1
+esac
+
+exit $?
+
