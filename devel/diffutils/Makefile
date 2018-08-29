@@ -35,13 +35,8 @@ define Package/diffutils/description
 endef
 
 CONFIGURE_VARS += \
+	gl_cv_func_getopt_gnu=yes \
 	ac_cv_func_mempcpy=n
-
-ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
-CONFIGURE_VARS += \
-	gl_cv_func_getopt_gnu=yes
-endif
-
 TARGET_CFLAGS += --std=gnu99
 
 define Package/diffutils/install
