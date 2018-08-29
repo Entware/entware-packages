@@ -69,10 +69,9 @@
 -    # forward to the boost tagging rule
 -    return  [ tag $(result) : $(type) : $(property-set) ] ;
 -}
-
 --- a/libs/python/build/Jamfile
 +++ b/libs/python/build/Jamfile
-@@ -7,6 +7,7 @@
+@@ -7,6 +7,7 @@ import indirect ;
  import modules ;
  import feature ;
  import property ;
@@ -80,17 +79,19 @@
  import python ;
  
  if ! [ python.configured ] && ! ( --without-python in  [ modules.peek : ARGV ] )
-@@ -30,6 +31,9 @@
+@@ -30,8 +31,9 @@ else
          ;
  }
  
+-if [ python.configured ]
+-{
 +py2-version = [ py-version 2 ] ;
 +py3-version = [ py-version 3 ] ;
 +
  project boost/python
    : source-location ../src
    ;
-@@ -38,95 +42,146 @@
+@@ -40,96 +42,146 @@ rule cond ( test ? : yes * : no * ) { if
  rule unless ( test ? : yes * : no * ) { if ! $(test) { return $(yes) ; } else { return $(no) ; } }
  local rule eq ( a : b ) { if $(a) = $(b) { return 1 ; } }
  
@@ -102,9 +103,7 @@
 -    tuple.cpp
 -    str.cpp
 -    slice.cpp
-+lib_boost_python(2) = boost_python ;
-+lib_boost_python(3) = boost_python3 ;
- 
+-
 -    converter/from_python.cpp
 -    converter/registry.cpp
 -    converter/type_id.cpp
@@ -129,9 +128,7 @@
 -    :   # requirements
 -        <link>static:<define>BOOST_PYTHON_STATIC_LIB
 -        <define>BOOST_PYTHON_SOURCE
-+lib_boost_python($(py2-version)) = $(lib_boost_python(2)) ;
-+lib_boost_python($(py3-version)) = $(lib_boost_python(3)) ;
- 
+-
 -        # On Windows, all code using Python has to link to the Python
 -        # import library.
 -        #
@@ -145,6 +142,59 @@
 -        # provide the Python include paths, and on Windows, the Python
 -        # import library, as usage requirements.
 -        [ cond [ python.configured ] : <library>/python//python_for_extensions ]
+-
+-        # we prevent building when there is no python available
+-        # as it's not possible anyway, and to cause dependents to
+-        # fail to build
+-        [ unless [ python.configured ] : <build>no ]
+-        <dependency>config-warning
+-        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
+-        -<tag>@$(BOOST_JAMROOT_MODULE)%$(BOOST_JAMROOT_MODULE).tag
+-        <tag>@$(__name__).python-tag
+-        <conditional>@python.require-py
+-
+-    :   # default build
+-        <link>shared
+-    :   # usage requirements
+-        <link>static:<define>BOOST_PYTHON_STATIC_LIB
+-        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
+-    ;
+-
+-numpy-include = [ python.numpy-include ] ;
+-lib boost_numpy
+-    : # sources
+-    numpy/dtype.cpp
+-    numpy/matrix.cpp
+-    numpy/ndarray.cpp
+-    numpy/numpy.cpp
+-    numpy/scalars.cpp
+-    numpy/ufunc.cpp
+-    :   # requirements
+-        <link>static:<define>BOOST_NUMPY_STATIC_LIB
+-        <define>BOOST_NUMPY_SOURCE
+-        [ cond [ python.numpy ] : <library>/python//python_for_extensions ]
+-        [ unless [ python.numpy ] : <build>no ]
+-        <include>$(numpy-include)
+-        <library>boost_python
+-        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
+-        -<tag>@$(BOOST_JAMROOT_MODULE)%$(BOOST_JAMROOT_MODULE).tag
+-	<tag>@$(__name__).python-tag
+-        <conditional>@python.require-py
+-
+-    :   # default build
+-        <link>shared
+-    :   # usage requirements
+-        <link>static:<define>BOOST_NUMPY_STATIC_LIB
+-        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
+-    ;
+-}
+\ No newline at end of file
++lib_boost_python(2) = boost_python ;
++lib_boost_python(3) = boost_python3 ;
++
++lib_boost_python($(py2-version)) = $(lib_boost_python(2)) ;
++lib_boost_python($(py3-version)) = $(lib_boost_python(3)) ;
++
 +rule lib_boost_python ( version )
 +{
 +    lib $(lib_boost_python($(version)))
@@ -155,16 +205,7 @@
 +        tuple.cpp
 +        str.cpp
 +        slice.cpp
- 
--        # we prevent building when there is no python available
--        # as it's not possible anyway, and to cause dependents to
--        # fail to build
--        [ unless [ python.configured ] : <build>no ]
--        <dependency>config-warning
--        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
--        -<tag>@$(BOOST_JAMROOT_MODULE)%$(BOOST_JAMROOT_MODULE).tag
--        <tag>@$(__name__).python-tag
--        <conditional>@python.require-py
++
 +        converter/from_python.cpp
 +        converter/registry.cpp
 +        converter/type_id.cpp
@@ -209,45 +250,13 @@
 +            # fail to build
 +            [ unless [ python.configured ] : <build>no ]
 +            <dependency>config-warning
- 
--    :   # default build
--        <link>shared
--    :   # usage requirements
--        <link>static:<define>BOOST_PYTHON_STATIC_LIB
--        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
--    ;
++
 +            <python-debugging>on:<define>BOOST_DEBUG_PYTHON
 +            <python>$(version)
- 
--numpy-include = [ python.numpy-include ] ;
--lib boost_numpy
--    : # sources
--    numpy/dtype.cpp
--    numpy/matrix.cpp
--    numpy/ndarray.cpp
--    numpy/numpy.cpp
--    numpy/scalars.cpp
--    numpy/ufunc.cpp
--    :   # requirements
--        <link>static:<define>BOOST_NUMPY_STATIC_LIB
--        <define>BOOST_NUMPY_SOURCE
--        [ cond [ python.numpy ] : <library>/python//python_for_extensions ]
--        [ unless [ python.numpy ] : <build>no ]
--        <include>$(numpy-include)
--        <library>boost_python
--        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
--        -<tag>@$(BOOST_JAMROOT_MODULE)%$(BOOST_JAMROOT_MODULE).tag
--	<tag>@$(__name__).python-tag
--        <conditional>@python.require-py
++
 +            -<tag>@$(BOOST_JAMROOT_MODULE)%$(BOOST_JAMROOT_MODULE).tag
 +            <tag>@$(BOOST_JAMROOT_MODULE)%$(BOOST_JAMROOT_MODULE).python-tag
- 
--    :   # default build
--        <link>shared
--    :   # usage requirements
--        <link>static:<define>BOOST_NUMPY_STATIC_LIB
--        <python-debugging>on:<define>BOOST_DEBUG_PYTHON
--    ;
++
 +            <conditional>@python.require-py
 +
 +        :   # default build
@@ -325,7 +334,7 @@
 +boost-install $(libraries) ;
 --- a/libs/python/fabscript
 +++ b/libs/python/fabscript
-@@ -20,7 +20,6 @@
+@@ -20,7 +20,6 @@ boost_include = options.get_with('boost-
  if boost_include:
      features += include(boost_include)
  python = python.instance()
@@ -335,11 +344,13 @@
  class has_numpy(try_run):
 --- a/boost/python/detail/config.hpp
 +++ b/boost/python/detail/config.hpp
-@@ -105,7 +105,11 @@
+@@ -105,9 +105,11 @@
  // Set the name of our library, this will get undef'ed by auto_link.hpp
  // once it's done with it:
  //
--#define BOOST_LIB_NAME boost_python##PY_MAJOR_VERSION##PY_MINOR_VERSION
+-#define _BOOST_PYTHON_CONCAT(N, M, m) N ## M ## m
+-#define BOOST_PYTHON_CONCAT(N, M, m) _BOOST_PYTHON_CONCAT(N, M, m)
+-#define BOOST_LIB_NAME BOOST_PYTHON_CONCAT(boost_python, PY_MAJOR_VERSION, PY_MINOR_VERSION)
 +#if PY_MAJOR_VERSION == 2
 +#  define BOOST_LIB_NAME boost_python
 +#elif PY_MAJOR_VERSION == 3
@@ -348,13 +359,25 @@
  //
  // If we're importing code from a dll, then tell auto_link.hpp about it:
  //
+@@ -120,9 +122,6 @@
+ #include <boost/config/auto_link.hpp>
+ #endif  // auto-linking disabled
+ 
+-#undef BOOST_PYTHON_CONCAT
+-#undef _BOOST_PYTHON_CONCAT
+-
+ #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+ #define BOOST_PYTHON_SUPPORTS_PY_SIGNATURES // enables smooth transition
+ #endif
 --- a/boost/python/numpy/config.hpp
 +++ b/boost/python/numpy/config.hpp
-@@ -62,7 +62,11 @@
+@@ -62,9 +62,11 @@
  // Set the name of our library, this will get undef'ed by auto_link.hpp
  // once it's done with it:
  //
--#define BOOST_LIB_NAME boost_numpy##PY_MAJOR_VERSION##PY_MINOR_VERSION
+-#define _BOOST_PYTHON_CONCAT(N, M, m) N ## M ## m
+-#define BOOST_PYTHON_CONCAT(N, M, m) _BOOST_PYTHON_CONCAT(N, M, m)
+-#define BOOST_LIB_NAME BOOST_PYTHON_CONCAT(boost_numpy, PY_MAJOR_VERSION, PY_MINOR_VERSION)
 +#if PY_MAJOR_VERSION == 2
 +#  define BOOST_LIB_NAME boost_numpy
 +#elif PY_MAJOR_VERSION == 3
@@ -363,9 +386,19 @@
  //
  // If we're importing code from a dll, then tell auto_link.hpp about it:
  //
+@@ -77,9 +79,6 @@
+ #include <boost/config/auto_link.hpp>
+ #endif  // auto-linking disabled
+ 
+-#undef BOOST_PYTHON_CONCAT
+-#undef _BOOST_PYTHON_CONCAT
+-
+ #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+ 
+ #endif // CONFIG_NUMPY20170215_H_
 --- a/libs/python/src/fabscript
 +++ b/libs/python/src/fabscript
-@@ -13,7 +13,7 @@
+@@ -13,7 +13,7 @@ from faber.tools.compiler import define
  
  root = module('..')
  
@@ -374,7 +407,7 @@
                ['list.cpp',
                 'long.cpp',
                 'dict.cpp',
-@@ -44,7 +44,7 @@
+@@ -44,7 +44,7 @@ bpl = library('boost_python' + root.py_s
                dependencies=root.config,
                features=features + define('BOOST_PYTHON_SOURCE'))
  

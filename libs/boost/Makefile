@@ -16,15 +16,15 @@ include $(INCLUDE_DIR)/nls.mk
 include $(INCLUDE_DIR)/target.mk 
 
 PKG_NAME:=boost
-PKG_VERSION:=1.67.0
-PKG_SOURCE_VERSION:=1_67_0
+PKG_VERSION:=1.68.0
+PKG_SOURCE_VERSION:=1_68_0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_SOURCE_VERSION).tar.bz2
-PKG_SOURCE_URL:=https://sourceforge.net/projects/boost/files/boost/$(PKG_VERSION)
+PKG_SOURCE_URL:=@SF/$(PKG_NAME)/$(PKG_NAME)/$(PKG_VERSION) https://dl.bintray.com/boostorg/release/$(PKG_VERSION)/source/
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)_$(PKG_SOURCE_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)_$(PKG_SOURCE_VERSION)
-PKG_HASH:=2684c972994ee57fc5632e03bf044746f6eb45d4920c343937a465fd67a5adba
+PKG_HASH:=7f6130bc3cf65f56a618888ce9d5ea704fa10b462be126ad053e80e553d6d8b7
 PKG_LICENSE:=Boost Software License <http://www.boost.org/users/license.html>
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 
@@ -44,7 +44,7 @@ define Package/boost/Default
 endef
 
 define Package/boost/description
-This package provides the Boost v1.67.0 libraries.
+This package provides the Boost v1.68.0 libraries.
 Boost is a set of free, peer-reviewed, portable C++ source libraries.
 
 -----------------------------------------------------------------------------
@@ -63,6 +63,7 @@ This package provides the following run-time libraries:
  - chrono
  - container
  - context
+ - contract 
  - coroutine (Deprecated - use Coroutine2)
  - - coroutine2 (Requires GCC v5 and up)
  - date_time
@@ -339,7 +340,7 @@ TARGET_LDFLAGS += -pthread -lrt
 
 TARGET_CFLAGS += \
 	$(if $(CONFIG_PACKAGE_boost-python), -I$(STAGING_DIR)/opt/include/python2.7/) \
-	$(if $(CONFIG_PACKAGE_boost-python3), -I$(STAGING_DIR)/opt/include/python3.6/) \
+	$(if $(CONFIG_PACKAGE_boost-python3), -I$(STAGING_DIR)/opt/include/python3.7/) \
 	$(if $(CONFIG_SOFT_FLOAT),-DBOOST_NO_FENV_H) -fPIC
 
 EXTRA_CXXFLAGS += $(if $(CONFIG_GCC_VERSION_4_8),-std=gnu++11,-std=gnu++14)
@@ -364,7 +365,7 @@ define Build/Compile
 	( cd $(PKG_BUILD_DIR) ; \
 		echo "using gcc : $(ARCH) : $(GNU_TARGET_NAME)-gcc : <compileflags>\"$(TARGET_CFLAGS)\" <cxxflags>\"$(TARGET_CXXFLAGS) $(EXTRA_CXXFLAGS)\" <linkflags>\"$(TARGET_LDFLAGS)\" ;" > tools/build/src/user-config.jam ; \
 		$(if $(CONFIG_PACKAGE_boost-python3), \
-			echo "using python : 3.6 : : $(STAGING_DIR)/opt/include/python3.6/ : $(STAGING_DIR)/opt/lib/libpython3.6.so ;" >> \
+			echo "using python : 3.7 : : $(STAGING_DIR)/opt/include/python3.7/ : $(STAGING_DIR)/opt/lib/libpython3.7.so ;" >> \
 				tools/build/src/user-config.jam; \
 		) \
 		$(if $(CONFIG_PACKAGE_boost-python), \
@@ -427,7 +428,7 @@ define Build/Compile
 					threading=multi \
 					$(foreach lib,$(BOOST_LIBS), \
 						$(if $(findstring python,$(lib)), \
-							$(if $(CONFIG_PACKAGE_boost-python3),python=3.6,), \
+							$(if $(CONFIG_PACKAGE_boost-python3),python=3.7,), \
 						) \
 					) \
 				install ;\
