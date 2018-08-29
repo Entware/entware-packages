@@ -1,0 +1,33 @@
+--- a/configure
++++ b/configure
+@@ -20797,8 +20797,8 @@
+ fi
+ 
+ 
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether compiler requires -Werror -Wno-deprecated-register" >&5
+-$as_echo_n "checking whether compiler requires -Werror -Wno-deprecated-register... " >&6; }
++  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether compiler requires -Werror" >&5
++$as_echo_n "checking whether compiler requires -Werror ..." >&6; }
+ if ${ac_cv_require_wno_deprecated_register+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+@@ -20822,8 +20822,8 @@
+ fi
+ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+     if test "xac_cv_require_wno_deprecated_register" != "xno" ; then
+-      CFLAGS="$CFLAGS -Werror -Wno-deprecated-register"
+-      CXXFLAGS="$CXXFLAGS -Werror -Wno-deprecated-register"
++      CFLAGS="$CFLAGS -Werror"
++      CXXFLAGS="$CXXFLAGS -Werror"
+       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ #include <arpa/inet.h>
+@@ -20856,7 +20856,7 @@
+ fi
+ 
+ if test "x$ac_cv_require_wno_deprecated_register" = "xyes"; then
+-  SQUID_CXXFLAGS="$SQUID_CXXFLAGS -Wno-deprecated-register"
++  SQUID_CXXFLAGS="$SQUID_CXXFLAGS"
+ fi
+ 
+ # squid_cv_cc_arg_pipe is set by SQUID_CC_GUESS_OPTIONS
