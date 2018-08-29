@@ -1,6 +1,6 @@
 --- a/src/cfg.c
 +++ b/src/cfg.c
-@@ -573,10 +573,8 @@
+@@ -616,10 +616,8 @@ int opencfgfile(const char *cfgfile, FIL
  		/* try to open first available config file */
  		if (tryhome && (*fd=fopen(buffer, "r"))!=NULL) {
  			strncpy_nt(cfg.cfgfile, buffer, 512);
@@ -15,7 +15,7 @@
  				printf("Config file: none\n");
 --- a/src/common.h
 +++ b/src/common.h
-@@ -54,7 +54,7 @@
+@@ -54,7 +54,7 @@ and most can be changed later from the c
  #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
  #define DATABASEDIR "/var/db/vnstat"
  #else
@@ -24,7 +24,7 @@
  #endif
  #endif
  #define DATABASEFILE "vnstat.db"
-@@ -197,8 +197,8 @@
+@@ -213,8 +213,8 @@ and most can be changed later from the c
  #define USELOGGING 2
  #define CREATEDIRS 1
  #define UPDATEFILEOWNER 1

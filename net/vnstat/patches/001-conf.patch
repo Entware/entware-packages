@@ -9,7 +9,7 @@
  
  # locale (LC_ALL) ("-" = use system locale)
  Locale "-"
-@@ -115,10 +115,10 @@
+@@ -126,10 +126,10 @@ CreateDirs 1
  UpdateFileOwner 1
  
  # file used for logging if UseLogging is set to 1
