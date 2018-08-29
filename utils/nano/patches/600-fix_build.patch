@@ -1,6 +1,6 @@
 --- a/lib/wctype.in.h
 +++ b/lib/wctype.in.h
-@@ -101,16 +101,16 @@
+@@ -101,16 +101,16 @@ _GL_INLINE_HEADER_BEGIN
  #endif
  
  /* Define wint_t and WEOF.  (Also done in wchar.in.h.)  */
@@ -20,7 +20,7 @@
  #  if !GNULIB_defined_wint_t
  #   if @HAVE_CRTDEFS_H@
  #    include <crtdefs.h>
-@@ -126,7 +126,7 @@
+@@ -126,7 +126,7 @@ typedef unsigned int rpl_wint_t;
  # ifndef WEOF
  #  define WEOF ((wint_t) -1)
  # endif
@@ -49,7 +49,7 @@
  #  if !GNULIB_defined_wint_t
  #   if @HAVE_CRTDEFS_H@
  #    include <crtdefs.h>
-@@ -132,7 +132,7 @@
+@@ -132,7 +132,7 @@ typedef unsigned int rpl_wint_t;
  # ifndef WEOF
  #  define WEOF ((wint_t) -1)
  # endif
