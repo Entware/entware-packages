@@ -1,0 +1,10 @@
+--- a/examples/logrotate-default
++++ b/examples/logrotate-default
+@@ -15,6 +15,6 @@
+ #compress
+ 
+ # RPM packages drop log rotation information into this directory
+-include /etc/logrotate.d
++include /opt/etc/logrotate.d
+ 
+ # system-specific logs may be also be configured here.
