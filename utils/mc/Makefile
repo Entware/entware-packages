@@ -7,16 +7,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
-PKG_VERSION:=4.8.20
+PKG_VERSION:=4.8.21
 PKG_RELEASE:=2
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 PKG_LICENSE:=GPL-3.0+
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ftp.midnight-commander.org/
-PKG_HASH:=017ee7f4f8ae420a04f4d6fcebaabe5b494661075c75442c76e9c8b1923d501c
+PKG_HASH:=8f37e546ac7c31c9c203a03b1c1d6cb2d2f623a300b86badfd367e5559fe148c
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf gettext-version
+PKG_BUILD_DEPENDS:=MC_VFS:libtirpc
+
 PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS := \
@@ -94,6 +96,8 @@ endif
 
 ifeq ($(CONFIG_MC_VFS),)
 CONFIGURE_ARGS += --disable-vfs
+else
+TARGET_CPPFLAGS += -I$(STAGING_DIR)/opt/include/tirpc
 endif
 
 define Package/mc/install
@@ -112,8 +116,11 @@ endif
 	$(INSTALL_DIR) $(1)/opt/share $(1)/opt/share/mc $(1)/opt/share/mc/help $(1)/opt/share/mc/skins $(1)/opt/share/mc/hints $(1)/opt/share/mc/syntax
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/mc/* $(1)/opt/share/mc/
 	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/lib/mc/ext.d/*
+	$(SED) 's,$(STAGING_DIR_HOSTPKG)/bin,/opt/bin,g' $(1)/opt/lib/mc/ext.d/*
 	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/lib/mc/extfs.d/*
+	$(SED) 's,$(STAGING_DIR_HOSTPKG)/bin,/opt/bin,g' $(1)/opt/lib/mc/extfs.d/*
 	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/share/mc/syntax/Syntax
+	$(SED) 's,$(STAGING_DIR_HOSTPKG)/bin,/opt/bin,g' $(1)/opt/share/mc/syntax/Syntax
 endef
 
 define Package/mc/conffiles
