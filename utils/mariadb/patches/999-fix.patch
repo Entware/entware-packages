@@ -1,5 +1,5 @@
---- a/cmake/lzma.cmake
-+++ b/cmake/lzma.cmake
+--- a/storage/innobase/lzma.cmake
++++ b/storage/innobase/lzma.cmake
 @@ -24,10 +24,6 @@ MACRO (MYSQL_CHECK_LZMA)
      IF (HAVE_LZMA_DECODE AND HAVE_LZMA_ENCODE AND HAVE_LZMA_H)
        ADD_DEFINITIONS(-DHAVE_LZMA=1)
