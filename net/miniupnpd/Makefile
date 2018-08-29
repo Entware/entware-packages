@@ -8,14 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=miniupnpd
-PKG_VERSION:=2.0.20180503
+PKG_VERSION:=2.1.20180706
 PKG_RELEASE:=1
 
-PKG_SOURCE_URL:=http://miniupnp.free.fr/files
+PKG_SOURCE_URL:=https://miniupnp.tuxfamily.org/files
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=b61bed16865f8692803a9f155523ca7c6e01c65db20362b6173226b08ce12a0c
+PKG_HASH:=fc2d2fd044d8c3f8d02b63d70489bb35ece836a4fc1b6386865ac8fbe8d8b006
 
-PKG_MAINTAINER:=Kevin Darbyshire-Bryant <ldir@darbyshire-bryant.me.uk>
 PKG_LICENSE:=BSD-3-Clause
 
 include $(INCLUDE_DIR)/package.mk
@@ -27,7 +26,7 @@ define Package/miniupnpd
   DEPENDS:=+iptables +libip4tc +IPV6:libip6tc +IPV6:ip6tables +libuuid
   TITLE:=Lightweight UPnP IGD, NAT-PMP & PCP daemon
   SUBMENU:=Firewall
-  URL:=http://miniupnp.free.fr/
+  URL:=https://miniupnp.tuxfamily.org/
 endef
 
 define Package/miniupnpd/conffiles
@@ -39,6 +38,9 @@ define Build/Prepare
 	echo "$(VERSION_NUMBER)" | tr '() ' '_' >$(PKG_BUILD_DIR)/os.openwrt
 endef
 
+TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS))
+TARGET_CFLAGS += -flto -ffunction-sections -fdata-sections -O2
+TARGET_LDFLAGS += $(FPIC) -flto -Wl,--gc-sections
 MAKE_FLAGS += \
 	TARGET_OPENWRT=1 TEST=0 LIBS="" \
 	CC="$(TARGET_CC) -DIPTABLES_143 -lip4tc -luuid \
