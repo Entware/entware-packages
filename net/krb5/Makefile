@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=krb5
-PKG_VERSION:=1.16
-PKG_RELEASE:=1
+PKG_VERSION:=1.16.1
+PKG_RELEASE:=3
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 
@@ -18,7 +18,7 @@ PKG_LICENSE_FILES:=NOTICE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://web.mit.edu/kerberos/dist/krb5/1.16/
-PKG_HASH:=faeb125f83b0fb4cdb2f99f088140631bb47d975982de0956d18c85842969e08
+PKG_HASH:=214ffe394e3ad0c730564074ec44f1da119159d94281bbec541dc29168d21117
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -40,7 +40,7 @@ define Package/krb5-libs
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=Kerberos
-	DEPENDS:=+libncurses
+	DEPENDS:=+libncurses +libss +libcomerr
 	TITLE:=Kerberos 5 Shared Libraries
 	URL:=http://web.mit.edu/kerberos/
 endef
@@ -58,7 +58,8 @@ define Package/krb5-client
 endef
 
 define Package/krb5/description
-	Kerberos
+  Kerberos is a network authentication protocol. 
+  It is designed to provide strong authentication for client/server applications by using secret-key cryptography.
 endef
 
 CONFIGURE_PATH = ./src
@@ -66,19 +67,26 @@ CONFIGURE_PATH = ./src
 CONFIGURE_VARS += \
 	cross_compiling=yes \
 	krb5_cv_attr_constructor_destructor=yes,yes \
+	krb5_cv_sys_rcdir=/opt/tmp \
 	ac_cv_func_regcomp=yes \
 	ac_cv_printf_positional=yes \
 	ac_cv_file__etc_environment=no \
 	ac_cv_file__etc_TIMEZONE=no
 
 CONFIGURE_ARGS += \
+	--includedir='/opt/include/krb5' \
+	--localstatedir=/opt/etc \
+	--with-system-ss \
+	--with-system-et \
 	--without-system-verto \
 	--without-tcl \
+	--without-tls-impl \
 	--without-libedit \
-	--localstatedir=/opt/etc \
-	--with-size-optimizations \
+	--without-readline \
 	--disable-rpath \
-	--without-krb5-config
+	--disable-pkinit \
+	--with-size-optimizations \
+	--with-crypto-impl=builtin
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
