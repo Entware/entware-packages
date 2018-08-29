@@ -4,16 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# upgrade from 3.12, too many errors
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=PyYAML
-PKG_VERSION:=3.12
+PKG_VERSION:=3.13
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://pyyaml.org/download/pyyaml/
-PKG_HASH:=592766c6303207a20efc445587778322d7f73b161bd994f227adaa341ba212ab
+PKG_HASH:=3ef3092145e9b70e3ddd2c7ad59bdd0252a94dfe3949721633e41344de00a6bf
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
