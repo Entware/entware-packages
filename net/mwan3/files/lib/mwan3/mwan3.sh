@@ -198,6 +198,14 @@ mwan3_set_general_iptables()
 
 		if ! $IPT -S mwan3_hook &> /dev/null; then
 			$IPT -N mwan3_hook
+			# do not mangle ipv6 ra service
+			if [ "$IPT" = "$IPT6" ]; then
+				$IPT6 -A mwan3_hook -p ipv6-icmp -m icmp6 --icmpv6-type 133 -j RETURN
+				$IPT6 -A mwan3_hook -p ipv6-icmp -m icmp6 --icmpv6-type 134 -j RETURN
+				$IPT6 -A mwan3_hook -p ipv6-icmp -m icmp6 --icmpv6-type 135 -j RETURN
+				$IPT6 -A mwan3_hook -p ipv6-icmp -m icmp6 --icmpv6-type 136 -j RETURN
+				$IPT6 -A mwan3_hook -p ipv6-icmp -m icmp6 --icmpv6-type 137 -j RETURN
+			fi
 			$IPT -A mwan3_hook -j CONNMARK --restore-mark --nfmask $MMX_MASK --ctmask $MMX_MASK
 			$IPT -A mwan3_hook -m mark --mark 0x0/$MMX_MASK -j mwan3_ifaces_in
 			$IPT -A mwan3_hook -m mark --mark 0x0/$MMX_MASK -j mwan3_connected
@@ -492,11 +500,9 @@ mwan3_track_signal()
 	local pid
 
 	pid="$(pgrep -f "mwan3track $1 $2")"
-	if [ "${pid}" != "" ]; then
+	[ "${pid}" != "" ] && {
 		kill -USR1 "${pid}"
-	else
-		$LOG warn "Unable to send signal USR1 to mwan3track on interface $1 with pid ${pid}"
-	fi
+	}
 }
 
 mwan3_set_policy()
