@@ -1,0 +1,55 @@
+--- a/src/getpublickey.c
++++ b/src/getpublickey.c
+@@ -47,7 +47,7 @@
+ 
+ #include "debug.h"
+ 
+-#define PKFILE "/etc/publickey"
++#define PKFILE "/opt/etc/publickey"
+ 
+ /*
+  * Hack to let ypserv/rpc.nisd use AUTH_DES.
+--- a/src/getrpcent.c
++++ b/src/getrpcent.c
+@@ -84,7 +84,7 @@ static	struct rpcent *interpret(char *va
+ static int	__yp_nomap = 0;
+ #endif	/* YP */
+ 
+-#define	RPCDB	"/etc/rpc"
++#define	RPCDB	"/opt/etc/rpc"
+ 
+ static struct rpcdata *_rpcdata(void);
+ 
+--- a/src/netnamer.c
++++ b/src/netnamer.c
+@@ -53,7 +53,7 @@ static char    *OPSYS = "unix";
+ #ifdef YP
+ static char    *NETID = "netid.byname";
+ #endif
+-static char    *NETIDFILE = "/etc/netid";
++static char    *NETIDFILE = "/opt/etc/netid";
+ 
+ static int getnetid( char *, char * );
+ static int _getgroups( char *, gid_t * );
+--- a/tirpc/netconfig.h
++++ b/tirpc/netconfig.h
+@@ -5,7 +5,7 @@
+ #include <features.h>
+ #endif
+ 
+-#define NETCONFIG "/etc/netconfig"
++#define NETCONFIG "/opt/etc/netconfig"
+ #define NETPATH	  "NETPATH"
+ 
+ struct netconfig {
+--- a/tirpc/rpc/rpcb_prot.h
++++ b/tirpc/rpc/rpcb_prot.h
+@@ -476,7 +476,7 @@ extern bool_t xdr_netbuf(XDR *, struct n
+ #define RPCBVERS_3 RPCBVERS
+ #define RPCBVERS_4 RPCBVERS4
+ 
+-#define _PATH_RPCBINDSOCK "/var/run/rpcbind.sock"
++#define _PATH_RPCBINDSOCK "/opt/var/run/rpcbind.sock"
+ 
+ #else /* ndef _KERNEL */
+ #ifdef __cplusplus
