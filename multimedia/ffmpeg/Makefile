@@ -5,21 +5,23 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+#FIXME build failed for some arch if selected libx264 
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ffmpeg
-PKG_VERSION:=3.2.10
-PKG_RELEASE:=3
+PKG_VERSION:=3.2.12
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://ffmpeg.org/releases/
-PKG_HASH:=3c1626220c7b68ff6be7312559f77f3c65ff6809daf645d4470ac0189926bdbc
+PKG_HASH:=8985cea7b1b3b2e0e2b2a8ac6187a7fb022fe8aa9d35101760a000205c59c412
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>, \
 		Ian Leonard <antonlacon@gmail.com>
 
 PKG_LICENSE:=LGPL-2.1+ GPL-2+ LGPL-3
 PKG_LICENSE_FILES:=COPYING.GPLv2 COPYING.GPLv3 COPYING.LGPLv2.1 COPYING.LGPLv3
+PKG_CPE_ID:=cpe:/a:ffmpeg:ffmpeg
 
 FFMPEG_CUSTOM_ENCODERS:= \
 	ac3 \
@@ -372,6 +374,11 @@ $(call Package/ffmpeg/Default/description)
 endef
 
 
+# Strip off FPU notation
+REAL_CPU_TYPE:=$(firstword $(subst +, ,$(CONFIG_CPU_TYPE)))
+# Fixup cpu types recogized by ffmpeg configure
+REAL_CPU_TYPE:=$(subst octeonplus,octeon+,$(REAL_CPU_TYPE))
+
 FFMPEG_CONFIGURE:= \
 	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(FPIC)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
@@ -379,6 +386,7 @@ FFMPEG_CONFIGURE:= \
 	--enable-cross-compile \
 	--cross-prefix="$(TARGET_CROSS)" \
 	--arch="$(ARCH)" \
+	$(if $(REAL_CPU_TYPE),--cpu=$(call qstrip,$(REAL_CPU_TYPE)),) \
 	--target-os=linux \
 	--prefix="/opt" \
 	--pkg-config="pkg-config" \
@@ -418,6 +426,10 @@ FFMPEG_CONFIGURE+= \
 else ifneq ($(findstring powerpc,$(CONFIG_ARCH)),)
 FFMPEG_CONFIGURE+= \
 	--disable-altivec
+# libavcode/mips/aacdec_mips.c build problem
+else ifneq ($(findstring 24kf,$(CONFIG_CPU_TYPE)),)
+FFMPEG_CONFIGURE+= \
+	--disable-inline-asm
 endif
 
 # selectively disable optimizations according to arch/cpu type
@@ -442,9 +454,14 @@ ifeq ($(ARCH),x86_64)
 	FFMPEG_CONFIGURE+= --enable-lto
 endif
 
-ifneq ($(CONFIG_YASM),y)
-FFMPEG_CONFIGURE+= --disable-yasm
-
+ifneq ($(CONFIG_TARGET_x64_3_2),)
+ifeq ($(CONFIG_NASM),y)
+  # Set yasmexe to anything but YASM/NASM (ffmpeg configure will then find NASM correctly)
+  # Newer ffmpeg packages will use --enable-x86asm (with NASM default)
+  FFMPEG_CONFIGURE += --yasmexe=xyzzy
+else
+  FFMPEG_CONFIGURE += --disable-yasm
+endif
 endif
 
 ifeq ($(BUILD_VARIANT),full)
@@ -477,7 +494,7 @@ ifeq ($(BUILD_VARIANT),full)
 	FFMPEG_CONFIGURE+= $(if $(CONFIG_PACKAGE_lame-lib),--enable-libmp3lame)
 	# x264 support and fdk-aac support can't coexist and be distributed.
 	# Prioritize x264 over fdk-aac in default builds (maintain status-quo).
-	ifeq ($(CONFIG_PACKAGE_libx264),y)
+	ifneq ($(CONFIG_PACKAGE_libx264),)
 		FFMPEG_CONFIGURE+= \
 			--enable-gpl \
 			--enable-libx264
@@ -555,7 +572,7 @@ ifeq ($(CONFIG_FFMPEG_CUSTOM_SELECT_libshine),y)
 	--enable-libshine --enable-encoder=libshine
 endif
 
-ifeq ($(CONFIG_FFMPEG_CUSTOM_SELECT_libx264),y)
+ifneq ($(CONFIG_FFMPEG_CUSTOM_SELECT_libx264),)
   FFMPEG_CONFIGURE+= \
 	--enable-libx264 --enable-encoder=libx264
 endif
@@ -640,7 +657,7 @@ define Build/InstallDev/full
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale} $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale}.{a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale}.pc $(1)/opt/lib/pkgconfig/
-ifeq ($(CONFIG_PACKAGE_libx264),y)
+ifneq ($(CONFIG_PACKAGE_libx264),)
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/libpostproc $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpostproc.{a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libpostproc.pc $(1)/opt/lib/pkgconfig/
@@ -706,7 +723,7 @@ endef
 define Package/libffmpeg-full/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale}.so.* $(1)/opt/lib/
-ifeq ($(CONFIG_PACKAGE_libx264),y)
+ifneq ($(CONFIG_PACKAGE_libx264),)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpostproc.so.* $(1)/opt/lib/
 endif
 endef
