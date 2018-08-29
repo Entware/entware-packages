@@ -1,6 +1,6 @@
 --- a/server/Makefile.am
 +++ b/server/Makefile.am
-@@ -4,6 +4,8 @@
+@@ -4,6 +4,8 @@ AM_CFLAGS = -DPKGDATADIR=\"$(pkgdatadir)
  	-DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \
  	-DSEAFILE_SERVER \
  	-DFULL_FEATURE \

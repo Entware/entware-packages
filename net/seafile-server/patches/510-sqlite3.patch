@@ -27,3 +27,4 @@
 +#include <sqlite3.h>
  #include <stdint.h>
  #include <glib.h>
+ 
