@@ -36,7 +36,7 @@ define Package/mpd/Default
   TITLE:=Music Player Daemon
   URL:=http://www.musicpd.org/
   DEPENDS:= +zlib +libcurl +libpthread +libmpdclient +libstdcpp $(ICONV_DEPENDS) \
-	    +AUDIO_SUPPORT:alsa-lib +boost +boost-container +libexpat +libflac
+	    +AUDIO_SUPPORT:alsa-lib +boost +boost-container +libexpat +libflac +yajl
 endef
 
 define Package/mpd/Default/description
@@ -154,8 +154,7 @@ CONFIGURE_ARGS += \
 	$(call autoconf_bool,CONFIG_AUDIO_SUPPORT,alsa) \
 	--enable-tcp \
 	--disable-sndio \
-	--disable-haiku \
-	--disable-soundcloud
+	--disable-haiku
 
 ifeq ($(CONFIG_LINUX_2_6_22),y)
 
