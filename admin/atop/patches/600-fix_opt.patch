@@ -31,8 +31,8 @@
  PMPATHD  = /usr/lib/systemd/system-sleep
  
 -CFLAGS  += -O2 -I. -Wall  	 # -DHTTPSTATS
-+CFLAGS   = -O2 -I. -I$(STAGING_DIR)/opt/include -Wall  	 # -DHTTPSTATS
-+LDFLAGS  = -L$(STAGING_DIR)/opt/lib -lncursesw -lm -lz -lrt -lpthread
++CFLAGS   += -O2 -I. -I$(STAGING_DIR)/opt/include -Wall  	 # -DHTTPSTATS
++LDFLAGS  += -L$(STAGING_DIR)/opt/lib -lncursesw -lm -lz -lrt -lpthread
  OBJMOD0  = version.o
  OBJMOD1  = various.o  deviate.o   procdbase.o
  OBJMOD2  = acctproc.o photoproc.o photosyst.o  rawlog.o ifprop.o parseable.o
