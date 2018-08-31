@@ -9,14 +9,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
 PKG_HASH:=980e82918c52d364605c0703a5dcf01f74ad2ef06e3d365949e43b7d406d25a7
 PKG_MAINTAINER:=Daniel Dickinson <cshored@thecshore.com>
-PKG_LICENSE:=GPL-2.0
-PKG_LICENSE_FILES:=LICENSE-GPL2
+PKG_LICENSE:=GPL-2.0+ GPL-3.0+ GPL-1.0+ Artistic-1.0-Perl
+PKG_LICENSE_FILES:=LICENSE-GPL2 LICENSE-GPL3 COPYING
 PKG_FIXUP:=autoreconf
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
@@ -63,17 +63,19 @@ define Package/nut/install
 endef
 
 define Package/nut-server/install
+	# Server portion
 	$(INSTALL_DIR) $(1)/opt/etc/nut
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/share/nut
 	$(INSTALL_BIN) ./files/S15upsd $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsd $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsdrvctl $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/cmdvartab $(1)/opt/share/nut/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/driver.list $(1)/opt/share/nut/
 	$(INSTALL_DIR) $(1)/opt/etc/config
 	$(INSTALL_CONF) ./files/nut_server $(1)/opt/etc/config/nut_server
+	# Driver common portion
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsdrvctl $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/driver.list $(1)/opt/share/nut/
 endef
 
 define Package/nut-common
@@ -82,13 +84,16 @@ define Package/nut-common
 	DEPENDS:= nut \
 		+NUT_DRIVER_SNMP:libnetsnmp \
 		+NUT_DRIVER_USB:libusb-compat \
-		+NUT_SSL:libopenssl \
-		+PACKAGE_libwrap:libwrap
+		+NUT_SSL:libopenssl
 endef
 
 define Package/nut-common/description
 $(call Package/nut/description/Default)
 This package contains the common files.
+endef
+
+define Package/nut-common/conffiles
+/opt/etc/nut/nut.conf
 endef
 
 define Package/nut-common/install
@@ -101,6 +106,7 @@ define Package/nut-server
 	$(call Package/nut/Default)
 	TITLE+= (server)
 	DEPENDS:=nut +nut-common
+	USERID:=nut=113:nut=113
 endef
 
 define Package/nut-server/description
@@ -114,13 +120,16 @@ endef
 
 define Package/nut-server/conffiles
 /opt/etc/config/nut_server
+/opt/etc/nut/upsd.conf
+/opt/etc/nut/upsd.users
+/opt/etc/nut/ups.conf
 endef
 
 define Package/nut-upsmon
   $(call Package/nut/Default)
 	TITLE+= (monitor)
 	DEPENDS:=nut +nut-common
-	USERID:=nut=113:nut=113
+	USERID:=nutmon=114:nutmon=114
 endef
 
 define Package/nut-upsmon/description
@@ -135,6 +144,7 @@ endef
 
 define Package/nut-upsmon/conffiles
 /opt/etc/config/nut_monitor
+/opt/etc/nut/upsmon.conf
 endef
 
 define Package/nut-upsmon/install
@@ -175,7 +185,7 @@ define Package/nut-upsc/description
 $(call Package/nut/description/Default)
 upsc is provided as a quick way to poll the status of a UPS server. It
 can be used inside shell scripts and other programs that need UPS data
-but don not want to include the full interface.
+but do not want to include the full interface.
 endef
 
 define Package/nut-upsc/install
@@ -326,7 +336,7 @@ define DriverPackage
         define Package/nut-driver-$(2)
 		$(call Package/nut/Default)
 		TITLE:=$(2) (NUT $(1) driver)
-		DEPENDS:=nut +nut-common
+		DEPENDS:=nut +nut-server
 		$(if $(filter $(1),snmp),DEPENDS+= @NUT_DRIVER_SNMP)
 		$(if $(filter $(1),usb),DEPENDS+= @NUT_DRIVER_USB)
 		$(if $(filter $(1),serial),DEPENDS+= @NUT_DRIVER_SERIAL)
@@ -486,6 +496,7 @@ CONFIGURE_ARGS += \
 	--without-avahi \
 	--$(if $(CONFIG_NUT_DRIVER_SNMP),with,without)-snmp $(if $(CONFIG_NUT_DRIVER_SNMP),--with-snmp-libs="$(TARGET_LDFLAGS) -lnetsnmp") \
 	--$(if $(CONFIG_NUT_DRIVER_SERIAL),with,without)-serial \
+	--without-doc \
 	--without-neon \
 	--without-powerman \
 	--without-wrap \
