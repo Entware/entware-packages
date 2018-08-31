@@ -373,6 +373,7 @@ define Package/avahi-daemon/install
 	$(INSTALL_DIR) $(1)/opt/etc/avahi/services
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S42avahi-daemon $(1)/opt/etc/init.d/
+	$(INSTALL_DIR) $(1)/opt/var/run/dbus
 endef
 
 Package/avahi-dbus-daemon/install=$(Package/avahi-daemon/install)
