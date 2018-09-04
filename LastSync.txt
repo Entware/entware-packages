@@ -1,7 +1,7 @@
-commit da1912f868924541e7d9333c468f1bfc4bf25f06
-Author: Yousong Zhou <yszhou4tech@gmail.com>
-Date:   Wed May 9 17:01:45 2018 +0800
+commit 160bf84ab96e85c3e8b3997ebb08e801a8124e0a
+Author: Ted Hess <thess@kitschensync.net>
+Date:   Fri Aug 31 15:08:17 2018 -0400
 
-    treewide: use mirror tag @KERNEL where applicable
+    README.md - update links to current docs pages
     
-    Signed-off-by: Yousong Zhou <yszhou4tech@gmail.com>
+    Signed-off-by: Ted Hess <thess@kitschensync.net>
