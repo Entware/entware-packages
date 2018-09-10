@@ -5,7 +5,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-#FIXME build failed for some arch if selected libx264 
+# Entware specific: libpostproc depends on SOFT_FLOAT and libx264
 
 include $(TOPDIR)/rules.mk
 
@@ -658,9 +658,11 @@ define Build/InstallDev/full
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale}.{a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale}.pc $(1)/opt/lib/pkgconfig/
 ifneq ($(CONFIG_PACKAGE_libx264),)
+ifneq ($(CONFIG_SOFT_FLOAT),y)
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/libpostproc $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpostproc.{a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libpostproc.pc $(1)/opt/lib/pkgconfig/
+endif
 endif
 endef
 
@@ -724,7 +726,9 @@ define Package/libffmpeg-full/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{avcodec,avdevice,avfilter,avformat,avresample,avutil,swresample,swscale}.so.* $(1)/opt/lib/
 ifneq ($(CONFIG_PACKAGE_libx264),)
+ifneq ($(CONFIG_SOFT_FLOAT),y)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpostproc.so.* $(1)/opt/lib/
+endif
 endif
 endef
 
