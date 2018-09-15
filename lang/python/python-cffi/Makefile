@@ -24,7 +24,7 @@ PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>, Alexandru Ardelean <ardeleana
 PKG_BUILD_DEPENDS:=libffi/host
 
 HOST_PYTHON_PACKAGE_BUILD_DEPENDS:="cffi==$(PKG_VERSION)"
-#HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:="cffi==$(PKG_VERSION)"
+HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:="cffi==$(PKG_VERSION)"
 
 include $(INCLUDE_DIR)/package.mk
 include ../python-package.mk

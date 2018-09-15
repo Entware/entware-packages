@@ -22,7 +22,7 @@ PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 
 HOST_PYTHON_PACKAGE_BUILD_DEPENDS:="ply==3.11"
-#HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:="ply==3.11"
+HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:="ply==3.11"
 
 include $(INCLUDE_DIR)/package.mk
 include ../python-package.mk
