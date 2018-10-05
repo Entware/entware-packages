@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=znc
 PKG_VERSION:=1.7.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://znc.in/releases \
@@ -283,7 +283,7 @@ include $(INCLUDE_DIR)/package.mk
 CONFIGURE_VARS += \
 	CXXFLAGS="$(TARGET_CFLAGS) -fno-builtin" \
 	CPPFLAGS="-I$(STAGING_DIR)/opt/include" \
-	LDFLAGS="-nodefaultlibs -lc -L$(STAGING_DIR)/opt/lib" \
+	LDFLAGS="$(TARGET_LDFLAGS) -nodefaultlibs -lc -L$(STAGING_DIR)/opt/lib" \
 	LIBS="-lstdc++ -lm -lssl -lcrypto $(LIBGCC_S) -lc"
 
 CONFIGURE_ARGS += \
