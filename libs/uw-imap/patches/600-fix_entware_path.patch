@@ -1,6 +1,6 @@
 --- a/src/osdep/unix/Makefile
 +++ b/src/osdep/unix/Makefile
-@@ -96,18 +96,18 @@
+@@ -96,18 +96,18 @@ CHECKPW=std
  LOGINPW=std
  SIGTYPE=bsd
  CRXTYPE=std
@@ -26,7 +26,7 @@
  
  
  # Default formats for creating new mailboxes and for empty mailboxes in the
-@@ -686,9 +686,9 @@
+@@ -686,9 +686,9 @@ slx:	# Secure Linux
  	@echo If you want libc4 versions you must use sl4 instead!
  	$(BUILD) $(SPECIALS) OS=$@ \
  	 SIGTYPE=psx CHECKPW=psx CRXTYPE=nfs \
@@ -50,7 +50,7 @@
  .SH DESCRIPTION
  .I imapd
  is a server which supports the
-@@ -28,7 +28,7 @@
+@@ -28,7 +28,7 @@ is invoked by the internet server (see
  normally for requests to connect to the
  .B IMAP
  port as indicated by the
@@ -59,7 +59,7 @@
  file (see
  .IR services (5)).
  Normally, this is port 143 for plaintext IMAP and 993 for SSL IMAP.
-@@ -42,7 +42,7 @@
+@@ -42,7 +42,7 @@ can also be accessed via
  by many Unix-based clients.  To do this, the
  .I imapd
  binary must have a link to
@@ -82,7 +82,7 @@
  .SH DESCRIPTION
  .I ipop2d
  and
-@@ -52,7 +52,7 @@
+@@ -52,7 +52,7 @@ are invoked by the internet server (see
  normally for requests to connect to the
  .B POP
  port as indicated by the
