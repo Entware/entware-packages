@@ -1,10 +1,12 @@
 --- a/src/conf/alsa.conf
-+++ b//src/conf/alsa.conf
-@@ -15,7 +15,7 @@
- 					"/alsa.conf.d/"
- 				]
- 			}
++++ b/src/conf/alsa.conf
+@@ -8,8 +8,8 @@
+ 	{
+ 		func load
+ 		files [
+-			"/etc/alsa/conf.d"
 -			"/etc/asound.conf"
++			"/opt/etc/alsa/conf.d"
 +			"/opt/etc/asound.conf"
  			"~/.asoundrc"
  		]
