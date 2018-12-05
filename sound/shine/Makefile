@@ -40,25 +40,25 @@ define Package/shine/description
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/shine \
-		$(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
+		$(PKG_INSTALL_DIR)/opt/include/shine \
+		$(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libshine.{a,so*} \
-		$(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+		$(PKG_INSTALL_DIR)/opt/lib/libshine.{a,so*} \
+		$(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/shine.pc \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/shine.pc \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/shine/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/shineenc $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libshine.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/shineenc $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libshine.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,shine))
