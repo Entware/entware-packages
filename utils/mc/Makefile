@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
 PKG_VERSION:=4.8.21
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 PKG_LICENSE:=GPL-3.0+
 
@@ -59,7 +59,6 @@ CONFIGURE_ARGS += \
 	--disable-doxygen-doc \
 	--with-homedir=/opt/etc/mc \
 	--with-screen=slang \
-	--without-gpm-mouse \
 	--without-x \
 	--with-slang-includes="$(STAGING_DIR)/opt/include" \
 	--with-slang-libs="$(STAGING_DIR)/opt/lib" \
