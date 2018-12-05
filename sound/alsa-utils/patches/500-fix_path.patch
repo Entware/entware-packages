@@ -1,5 +1,5 @@
 --- a/alsactl/alsactl.c
-+++ b//alsactl/alsactl.c
++++ b/alsactl/alsactl.c
 @@ -32,15 +32,15 @@
  #include <alsa/asoundlib.h>
  #include "alsactl.h"
