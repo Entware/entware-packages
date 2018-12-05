@@ -45,23 +45,23 @@ CONFIGURE_ARGS += \
 
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/libnetfilter_acct \
-		$(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
+		$(PKG_INSTALL_DIR)/opt/include/libnetfilter_acct \
+		$(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libnetfilter_acct*.{so*,a,la} \
-		$(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+		$(PKG_INSTALL_DIR)/opt/lib/libnetfilter_acct*.{so*,a,la} \
+		$(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libnetfilter_acct.pc \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libnetfilter_acct.pc \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libnetfilter-acct/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libnetfilter_acct.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnetfilter_acct.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libnetfilter-acct))
