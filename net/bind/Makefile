@@ -10,7 +10,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.11.3
+PKG_VERSION:=9.11.5
 PKG_RELEASE:=2
 USERID:=bind=57:bind=57
 
@@ -19,9 +19,9 @@ PKG_LICENSE := MPL-2.0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
-	http://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
-	http://ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_HASH:=0d9dde14b2ec7f9cdc3b69f19540c7a2e4eee7b6c727965dfae48810965876f5
+	https://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
+	https://ftp.isc.org/isc/bind9/$(PKG_VERSION)
+PKG_HASH:=a4cae11dad954bdd4eb592178f875bfec09fcc7e29fe0f6b7a4e5b5c6bc61322
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
@@ -69,7 +69,6 @@ endef
 define Package/bind-server
   $(call Package/bind/Default)
   TITLE+= DNS server
-  DEPENDS+= +@OPENSSL_WITH_DEPRECATED
 endef
 
 define Package/bind-server/config
@@ -84,6 +83,12 @@ endef
 define Package/bind-tools
   $(call Package/bind/Default)
   TITLE+= administration tools (all)
+	DEPENDS:= \
+	+bind-check \
+	+bind-dig \
+	+bind-dnssec \
+	+bind-host \
+	+bind-rndc
 endef
 
 define Package/bind-rndc
@@ -185,6 +190,7 @@ define Package/bind-server/install
 		./files/bind/db.255 \
 		./files/bind/db.local \
 		./files/bind/db.root \
+		./files/bind/bind.keys \
 		$(1)/opt/etc/bind/
 	$(CP) ./files/bind/named.conf.example $(1)/opt/etc/bind/named.conf
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
@@ -208,16 +214,7 @@ endef
 
 define Package/bind-tools/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/dig $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/host $(1)/opt/bin/
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-keygen $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-settime $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dnssec-signzone $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/named-checkconf $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/named-checkzone $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/rndc $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/rndc-confgen $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/delv $(1)/opt/bin/
 endef
 
 define Package/bind-rndc/install
