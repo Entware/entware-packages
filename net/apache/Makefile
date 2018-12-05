@@ -8,21 +8,23 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apache
-PKG_VERSION:=2.4.28
-PKG_RELEASE:=2a
+PKG_VERSION:=2.4.37
+PKG_RELEASE:=2
 PKG_SOURCE_NAME:=httpd
-PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
-PKG_LICENSE:=Apache License
 
 PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/httpd/
-PKG_HASH:=c1197a3a62a4ab5c584ab89b249af38cf28b4adee9c0106b62999fd29f920666
+PKG_HASH:=3498dc5c6772fac2eb7307dc7963122ffe243b5e806e0be4fb51974ff759d726
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_NAME)-$(PKG_VERSION)
 
+PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
+PKG_LICENSE:=Apache License
+PKG_CPE_ID:=cpe:/a:apache:http_server
+
 PKG_INSTALL:=1
 
-PKG_CONFIG_DEPENDS := \
+PKG_CONFIG_DEPENDS:= \
 	CONFIG_APACHE_HTTP2
 
 ADDITIONAL_MODULES:=
@@ -40,7 +42,7 @@ define Package/apache/Default
   CATEGORY:=Network
   SUBMENU:=Web Servers/Proxies
   TITLE:=The Apache Web Server
-  URL:=http://httpd.apache.org/
+  URL:=https://httpd.apache.org/
 endef
 
 define Package/apache/Default/description
@@ -93,13 +95,12 @@ $(call Package/apache/Default/description)
  This package contains the icons from Apache.
 endef
 
-CONFIGURE_VARS += \
-	ac_cv_gcc__std_c89=no
-
-
-TARGET_CFLAGS += $(FPIC)
+TARGET_CFLAGS += $(FPIC) -Wno-error
 TARGET_CPPFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
 TARGET_LDFLAGS += -lpthread
+
+# warning: libiconv.so.2, needed by .../opt/lib/libaprutil-1.so, not found (try using -rpath or -rpath-link)
+TARGET_LDFLAGS += -L$(STAGING_DIR)/opt/lib/libiconv-full/lib -liconv
 
 define Build/Configure
 	$(call Build/Configure/Default, \
@@ -113,6 +114,7 @@ define Build/Configure
 		--with-openssl="$(STAGING_DIR)/opt" \
 		--enable-ssl \
 		--enable-proxy \
+		--disable-md \
 		--disable-disk-cache \
 		--enable-maintainer-mode \
 		--with-mpm=prefork \
