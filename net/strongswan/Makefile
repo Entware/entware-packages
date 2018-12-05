@@ -14,16 +14,18 @@ PKG_RELEASE:=1a
 
 PKG_HASH:=e0a60a30ebf3c534c223559e1686497a21ded709a5d605c5123c2f52bcc22e92
 else
-PKG_VERSION:=5.6.3
-PKG_RELEASE:=2
+PKG_VERSION:=5.7.1
+PKG_RELEASE:=1
 
-PKG_HASH:=c3c7dc8201f40625bba92ffd32eb602a8909210d8b3fac4d214c737ce079bf24
+PKG_HASH:=006f9c9126e2a2f4e7a874b5e1bd2abec1bbbb193c8b3b3a4c6ccd8c2d454bec
 endif
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://download.strongswan.org/ http://download2.strongswan.org/
 PKG_LICENSE:=GPL-2.0+
 PKG_MAINTAINER:=Stijn Tintel <stijn@linux-ipv6.be>
+
+PATCH_DIR=./patches/$(PKG_VERSION)
 
 PKG_MOD_AVAILABLE:= \
 	addrblock \
