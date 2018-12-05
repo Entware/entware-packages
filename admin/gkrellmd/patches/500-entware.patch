@@ -1,0 +1,55 @@
+--- a/server/gkrellmd.h
++++ b/server/gkrellmd.h
+@@ -128,12 +128,12 @@ GKRELLMD_VERSION_REV >= (rev)))
+ 
+ #define GKRELLMD_PLUGINS_DIR		".gkrellm2/plugins-gkrellmd"
+ #if !defined(WIN32)
+-	#define GKRELLMD_LOCAL_PLUGINS_DIR	"/usr/local/lib/gkrellm2/plugins-gkrellmd"
++	#define GKRELLMD_LOCAL_PLUGINS_DIR	"/opt/lib/gkrellm2/plugins-gkrellmd"
+ 	#if !defined(GKRELLMD_SYSTEM_PLUGINS_DIR)
+-		#define GKRELLMD_SYSTEM_PLUGINS_DIR	"/usr/lib/gkrellm2/plugins-gkrellmd"
++		#define GKRELLMD_SYSTEM_PLUGINS_DIR	"/opt/lib/gkrellm2/plugins-gkrellmd"
+ 	#endif
+-	#define GKRELLMD_SYS_ETC	"/etc"
+-	#define GKRELLMD_LOCAL_ETC	"/usr/local/etc"
++	#define GKRELLMD_SYS_ETC	"/opt/etc"
++	#define GKRELLMD_LOCAL_ETC	"/opt/etc"
+ #endif // !defined(WIN32)
+ 
+ 
+--- a/server/monitor.c
++++ b/server/monitor.c
+@@ -1059,7 +1059,7 @@ update_net(GkrellmdMonitor *mon, gboolea
+ 
+ 			if (net_timer->up_event)
+ 				{
+-				snprintf(buf, sizeof(buf), "/var/run/%s.pid", net_timer->name);
++				snprintf(buf, sizeof(buf), "/opt/var/run/%s.pid", net_timer->name);
+ 				if (g_stat(buf, &st) == 0)
+ 					net_timer0 = st.st_mtime;
+ 				else
+--- a/server/gkrellmd.conf
++++ b/server/gkrellmd.conf
+@@ -4,11 +4,11 @@
+ # the client update frequency.  Values may be from 1 to 10 and should be
+ # smaller values to reduce network traffic.
+ #
+-update-hz 10
++update-hz 3
+ 
+ # Limit number of simultaneous clients allowed to connect.
+ #
+-#max-clients 2
++max-clients 2
+ 
+ # Specify a specific network interface to listen on for connections.
+ # By default gkrellmd listens on all available network interfaces.
+@@ -36,7 +36,7 @@ user	nobody
+ # Create a PID file for the running gkrellmd.  Default is no PID file.
+ # NOTE: Option ignored on Windows
+ #
+-pidfile /var/run/gkrellmd.pid
++pidfile /opt/var/run/gkrellmd.pid
+ 
+ # Run in background and detach from the controlling terminal
+ # NOTE: Option ignored on Windows
