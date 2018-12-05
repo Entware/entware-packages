@@ -5,7 +5,6 @@
 # See /LICENSE for more information.
 #
 # !!!! Entware-3x version has an additional patch that changes path to passwd,... files from /etc to /opt/etc
-#
 
 include $(TOPDIR)/rules.mk
 
