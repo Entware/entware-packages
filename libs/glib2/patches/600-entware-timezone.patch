@@ -1,20 +1,21 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -410,7 +410,7 @@
+@@ -412,7 +412,7 @@
  
-       tzdir = getenv ("TZDIR");
-       if (tzdir == NULL)
--        tzdir = "/usr/share/zoneinfo";
-+        tzdir = "/opt/share/zoneinfo";
+   tzdir = getenv ("TZDIR");
+   if (tzdir == NULL)
+-    tzdir = "/usr/share/zoneinfo";
++    tzdir = "/opt/share/zoneinfo";
  
-       if (*identifier == ':')
-         identifier ++;
-@@ -421,7 +421,7 @@
-         filename = g_build_filename (tzdir, identifier, NULL);
-     }
-   else
--    filename = g_strdup ("/etc/localtime");
-+    filename = g_strdup ("/opt/etc/localtime");
+   /* identifier can be a relative or absolute path name;
+      if relative, it is interpreted starting from /usr/share/zoneinfo
+@@ -436,7 +436,7 @@
+       gchar *canonical_path = NULL;
+       GError *read_link_err = NULL;
  
-   file = g_mapped_file_new (filename, FALSE, NULL);
-   if (file != NULL)
+-      filename = g_strdup ("/etc/localtime");
++      filename = g_strdup ("/opt/etc/localtime");
+ 
+       /* Resolve the actual timezone pointed to by /etc/localtime. */
+       resolved_identifier = g_file_read_link (filename, &read_link_err);
+
