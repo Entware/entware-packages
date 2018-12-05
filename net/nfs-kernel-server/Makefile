@@ -7,9 +7,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nfs-kernel-server
-PKG_VERSION:=2.3.2
+PKG_VERSION:=2.3.3
 PKG_RELEASE:=2
-PKG_HASH:=a6418fc6b80e39a360a236d1a575e2e3258dc5582808e524b19f716b3cd66224
+PKG_HASH:=3c8c63611c7e78b7a3b2f8a28b9928a5b5e66d5e9ad09a1e54681508884320a4
 
 PKG_SOURCE_URL:=@SF/nfs
 PKG_SOURCE:=nfs-utils-$(PKG_VERSION).tar.xz
@@ -20,7 +20,10 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=$(PKG_NAME)/host
 HOST_BUILD_DEPENDS:=libtirpc/host
-PKG_CONFIG_DEPENDS:= CONFIG_IPV6
+
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_IPV6 \
+	CONFIG_NFS_KERNEL_SERVER_V4
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -37,11 +40,15 @@ endef
 define Package/nfs-kernel-server
   $(call Package/nfs-kernel-server/Default)
   TITLE:=Kernel NFS server support
-  DEPENDS+= +rpcbind
+  DEPENDS+= +rpcbind +NFS_KERNEL_SERVER_V4:nfs-utils-libs +NFS_KERNEL_SERVER_V4:libkeyutils +NFS_KERNEL_SERVER_V4:libdevmapper
 endef
 
 define Package/nfs-kernel-server/description
   Kernel NFS server support
+endef
+
+define Package/nfs-kernel-server/config
+  source "$(SOURCE)/Config.in"
 endef
 
 define Package/nfs-kernel-server-utils
@@ -58,16 +65,31 @@ define Package/nfs-kernel-server/conffiles
 /opt/etc/exports
 endef
 
-define Package/nfs-utils
+define Package/nfs-utils/Default
   $(call Package/nfs-kernel-server/Default)
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS+= +libevent2
+  DEPENDS+= +libevent2 +NFS_KERNEL_SERVER_V4:libkeyutils +NFS_KERNEL_SERVER_V4:libdevmapper
+  URL:=http://nfs.sourceforge.net/
+  MAINTAINER:=Peter Wagner <tripolar@gmx.at>
+endef
+
+define Package/nfs-utils
+  $(call Package/nfs-utils/Default)
   TITLE:=updated mount utility (includes nfs4)
 endef
 
 define Package/nfs-utils/description
   Updated mount.nfs command - allows mounting nfs4 volumes
+endef
+
+define Package/nfs-utils-libs
+  $(call Package/nfs-utils/Default)
+  TITLE:=libraries provided by nfs-utils
+endef
+
+define Package/nfs-utils-libs/description
+  Libraries provided by nfs-utils
 endef
 
 TARGET_CFLAGS += -Wno-error=implicit-function-declaration \
@@ -81,14 +103,18 @@ TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/opt/lib \
 		  -L$(STAGING_DIR)/opt/lib/libevent
 
 CONFIGURE_ARGS += \
-	--disable-gss \
-	--disable-nfsv4 \
-	--disable-nfsv41 \
-	--enable-static \
-	--enable-shared \
-	--disable-caps \
+	--with-mountfile=/opt/etc/nfsmount.conf \
+	--with-nfsconfig=/opt/etc/nfs.conf \
 	--with-statedir=/opt/var/lib/nfs \
-	--with-statdpath=/opt/var/lib/nfs
+	--with-statdpath=/opt/var/lib/nfs \
+	--disable-caps \
+	--disable-gss \
+	--disable-nfsdcld \
+	--disable-nfsdcltrack \
+	--enable-shared \
+	--enable-static \
+	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv4 \
+	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv41
 
 ifeq ($(CONFIG_IPV6),n)
 CONFIGURE_ARGS += --disable-ipv6
@@ -97,6 +123,7 @@ endif
 CONFIGURE_VARS += \
 	libblkid_cv_is_recent=yes \
 	ac_cv_lib_resolv___res_querydomain=yes \
+	ac_cv_lib_bsd_daemon=no \
 	CONFIG_SQLITE3_TRUE="\#" \
 	CONFIG_NFSDCLD_TRUE="\#"
 
@@ -157,13 +184,28 @@ define Package/nfs-kernel-server-utils/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/nfsstat/nfsstat $(1)/opt/sbin
 endef
 
+define Package/nfs-utils/InstallDev
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/nfsidmap.h $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnfsidmap.{a,la,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libnfsidmap.pc $(1)/opt/lib/pkgconfig/
+endef
+
 define Package/nfs-utils/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/sbin/mount.nfs $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/mount.nfs $(1)/opt/sbin/
 	(cd $(1)/opt/sbin; ln -sf mount.nfs mount.nfs4; ln -sf mount.nfs umount.nfs; ln -sf mount.nfs umount.nfs4)
 endef
 
+define Package/nfs-utils-libs/install
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnfsidmap.so* $(1)/opt/lib/
+endef
+
 $(eval $(call HostBuild))
+$(eval $(call BuildPackage,nfs-utils))
+$(eval $(call BuildPackage,nfs-utils-libs))
 $(eval $(call BuildPackage,nfs-kernel-server))
 $(eval $(call BuildPackage,nfs-kernel-server-utils))
-$(eval $(call BuildPackage,nfs-utils))

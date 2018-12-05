@@ -27,3 +27,14 @@
  			name_p);
  		run_sm_notify(out_port);
  	}
+--- a/utils/mount/Makefile.in	2018-09-06 21:10:06.000000000 +0300
++++ b/utils/mount/Makefile.in	2018-10-02 11:32:46.526919547 +0300
+@@ -415,7 +415,7 @@
+ 
+ # These binaries go in /sbin (not /usr/sbin), and that cannot be
+ # overridden at config time.
+-sbindir = /sbin
++sbindir = @sbindir@
+ sharedstatedir = @sharedstatedir@
+ srcdir = @srcdir@
+ startstatd = @startstatd@
