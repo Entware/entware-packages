@@ -4,14 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-#XXX can't search zlib.h
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=isc-dhcp
 UPSTREAM_NAME:=dhcp
 PKG_VERSION:=4.4.1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
@@ -64,18 +63,18 @@ $(call Package/isc-dhcp-relay-ipv6/description)
  This package is compiled with IPv4 support only.
 endef
 
-define Package/isc-dhcp-relay-ipv4/conffiles
+#define Package/isc-dhcp-relay-ipv4/conffiles
 #/etc/config/dhcrelay
-endef
+#endef
 
 define Package/isc-dhcp-relay-ipv6/description
 $(call Package/isc-dhcp-relay/description)
  This package is compiled with IPv4 and IPv6 support.
 endef
 
-define Package/isc-dhcp-relay-ipv6/conffiles
+#define Package/isc-dhcp-relay-ipv6/conffiles
 #/etc/config/dhcrelay
-endef
+#endef
 
 define Package/isc-dhcp-client-ipv4
   $(call Package/isc-dhcp/Default)
@@ -174,6 +173,15 @@ endif
 ifeq ($(BUILD_VARIANT),ipv6)
   CONFIGURE_ARGS += --enable-dhcpv6
 endif
+
+# Entware specific: help Bind find the correct headers
+define Build/Prepare
+	$(Build/Prepare/Default)
+
+	cd $(PKG_BUILD_DIR)/bind; tar -xzf *.tar.gz ; \
+	$(SED) 's|/usr /usr/local /opt/local|$(STAGING_DIR)/opt|g' \
+		./bind*/configure{,.in}
+endef
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)			\
