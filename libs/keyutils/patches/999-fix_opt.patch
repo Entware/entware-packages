@@ -1,0 +1,35 @@
+--- a/Makefile
++++ b/Makefile
+@@ -6,17 +6,17 @@
+ NO_GLIBC_KEYERR	:= 0
+ NO_ARLIB	:= 0
+ NO_SOLIB	:= 0
+-ETCDIR		:= /etc
+-BINDIR		:= /bin
+-SBINDIR		:= /sbin
+-SHAREDIR	:= /usr/share/keyutils
+-MANDIR		:= /usr/share/man
++ETCDIR		:= /opt/etc
++BINDIR		:= /opt/bin
++SBINDIR	:= /opt/sbin
++SHAREDIR	:= /opt/share/keyutils
++MANDIR		:= /opt/share/man
+ MAN1		:= $(MANDIR)/man1
+ MAN3		:= $(MANDIR)/man3
+ MAN5		:= $(MANDIR)/man5
+ MAN7		:= $(MANDIR)/man7
+ MAN8		:= $(MANDIR)/man8
+-INCLUDEDIR	:= /usr/include
++INCLUDEDIR	:= /opt/include
+ LN		:= ln
+ LNS		:= $(LN) -sf
+ 
+@@ -165,7 +165,7 @@
+ 	$(INSTALL) -D $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
+ 	$(LNS) $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SONAME)
+ 	mkdir -p $(DESTDIR)$(USRLIBDIR)
+-	$(LNS) $(LIBDIR)/$(SONAME) $(DESTDIR)$(USRLIBDIR)/$(DEVELLIB)
++	$(LNS) $(SONAME) $(DESTDIR)$(USRLIBDIR)/$(DEVELLIB)
+ endif
+ 	$(INSTALL) -D keyctl $(DESTDIR)$(BINDIR)/keyctl
+ 	$(INSTALL) -D request-key $(DESTDIR)$(SBINDIR)/request-key
