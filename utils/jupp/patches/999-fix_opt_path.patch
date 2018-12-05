@@ -1,0 +1,33 @@
+--- a/dir.c
++++ b/dir.c
+@@ -40,7 +40,7 @@ int mkdir(unsigned char *s)
+ 	unsigned char *y = NULL;
+ 	int rtval;
+ 
+-	y = vsncpy(sv(y), sc("/bin/mkdir "));
++	y = vsncpy(sv(y), sc("/opt/bin/mkdir "));
+ 	y = vsncpy(sv(y), sz(s));
+ 	y = vsncpy(sv(y), sc(" 2>/dev/null"));
+ 	tickoff();
+--- a/path.c
++++ b/path.c
+@@ -83,7 +83,7 @@ __RCSID("$MirOS: contrib/code/jupp/path.
+ #define skip_drive_letter(path)	do_if_drive_letter((path), (path) += 2)
+ 
+ #ifndef _PATH_TMP
+-#define _PATH_TMP	"/tmp/"
++#define _PATH_TMP	"/opt/tmp/"
+ #endif
+ 
+ #if !defined(PATH_MAX) && !defined(HAVE_GET_CURRENT_DIR_NAME)
+--- a/termcap.c
++++ b/termcap.c
+@@ -200,7 +200,7 @@ CAP *getcap(unsigned char *name, unsigne
+ 				namebuf = vsncpy(sv(namebuf), sz(get_JOERC));
+ 				namebuf = vsncpy(sv(namebuf), sc("termcap "));
+ 			}
+-			namebuf = vsncpy(sv(namebuf), sc("/etc/termcap"));
++			namebuf = vsncpy(sv(namebuf), sc("/opt/etc/termcap"));
+ 		}
+ 	}
+ 
