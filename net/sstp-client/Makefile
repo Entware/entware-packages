@@ -43,19 +43,19 @@ Features:
 endef
 
 define Package/sstp-client/conffiles
-/etc/ppp/chap-secrets
-/etc/ppp/peers/peer-sstp-example-nopty.txt
-/etc/ppp/peers/peer-sstp-example.txt
+/opt/etc/ppp/chap-secrets
+/opt/etc/ppp/peers/peer-sstp-example-nopty.txt
+/opt/etc/ppp/peers/peer-sstp-example.txt
 endef
 
 define Package/sstp-client/install
-	$(INSTALL_DIR) $(1)/usr/{bin,lib}
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/.libs/sstpc $(1)/usr/bin/
-	$(CP) $(PKG_BUILD_DIR)/src/libsstp-api/.libs/*.so* $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/src/pppd-plugin/.libs/*.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/{bin,lib}
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/.libs/sstpc $(1)/opt/bin/
+	$(CP) $(PKG_BUILD_DIR)/src/libsstp-api/.libs/*.so* $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/src/pppd-plugin/.libs/*.so* $(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/etc
-	$(CP) files/etc $(1) 
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(CP) files/etc $(1)/opt/
 endef
 
 $(eval $(call BuildPackage,sstp-client))
