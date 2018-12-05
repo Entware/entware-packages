@@ -15,7 +15,7 @@
  
  DISTCLEANFILES = ${searpc_gen}
  
-@@ -56,7 +58,7 @@ rpc_table.stamp: ${top_srcdir}/lib/rpc_t
+@@ -56,7 +58,7 @@ rpc_table.stamp: ${top_srcdir}/lib/rpc_table.py
  	@rm -f rpc_table.tmp
  	@touch rpc_table.tmp
  	@echo "[libsearpc]: generating rpc header files"

@@ -11,9 +11,11 @@ Signed-off-by: Eneas U de Queiroz <cote2004-github@yahoo.com>
  common/seafile-crypt.c | 5 +++++
  1 file changed, 5 insertions(+)
 
+diff --git a/common/seafile-crypt.c b/common/seafile-crypt.c
+index c7d1702..c3cebf5 100644
 --- a/common/seafile-crypt.c
 +++ b/common/seafile-crypt.c
-@@ -81,9 +81,14 @@ seafile_generate_random_key (const char
+@@ -81,9 +81,14 @@ seafile_generate_random_key (const char *passwd, char *random_key)
  
      int rc = RAND_bytes (secret_key, sizeof(secret_key));
      if (rc != 1) {
@@ -28,3 +30,6 @@ Signed-off-by: Eneas U de Queiroz <cote2004-github@yahoo.com>
      }
  
      seafile_derive_key (passwd, strlen(passwd), 2, key, iv);
+-- 
+2.16.4
+
