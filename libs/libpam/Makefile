@@ -4,16 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: help other packages find headers
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libpam
-PKG_VERSION:=1.2.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.3.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=Linux-PAM-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.linux-pam.org/library/
-PKG_HASH:=cd8beac5961e942e9c73b32a3cd1a3457755f8fb35d07c9ec64511e19e135ea4
+PKG_HASH:=241aed1ef522f66ed672719ecf2205ec513fd0075ed80cda8e086a5b1a01d1bb
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
 PKG_MAINTAINER:=Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
@@ -48,15 +49,15 @@ define Build/Configure
 		--disable-nis \
 		--disable-regenerate-docu \
 		--enable-db=no \
-		--enable-read-both-confs \
+		--includedir=/opt/include/security \
 	)
 endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_DIR) $(1)/opt/include/security
+	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/security
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 endef
 
 define Package/libpam/install
