@@ -1,0 +1,10 @@
+--- a/utils/v4l2-ctl/v4l2-ctl.cpp
++++ b/utils/v4l2-ctl/v4l2-ctl.cpp
+@@ -46,7 +46,6 @@
+ #include <vector>
+ #include <map>
+ #include <algorithm>
+-#include <string_iostream>
+ #include <fstream>
+ 
+ char options[OptLast];

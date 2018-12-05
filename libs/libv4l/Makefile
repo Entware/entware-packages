@@ -1,7 +1,4 @@
 #
-# Copyright (C) 2009-2015 OpenWrt.org
-# Copyright (C) 2009 David Cooper <dave@kupesoft.com>
-#
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
@@ -9,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v4l-utils
-PKG_VERSION:=1.10.0
+PKG_VERSION:=1.14.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://www.linuxtv.org/downloads/v4l-utils
-PKG_HASH:=78ead27ee58a701d7c6342303cf4520bdd4a2b88a7813bc99a0b389307e4336b
+PKG_SOURCE_URL:=https://www.linuxtv.org/downloads/v4l-utils
+PKG_HASH:=e6b962c4b1253cf852c31da13fd6b5bb7cbe5aa9e182881aec55123bae680692
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 
@@ -56,7 +53,7 @@ define Package/libv4l
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= wrapper libraries
-  DEPENDS := +libpthread +librt $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS := +libpthread +librt $(ICONV_DEPENDS)
 endef
 
 define Package/libv4l/description
@@ -68,7 +65,7 @@ define Package/v4l-utils
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS := +libv4l +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS)
+  DEPENDS := +libv4l +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS) +libevdev +libudev
 endef
 
 define Package/v4l-utils/description
@@ -77,7 +74,10 @@ define Package/v4l-utils/description
 endef
 
 TARGET_CFLAGS += $(FPIC)
-#TARGET_LDFLAGS += -largp
+#  CCLD     media-ctl
+#../opt/lib/libudev.so: undefined reference to `pthread_join'
+#../opt/lib/libudev.so: undefined reference to `pthread_create'
+TARGET_LDFLAGS += -lpthread
 
 CONFIGURE_ARGS+= \
 	--disable-doxygen-doc \
@@ -90,14 +90,14 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libv4l{1,2,convert}.{a,so*} $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libv4l{1,2,convert,2rds}.{a,so*} $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libv4l{1,2,convert}.pc $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libv4l{1,2,convert,2rds}.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libv4l/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libv4l{1,2,convert}.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libv4l{1,2,convert,2rds}.so.* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/libv4l
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libv4l/v4l{1compat,2convert}.so $(1)/opt/lib/libv4l/
 endef
@@ -107,10 +107,11 @@ define Package/v4l-utils/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/rc_maps.cfg $(1)/opt/etc/
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/rc_keymaps $(1)/opt/etc/
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{cx18,ivtv}-ctl $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{rds,media,cx18,ivtv}-ctl $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/decode_tm6000 $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ir-keytable $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ir-{ctl,keytable} $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/v4l2-{compliance,ctl,sysfs-path} $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/cec-{compliance,ctl,follower} $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,libv4l))
