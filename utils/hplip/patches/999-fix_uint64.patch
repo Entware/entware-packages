@@ -1,0 +1,13 @@
+# scan/sane/OrbliteScan/LinuxCommon.h:22:9: error: unknown type name 'uint64_t'
+--- a/scan/sane/OrbliteScan/LinuxCommon.h
++++ b/scan/sane/OrbliteScan/LinuxCommon.h
+@@ -1,7 +1,8 @@
+ #ifndef H_LinuxCommon
+ #define H_LinuxCommon
+ 
+-#include <sys/types.h>
++#include <sys/types.h>
++#include <stdint.h>
+ 
+ /* Common typedefs for Linux */
+ 
