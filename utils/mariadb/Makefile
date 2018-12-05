@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mariadb
-PKG_VERSION:=10.2.17
-PKG_RELEASE:=1
+PKG_VERSION:=10.2.19
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL := \
@@ -18,7 +18,7 @@ PKG_SOURCE_URL := \
 	https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/$(PKG_NAME)-$(PKG_VERSION)/source \
 	https://downloads.mariadb.org/interstitial/$(PKG_NAME)-$(PKG_VERSION)/source
 
-PKG_HASH:=e7b3078f8de874a4d451242a8a3eed49bf6f916dcd52fc3efa55886f5f35be27
+PKG_HASH:=c0e103cfd73ee96d58402073e9513f0f7b5c0bd216641faecc8d763fb6529727
 PKG_MAINTAINER:=Sebastian Kemper <sebastian_ml@gmx.net>
 PKG_LICENSE:=GPL-2.0 LGPL-2.1
 PKG_LICENSE_FILES:=COPYING libmariadb/COPYING.LIB
@@ -378,15 +378,15 @@ CMAKE_OPTIONS += \
 
 # Default-disable some modules
 CMAKE_OPTIONS += \
-	-DPLUGIN_CASSANDRA=NO \
+	-DPLUGIN_CASSANDRA=OFF \
 	-DPLUGIN_MROONGA=NO \
-	-DPLUGIN_OQGRAPH=NO \
+	-DPLUGIN_OQGRAPH=OFF \
 	-DPLUGIN_ROCKSDB=NO \
 	-DPLUGIN_TOKUDB=NO \
 	-DPLUGIN_AUTH_PAM=NO \
 	-DPLUGIN_AUTH_GSSAPI=NO \
-	-DPLUGIN_AUTH_GSSAPI_CLIENT=NO \
-	-DPLUGIN_CRACKLIB_PASSWORD_CHECK=NO
+	-DPLUGIN_AUTH_GSSAPI_CLIENT=OFF \
+	-DPLUGIN_CRACKLIB_PASSWORD_CHECK=OFF
 
 # Help MariaDB find the correct libiconv.
 # nls.mk sets it up so that with CONFIG_BUILD_NLS libiconv-full would be used,
@@ -397,7 +397,7 @@ CMAKE_OPTIONS += \
 	-DICONV_LIBRARIES=$(ICONV_PREFIX)/lib/libiconv.$(if $(CONFIG_BUILD_NLS),so,a)
 
 CMAKE_OPTIONS += \
-	$(foreach p,$(MARIADB_SERVER_PLUGINS),-D$(plugin-$(p))=$(if $(CONFIG_PACKAGE_$(PKG_NAME)-server-plugin-$(subst _,-,$(p))),DYNAMIC,NO))
+	$(foreach p,$(MARIADB_SERVER_PLUGINS),-D$(plugin-$(p))=$(if $(CONFIG_PACKAGE_$(PKG_NAME)-server-plugin-$(subst _,-,$(p))),DYNAMIC,OFF))
 
 # Set CMAKE_FIND_ROOT_PATH_MODE_INCLUDE and CMAKE_FIND_ROOT_PATH_MODE_LIBRARY
 # to BOTH as otherwise the host build will not find some required dependencies
@@ -452,18 +452,17 @@ define Build/Prepare
 endef
 
 define Build/InstallDev
+# XXX freeradius2:
+# ../opt/include/mysql/mysql_version.h:5:29: fatal error: mariadb_version.h: No such file or directory
+	$(SED) "s|#include <mariadb_version.h>|#include \"mariadb_version.h\"|" $(PKG_INSTALL_DIR)/opt/include/mysql/mysql_version.h
+
 	$(INSTALL_DIR) $(2)/bin $(1)/opt/bin $(1)/opt/include $(1)/opt/lib/mysql $(1)/opt/lib/pkgconfig $(1)/opt/share/aclocal
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mysql_config $(1)/opt/bin
 	$(LN) $(STAGING_DIR)/opt/bin/mysql_config $(2)/bin
-###
-#XXX freeradius2:
-# ../opt/include/mysql/mysql_version.h:5:29: fatal error: mariadb_version.h: No such file or directory
-	$(SED) "s|#include <mariadb_version.h>|#include \"mariadb_version.h\"|" $(PKG_INSTALL_DIR)/opt/include/mysql/mysql_version.h
-###
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/mysql $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{mariadb,mysqlclient}*.so* $(1)/opt/lib
 	cd $(1)/opt/lib/mysql; $(LN) ../lib{mariadb,mysqlclient}*.so* .
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/pkgconfig/mariadb.pc $(1)/opt/lib/pkgconfig
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libmariadb.pc $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/aclocal/mysql.m4 $(1)/opt/share/aclocal
 endef
 
@@ -472,6 +471,7 @@ define Package/libmariadb/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{mariadb,mysqlclient}*.so* $(1)/opt/lib
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)$(PLUGIN_DIR)/dialog.so $(1)$(PLUGIN_DIR)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)$(PLUGIN_DIR)/mysql_clear_password.so $(1)$(PLUGIN_DIR)
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)$(PLUGIN_DIR)/sha256_password.so $(1)$(PLUGIN_DIR)
 endef
 
 define Package/mariadb-client/install
