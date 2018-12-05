@@ -1,6 +1,6 @@
 --- a/libi2pd/FS.cpp
 +++ b/libi2pd/FS.cpp
-@@ -78,11 +78,11 @@
+@@ -78,11 +78,11 @@ namespace fs {
  #endif
      char *home = getenv("HOME");
      if (isService) {
