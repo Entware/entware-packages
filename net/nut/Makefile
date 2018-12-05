@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -500,6 +500,7 @@ CONFIGURE_ARGS += \
 	--without-neon \
 	--without-powerman \
 	--without-wrap \
+	--with-hotplug-dir=/opt/etc/hotplug \
 	--with-cgi \
 	--without-ipmi \
 	--without-freeipmi \
