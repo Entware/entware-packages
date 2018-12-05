@@ -8,18 +8,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.10.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.11.0
+PKG_RELEASE:=1
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=COPYING
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://github.com/firehol/netdata/releases/download/v$(PKG_VERSION)
-PKG_HASH:=0514fc002c5c5fb730156b3fe928965b22327833c6c17e22b7097eda657e77a2
+PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/netdata/netdata/releases/download/v$(PKG_VERSION)
+PKG_HASH:=c42c8411c22c72e3e52fed38d7b9537bcfaf568d01e9c1e35ec645490627619d
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)_rolling
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
+PKG_USE_MIPS16:=0
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -34,25 +36,46 @@ endef
 define Package/netdata/description
   netdata is a highly optimized Linux daemon providing real-time performance
   monitoring for Linux systems, applications and SNMP devices over the web.
+
+ If you want to use Python plugins install python3, python3-yaml and
+ python3-urllib3 however urllib3 isn't packaged yet (needs a PR on GitHub)
 endef
 
 TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS))
 TARGET_CFLAGS += -ffunction-sections -fdata-sections -O3
 TARGET_LDFLAGS += -Wl,--gc-sections
 
-CONFIGURE_ARGS += --with-zlib --with-math --disable-x86-sse --disable-lto
+# Entware specific: help Netdata find the correct headers
+# (... fatal error: uuid/uuid.h: No such file or directory ...)
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include
+
+CONFIGURE_ARGS += \
+	--with-zlib \
+	--with-math \
+	--disable-x86-sse \
+	--enable-lto \
+	--without-libcap \
+	--disable-plugin-nfacct
 
 define Package/netdata/conffiles
 /opt/etc/netdata/
 endef
 
 define Package/netdata/install
-	mkdir -p $(1)/opt/etc/netdata
+	$(INSTALL_DIR) $(1)/opt/etc/netdata/custom-plugins.d
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/netdata $(1)/opt/etc
 	$(CP) ./files/netdata.conf $(1)/opt/etc/netdata
-	mkdir -p $(1)/opt/etc/netdata/custom-plugins.d
-
-	mkdir -p $(1)/opt/share/netdata
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/netdata $(1)/opt/lib
+	$(CP) $(1)/opt/lib/netdata/conf.d/fping.conf $(1)/opt/etc
+	$(CP) $(1)/opt/lib/netdata/conf.d/health_alarm_notify.conf $(1)/opt/etc
+	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml2
+	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml3
+	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/urllib3
+	$(CP) $(1)/opt/lib/netdata/plugins.d/tc-qos-helper.sh $(1)/opt/etc
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/share/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/netdata $(1)/opt/share
 	rm -rf $(1)/opt/share/netdata/web/images
 	rm -rf $(1)/opt/share/netdata/web/old
@@ -60,17 +83,8 @@ define Package/netdata/install
 	rm $(1)/opt/share/netdata/web/fonts/*.svg
 	rm $(1)/opt/share/netdata/web/fonts/*.ttf
 	rm $(1)/opt/share/netdata/web/fonts/*.woff
-
-	mkdir -p $(1)/opt/lib/netdata
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/netdata $(1)/opt/lib
-	rm $(1)/opt/lib/netdata/python.d/python-modules-installer.sh
-	chmod 4755 $(1)/opt/lib/netdata/plugins.d/apps.plugin
-
-	mkdir -p $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S60netdata $(1)/opt/etc/init.d
-
-	mkdir -p $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,netdata))
