@@ -8,15 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.18.0
-PKG_RELEASE:=1
+PKG_VERSION:=2.19.2
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=8b40be383a603147ae29337136c00d1c634bdfdc169a30924a024596a7e30e92
+PKG_HASH:=fce9a3a3297db5f3756c4553a2fc1fec209ee08178f8491e76ff4ff8fe7b8be9
 
 PKG_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
 
@@ -27,7 +26,7 @@ define Package/git/Default
   CATEGORY:=Network
   SUBMENU:=Version Control Systems
   DEPENDS:=+libopenssl +libpthread +librt +zlib
-  URL:=http://git-scm.com
+  URL:=https://git-scm.com
   MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 endef
 
@@ -44,7 +43,7 @@ endef
 
 define Package/git-http
 $(call Package/git/Default)
-  DEPENDS+= +git +libcurl +ca-certificates
+  DEPENDS+= +git +libcurl
   TITLE:=Git HTTP commands
 endef
 
@@ -106,14 +105,11 @@ define Build/Compile
 endef
 
 define Package/git/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/git $(1)/opt/bin
 	$(RM) $(PKG_INSTALL_DIR)/opt/bin/git-cvsserver
+	$(RM) $(PKG_INSTALL_DIR)/opt/bin/git-shell
+	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/git-* $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/lib/git-core
-	ln $(1)/opt/bin/git $(1)/opt/lib/git-core/git
-	ln $(1)/opt/bin/git-shell $(1)/opt/lib/git-core/git-shell
-	ln $(1)/opt/bin/git-upload-pack $(1)/opt/lib/git-core/git-upload-pack
 	$(INSTALL_DIR) $(1)/opt/share/git-core/templates
 	( cd $(PKG_INSTALL_DIR); $(TAR) \
 		--exclude=opt/lib/git-core/git-http-backend \
@@ -122,13 +118,12 @@ define Package/git/install
 		--exclude=opt/lib/git-core/git-remote-ftps \
 		--exclude=opt/lib/git-core/git-remote-http \
 		--exclude=opt/lib/git-core/git-remote-https \
-		--exclude=opt/lib/git-core/git \
-		--exclude=opt/lib/git-core/git-shell \
-		--exclude=opt/lib/git-core/git-upload-pack \
 		-cf - \
 		opt/lib/git-core \
 		opt/share/git-core/templates \
 	) | ( cd $(1); $(TAR) -xf - )
+	ln $(1)/opt/lib/git-core/git $(1)/opt/bin/git
+	ln $(1)/opt/lib/git-core/git-shell $(1)/opt/bin/git-shell
 endef
 
 define Package/git-http/install
