@@ -2,7 +2,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=samba
-PKG_VERSION:=4.8.4
+PKG_VERSION:=4.9.2
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Andy Walsh <andy.walsh44+github@gmail.com>
@@ -11,7 +11,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE_URL:=https://download.samba.org/pub/samba/stable/
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=f5044d149e01894a08b1d114b8b69aed78171a7bb19608bd1fd771453b9a5406
+PKG_HASH:=349c17b7bf1bf667167843470533da89ff1b2ca4a768b529aaacf5197af1efa2
 
 # Buildroot bug? Can't add target deps via '+SAMBA4_SERVER_AD_DC:python-crypto' (as work-around we select via config.in)
 PKG_BUILD_DEPENDS:=SAMBA4_SERVER_AD_DC:python-crypto nfs-kernel-server/host
@@ -51,12 +51,12 @@ define Package/samba4-libs
   $(call Package/samba4/Default)
   TITLE+= libs
   DEPENDS:= +zlib +libtirpc +krb5-libs +libpopt \
-	+PACKAGE_libcap:libcap +PACKAGE_jansson:jansson +PACKAGE_libpthread:libpthread +PACKAGE_libnettle:libnettle \
-	+PACKAGE_libarchive:libarchive +PACKAGE_dbus:dbus \
+	+PACKAGE_libcap:libcap +PACKAGE_libpthread:libpthread +PACKAGE_libnettle:libnettle \
+	+PACKAGE_dbus:dbus \
 	+SAMBA4_SERVER_VFS:attr \
 	+SAMBA4_SERVER_ACL:acl +SAMBA4_SERVER_ACL:attr \
 	+SAMBA4_SERVER_AVAHI:libavahi-client \
-	+SAMBA4_SERVER_AD_DC:python-base +SAMBA4_SERVER_AD_DC:libopenssl +SAMBA4_SERVER_AD_DC:libgnutls +SAMBA4_SERVER_AD_DC:libopenldap
+	+SAMBA4_SERVER_AD_DC:python-base +SAMBA4_SERVER_AD_DC:libopenssl +SAMBA4_SERVER_AD_DC:libgnutls +SAMBA4_SERVER_AD_DC:libopenldap +SAMBA4_SERVER_AD_DC:jansson +SAMBA4_SERVER_AD_DC:libarchive
 endef
 
 define Package/samba4-server
@@ -113,8 +113,8 @@ define Package/samba4-utils/description
   Utilities collection
 endef
 
+TARGET_CFLAGS += -ffunction-sections -fdata-sections -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include/krb5 -I$(STAGING_DIR)/opt/include/tirpc
-TARGET_CFLAGS += -ffunction-sections -fdata-sections
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 CONFIGURE_VARS += \
@@ -159,7 +159,12 @@ CONFIGURE_ARGS += \
 
 # Optional AES-NI support - https://lists.samba.org/archive/samba-technical/2017-September/122738.html
 # Support for Nettle wasn't comitted
-CONFIGURE_ARGS += --accel-aes=none
+#ifdef CONFIG_TARGET_x86_64
+ifdef CONFIG_TARGET_x64_3_2
+	CONFIGURE_ARGS += --accel-aes=intelaesni
+else
+	CONFIGURE_ARGS += --accel-aes=none
+endif
 
 CONFIGURE_ARGS += \
 		--with-lockdir=/opt/var/lock \
@@ -193,7 +198,7 @@ ifeq ($(CONFIG_SAMBA4_SERVER_AD_DC),y)
 	CONFIGURE_ARGS += --enable-gnutls --with-dnsupdate --with-ads --with-ldap
 	TARGET_CFLAGS := -I$(STAGING_DIR)/opt/include/python2.7 $(TARGET_CFLAGS)
 else
-	CONFIGURE_ARGS += --without-ad-dc --disable-python --nopyc --nopyo --disable-gnutls --without-dnsupdate --without-ads --without-ldap
+	CONFIGURE_ARGS += --without-ad-dc --without-json-audit --without-libarchive --disable-python --nopyc --nopyo --disable-gnutls --without-dnsupdate --without-ads --without-ldap
 	CONFIGURE_VARS += \
 		python_LDFLAGS="" \
 		python_LIBDIR=""
@@ -210,13 +215,13 @@ SAMBA4_PDB_MODULES :=pdb_smbpasswd,pdb_tdbsam,
 SAMBA4_AUTH_MODULES :=auth_builtin,auth_sam,auth_unix,auth_script,
 SAMBA4_VFS_MODULES :=vfs_default,
 ifeq ($(CONFIG_SAMBA4_SERVER_VFS),y)
-	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_fruit,vfs_shadow_copy2,vfs_recycle,vfs_fake_perms,vfs_readonly,vfs_cap,vfs_offline,vfs_crossrename,vfs_catia,vfs_streams_xattr,
+	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_fruit,vfs_shadow_copy2,vfs_recycle,vfs_fake_perms,vfs_readonly,vfs_cap,vfs_offline,vfs_crossrename,vfs_catia,vfs_streams_xattr,vfs_xattr_tdb,
 #ifeq ($(CONFIG_PACKAGE_kmod-fs-btrfs),y)
 #	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_btrfs,
 #endif
 endif
 ifeq ($(CONFIG_SAMBA4_SERVER_VFSX),y)
-	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_virusfilter,vfs_shell_snap,vfs_commit,vfs_worm,vfs_xattr_tdb,vfs_aio_fork,vfs_aio_pthread,vfs_netatalk,vfs_dirsort,vfs_fileid,
+	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_virusfilter,vfs_shell_snap,vfs_commit,vfs_worm,vfs_aio_fork,vfs_aio_pthread,vfs_netatalk,vfs_dirsort,vfs_fileid,
 #ifeq ($(CONFIG_PACKAGE_kmod-fs-xfs),y)
 #	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_linux_xfs_sgid,
 #endif
@@ -232,6 +237,7 @@ endif
 ifeq ($(CONFIG_SAMBA4_SERVER_AD_DC),y)
 	SAMBA4_PDB_MODULES :=$(SAMBA4_PDB_MODULES)pdb_samba_dsdb,
 	SAMBA4_AUTH_MODULES :=$(SAMBA4_AUTH_MODULES)auth_samba4,
+	SAMBA4_VFS_MODULES :=$(SAMBA4_VFS_MODULES)vfs_audit,vfs_extd_audit,vfs_full_audit,
 endif
 ifeq ($(CONFIG_SAMBA4_SERVER_WINBIND),y)
 	SAMBA4_IDMAP_MODULES :=$(SAMBA4_IDMAP_MODULES)idmap_passdb,idmap_nss,idmap_tdb,idmap_tdb2,idmap_script,nss_info_template,
@@ -272,10 +278,9 @@ BUILD_TARGETS_ADMIN :=net,smbcontrol,profiles,rpcclient,smbcacls,smbcquotas
 BUILD_TARGETS_UTILS :=smbstatus,smbtree,smbget,mvxattr,nmblookup
 
 # lib bundling
-# NOTE: Compile some unique libs into related bins, so we end-up with a unified samba4-libs base, mainly to allow package separation (server, client, admin, utils)
-CONFIGURE_ARGS += --builtin-libraries=smbclient,netapi,samba-passdb,ads,auth,cli-spoolss,libcli-lsa3,gpext,talloc,tevent,texpect,tdb,ldb,tdr,cmocka,replace
-#CONFIGURE_ARGS += --nonshared-binary=$(BUILD_TARGETS_SERVER)
 # NOTE: bundle + make private, we want to avoid version configuration (build, link) conflicts
+CONFIGURE_ARGS += --builtin-libraries=talloc,tevent,texpect,tdb,ldb,tdr,cmocka,replace
+#CONFIGURE_ARGS += --nonshared-binary=$(BUILD_TARGETS_SERVER)
 ifeq ($(CONFIG_SAMBA4_SERVER_AD_DC),y)
 CONFIGURE_ARGS += --bundled-libraries=talloc,tevent,texpect,tdb,ldb,tdr,cmocka,replace,pytalloc-util,pyldb-util,NONE
 else
@@ -300,10 +305,8 @@ define Build/Configure
 	echo 'Checking uname version type: "$(VERSION_DIST) Linux-$(LINUX_VERSION) $(shell date +%Y-%m-%d)"' >> $(PKG_BUILD_DIR)/cross-answers.txt
 	# NOTE: For some unknown reason this answer is not needed on some hosts/distros, yet needed on others?
 	echo 'Checking whether POSIX capabilities are available: OK' >> $(PKG_BUILD_DIR)/cross-answers.txt
-# Entware specific: RPC(?)
-ifeq ($(CONFIG_TARGET_aarch64_3_10)$(CONFIG_TARGET_armv5_3_2)$(CONFIG_TARGET_armv7_2_6)$(CONFIG_TARGET_armv7_3_2)$(CONFIG_TARGET_mips_3_4)$(CONFIG_TARGET_mipsel_3_4)$(CONFIG_TARGET_x64_3_2),y)
+	# Entware specific: RPC(?)
 	echo 'checking for clnt_create(): NO' >> $(PKG_BUILD_DIR)/cross-answers.txt
-endif
 	$(call Build/Configure/Default,configure)
 endef
 
@@ -361,8 +364,8 @@ define Package/samba4-server/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/smbd $(1)/opt/sbin/
 ifeq ($(CONFIG_SAMBA4_SERVER_AD_DC),y)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/python2.7 $(1)/opt/lib/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{samba-tool,ntlm_auth} $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{samba,samba_gpoupdate,samba_dnsupdate,samba_kcc,samba_spnupdate,samba_upgradedns} $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{samba-tool,ntlm_auth,smbtar} $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{samba,samba-gpupdate,samba_dnsupdate,samba_kcc,samba_spnupdate,samba_upgradedns} $(1)/opt/sbin/
 endif
 ifeq ($(CONFIG_SAMBA4_SERVER_NETBIOS),y)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/nmbd $(1)/opt/sbin/
