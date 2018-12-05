@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=socat
 PKG_VERSION:=1.7.3.2
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.dest-unreach.org/socat/download
@@ -47,6 +47,10 @@ config SOCAT_SSL
         help
           Implements SSL support in socat (using libopenssl).
 endef
+
+#define Package/socat/conffiles
+#/etc/config/socat
+#endef
 
 CONFIGURE_ARGS += \
 	--disable-libwrap \
