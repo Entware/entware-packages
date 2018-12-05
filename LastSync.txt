@@ -1,7 +1,8 @@
-commit 160bf84ab96e85c3e8b3997ebb08e801a8124e0a
-Author: Ted Hess <thess@kitschensync.net>
-Date:   Fri Aug 31 15:08:17 2018 -0400
+commit ae102f4ef89abbce3a150368007e245a6b9a57cc
+Merge: 6c348ceb8 4d9f9e6a3
+Author: Hannu Nyman <hannu.nyman@iki.fi>
+Date:   Tue Dec 4 21:48:21 2018 +0200
 
-    README.md - update links to current docs pages
+    Merge pull request #7561 from neheb/neon
     
-    Signed-off-by: Ted Hess <thess@kitschensync.net>
+    neon: Fix compilation without deprecated OpenSSL APIs
