@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ulogd
 PKG_VERSION:=2.0.7
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://netfilter.org/projects/ulogd/files/ \
@@ -39,7 +39,7 @@ define Package/ulogd
 endef
 
 define Package/ulogd/conffiles
-/etc/ulogd.conf
+/opt/etc/ulogd.conf
 endef
 
 define Package/ulogd-mod-dbi
@@ -132,48 +132,48 @@ CONFIGURE_ARGS += \
 
 ifneq ($(DEVELOPER)$(SDK)$(CONFIG_PACKAGE_ulogd-mod-dbi),)
 	CONFIGURE_ARGS += --with-dbi \
-		--with-dbi-inc=$(STAGING_DIR)/usr/include/dbi \
-		--with-dbi-lib=$(STAGING_DIR)/usr/lib
+		--with-dbi-inc=$(STAGING_DIR)/opt/include/dbi \
+		--with-dbi-lib=$(STAGING_DIR)/opt/lib
 else
 	CONFIGURE_ARGS += --without-dbi
 endif
 
 ifneq ($(DEVELOPER)$(SDK)$(CONFIG_PACKAGE_ulogd-mod-mysql),)
 	CONFIGURE_ARGS += \
-		--with-mysql-inc=$(STAGING_DIR)/usr/include/mysql \
-		--with-mysql-lib=$(STAGING_DIR)/usr/lib/mysql
+		--with-mysql-inc=$(STAGING_DIR)/opt/include/mysql \
+		--with-mysql-lib=$(STAGING_DIR)/opt/lib/mysql
 else
 	CONFIGURE_ARGS += --without-mysql
 endif
 
 ifneq ($(DEVELOPER)$(SDK)$(CONFIG_PACKAGE_ulogd-mod-pgsql),)
-	CONFIGURE_ARGS += --with-pgsql="$(STAGING_DIR)/usr"
+	CONFIGURE_ARGS += --with-pgsql="$(STAGING_DIR)/opt"
 else
 	CONFIGURE_ARGS += --without-pgsql
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_ulogd-mod-sqlite),)
-	CONFIGURE_ARGS += --with-sqlite="$(STAGING_DIR)/usr"
+	CONFIGURE_ARGS += --with-sqlite="$(STAGING_DIR)/opt"
 else
 	CONFIGURE_ARGS += --without-sqlite
 endif
 
 define Package/ulogd/install
-	$(INSTALL_DIR) $(1)/etc
-	$(CP) $(PKG_BUILD_DIR)/ulogd.conf $(1)/etc/
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/ulogd $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/usr/lib/ulogd
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/ulogd/ulogd_raw2packet_BASE.so $(1)/usr/lib/ulogd/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/ulogd.init $(1)/etc/init.d/ulogd
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(CP) $(PKG_BUILD_DIR)/ulogd.conf $(1)/opt/etc/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/ulogd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/lib/ulogd
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ulogd/ulogd_raw2packet_BASE.so $(1)/opt/lib/ulogd/
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/ulogd.init $(1)/etc/init.d/ulogd
 endef
 
 define BuildPlugin
   define Package/ulogd-mod-$(1)/install
-	$(INSTALL_DIR) $$(1)/usr/lib/ulogd
+	$(INSTALL_DIR) $$(1)/opt/lib/ulogd
 	for m in $(2); do \
-		$(CP) $(PKG_INSTALL_DIR)/usr/lib/ulogd/ulogd_$$$$$$$${m}.so $$(1)/usr/lib/ulogd/ ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/lib/ulogd/ulogd_$$$$$$$${m}.so $$(1)/opt/lib/ulogd/ ; \
 	done
   endef
   $$(eval $$(call BuildPackage,ulogd-mod-$(1)))
@@ -189,22 +189,24 @@ ULOGD_EXTRA_PLUGINS:= \
 	filter_PRINTFLOW \
 	filter_PRINTPKT \
 	filter_PWSNIFF \
+	inppkt_ULOG \
 	inppkt_UNIXSOCK \
 	output_GPRINT \
 	output_GRAPHITE \
 	output_LOGEMU \
+	output_NACCT \
 	output_OPRINT \
 
-#$(eval $(call BuildPackage,ulogd))
-#$(eval $(call BuildPlugin,dbi,output_DBI))
-#$(eval $(call BuildPlugin,json,output_JSON))
-#$(eval $(call BuildPlugin,mysql,output_MYSQL))
-#$(eval $(call BuildPlugin,nfacct,inpflow_NFACCT))
-#$(eval $(call BuildPlugin,nfct,inpflow_NFCT))
-#$(eval $(call BuildPlugin,nflog,inppkt_NFLOG))
-#$(eval $(call BuildPlugin,pcap,output_PCAP))
-#$(eval $(call BuildPlugin,pgsql,output_PGSQL))
-#$(eval $(call BuildPlugin,sqlite,output_SQLITE3))
-#$(eval $(call BuildPlugin,syslog,output_SYSLOG))
-#$(eval $(call BuildPlugin,xml,output_XML))
-#$(eval $(call BuildPlugin,extra,$(ULOGD_EXTRA_PLUGINS)))
+$(eval $(call BuildPackage,ulogd))
+$(eval $(call BuildPlugin,dbi,output_DBI))
+$(eval $(call BuildPlugin,json,output_JSON))
+$(eval $(call BuildPlugin,mysql,output_MYSQL))
+$(eval $(call BuildPlugin,nfacct,inpflow_NFACCT))
+$(eval $(call BuildPlugin,nfct,inpflow_NFCT))
+$(eval $(call BuildPlugin,nflog,inppkt_NFLOG))
+$(eval $(call BuildPlugin,pcap,output_PCAP))
+$(eval $(call BuildPlugin,pgsql,output_PGSQL))
+$(eval $(call BuildPlugin,sqlite,output_SQLITE3))
+$(eval $(call BuildPlugin,syslog,output_SYSLOG))
+$(eval $(call BuildPlugin,xml,output_XML))
+$(eval $(call BuildPlugin,extra,$(ULOGD_EXTRA_PLUGINS)))
