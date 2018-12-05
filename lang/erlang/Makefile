@@ -4,23 +4,20 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-#XXX upgrade to 20.3, too many different errors
-# Entware specific: */opt
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=erlang
-PKG_VERSION:=20.3
+PKG_VERSION:=21.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=otp_src_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= http://www.erlang.org/download/
-PKG_HASH:=4e19e6c403d5255531c0b870f19511c8b8e3b080618e4f9efcb44d905935b2a1
+PKG_HASH:=c7d247c0cad2d2e718eaca2e2dff051136a1347a92097abf19ebf65ea2870131
 
 PKG_LICENSE:=ErlPL-1.1
 PKG_LICENSE_FILES:=EPLICENCE
-PKG_MAINTAINER:=Nicolas Thill <nico@openwrt.org> \
-                Arnaud Sautaux <arnaud.sautaux@infoteam.ch>
+PKG_MAINTAINER:=Arnaud Sautaux <arnaud.sautaux@infoteam.ch>
 
 PKG_BUILD_DEPENDS:=erlang/host openssl
 PKG_USE_MIPS16:=0
@@ -48,7 +45,7 @@ endef
 define Package/erlang
 $(call Package/erlang/Default)
   DEPENDS+= +libncurses +librt +zlib
-  PROVIDES:= erlang-erts=9.3 erlang-kernel=5.4.3 erlang-sasl=3.1.1 erlang-stdlib=3.4.4
+  PROVIDES:= erlang-erts=10.0.1 erlang-kernel=6.0 erlang-sasl=3.2 erlang-stdlib=3.5
 endef
 
 define Package/erlang/description
@@ -62,7 +59,7 @@ endef
 define Package/erlang-asn1
 $(call Package/erlang/Default)
   TITLE:=Abstract Syntax Notation One (ASN.1) support
-  VERSION:=5.0.5
+  VERSION:=5.0.6
   DEPENDS+= +erlang +erlang-syntax-tools
 endef
 
@@ -77,7 +74,7 @@ endef
 define Package/erlang-compiler
 $(call Package/erlang/Default)
   TITLE:=Byte code compiler
-  VERSION:=7.1.5
+  VERSION:=7.2
   DEPENDS+= +erlang +erlang-hipe
 endef
 
@@ -92,7 +89,7 @@ endef
 define Package/erlang-crypto
 $(call Package/erlang/Default)
   TITLE:=Cryptography support
-  VERSION:=4.2.1
+  VERSION:=4.3
   DEPENDS+= +erlang +libopenssl
 endef
 
@@ -107,7 +104,7 @@ endef
 define Package/erlang-hipe
 $(call Package/erlang/Default)
   TITLE:=High Performance Erlang
-  VERSION:=3.17.1
+  VERSION:=3.18
   DEPENDS+= +erlang
 endef
 
@@ -122,7 +119,7 @@ endef
 define Package/erlang-inets
 $(call Package/erlang/Default)
   TITLE:=Internet clients and servers
-  VERSION:=6.5
+  VERSION:=7.0
   DEPENDS+= +erlang
 endef
 
@@ -138,7 +135,7 @@ endef
 define Package/erlang-mnesia
 $(call Package/erlang/Default)
   TITLE:=Distributed database
-  VERSION:=4.15.3
+  VERSION:=4.15.4
   DEPENDS+= +erlang
 endef
 
@@ -155,7 +152,7 @@ endef
 define Package/erlang-runtime-tools
 $(call Package/erlang/Default)
   TITLE:=Low-profile debugging/tracing tools
-  VERSION:=1.12.5
+  VERSION:=1.13
   DEPENDS+= +erlang
 endef
 
@@ -170,7 +167,7 @@ endef
 define Package/erlang-snmp
 $(call Package/erlang/Default)
   TITLE:=Simple Network Management Protocol (SNMP) support
-  VERSION:=5.2.10
+  VERSION:=5.2.11
   DEPENDS+= +erlang +erlang-asn1
 endef
 
@@ -186,7 +183,7 @@ endef
 define Package/erlang-public-key
 $(call Package/erlang/Default)
   TITLE:=Public Key support
-  VERSION:=1.5.2
+  VERSION:=1.6
   DEPENDS+= +erlang +erlang-crypto +erlang-asn1
 endef
 
@@ -200,7 +197,7 @@ endef
 define Package/erlang-ssh
 $(call Package/erlang/Default)
   TITLE:=Secure Shell (SSH) support
-  VERSION:=4.6.6
+  VERSION:=4.7
   DEPENDS+= +erlang +erlang-crypto
 endef
 
@@ -215,7 +212,7 @@ endef
 define Package/erlang-ssl
 $(call Package/erlang/Default)
   TITLE:=Secure Sockets Layer (SSL) support
-  VERSION:=8.2.4
+  VERSION:=9.0
   DEPENDS+= +erlang +erlang-crypto
 endef
 
@@ -230,7 +227,7 @@ endef
 define Package/erlang-syntax-tools
 $(call Package/erlang/Default)
   TITLE:=Abstract Erlang syntax trees handling support
-  VERSION:=2.1.4
+  VERSION:=2.1.5
   DEPENDS+= +erlang
 endef
 
@@ -245,7 +242,7 @@ endef
 define Package/erlang-tools
 $(call Package/erlang/Default)
   TITLE:=Erlang tools support
-  VERSION:=2.11.2
+  VERSION:=3.0
   DEPENDS+= +erlang
 endef
 
@@ -259,7 +256,7 @@ endef
 define Package/erlang-reltool
 $(call Package/erlang/Default)
   TITLE:=Erlang reltool support
-  VERSION:=0.7.5
+  VERSION:=0.7.6
   DEPENDS+= +erlang
 endef
 
@@ -273,7 +270,7 @@ endef
 define Package/erlang-erl-interface
 $(call Package/erlang/Default)
   TITLE:=Erlang erl_interface support
-  VERSION:=3.10.1
+  VERSION:=3.9.3
   DEPENDS+= +erlang
 endef
 
@@ -286,7 +283,7 @@ endef
 define Package/erlang-os_mon
 $(call Package/erlang/Default)
   TITLE:=Erlang OS Monitoring Application
-  VERSION:=2.4.4
+  VERSION:=2.4.5
   DEPENDS+= +erlang
 endef
 
@@ -302,7 +299,7 @@ endef
 define Package/erlang-xmerl
 $(call Package/erlang/Default)
   TITLE:=Erlang XML export
-  VERSION:=1.3.16
+  VERSION:=1.3.17
   DEPENDS+= +erlang
 endef
 
