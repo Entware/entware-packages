@@ -245,7 +245,7 @@ index 5ac52a5..30002c0 100644
      cdata->handle.MakeWeak(cdata, SWIGV8_Proxy_DefaultDtor);
    }
 -#else
-+#elifif (V8_MAJOR_VERSION-0) < 5 || (V8_MAJOR_VERSION == 5 && V8_MINOR_VERSION < 2)
++#elif (V8_MAJOR_VERSION-0) < 5 || (V8_MAJOR_VERSION == 5 && V8_MINOR_VERSION < 2)
    if(cdata->swigCMemOwn && (SWIGV8_ClientData*)info->clientdata) {
      cdata->handle.SetWeak(cdata, ((SWIGV8_ClientData*)info->clientdata)->dtor);
    } else {
