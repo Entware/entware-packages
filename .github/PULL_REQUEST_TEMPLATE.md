@@ -1,4 +1,4 @@
-This is a mirror of [openwrt/package](https://github.com/openwrt/packages) feed, so making PR there is the best way to contribute. New package will arrive to Entware-ng in the next month.
+This is a mirror of [openwrt/package](https://github.com/openwrt/packages) feed, so making PR there is the best way to contribute. New package will arrive to Entware in the next month.
 
 Please double check that your PR is for appropriate feed:
 - [rtndev](https://github.com/Entware/rtndev) for packages which was never existed in OpenWrt before.
