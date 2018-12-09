@@ -49,6 +49,11 @@ CONFIGURE_ARGS+= \
 	--without-sqlite3 \
 	--without-bktr
 
+ifeq ($(CONFIG_TARGET_armv7_2_6),y)
+CONFIGURE_ARGS+= \
+	--without-v4l2
+endif
+
 define Package/motion/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/etc/motion
