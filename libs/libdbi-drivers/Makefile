@@ -59,16 +59,16 @@ CONFIGURE_ARGS += \
 	--disable-static \
 	--disable-rpath \
 	--disable-docs \
-	--with-dbi-incdir=$(STAGING_DIR)/usr/include \
-	--with-dbi-libdir=$(STAGING_DIR)/usr/lib
+	--with-dbi-incdir=$(STAGING_DIR)/opt/include \
+	--with-dbi-libdir=$(STAGING_DIR)/opt/lib
 
 ifneq ($(CONFIG_PACKAGE_libdbd-mysql),)
 	CONFIGURE_ARGS += \
 		--with-mysql \
-		--with-mysql-incdir=$(STAGING_DIR)/usr/include/mysql \
-		--with-mysql-libdir=$(STAGING_DIR)/usr/lib/mysql
+		--with-mysql-incdir=$(STAGING_DIR)/opt/include/mysql \
+		--with-mysql-libdir=$(STAGING_DIR)/opt/lib/mysql
 	TARGET_LDFLAGS += \
-		-L$(STAGING_DIR)/usr/lib/mysql/
+		-L$(STAGING_DIR)/opt/lib/mysql/
 else
 	CONFIGURE_ARGS += --without-mysql
 endif
@@ -76,8 +76,8 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_libdbd-pgsql),)
 	CONFIGURE_ARGS += \
 		--with-pgsql \
-		--with-pgsql-incdir=$(STAGING_DIR)/usr/include \
-		--with-pgsql-libdir=$(STAGING_DIR)/usr/lib
+		--with-pgsql-incdir=$(STAGING_DIR)/opt/include \
+		--with-pgsql-libdir=$(STAGING_DIR)/opt/lib
 else
 	CONFIGURE_ARGS += --without-pgsql
 endif
@@ -85,16 +85,16 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_libdbd-sqlite3),)
 	CONFIGURE_ARGS += \
 		--with-sqlite3 \
-		--with-sqlite3-incdir=$(STAGING_DIR)/usr/include \
-		--with-sqlite3-libdir=$(STAGING_DIR)/usr/lib
+		--with-sqlite3-incdir=$(STAGING_DIR)/opt/include \
+		--with-sqlite3-libdir=$(STAGING_DIR)/opt/lib
 else
 	CONFIGURE_ARGS += --without-sqlite3
 endif
 
 define BuildPlugin
   define Package/libdbd-$(1)/install
-	$(INSTALL_DIR) $$(1)/usr/lib/dbd
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/dbd/libdbd$(1).so $$(1)/usr/lib/dbd/
+	$(INSTALL_DIR) $$(1)/opt/lib/dbd
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/dbd/libdbd$(1).so $$(1)/opt/lib/dbd/
   endef
   $$(eval $$(call BuildPackage,libdbd-$(1)))
 endef
