@@ -257,8 +257,8 @@ define Package/snmpd/install
 endef
 
 define Package/snmptrapd/install
-	$(INSTALL_DIR) $(1)/etc/init.d
-#	$(INSTALL_BIN) ./files/snmptrapd.init $(1)/etc/init.d/snmptrapd
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S47snmptrapd $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnetsnmptrapd.so.* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/sbin
