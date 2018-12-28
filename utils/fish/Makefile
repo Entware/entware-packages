@@ -16,7 +16,7 @@ PKG_LICENSE:=GPL-2.0
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+PKG_BUILD_DIR:=$(BUILD_DIR)/fish-shell-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
