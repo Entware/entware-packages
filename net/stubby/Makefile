@@ -1,12 +1,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: newer 0.2.5 version
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stubby
-PKG_VERSION:=0.2.3
-PKG_RELEASE:=3
+PKG_VERSION:=0.2.5
+PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
@@ -15,8 +16,8 @@ PKG_MAINTAINER:=David Mora <iamperson347+public@gmail.com>, Jonathan Underwood <
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/getdnsapi/$(PKG_NAME)
-PKG_SOURCE_VERSION:=8fb853ac8d6148fd9b53fdcbc107ecd375071ec5
-PKG_MIRROR_HASH:=db736f4a728970d2441009ac19716d6129700eab3f441a5db3a0c26d41bf162c
+PKG_SOURCE_VERSION:=9c6e55a16af8f3258736b804b17eac3d35daebf3
+PKG_MIRROR_HASH:=b50fec400a6277f667e9c26b7a7fd2903412c158a6ed73224fa5485ae87aca28
 
 PKG_FIXUP:=autoreconf
 
