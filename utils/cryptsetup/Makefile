@@ -4,22 +4,22 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptsetup
-PKG_VERSION:=2.0.5
-PKG_RELEASE:=1
+PKG_VERSION:=2.0.6
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/cryptsetup/v2.0
-PKG_HASH:=a0f72ca2c824a5a555dc8924413dfe947eca23ab2e30bcff54eaafefe5fe301d
+PKG_HASH:=7c51fae0f0e7ea9af0f515b2ac77009fb2969a6619ebab47d097dca38b083d30
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
+PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0+ LGPL-2.1+
 PKG_LICENSE_FILES:=COPYING COPYING.LGPL
-PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -55,7 +55,6 @@ define Package/cryptsetup/description
 $(call Package/cryptsetup/Default/description)
 linked against libgcrypt
 endef
-
 
 define Package/cryptsetup-openssl/description
 $(call Package/cryptsetup/Default/description)
