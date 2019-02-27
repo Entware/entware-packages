@@ -8,17 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=youtube-dl
-PKG_VERSION:=2018.06.04
+PKG_VERSION:=2019.02.18
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://yt-dl.org/downloads/$(PKG_VERSION)/
-PKG_HASH:=436ef69e59a1acf8091f5c294a563d6859ce6ec42543ea3abb501e2c09131301
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
+PKG_SOURCE_URL:=https://codeload.github.com/rg3/youtube-dl/tar.gz/$(PKG_VERSION)?
+PKG_HASH:=7ec0064e923eeace598ed9c43719b4645f69e1baff7b0f727c74e145d9ecb5c7
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_LICENSE:=Unlicense
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Adrian Panella <ianchi74@outlook.com>
+PKG_MAINTAINER:=Adrian Panella <ianchi74@outlook.com>, Josef Schlehofer <pepe.schlehofer@gmail.com>
 
 PKG_BUILD_DEPENDS:=python/host zip/host
 
@@ -33,20 +33,20 @@ define Package/youtube-dl
 endef
 
 define Package/youtube-dl/description
-  youtube-dl is a small command-line program to download videos 
-  from YouTube.com and a few more sites. 
+  youtube-dl is a small command-line program to download videos
+  from YouTube.com and a few more sites.
   It requires the Python interpreter.
 endef
 
 define Package/youtube-dl/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	
+
 	python -m compileall $(PKG_BUILD_DIR)/youtube_dl/
 	cd $(PKG_BUILD_DIR) && zip --quiet youtube-dl-c.zip youtube_dl/*.pyc youtube_dl/*/*.pyc
 	cd $(PKG_BUILD_DIR) && zip --quiet --junk-paths youtube-dl-c.zip youtube_dl/__main__.pyc
 	echo '#!/opt/bin/python' > $(PKG_BUILD_DIR)/youtube-dl-c
 	cat $(PKG_BUILD_DIR)/youtube-dl-c.zip >> $(PKG_BUILD_DIR)/youtube-dl-c
-	
+
 	$(INSTALL_BIN) -T $(PKG_BUILD_DIR)/youtube-dl-c $(1)/opt/bin/youtube-dl
 endef
 
