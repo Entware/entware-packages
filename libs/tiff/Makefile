@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tiff
 PKG_VERSION:=4.0.10
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.osgeo.org/libtiff
@@ -27,12 +27,11 @@ PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_libtiffxx
 
-#include $(INCLUDE_DIR)/uclibc++.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/tiff/Default
   TITLE:=TIFF
-  URL:=http://www.remotesensing.org/libtiff/
+  URL:=http://simplesystems.org/libtiff/
   MAINTAINER:=Jiri Slachta <jiri@slachta.eu>
 endef
 
@@ -75,6 +74,8 @@ CONFIGURE_ARGS += \
 	--enable-jpeg \
 	--disable-old-jpeg \
 	--disable-jbig \
+	--disable-webp \
+	--disable-zstd \
 	--without-x
 
 define Build/InstallDev/hxx
