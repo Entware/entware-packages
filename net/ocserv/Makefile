@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ocserv
-PKG_VERSION:=0.12.1
+PKG_VERSION:=0.12.2
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
 PKG_BUILD_DIR :=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=ftp://ftp.infradead.org/pub/ocserv/
-PKG_HASH:=0b7d6f4cd54cf8bf6400a27d202819eec32341225ae48ca73d049f9d17e3a2bc
+PKG_HASH:=71ccf1dfe9e13a05d9dc1104256cad6ff91e7b7d8c07a02398842ce018a3897d
 
 PKG_LICENSE:=GPLv2+
 PKG_LICENSE_FILES:=COPYING
@@ -99,8 +99,8 @@ define Package/ocserv/install
 	$(INSTALL_DIR) $(1)/opt/etc/ocserv
 	$(INSTALL_CONF) ./files/ocserv.conf.template $(1)/opt/etc/ocserv/ocserv.conf.template
 	$(INSTALL_CONF) ./files/ocserv.conf $(1)/opt/etc/ocserv/ocserv.conf
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_CONF) ./files/config $(1)/opt/etc/config/ocserv
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/config $(1)/etc/config/ocserv
 	$(INSTALL_DIR) $(1)/opt/lib/upgrade/keep.d
 	$(INSTALL_DATA) ./files/ocserv.upgrade $(1)/opt/lib/upgrade/keep.d/ocserv
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
