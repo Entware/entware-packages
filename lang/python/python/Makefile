@@ -12,7 +12,7 @@ include ../python-version.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=2
+PKG_RELEASE:=5
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
@@ -106,6 +106,7 @@ define PyBasePackage
       -|/opt/lib/python$(PYTHON_VERSION)/*/tests
     endif
   endef
+  PyPackage/$(1)/install?=:
 endef
 
 include ./files/python-package-*.mk
@@ -170,7 +171,7 @@ define Build/Compile/python-setuptools
 	$(STAGING_DIR_HOSTPKG)/bin/pip install \
 		--ignore-installed \
 		--root=$(PKG_BUILD_DIR)/install-setuptools --prefix=. \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-*.whl
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-$(PYTHON_SETUPTOOLS_VERSION)-py2.py3-none-any.whl
 endef
 endif # CONFIG_PACKAGE_python-setuptools
 
@@ -179,7 +180,7 @@ define Build/Compile/python-pip
 	$(STAGING_DIR_HOSTPKG)/bin/pip install \
 		--ignore-installed \
 		--root=$(PKG_BUILD_DIR)/install-pip --prefix=. \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-*.whl
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON_PIP_VERSION)-py2.py3-none-any.whl
 endef
 endif # CONFIG_PACKAGE_python-pip
 
@@ -261,6 +262,9 @@ define PyPackage/python-base/install
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python2
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* $(1)/opt/lib/
 endef
+
+PyPackage/python-light/install:=:
+PyPackage/python/install:=:
 
 define PyPackage/python/filespec
 -|$(PYTHON_PKG_DIR)
