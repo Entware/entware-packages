@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/at
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libelf1
+  DEPENDS:=+libelf
   TITLE:=Delayed job execution and batch processing
   URL:=http://packages.debian.org/stable/at
 endef
@@ -43,7 +43,7 @@ CONFIGURE_ARGS+=--prefix=/opt \
 		--with-daemon_groupname=nobody \
 		--with-etcdir=/opt/etc \
 		--with-jobdir=/opt/var/spool/cron/atjobs \
-		--with-atspool=/opt/var/spool/cron/atspool \
+		--with-atspool=/opt/var/spool/cron/atspool
 
 CONFIGURE_VARS += \
 	ac_cv_header_security_pam_appl_h=no
