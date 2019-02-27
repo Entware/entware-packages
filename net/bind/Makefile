@@ -10,24 +10,26 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.11.5
-PKG_RELEASE:=2
+PKG_VERSION:=9.12.3-P4
+PKG_RELEASE:=1
 USERID:=bind=57:bind=57
 
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>
 PKG_LICENSE := MPL-2.0
+PKG_CPE_ID:=cpe:/a:isc:bind
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	https://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
 	https://ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_HASH:=a4cae11dad954bdd4eb592178f875bfec09fcc7e29fe0f6b7a4e5b5c6bc61322
+PKG_HASH:=d1014453c62623e42323fd83fc89444c12ae6b707fd586466959a052fe21f206
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
 
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
+PKG_BUILD_PARALLEL:=1
 
 PKG_CONFIG_DEPENDS := \
 	CONFIG_BIND_ENABLE_FILTER_AAAA \
@@ -123,9 +125,10 @@ endef
 
 export BUILD_CC="$(TARGET_CC)"
 
+TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
+
 CONFIGURE_ARGS += \
-	--enable-shared \
-	--enable-static \
+	--enable-ipv6=$(if $(CONFIG_IPV6),yes,no) \
 	--with-randomdev="/dev/urandom" \
 	--disable-threads \
 	--disable-linux-caps \
