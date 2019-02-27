@@ -15,12 +15,12 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=fa7e2b8e8c9402f192ad56dc4f814089d1c4466c97d780f5e5acc02c04243d6d
+PKG_HASH:=d83fe8ce51b1bb48bbcf0550fd265b9a75cdfdfa93f916f9e700aef8444bf1bb
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
@@ -111,6 +111,7 @@ define Py3BasePackage
       -|/opt/lib/python$(PYTHON_VERSION)/*/tests
     endif
   endef
+  Py3Package/$(1)/install?=:
 endef
 
 include ./files/python3-package-*.mk
@@ -176,7 +177,7 @@ define Build/Compile/python3-setuptools
 	$(STAGING_DIR_HOSTPKG)/bin/pip3 install \
 		--ignore-installed \
 		--root=$(PKG_BUILD_DIR)/install-setuptools --prefix=. \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-*.whl
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-$(PYTHON3_SETUPTOOLS_VERSION)-py2.py3-none-any.whl
 endef
 endif # CONFIG_PACKAGE_python3-setuptools
 
@@ -185,7 +186,7 @@ define Build/Compile/python3-pip
 	$(STAGING_DIR_HOSTPKG)/bin/pip3 install \
 		--ignore-installed \
 		--root=$(PKG_BUILD_DIR)/install-pip --prefix=. \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-*.whl
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py2.py3-none-any.whl
 endef
 endif # CONFIG_PACKAGE_python3-pip
 
@@ -199,6 +200,7 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/include/python$(PYTHON_VERSION) \
 		$(1)/opt/include/
@@ -206,6 +208,10 @@ define Build/InstallDev
 		$(HOST_PYTHON3_LIB_DIR) \
 		$(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* \
 		$(1)/opt/lib/
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/python3.pc \
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/python-$(PYTHON3_VERSION).pc \
+		$(1)/opt/lib/pkgconfig
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config-$(PYTHON_VERSION) \
 		$(1)/opt/lib/python$(PYTHON_VERSION)/
@@ -259,6 +265,9 @@ define Py3Package/python3-base/install
 	$(LN) python$(PYTHON_VERSION) $(1)/opt/bin/python3
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* $(1)/opt/lib/
 endef
+
+Py3Package/python3-light/install:=:
+Py3Package/python3/install:=:
 
 define Py3Package/python3/filespec
 -|$(PYTHON3_PKG_DIR)
