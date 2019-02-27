@@ -8,16 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.11.0
+PKG_VERSION:=1.12.1
 PKG_RELEASE:=1
 PKG_MAINTAINER:=
-PKG_LICENSE:=GPL-3.0
+PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/netdata/netdata/releases/download/v$(PKG_VERSION)
-PKG_HASH:=c42c8411c22c72e3e52fed38d7b9537bcfaf568d01e9c1e35ec645490627619d
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)_rolling
+PKG_HASH:=ce4516af03a6dc17a1219e939eb6b4c14ec44fd73d186797c9390260c4cfe571
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
@@ -38,7 +38,7 @@ define Package/netdata/description
   monitoring for Linux systems, applications and SNMP devices over the web.
 
  If you want to use Python plugins install python3, python3-yaml and
- python3-urllib3 however urllib3 isn't packaged yet (needs a PR on GitHub)
+ python3-urllib3
 endef
 
 TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS))
@@ -77,12 +77,13 @@ define Package/netdata/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/share/netdata
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/netdata $(1)/opt/share
-	rm -rf $(1)/opt/share/netdata/web/images
-	rm -rf $(1)/opt/share/netdata/web/old
 	rm $(1)/opt/share/netdata/web/demo*html
 	rm $(1)/opt/share/netdata/web/fonts/*.svg
 	rm $(1)/opt/share/netdata/web/fonts/*.ttf
 	rm $(1)/opt/share/netdata/web/fonts/*.woff
+	rm $(1)/opt/share/netdata/web/images/*.png
+	rm $(1)/opt/share/netdata/web/images/*.gif
+	rm $(1)/opt/share/netdata/web/images/*.ico
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S60netdata $(1)/opt/etc/init.d
 endef
