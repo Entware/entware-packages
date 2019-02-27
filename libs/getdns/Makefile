@@ -11,7 +11,7 @@ PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=David Mora <iamperson347+public@gmail.com>
+PKG_MAINTAINER:=Jonathan Underwood <jonathan.underwood@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://getdnsapi.net/dist/
@@ -23,8 +23,8 @@ PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_GETDNS_ENABLE_STUB_ONLY \
-	CONFIG_GETDNS_ENABLE_IDN_LIBIDN2 
-	
+	CONFIG_GETDNS_ENABLE_IDN_LIBIDN2
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/getdns/Default
@@ -42,7 +42,7 @@ define Package/getdns
 endef
 
 define Package/getdns/description
-	This package contains the getdns library (libgetdns). 
+	This package contains the getdns library (libgetdns).
 	This package also contains the "getdns_query" command line wrapper for getdns exposing the features of this implementation (both in the official API and the additional API functions).
 endef
 
@@ -57,7 +57,7 @@ CONFIGURE_ARGS += \
 		--with-ssl="$(STAGING_DIR)/opt" \
 
 # This will make 'configure' think that our libbsd.so is missing the
-# functions inet_pton, inet_ntop, strlcpy and use the builtin. This 
+# functions inet_pton, inet_ntop, strlcpy and use the builtin. This
 # removes the libbsd dependency
 CONFIGURE_VARS += LIBBSD_LIBS=-lc
 
@@ -69,12 +69,12 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/getdns*.pc $(1)/opt/lib/pkgconfig/
 endef
-	
-	
+
+
 define Package/getdns/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libgetdns.so.* $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/sbin	
+	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/getdns_query $(1)/opt/sbin/getdns_query
 endef
 
