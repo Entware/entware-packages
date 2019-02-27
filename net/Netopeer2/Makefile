@@ -11,6 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=Netopeer2
 PKG_VERSION:=0.7-r1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_MAINTAINER:=Mislav Novakovic <mislav.novakovic@sartura.hr>
@@ -36,7 +37,7 @@ define Package/netopeer2-server
   CATEGORY:=Utilities
   TITLE:=NETCONF server
   URL:=$(PKG_SOURCE_URL)
-  DEPENDS:=+libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo
+  DEPENDS:=+libcurl +libpthread +libyang +libnetconf2 +netopeer2-keystored +libsysrepo +sysrepocfg +sysrepoctl +sysrepo
   MENU:=1
 endef
 
