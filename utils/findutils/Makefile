@@ -8,11 +8,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=findutils
 PKG_VERSION:=4.6.0
-PKG_RELEASE:=1
+PKG_RELEASE:=3
+
+PKG_LICENSE:=GPL-3.0+
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
 PKG_HASH:=ded4c9f73731cd48fec3b6bdaccce896473b6d8e337e9612e16cf1431bb1169d
+PKG_MAINTAINER:=Daniel Dickinson <cshored@thecshore.com>
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -20,9 +23,10 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 
 define Package/findutils/Default
-	TITLE:=GNU findutils
+	TITLE:=GNU Find Utilities
 	SECTION:=utils
 	CATEGORY:=Utilities
+	URL:=https://www.gnu.org/software/findutils/
 endef
 
 define Package/findutils/description/Default
