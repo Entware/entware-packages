@@ -30,7 +30,6 @@ define Package/sslh
 endef
 
 define Package/sslh/conffiles
-/opt/etc/config/sslh
 /opt/etc/sslh.conf
 endef
 
@@ -42,8 +41,8 @@ define Package/sslh/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sslh-fork $(1)/opt/sbin/sslh
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) files/S14$(PKG_NAME) $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_CONF) files/$(PKG_NAME).config $(1)/opt/etc/config/$(PKG_NAME)
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) files/$(PKG_NAME).config $(1)/etc/config/$(PKG_NAME)
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/basic.cfg $(1)/opt/etc/sslh.conf
 endef
 
