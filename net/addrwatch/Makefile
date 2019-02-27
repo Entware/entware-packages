@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=addrwatch
 PKG_VERSION:=1.0.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/fln/addrwatch/tar.gz/v$(PKG_VERSION)?
@@ -37,9 +37,9 @@ define Package/addrwatch/description
   addresses of hosts using IPv6 privacy extensions (RFC4941).
 endef
 
-define Package/addrwatch/conffiles
+#define Package/addrwatch/conffiles
 #	/etc/config/addrwatch
-endef
+#endef
 
 define Package/addrwatch/install
 	$(INSTALL_DIR) $(1)/opt/sbin
