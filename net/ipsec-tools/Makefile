@@ -11,7 +11,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=ipsec-tools
 PKG_VERSION:=0.8.2
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>, \
 	Vitaly Protsko <villy@sft.ru>
 PKG_LICENSE := BSD-3-Clause
@@ -53,6 +53,8 @@ CONFIGURE_ARGS += \
 	--enable-frag \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6)
 
+# XXX Entware specific: set _DEFAULT_SOURCE
+TARGET_CFLAGS += -D_DEFAULT_SOURCE
 # override CFLAGS holding "-Werror" that break builds on compile warnings
 MAKE_FLAGS+=\
 	CFLAGS="$(TARGET_CFLAGS) $(EXTRA_CFLAGS) $(TARGET_CPPFLAGS) $(EXTRA_CPPFLAGS)"
