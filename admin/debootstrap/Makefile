@@ -5,14 +5,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=debootstrap
-PKG_VERSION:=1.0.93
-PKG_RELEASE:=1
+PKG_VERSION:=1.0.114
+PKG_RELEASE:=1a
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 
-http://ftp.ru.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.93.tar.gz
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/d/debootstrap
 PKG_HASH:=cdad4d2be155bd933acbe4f3479e1765e5f4447fb50564e30e33f7b3b84bd7db
@@ -20,7 +20,7 @@ PKG_LICENSE:=Unique
 PKG_LICENSE_FILES:=debian/copyright
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
-PKG_UNPACK:=tar -C $(PKG_BUILD_DIR)  -xzf $(DL_DIR)/$(PKG_SOURCE) --strip-components 1
+PKG_UNPACK:=tar -C $(PKG_BUILD_DIR) -xzf $(DL_DIR)/$(PKG_SOURCE) --strip-components 1
 
 DEBIAN_ARCH:=$(subst x86_64,amd64,$(subst aarch64,arm64,$(subst arm,armel,$(ARCH))))
 
@@ -45,7 +45,7 @@ define Package/debootstrap/description
 endef
 
 define Build/Compile
-# file pkgdetails.c was imported from debian package base-installer version 1.167
+# file pkgdetails.c was imported from debian package base-installer version 1.185
 	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) ./files/pkgdetails.c -o $(PKG_BUILD_DIR)/pkgdetails
 endef
 

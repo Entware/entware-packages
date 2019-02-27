@@ -1,0 +1,31 @@
+--- a/debootstrap
++++ b/debootstrap
+@@ -14,7 +14,7 @@ if [ -z "$DEBOOTSTRAP_DIR" ]; then
+ 	if [ -x /debootstrap/debootstrap ]; then
+ 		DEBOOTSTRAP_DIR=/debootstrap
+ 	else
+-		DEBOOTSTRAP_DIR=/usr/share/debootstrap
++		DEBOOTSTRAP_DIR=/opt/share/debootstrap
+ 	fi
+ fi
+ 
+--- a/functions
++++ b/functions
+@@ -1041,7 +1041,7 @@ extract () { (
+ ); }
+ 
+ in_target_nofail () {
+-	if ! PATH=/sbin:/usr/sbin:/bin:/usr/bin eval "$CHROOT_CMD \"\$@\"" 2>/dev/null; then
++	if ! PATH=/opt/sbin:/opt/bin:/sbin:/usr/sbin:/bin:/usr/bin eval "$CHROOT_CMD \"\$@\"" 2>/dev/null; then
+ 		true
+ 	fi
+ 	return 0
+@@ -1053,7 +1053,7 @@ in_target_failmsg () {
+ 	msg="$2"
+ 	arg="$3"
+ 	shift; shift; shift
+-	if ! PATH=/sbin:/usr/sbin:/bin:/usr/bin eval "$CHROOT_CMD \"\$@\""; then
++	if ! PATH=/opt/sbin:/opt/bin:/sbin:/usr/sbin:/bin:/usr/bin eval "$CHROOT_CMD \"\$@\""; then
+ 		warning "$code" "$msg" "$arg"
+ 		# Try to point user at actual failing package.
+ 		msg="See %s for details"

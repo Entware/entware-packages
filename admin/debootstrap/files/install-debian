@@ -1,15 +1,16 @@
 #!/bin/sh
 
-ARCH=@ARCH@
+## for armv7 and higher cpu with hardfloat support use armhf
 #ARCH=amd64, armel, armhf, arm64, mips, mipsel
-#for armv7 and higher cpu with hardfloat support use armhf
+ARCH=@ARCH@
 
 ## debian codenames
-DISTRO=jessie
-#DISTRO=oldstable - The previous stable release (wheezy).
-#DISTRO=stable - The current stable release (jessie).
-#DISTRO=testing - The next generation release (stretch).
+#DISTRO=oldoldstable - The previous old stable release (wheezy).
+#DISTRO=oldstable - The previous stable release (jessie).
+#DISTRO=stable - The current stable release (stretch).
+#DISTRO=testing - The next generation release (buster).
 #DISTRO=unstable - The unstable development release (sid).
+DISTRO=jessie
 
 ## target installation folder
 TARGET=/opt/debian
@@ -19,30 +20,30 @@ TARGET=/opt/debian
 INCLUDE=
 
 ## varaint
-VARIANT=
 #VARIANT=minbase
+VARIANT=
 
-#unofficial mirror
+## unofficial mirror
 #MIRROR=http://mirror.yandex.ru/debian/
-#official mirror
+## official mirror
 MIRROR=http://ftp.debian.org/debian
 
 unset LD_LIBRARY_PATH
 unset LD_PRELOAD
-DEBOOTSTRAP_DIR=/opt/share/debootstrap \
-PATH=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/sbin:/opt/bin \
+
 /opt/sbin/debootstrap $VARIANT $INCLUDE --arch $ARCH $DISTRO $TARGET $MIRROR
 
-#disable services autostart
+## disable services autostart
 cat > /opt/debian/usr/sbin/policy-rc.d <<EOF
 #!/bin/sh
 exit 101
 EOF
 chmod a+x /opt/debian/usr/sbin/policy-rc.d
 
-# add Entware path at the end
+## add Entware path at the end
 echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /opt/debian/etc/profile
-# add more secure tty's
+
+## add more secure tty's
 echo "pts/0" >> /opt/debian/etc/securetty
 echo "pts/1" >> /opt/debian/etc/securetty
 echo "pts/2" >> /opt/debian/etc/securetty

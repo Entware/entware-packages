@@ -6,4 +6,4 @@ SHELL=/bin/bash \
 TERMINFO=/usr/share/terminfo \
 TEMP=/tmp \
 TMP=/tmp \
-/opt/sbin/chroot /opt/debian /bin/bash
+`which chroot` /opt/debian /bin/bash

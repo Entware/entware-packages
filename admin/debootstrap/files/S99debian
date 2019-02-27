@@ -10,6 +10,8 @@ CHROOT_DIR=`readlink -f /opt/debian`
 
 CHROOT_SERVICES_LIST=$CHROOT_DIR/chroot-services.list
 
+CHROOT_BIN=`which chroot`
+
 MountedDirCount="$(/opt/bin/mount | grep $CHROOT_DIR | wc -l)"
 
 start() {
@@ -39,7 +41,7 @@ start() {
 			LC_ALL=C \
 			LANGUAGE=C \
 			LANG=C \
-			/opt/sbin/chroot $CHROOT_DIR /etc/init.d/$item start
+			$CHROOT_BIN $CHROOT_DIR /etc/init.d/$item start
 		done
 	fi
 
@@ -63,7 +65,7 @@ stop() {
 			LC_ALL=C \
 			LANGUAGE=C \
 			LANG=C \
-			/opt/sbin/chroot $CHROOT_DIR /etc/init.d/$item stop
+			$CHROOT_BIN $CHROOT_DIR /etc/init.d/$item stop
 		done
 	fi
 	# device can be unstable in case we do not unmount properly
