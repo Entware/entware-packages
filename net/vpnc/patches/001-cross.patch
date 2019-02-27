@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -20,7 +20,7 @@
+@@ -20,8 +20,8 @@
  # $Id: Makefile 539 2013-12-04 13:41:04Z Antonio Borneo $
  
  DESTDIR=
@@ -10,6 +10,7 @@
 +ETCDIR=/opt/etc/vpnc
  BINDIR=$(PREFIX)/bin
  SBINDIR=$(PREFIX)/sbin
+ MANDIR=$(PREFIX)/share/man
 @@ -57,18 +57,15 @@ OBJS = $(addsuffix .o,$(basename $(SRCS)
  CRYPTO_OBJS = $(addsuffix .o,$(basename $(CRYPTO_SRCS)))
  BINOBJS = $(addsuffix .o,$(BINS))

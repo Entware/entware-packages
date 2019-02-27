@@ -1,6 +1,6 @@
 --- a/config.c
 +++ b/config.c
-@@ -342,7 +342,7 @@
+@@ -343,7 +343,7 @@ static const char *config_def_dpd_idle(v
  
  static const char *config_ca_dir(void)
  {
@@ -9,7 +9,7 @@
  }
  
  static const char *config_def_auth_mode(void)
-@@ -362,7 +362,7 @@
+@@ -363,7 +363,7 @@ static const char *config_def_app_versio
  
  static const char *config_def_script(void)
  {
@@ -18,7 +18,7 @@
  }
  
  static const char *config_def_pid_file(void)
-@@ -658,7 +658,7 @@
+@@ -659,7 +659,7 @@ static char *get_config_filename(const c
  {
  	char *realname;
  
@@ -27,7 +27,7 @@
  	return realname;
  }
  
-@@ -894,8 +894,8 @@
+@@ -895,8 +895,8 @@ void do_config(int argc, char **argv)
  	}
  
  	if (!got_conffile) {
