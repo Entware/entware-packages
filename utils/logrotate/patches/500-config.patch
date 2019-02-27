@@ -1,9 +1,9 @@
---- a/examples/logrotate-default
-+++ b/examples/logrotate-default
-@@ -15,6 +15,6 @@
+--- a/examples/logrotate.conf
++++ b/examples/logrotate.conf
+@@ -15,6 +15,6 @@ dateext
  #compress
  
- # RPM packages drop log rotation information into this directory
+ # packages drop log rotation information into this directory
 -include /etc/logrotate.d
 +include /opt/etc/logrotate.d
  
