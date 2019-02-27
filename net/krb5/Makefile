@@ -76,7 +76,7 @@ CONFIGURE_VARS += \
 	ac_cv_lib_keyutils_add_key=no
 
 CONFIGURE_ARGS += \
-	--includedir='/opt/include/krb5' \
+	--includedir='/opt/include/krb' \
 	--localstatedir=/opt/etc \
 	--with-system-ss \
 	--with-system-et \

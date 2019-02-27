@@ -114,7 +114,7 @@ define Package/samba4-utils/description
 endef
 
 TARGET_CFLAGS += -ffunction-sections -fdata-sections -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include/krb5 -I$(STAGING_DIR)/opt/include/tirpc
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include/krb -I$(STAGING_DIR)/opt/include/tirpc
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 CONFIGURE_VARS += \
