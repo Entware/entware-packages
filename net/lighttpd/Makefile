@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lighttpd
 PKG_VERSION:=1.4.49
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://download.lighttpd.net/lighttpd/releases-1.4.x
@@ -149,10 +149,14 @@ define Package/lighttpd/conffiles
 /opt/etc/lighttpd/conf.d/30-accesslog.conf
 /opt/etc/lighttpd/conf.d/30-access.conf
 /opt/etc/lighttpd/conf.d/30-alias.conf
+/opt/etc/lighttpd/conf.d/20-authn_file.conf
+/opt/etc/lighttpd/conf.d/20-authn_ldap.conf
+/opt/etc/lighttpd/conf.d/20-authn_mysql.conf
 /opt/etc/lighttpd/conf.d/20-auth.conf
 /opt/etc/lighttpd/conf.d/30-cgi.conf
 /opt/etc/lighttpd/conf.d/30-cml.conf
 /opt/etc/lighttpd/conf.d/30-compress.conf
+/opt/etc/lighttpd/conf.d/30-deflate.conf
 /opt/etc/lighttpd/conf.d/30-evasive.conf
 /opt/etc/lighttpd/conf.d/30-evhost.conf
 /opt/etc/lighttpd/conf.d/30-expire.conf
@@ -175,6 +179,7 @@ define Package/lighttpd/conffiles
 /opt/etc/lighttpd/conf.d/30-userdir.conf
 /opt/etc/lighttpd/conf.d/30-usertrack.conf
 /opt/etc/lighttpd/conf.d/30-webdav.conf
+/opt/etc/lighttpd/conf.d/30-wstunnel.conf
 endef
 
 define Package/lighttpd/install
@@ -210,6 +215,10 @@ define BuildPlugin
 	$(INSTALL_DIR) $$(1)/opt/etc/lighttpd/conf.d
 	if [ -f $(PKG_BUILD_DIR)/doc/config/conf.d/$(1).conf ]; then \
 		$(CP) $(PKG_BUILD_DIR)/doc/config/conf.d/$(1).conf $$(1)/opt/etc/lighttpd/conf.d/$(4)-$(1).conf ; \
+		if ! grep -qF 'mod_$(1)' $$(1)/opt/etc/lighttpd/conf.d/$(4)-$(1).conf; then \
+			sed -i "`sed '/^##/ !q' $$(1)/opt/etc/lighttpd/conf.d/$(4)-$(1).conf | wc -l` i\
+server.modules += ( \"mod_$(1)\" )" $$(1)/opt/etc/lighttpd/conf.d/$(4)-$(1).conf ; \
+		fi \
 	else \
 		echo 'server.modules += ( "mod_$(1)" )' > $$(1)/opt/etc/lighttpd/conf.d/$(4)-$(1).conf ; \
 	fi
@@ -226,10 +235,10 @@ $(eval $(call BuildPlugin,redirect,URL redirection,+PACKAGE_lighttpd-mod-redirec
 
 # Next, permit authentication.
 $(eval $(call BuildPlugin,auth,Authentication,,20))
-$(eval $(call BuildPlugin,authn_file,File-based authentication,,20))
-#$(eval $(call BuildPlugin,authn_gssapi,Kerberos-based authentication,+PACKAGE_lighttpd-mod-authn_gssapi:krb5-libs,20))
-$(eval $(call BuildPlugin,authn_ldap,LDAP-based authentication,+PACKAGE_lighttpd-mod-authn_ldap:libopenldap,20))
-$(eval $(call BuildPlugin,authn_mysql,Mysql-based authentication,+PACKAGE_lighttpd-mod-authn_mysql:libmysqlclient,20))
+$(eval $(call BuildPlugin,authn_file,File-based authentication,lighttpd-mod-auth,20))
+#$(eval $(call BuildPlugin,authn_gssapi,Kerberos-based authentication,lighttpd-mod-auth +PACKAGE_lighttpd-mod-authn_gssapi:krb5-libs,20))
+$(eval $(call BuildPlugin,authn_ldap,LDAP-based authentication,lighttpd-mod-auth +PACKAGE_lighttpd-mod-authn_ldap:libopenldap,20))
+$(eval $(call BuildPlugin,authn_mysql,Mysql-based authentication,lighttpd-mod-auth +PACKAGE_lighttpd-mod-authn_mysql:libmysqlclient,20))
 
 # Finally, everything else.
 $(eval $(call BuildPlugin,access,Access restrictions,,30))
