@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export GCONV_PATH=/opt/lib/gconv
+
+case $1 in
+	start)
+	logger "Starting softether vpnclient service."
+	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnclient start
+	;;
+	stop)
+	logger "Stopping softether vpnclient service."
+	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnclient stop
+	;;
+	restart)
+	logger "Starting softether vpnclient service."
+	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnclient stop
+	sleep 5
+	logger "Stopping softether vpnclient service."
+	LANG=en_US.UTF-8 /opt/libexec/softethervpn/vpnclient start
+	;;
+	*)
+	echo "Usage: $0 {start|stop|restart}"
+	;;
+esac
