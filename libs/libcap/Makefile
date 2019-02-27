@@ -8,15 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libcap
-PKG_VERSION:=2.25
-PKG_RELEASE:=2
+PKG_VERSION:=2.26
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/libs/security/linux-privs/libcap2
-PKG_HASH:=693c8ac51e983ee678205571ef272439d83afe62dd8e424ea14ad9790bc35162
+PKG_HASH:=b630b7c484271b3ba867680d6a14b10a86cfa67247a14631b14c06731d5a458b
+
+PKG_MAINTAINER:=Paul Wassi <p.wassi@gmx.at>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=License
-PKG_MAINTAINER:=Paul Wassi <p.wassi@gmx.at>
 
 PKG_INSTALL:=1
 
@@ -27,7 +28,7 @@ define Package/libcap
   TITLE:=Linux capabilities library
   SECTION:=libs
   CATEGORY:=Libraries
-  URL:=http://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/
+  URL:=https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/
 endef
 
 define Package/libcap/config
@@ -50,7 +51,7 @@ define Package/libcap/config
 endef
 
 MAKE_FLAGS += \
-    CFLAGS="$(TARGET_CFLAGS)" \
+    prefix=/opt \
     BUILD_CC="$(CC)" \
     BUILD_CFLAGS="$(FPIC) -I$(PKG_BUILD_DIR)/libcap/include" \
     CFLAGS="$(TARGET_CFLAGS)" \
@@ -68,20 +69,20 @@ endif
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/sys
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib/
-	$(CP) $(PKG_INSTALL_DIR)/lib/* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
 endef
 
 define Package/libcap/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/lib/libcap.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcap.so* $(1)/opt/lib/
 ifneq ($(CONFIG_PACKAGE_libcap-bin),)
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/capsh     $(1)/opt/sbin/
-	$(CP) $(PKG_INSTALL_DIR)/sbin/getcap    $(1)/opt/sbin/
-	$(CP) $(PKG_INSTALL_DIR)/sbin/getpcaps  $(1)/opt/sbin/
-	$(CP) $(PKG_INSTALL_DIR)/sbin/setcap    $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/capsh     $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/getcap    $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/getpcaps  $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/setcap    $(1)/opt/sbin/
 endif
 endef
 
