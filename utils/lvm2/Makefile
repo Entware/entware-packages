@@ -9,15 +9,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=LVM2
-PKG_VERSION:=2.03.01
+PKG_VERSION:=2.03.02
 PKG_RELEASE:=1
-PKG_LICENSE:=GPL-2.0 LGPL-2.1
 
 PKG_SOURCE:=$(PKG_NAME).$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://sourceware.org/pub/lvm2
-PKG_HASH:=424e58b074195ec08e0315fa1aff2550590998c33aea5c43bdceb8c1d135530b
-PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
+PKG_HASH:=550ba750239fd75b7e52c9877565cabffef506bbf6d7f6f17b9700dee56c720f
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME).$(PKG_VERSION)
+
+PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
+PKG_LICENSE:=GPL-2.0 LGPL-2.1
+PKG_LICENSE_FILES:=COPYING COPYING.lib
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -57,10 +59,11 @@ CONFIGURE_ARGS += \
   --with-default-locking-dir=/opt/var/lock/lvm \
   --with-confdir=/opt/etc
 
+#XXX Entware specific: added -lblkid
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(TARGET_LDFLAGS) $(FPIC)" \
-		LIBS="-L$(STAGING_DIR)/opt/lib -luuid -lm" \
+		LIBS="-L$(STAGING_DIR)/opt/lib -luuid -lm -lblkid" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		install
 endef
@@ -93,8 +96,7 @@ define Package/lvm2/install
 	$(INSTALL_BIN) ./files/S06lvm2 $(1)/opt/etc/init.d
 	$(FIND) $(PKG_INSTALL_DIR)/opt/sbin/ -type l -exec $(CP) -a {} $(1)/opt/sbin/ \;
 	#fix /opt
-	$(SED) 's|/etc/lvm|/opt/etc/lvm|g' $(1)/opt/etc/lvm/lvm.conf
-	$(SED) 's|/run/lock|/opt/run/lock|' $(1)/opt/etc/lvm/lvm.conf
+	$(SED) 's|/etc/lvm|/opt/etc/lvm|g' -e 's|/run/lock|/opt/run/lock|' $(1)/opt/etc/lvm/lvm.conf
 endef
 
 define Package/lvm2/conffiles
