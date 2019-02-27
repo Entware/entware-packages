@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zsh
 PKG_VERSION:=5.6.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/zsh
@@ -83,9 +83,13 @@ define Build/Configure
 	$(MAKE) -C $(PKG_BUILD_DIR) DESTDIR="$(PKG_INSTALL_DIR)" prep
 endef
 
+#XXX Entware specific: added -fPIC
+TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
+TARGET_LDFLAGS += -Wl,--gc-sections -flto -fPIC
+
 define Package/zsh/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_DIR) $(1)//opt/lib/zsh/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)
 	$(INSTALL_DIR) $(1)/opt/share/zsh/$(PKG_VERSION)
 
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/zsh $(1)/opt/bin/
