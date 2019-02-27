@@ -4,22 +4,25 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# droproot plugin restored
+# Entware specific: droproot plugin restored
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=znc
-PKG_VERSION:=1.7.1
-PKG_RELEASE:=3
+PKG_VERSION:=1.7.2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://znc.in/releases \
 		https://znc.in/releases/archive
-PKG_HASH:=44cfea7158ea05dc2547c7c6bc22371e66c869def90351de0ab90a9c200d39c4
+PKG_HASH:=60b4e78f54c532c32673d1ef8e5f606c530ef3a6d6b76ea1daa66459a86682a9
 
 PKG_MAINTAINER:=Jonas Gorski <jonas.gorski@gmail.com>
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:znc:znc
+
+#PKG_FIXUP:=autoreconf
 
 PKG_USE_MIPS16:=0
 PKG_BUILD_PARALLEL:=1
@@ -61,8 +64,8 @@ define Package/znc/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/znc $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S99znc $(1)/opt/etc/init.d/
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_DATA) ./files/znc.conf $(1)/opt/etc/config/znc
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DATA) ./files/znc.conf $(1)/etc/config/znc
 	$(INSTALL_DIR) $(1)/opt/lib/znc/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/modules/droproot.so $(1)/opt/lib/znc/
 endef
