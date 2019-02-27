@@ -1,0 +1,127 @@
+--- a/src/lib-ssl-iostream/iostream-openssl-common.c
++++ b/src/lib-ssl-iostream/iostream-openssl-common.c
+@@ -6,7 +6,9 @@
+ #include <openssl/x509v3.h>
+ 
+ enum {
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	DOVECOT_SSL_PROTO_SSLv2		= 0x01,
++#endif
+ 	DOVECOT_SSL_PROTO_SSLv3		= 0x02,
+ 	DOVECOT_SSL_PROTO_TLSv1		= 0x04,
+ 	DOVECOT_SSL_PROTO_TLSv1_1	= 0x08,
+@@ -30,6 +32,7 @@ int openssl_get_protocol_options(const c
+ 			name++;
+ 			neg = TRUE;
+ 		}
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 		if (strcasecmp(name, SSL_TXT_SSLV2) == 0)
+ 			proto = DOVECOT_SSL_PROTO_SSLv2;
+ 		else if (strcasecmp(name, SSL_TXT_SSLV3) == 0)
+@@ -48,6 +51,7 @@ int openssl_get_protocol_options(const c
+ 			i_fatal("Invalid ssl_protocols setting: "
+ 				"Unknown protocol '%s'", name);
+ 		}
++#endif
+ 		if (neg)
+ 			exclude |= proto;
+ 		else
+@@ -58,7 +62,9 @@ int openssl_get_protocol_options(const c
+ 		   (and let excludes still override those) */
+ 		exclude |= DOVECOT_SSL_PROTO_ALL & ~include;
+ 	}
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	if ((exclude & DOVECOT_SSL_PROTO_SSLv2) != 0) op |= SSL_OP_NO_SSLv2;
++#endif
+ 	if ((exclude & DOVECOT_SSL_PROTO_SSLv3) != 0) op |= SSL_OP_NO_SSLv3;
+ 	if ((exclude & DOVECOT_SSL_PROTO_TLSv1) != 0) op |= SSL_OP_NO_TLSv1;
+ #ifdef SSL_OP_NO_TLSv1_1
+--- a/src/lib-ssl-iostream/iostream-openssl.c
++++ b/src/lib-ssl-iostream/iostream-openssl.c
+@@ -103,24 +103,30 @@ openssl_iostream_verify_client_cert(int
+ 	SSL *ssl;
+ 	struct ssl_iostream *ssl_io;
+ 	char certname[1024];
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	X509_NAME *subject;
++#endif
+ 
+ 	ssl = X509_STORE_CTX_get_ex_data(ctx, ssl_extidx);
+ 	ssl_io = SSL_get_ex_data(ssl, dovecot_ssl_extdata_index);
+ 	ssl_io->cert_received = TRUE;
+ 
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	subject = X509_get_subject_name(ctx->current_cert);
+ 	if (subject == NULL ||
+ 	    X509_NAME_oneline(subject, certname, sizeof(certname)) == NULL)
+ 		certname[0] = '\0';
+ 	else
+ 		certname[sizeof(certname)-1] = '\0'; /* just in case.. */
++#endif
+ 	if (!preverify_ok) {
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 		openssl_iostream_set_error(ssl_io, t_strdup_printf(
+ 			"Received invalid SSL certificate: %s: %s",
+ 			X509_verify_cert_error_string(ctx->error), certname));
+ 		if (ssl_io->verbose_invalid_cert)
+ 			i_info("%s", ssl_io->last_error);
++#endif
+ 	} else if (ssl_io->verbose) {
+ 		i_info("Received valid SSL certificate: %s", certname);
+ 	}
+--- a/src/login-common/ssl-proxy-openssl.c
++++ b/src/login-common/ssl-proxy-openssl.c
+@@ -901,22 +901,27 @@ static int ssl_verify_client_cert(int pr
+ 	SSL *ssl;
+         struct ssl_proxy *proxy;
+ 	char buf[1024];
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	X509_NAME *subject;
++#endif
+ 
+ 	ssl = X509_STORE_CTX_get_ex_data(ctx,
+ 					 SSL_get_ex_data_X509_STORE_CTX_idx());
+ 	proxy = SSL_get_ex_data(ssl, extdata_index);
+ 	proxy->cert_received = TRUE;
+ 
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	if (proxy->client_proxy && !proxy->login_set->ssl_require_crl &&
+ 	    (ctx->error == X509_V_ERR_UNABLE_TO_GET_CRL ||
+ 	     ctx->error == X509_V_ERR_CRL_HAS_EXPIRED)) {
+ 		/* no CRL given with the CA list. don't worry about it. */
+ 		preverify_ok = 1;
+ 	}
++#endif
++
+ 	if (!preverify_ok)
+ 		proxy->cert_broken = TRUE;
+-
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	subject = X509_get_subject_name(ctx->current_cert);
+ 	(void)X509_NAME_oneline(subject, buf, sizeof(buf));
+ 	buf[sizeof(buf)-1] = '\0'; /* just in case.. */
+@@ -935,7 +940,7 @@ static int ssl_verify_client_cert(int pr
+ 			       X509_verify_cert_error_string(ctx->error), buf);
+ 		}
+ 	}
+-
++#endif
+ 	/* Return success anyway, because if ssl_require_client_cert=no we
+ 	   could still allow authentication. */
+ 	return 1;
+@@ -1384,6 +1389,7 @@ void ssl_proxy_init(void)
+ 	if (strcmp(ssl_set->ssl, "no") == 0)
+ 		return;
+ 
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	SSL_library_init();
+ 	SSL_load_error_strings();
+ 	OpenSSL_add_all_algorithms();
+@@ -1400,6 +1406,7 @@ void ssl_proxy_init(void)
+ 		ENGINE_set_default_DSA(ssl_engine);
+ 		ENGINE_set_default_ciphers(ssl_engine);
+ 	}
++#endif
+ 
+ 	extdata_index = SSL_get_ex_new_index(0, dovecot, NULL, NULL, NULL);
+ 
