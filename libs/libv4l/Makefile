@@ -6,15 +6,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v4l-utils
-PKG_VERSION:=1.14.2
+PKG_VERSION:=1.16.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://www.linuxtv.org/downloads/v4l-utils
-PKG_HASH:=e6b962c4b1253cf852c31da13fd6b5bb7cbe5aa9e182881aec55123bae680692
+PKG_HASH:=7c5c0d49c130cf65d384f28e9f3a53c5f7d17bf18740c48c40810e0fbbed5b54
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
-
 PKG_LICENSE:=GPL-2.0 LGPL-2.1
 PKG_LICENSE_FILES:=COPYING COPYING.libv4l
 
@@ -53,7 +52,7 @@ define Package/libv4l
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= wrapper libraries
-  DEPENDS := +libpthread +librt $(ICONV_DEPENDS)
+  DEPENDS:= +libpthread +librt $(ICONV_DEPENDS)
 endef
 
 define Package/libv4l/description
@@ -65,7 +64,7 @@ define Package/v4l-utils
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
-  DEPENDS := +libv4l +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS) +libevdev +libudev
+  DEPENDS:= +libv4l +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS)
 endef
 
 define Package/v4l-utils/description
@@ -73,18 +72,18 @@ define Package/v4l-utils/description
   This package contains the video4linux utilities.
 endef
 
-TARGET_CFLAGS += $(FPIC)
+TARGET_CFLAGS += -flto
 #  CCLD     media-ctl
 #../opt/lib/libudev.so: undefined reference to `pthread_join'
 #../opt/lib/libudev.so: undefined reference to `pthread_create'
-TARGET_LDFLAGS += -lpthread
+TARGET_LDFLAGS += -lpthread -Wl,--gc-sections
 
 CONFIGURE_ARGS+= \
 	--disable-doxygen-doc \
 	--disable-libdvbv5 \
 	--disable-qv4l2 \
-	--without-jpeg \
-	--with-udevdir="/opt/lib/udev" \
+	--disable-qvidcap \
+	--without-jpeg
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
