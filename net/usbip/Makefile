@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=10a
+PKG_RELEASE:=11
 PKG_LICENSE:=GPL-2.0
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -51,7 +51,7 @@ endef
 define Package/usbip
   $(call Package/usbip/Default)
   TITLE+= (common)
-  DEPENDS+= +libwrap +USE_GLIBC:libudev-fbsd
+  DEPENDS+= +libwrap +libudev-fbsd
 endef
 
 define Package/usbip-client
@@ -106,6 +106,8 @@ define Package/usbip-client/install
 endef
 
 define Package/usbip-server/install
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) files/S74usbipd $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/usbipd $(1)/opt/sbin/
 endef
