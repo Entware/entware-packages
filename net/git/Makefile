@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.19.2
-PKG_RELEASE:=2
+PKG_VERSION:=2.21.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=fce9a3a3297db5f3756c4553a2fc1fec209ee08178f8491e76ff4ff8fe7b8be9
+PKG_HASH:=8ccb1ce743ee991d91697e163c47c11be4bf81efbdd9fb0b4a7ad77cc0020d28
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
@@ -56,7 +56,16 @@ endef
 define Package/git-gitweb
 $(call Package/git/Default)
   TITLE:=Git repository web interface
-  DEPENDS+= +git +perlbase-essential +perlbase-file +perlbase-fcntl +perlbase-encode +perlbase-digest +perlbase-time +perl-cgi
+  DEPENDS+=	+git \
+		+perl-cgi \
+		+perlbase-digest \
+		+perlbase-encode \
+		+perlbase-essential \
+		+perlbase-fcntl \
+		+perlbase-file \
+		+perlbase-filetest \
+		+perlbase-storable \
+		+perlbase-time
 endef
 
 define Package/git-gitweb/description
