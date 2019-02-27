@@ -9,14 +9,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=erlang
 PKG_VERSION:=21.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=otp_src_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= http://www.erlang.org/download/
 PKG_HASH:=c7d247c0cad2d2e718eaca2e2dff051136a1347a92097abf19ebf65ea2870131
 
-PKG_LICENSE:=ErlPL-1.1
-PKG_LICENSE_FILES:=EPLICENCE
+PKG_LICENSE:=Apache-2.0
+PKG_LICENSE_FILES:=LICENSE.txt
 PKG_MAINTAINER:=Arnaud Sautaux <arnaud.sautaux@infoteam.ch>
 
 PKG_BUILD_DEPENDS:=erlang/host openssl
