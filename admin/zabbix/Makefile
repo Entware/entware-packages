@@ -8,11 +8,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zabbix
-PKG_VERSION:=3.4.14
-PKG_RELEASE:=6
+PKG_VERSION:=4.0.3
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=7443873cc970672d3c884230d3aeb082f2d8afcc2b757506c2d684ffdd12d77e
+PKG_HASH:=6b3d3b23c72a7af1958dc0938a566be03f0424cb44df5b2a9f487428f32d0463
 PKG_SOURCE_URL:=@SF/zabbix
 
 PKG_LICENSE:=GPL-2.0
@@ -64,9 +64,6 @@ choice
         config ZABBIX_POSTGRESQL
                 bool "PostgreSQL"
 
-        config ZABBIX_SQLITE3
-                bool "SQLite3"
-
 endchoice
 endef
 
@@ -78,7 +75,7 @@ define Package/zabbix/Default
   SUBMENU:=zabbix
   MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
   USERID:=zabbix=53:zabbix=53
-  DEPENDS += $(ICONV_DEPENDS) +libpcre +ZABBIX_GNUTLS:libgnutls +ZABBIX_OPENSSL:libopenssl
+  DEPENDS += $(ICONV_DEPENDS) +libpcre +zlib +ZABBIX_GNUTLS:libgnutls +ZABBIX_OPENSSL:libopenssl
 endef
 
 define Package/zabbix-agentd
@@ -117,13 +114,13 @@ endef
 define Package/zabbix-server
   $(call Package/zabbix/Default)
   TITLE+= server
-  DEPENDS += +ZABBIX_SQLITE3:libsqlite3 +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2
+  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2
 endef
 
 define Package/zabbix-server-frontend
   $(call Package/zabbix/Default)
   TITLE+= server-frontend
-  DEPENDS += +php7 +php7-cgi +ZABBIX_SQLITE3:php7-mod-sqlite3 +ZABBIX_POSTGRESQL:php7-mod-pgsql +ZABBIX_MYSQL:php7-mod-mysqli \
+  DEPENDS += +php7 +php7-cgi +ZABBIX_POSTGRESQL:php7-mod-pgsql +ZABBIX_MYSQL:php7-mod-mysqli \
   +php7-mod-gd +php7-mod-bcmath +php7-mod-ctype +php7-mod-xmlreader +php7-mod-xmlwriter \
   +php7-mod-session +php7-mod-sockets +php7-mod-mbstring +php7-mod-gettext
 endef
@@ -131,7 +128,7 @@ endef
 define Package/zabbix-proxy
   $(call Package/zabbix/Default)
   TITLE+= proxy
-  DEPENDS += +ZABBIX_SQLITE3:libsqlite3 +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient
+  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient
 endef
 
 define Package/zabbix-extra-mac80211/description
@@ -158,9 +155,8 @@ CONFIGURE_ARGS+= \
 	--enable-proxy \
 	$(call autoconf_bool,CONFIG_IPV6,ipv6) \
 	--disable-java \
-	$(if $(CONFIG_ZABBIX_MYSQL),--with-mysql=yes,--with-mysql=no) \
-	$(if $(CONFIG_ZABBIX_POSTGRESQL),--with-postgresql=yes,--with-postgresql=no) \
-	$(if $(CONFIG_ZABBIX_SQLITE3),--with-sqlite3=yes,--with-sqlite3=no) \
+	$(if $(CONFIG_ZABBIX_MYSQL),--with-mysql) \
+	$(if $(CONFIG_ZABBIX_POSTGRESQL),--with-postgresql) \
 	--with-libevent=$(STAGING_DIR)/opt/include/libevent \
 	--with-libpcre=$(STAGING_DIR)/opt/include \
 	$(if $(CONFIG_ZABBIX_GNUTLS),--with-gnutls="$(STAGING_DIR)/opt") \
