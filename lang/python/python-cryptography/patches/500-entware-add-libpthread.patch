@@ -3,7 +3,7 @@
 @@ -33,7 +33,7 @@
          # specified on the linker command-line is significant;
          # libssl must come before libcrypto
-         # (http://marc.info/?l=openssl-users&m=135361825921871)
+         # (https://marc.info/?l=openssl-users&m=135361825921871)
 -        return ["ssl", "crypto"]
 +        return ["ssl", "crypto", "pthread"]
  
