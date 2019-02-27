@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=9
+PKG_RELEASE:=15a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -71,8 +71,10 @@ define Package/nut-server/install
 	$(INSTALL_BIN) ./files/S15upsd $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsd $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/cmdvartab $(1)/opt/share/nut/
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_CONF) ./files/nut_server $(1)/opt/etc/config/nut_server
+#	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/ups.conf.sample $(1)/opt/etc/nut/ups.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.conf.sample $(1)/opt/etc/nut/upsd.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.users.sample $(1)/opt/etc/nut/upsd.users
 	# Driver common portion
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsdrvctl $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/driver.list $(1)/opt/share/nut/
@@ -100,6 +102,7 @@ define Package/nut-common/install
 	$(INSTALL_DIR) $(1)/opt/etc/nut
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libupsclient.so* $(1)/opt/lib/
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/nut.conf.sample $(1)/opt/etc/nut/nut.conf
 endef
 
 define Package/nut-server
@@ -119,7 +122,6 @@ all times to actually make any use out of the drivers and clients.
 endef
 
 define Package/nut-server/conffiles
-/opt/etc/config/nut_server
 /opt/etc/nut/upsd.conf
 /opt/etc/nut/upsd.users
 /opt/etc/nut/ups.conf
@@ -143,7 +145,6 @@ is assigned a power value and a type (slave or master).
 endef
 
 define Package/nut-upsmon/conffiles
-/opt/etc/config/nut_monitor
 /opt/etc/nut/upsmon.conf
 endef
 
@@ -153,8 +154,8 @@ define Package/nut-upsmon/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S15upsmon $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsmon $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_CONF) ./files/nut_monitor $(1)/opt/etc/config/nut_monitor
+#	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsmon.conf.sample $(1)/opt/etc/nut/upsmon.conf
 endef
 
 define Package/nut-upsmon-sendmail-notify
@@ -296,7 +297,6 @@ define Package/nut-web-cgi/conffiles
 /opt/etc/nut/upsset.conf
 /opt/etc/nut/upsstats.html
 /opt/etc/nut/upsstats-single.html
-/opt/etc/config/nut_cgi
 /opt/etc/httpd.conf
 endef
 
@@ -305,6 +305,7 @@ define Package/nut-web-cgi/install
 	$(INSTALL_DIR) $(1)/opt/etc/nut
 	$(CP) $(PKG_INSTALL_DIR)/opt/html/* $(1)/opt/share/www/nut/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/cgi-bin/* $(1)/opt/share/www/cgi-bin/
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/hosts.conf.sample $(1)/opt/etc/nut/hosts.conf
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats.html.sample $(1)/opt/etc/nut/upsstats.html
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats-single.html.sample $(1)/opt/etc/nut/upsstats-single.html
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsset.conf.sample $(1)/opt/etc/nut/upsset.conf
@@ -346,10 +347,10 @@ define DriverPackage
 	# new version of nut we will need to provide descriptions for any new
 	# drivers.
         define Package/nut-driver-$(2)/description
-		
+
         endef
         define Package/nut-driver-$(2)/install
-        	$(INSTALL_DIR) $$(1)/opt/lib/nut
+		$(INSTALL_DIR) $$(1)/opt/lib/nut
 		$(CP) $$(PKG_INSTALL_DIR)/opt/lib/nut/$(2) $$(1)/opt/lib/nut/
 		$(if $(filter $(2),clone),$(CP) $$(PKG_INSTALL_DIR)/opt/lib/nut/$(2)-outlet $$(1)/opt/lib/nut/)
         endef
@@ -509,7 +510,8 @@ CONFIGURE_ARGS += \
 	--with-statepath=/opt/var/run \
 	--with-drvpath=/opt/lib/nut \
 	--with-user=root \
-	--with-group=root
+	--with-group=root \
+	--with-pidpath=/opt/var/run
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib/pkgconfig
