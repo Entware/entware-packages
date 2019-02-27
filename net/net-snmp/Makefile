@@ -123,6 +123,7 @@ SNMP_MIB_MODULES_INCLUDED = \
 	host/hr_system \
 	ieee802dot11 \
 	if-mib/ifXTable \
+	ip-mib/inetNetToMediaTable \
 	mibII/at \
 	mibII/icmp \
 	mibII/ifTable \
@@ -159,6 +160,7 @@ SNMP_MIB_MODULES_EXCLUDED = \
 	hardware \
 	host \
 	if-mib \
+	ip-mib \
 	mibII \
 	notification \
 	notification-log-mib \
@@ -199,6 +201,9 @@ CONFIGURE_ARGS += \
 	--without-rpm \
 	--without-zlib \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6) \
+	--disable-perl-cc-checks \
+	--disable-embedded-perl \
+	--without-perl-modules
 
 CONFIGURE_VARS += \
 	ac_cv_header_pcre_h=no \
