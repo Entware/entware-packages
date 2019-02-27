@@ -44,9 +44,9 @@ define Package/gpsd
   TITLE:=An interface daemon for GPS receivers
 endef
 
-define Package/gpsd/conffiles
-/opt/etc/config/gpsd
-endef
+#define Package/gpsd/conffiles
+#/opt/etc/config/gpsd
+#endef
 
 define Package/gpsd/description
   $(call Package/gpsd/Default/description)
@@ -78,8 +78,9 @@ define Package/libgps/description
   $(call Package/gpsd/Default/description)
   This package contains the libgps library.
 endef
-
+# XXX Entware specific: help gpsd find the correct curses headers (CFLGS...)
 SCONS_VARS += \
+	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	LINKFLAGS="$(TARGET_LDFLAGS)"
 
 SCONS_OPTIONS += \
