@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -6,17 +6,17 @@
+@@ -6,20 +6,20 @@ SPECFILE	:= keyutils.spec
  NO_GLIBC_KEYERR	:= 0
  NO_ARLIB	:= 0
  NO_SOLIB	:= 0
@@ -11,7 +11,7 @@
 -MANDIR		:= /usr/share/man
 +ETCDIR		:= /opt/etc
 +BINDIR		:= /opt/bin
-+SBINDIR	:= /opt/sbin
++SBINDIR		:= /opt/sbin
 +SHAREDIR	:= /opt/share/keyutils
 +MANDIR		:= /opt/share/man
  MAN1		:= $(MANDIR)/man1
@@ -23,13 +23,30 @@
 +INCLUDEDIR	:= /opt/include
  LN		:= ln
  LNS		:= $(LN) -sf
+-PREFIX 		:= /usr
++PREFIX 		:= /opt
  
-@@ -165,7 +165,7 @@
+ ###############################################################################
+ #
+@@ -67,12 +67,10 @@
+ 
+ ifeq ($(origin CFLAGS),undefined)
+ ifeq ($(BUILDFOR),32-bit)
+-CFLAGS		+= -m32
+ LIBDIR		:= /lib
+ USRLIBDIR	:= /usr/lib
+ else
+ ifeq ($(BUILDFOR),64-bit)
+-CFLAGS		+= -m64
+ LIBDIR		:= /lib64
+ USRLIBDIR	:= /usr/lib64
+ endif
+@@ -184,7 +184,7 @@ ifeq ($(NO_SOLIB),0)
  	$(INSTALL) -D $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
  	$(LNS) $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SONAME)
  	mkdir -p $(DESTDIR)$(USRLIBDIR)
 -	$(LNS) $(LIBDIR)/$(SONAME) $(DESTDIR)$(USRLIBDIR)/$(DEVELLIB)
 +	$(LNS) $(SONAME) $(DESTDIR)$(USRLIBDIR)/$(DEVELLIB)
- endif
- 	$(INSTALL) -D keyctl $(DESTDIR)$(BINDIR)/keyctl
- 	$(INSTALL) -D request-key $(DESTDIR)$(SBINDIR)/request-key
+ 	sed \
+ 	-e 's,@VERSION\@,$(VERSION),g' \
+ 	-e 's,@prefix\@,$(PREFIX),g' \
