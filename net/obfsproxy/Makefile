@@ -9,10 +9,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=obfsproxy
 PKG_VERSION:=0.2.13
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://pypi.python.org/packages/source/o/obfsproxy
+PKG_SOURCE_URL:=https://files.pythonhosted.org/packages/source/o/obfsproxy
 PKG_HASH:=1e26c2faef1cfcf856ddf60e9647058a7c78fb0d47f05b58a0f847ed7cc41a66
 
 PKG_LICENSE:=BSD-3-Clause
@@ -23,11 +23,18 @@ include $(INCLUDE_DIR)/package.mk
 include ../../lang/python/python-package.mk
 
 define Package/obfsproxy
-	SECTION:=net
-	CATEGORY:=Network
-	TITLE:=A pluggable transport proxy written in Python
-	URL:=https://www.torproject.org/projects/obfsproxy.html.en
-	DEPENDS:=+python-light +python-crypto +python-pyptlib +python-setuptools +python-yaml +twisted
+  SECTION:=net
+  CATEGORY:=Network
+  TITLE:=A pluggable transport proxy written in Python
+  URL:=https://gitweb.torproject.org/pluggable-transports/obfsproxy.git/
+  DEPENDS:= \
+      +python-light \
+      +python-crypto \
+      +python-pyptlib \
+      +python-setuptools \
+      +python-twisted \
+      +python-yaml
+  VARIANT:=python
 endef
 
 define Package/obfsproxy/description
@@ -40,10 +47,6 @@ endef
 
 define Package/obfsproxy/conffiles
 /etc/config/obfsproxy
-endef
-
-define Build/Compile
-	$(call Build/Compile/PyMod,,install --prefix="/usr" --root="$(PKG_INSTALL_DIR)")
 endef
 
 define PyPackage/obfsproxy/install
