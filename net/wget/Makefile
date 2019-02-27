@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wget
-PKG_VERSION:=1.20
-PKG_RELEASE:=1a
+PKG_VERSION:=1.20.1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
-PKG_HASH:=8a057925c74c059d9e37de63a63b450da66c5c1c8cef869a6df420b3bb45a0cf
+PKG_HASH:=b783b390cb571c837b392857945f5a1f00ec6b043177cc42abb8ee1b542ee1b3
 PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 PKG_LICENSE:=GPL-3.0+
 PKG_LICENSE_FILES:=COPYING
@@ -25,7 +25,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/wget/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+libpcre +libpcre2 +zlib +librt
+  DEPENDS:=+libpcre +zlib +librt
   SUBMENU:=File Transfer
   TITLE:=Non-interactive network downloader
   URL:=https://www.gnu.org/software/wget/index.html
@@ -45,6 +45,7 @@ $(call Package/wget/Default)
   DEPENDS+= +libopenssl
   TITLE+= (with SSL support)
   VARIANT:=ssl
+#  ALTERNATIVES:=300:/usr/bin/wget:/usr/bin/wget-ssl
 endef
 
 define Package/wget/description
@@ -56,6 +57,7 @@ define Package/wget-nossl
 $(call Package/wget/Default)
   TITLE+= (without SSL support)
   VARIANT:=nossl
+#  ALTERNATIVES:=300:/usr/bin/wget:/usr/bin/wget-nossl
 endef
 
 define Package/wget-nossl/description
@@ -66,6 +68,7 @@ endef
 CONFIGURE_ARGS+= \
 	--disable-rpath \
 	--disable-iri \
+	--disable-pcre2 \
 	--with-included-libunistring \
 	--without-libuuid \
 	--without-libpsl
@@ -77,6 +80,9 @@ ifeq ($(BUILD_VARIANT),ssl)
 	CONFIGURE_ARGS+= \
 		--with-ssl=openssl \
 		--with-libssl-prefix="$(STAGING_DIR)/opt"
+
+	CONFIGURE_VARS += \
+		ac_cv_libssl=yes
 endif
 
 ifeq ($(BUILD_VARIANT),nossl)
@@ -88,7 +94,6 @@ endif
 define Package/wget/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/wget $(1)/opt/bin/wget-ssl
-	ln -sf wget-ssl $(1)/opt/bin/wget
 endef
 
 define Package/wget-nossl/install
