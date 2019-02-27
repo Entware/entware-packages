@@ -9,16 +9,16 @@ include $(TOPDIR)/rules.mk
 
 PKG_NPM_NAME:=mozilla-iot-gateway
 PKG_NAME:=node-$(PKG_NPM_NAME)
-PKG_VERSION:=0.6.0
-PKG_RELEASE:=2
-PKG_REV:=df2d06def2051238bde7b8e5ee306262235d4c9f
+PKG_VERSION:=0.6.1
+PKG_RELEASE:=1
+PKG_REV:=2bcdf4866872b1e8992ee70ff6fc65566d6288d8
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/mozilla-iot/gateway.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=$(PKG_REV)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MIRROR_HASH:=d686df778a7de693db11273eb87c16ec4d9e3ff9bbb550ed3ef94e29e96750e2
+PKG_MIRROR_HASH:=c424b6f5f011c0cceb455458c855854395d47e902fd4ec2d63564c5e736d4fcd
 
 PKG_BUILD_DEPENDS:=node/host openzwave
 
@@ -74,9 +74,9 @@ define Package/node-mozilla-iot-gateway/install
 	$(RM) -r $(1)/opt/mozilla-iot/gateway/node_modules/ursa-optional/build/Release/ursaNative.node
 	$(RM) -r $(1)/opt/mozilla-iot/gateway/node_modules/ursa-optional/build/Release/obj.target/ursaNative.node
 
-	$(INSTALL_DIR) $(1)/opt/mozilla-iot/gateway/node_modules/sqlite3/lib/binding/node-v57-linux-arm/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/node_modules/things-gateway/node_modules/sqlite3/lib/binding/node-v57-linux-arm/node_sqlite3.node \
-		$(1)/opt/mozilla-iot/gateway/node_modules/sqlite3/lib/binding/node-v57-linux-arm/
+	$(INSTALL_DIR) $(1)/opt/mozilla-iot/gateway/node_modules/sqlite3/lib/binding/node-v57-linux-$(CPU)/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/node_modules/things-gateway/node_modules/sqlite3/lib/binding/node-v57-linux-$(CPU)/node_sqlite3.node \
+		$(1)/opt/mozilla-iot/gateway/node_modules/sqlite3/lib/binding/node-v57-linux-$(CPU)/
 
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/mozilla-iot-gateway.init $(1)/etc/init.d/mozilla-iot-gateway
