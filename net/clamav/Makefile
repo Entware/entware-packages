@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clamav
-PKG_VERSION:=0.100.2
-PKG_RELEASE:=1
+PKG_VERSION:=0.101.1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=GPL-2.0
 PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr> \
@@ -18,7 +18,7 @@ PKG_CPE_ID:=cpe:/a:clamav:clamav
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.clamav.net/downloads/production/
-PKG_HASH:=4a2e4f0cd41e62adb5a713b4a1857c49145cd09a69957e6d946ecad575206dd6
+PKG_HASH:=fa368fa9b2f57638696150c7d108b06dec284e8d8e3b8e702c784947c01fb806
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -28,7 +28,7 @@ include $(INCLUDE_DIR)/package.mk
 
 define Package/clamav/Default
   SECTION:=net
-  DEPENDS:=+libpthread +uclibcxx +zlib +libcurl +libjson-c +libmilter-sendmail +libopenssl +libltdl +libpcre2 +USE_MUSL:musl-fts
+  DEPENDS:=$(CXX_DEPENDS) +libpthread +zlib +libcurl +libjson-c +libmilter-sendmail +libopenssl +libltdl +libpcre2 +USE_MUSL:musl-fts
   CATEGORY:=Network
   SUBMENU:=Web Servers/Proxies
   TITLE:=ClamAV
@@ -68,7 +68,7 @@ define Build/Configure
 		--prefix=/usr/ \
 		--exec-prefix=/usr/ \
 		--enable-milter \
-		--disable-xml \
+		--with-xml=no \
 		--disable-bzip2 \
 		--with-user nobody \
 		--with-group nogroup \
