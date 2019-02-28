@@ -1,8 +1,8 @@
-commit ae102f4ef89abbce3a150368007e245a6b9a57cc
-Merge: 6c348ceb8 4d9f9e6a3
+commit b63dfd7ce6f5230de7e6248f99c714c295f2296c
+Merge: 3429e7ad0 70c34ef47
 Author: Hannu Nyman <hannu.nyman@iki.fi>
-Date:   Tue Dec 4 21:48:21 2018 +0200
+Date:   Tue Feb 26 23:39:05 2019 +0200
 
-    Merge pull request #7561 from neheb/neon
+    Merge pull request #8231 from neheb/tran
     
-    neon: Fix compilation without deprecated OpenSSL APIs
+    transmission: Add LTO support to shave off 35KB off of the ipk
