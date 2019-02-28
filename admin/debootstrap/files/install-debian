@@ -19,8 +19,8 @@ TARGET=/opt/debian
 #INCLUDE="--include=sudo,nano,wget"
 INCLUDE=
 
-## varaint
-#VARIANT=minbase
+## variant
+#VARIANT="--variant=minbase"
 VARIANT=
 
 ## unofficial mirror
