@@ -15,7 +15,7 @@ PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/d/debootstrap
-PKG_HASH:=cdad4d2be155bd933acbe4f3479e1765e5f4447fb50564e30e33f7b3b84bd7db
+PKG_HASH:=a8e1456816a9ed55bf329de1cc93a199ad2099a21a66804b78e1aa0e170a9c92
 PKG_LICENSE:=Unique
 PKG_LICENSE_FILES:=debian/copyright
 
