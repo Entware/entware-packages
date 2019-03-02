@@ -72,11 +72,11 @@ CONFIGURE_ARGS += \
 	--disable-libav \
 	--enable-bundle
 
-ifeq ($(CONFIG_GCC_USE_VERSION_6_3_0)$(CONFIG_GCC_USE_VERSION_7_3_0),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_6_3_0)$(CONFIG_GCC_USE_VERSION_7_4_0),y)
 TARGET_CFLAGS += -Wno-error=pointer-compare
 endif
 
-ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_7_4_0),y)
 TARGET_CFLAGS += -Wno-error=format-truncation
 endif
 
