@@ -338,7 +338,7 @@ Package/nginx-mod-luci-ssl/description = $(define Package/nginx-mod-luci/descrip
 TARGET_CFLAGS += -fvisibility=hidden -ffunction-sections -fdata-sections -DNGX_LUA_NO_BY_LUA_BLOCK
 TARGET_LDFLAGS += -Wl,--gc-sections
 
-ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_7_4_0),y)
 TARGET_CFLAGS += -Wimplicit-fallthrough=0
 endif
 

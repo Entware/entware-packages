@@ -41,7 +41,7 @@ define Build/Compile
 	$(call Build/Compile/Default, library)
 endef
 
-ifeq ($(CONFIG_GCC_USE_VERSION_7_3_0),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_7_4_0),y)
 TARGET_CFLAGS +=-Wimplicit-fallthrough=0
 endif
 
