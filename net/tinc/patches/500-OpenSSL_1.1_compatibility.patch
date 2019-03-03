@@ -1,0 +1,55 @@
+--- a/src/openssl/cipher.c
++++ b/src/openssl/cipher.c
+@@ -189,7 +190,7 @@
+ 	} else {
+ 		int len;
+ 
+-		if(EVP_EncryptUpdate(cipher->ctx, outdata, &len, indata, inlen)) {
++		if(EVP_DecryptUpdate(cipher->ctx, outdata, &len, indata, inlen)) {
+ 			if(outlen) {
+ 				*outlen = len;
+ 			}
+--- a/src/openssl/crypto.c
++++ b/src/openssl/crypto.c
+@@ -21,7 +21,10 @@
+ 
+ #include <openssl/rand.h>
+ #include <openssl/evp.h>
++#ifndef OPENSSL_NO_ENGINE
+ #include <openssl/engine.h>
++#endif
++#include <openssl/bn.h>
+ 
+ #include "../crypto.h"
+ 
+@@ -94,11 +97,17 @@
+ void crypto_init(void) {
+ 	random_init();
+ 
++#ifndef OPENSSL_NO_ENGINE
+ 	ENGINE_load_builtin_engines();
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	ENGINE_register_all_complete();
++#endif
+ 
+ 	ERR_load_crypto_strings();
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	OpenSSL_add_all_algorithms();
++#endif
++#endif
+ 
+ 	if(!RAND_status()) {
+ 		fprintf(stderr, "Not enough entropy for the PRNG!\n");
+@@ -107,8 +116,12 @@
+ }
+ 
+ void crypto_exit(void) {
++#if OPENSSL_VERSION_NUMBER < 0x10100000L
+ 	EVP_cleanup();
+ 	ERR_free_strings();
++#ifndef OPENSSL_NO_ENGINE
+ 	ENGINE_cleanup();
++#endif
++#endif
+ 	random_exit();
+ }

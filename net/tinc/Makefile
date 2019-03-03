@@ -4,13 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Upgraded from 1.0.33
+# Entware specific: Upgraded from 1.0.35
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tinc
 PKG_VERSION:=1.1pre17
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.tinc-vpn.org/packages
@@ -45,7 +45,7 @@ CONFIGURE_ARGS += \
 
 define Package/tinc/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,tinc))
