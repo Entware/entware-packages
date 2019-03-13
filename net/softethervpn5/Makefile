@@ -1,31 +1,29 @@
 # Based partially on the versions of el1n and Federico Di Marco
+# Entware specific: host compilation disabled, run hamcorebuilder on target instead.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=softethervpn5
-PKG_VERSION:=5.01.9667
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Andy Walsh <andy.walsh44+github@gmail.com>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
 
-PKG_SOURCE:=softether-vpn-src-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://github.com/SoftEtherVPN/SoftEtherVPN/releases/download/$(PKG_VERSION)
-PKG_HASH:=c99142c5e55fae055955332964c56d29aba10bec9764ab961aebabf6c3ee1462
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/SoftEtherVPN/SoftEtherVPN.git
+PKG_SOURCE_DATE:=2019-02-27
+PKG_SOURCE_VERSION:=beef8d68924916d0834c87ceb9ae8eef2c9b1d6c
+PKG_MIRROR_HASH:=8cd27ee1d768c00f816501be925bb971fd62b9cef145e4ac5c731456a86d782c
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
-HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)-$(PKG_VERSION)
-
-HOST_BUILD_DEPENDS:=ncurses/host readline/host
-PKG_BUILD_DEPENDS:=softethervpn5/host
+#HOST_BUILD_DEPENDS:=ncurses/host readline/host
+#PKG_BUILD_DEPENDS:=softethervpn5/host
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/host-build.mk
+#include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/nls.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-TAR_CMD=$(HOST_TAR) -C $(1) $(TAR_OPTIONS)
 
 define Package/softethervpn5/Default
   SECTION:=net
@@ -44,7 +42,7 @@ endef
 
 define Package/softethervpn5-libs
   $(call Package/softethervpn5/Default)
-  DEPENDS:=+libpthread +librt +libreadline +libopenssl +libncurses +zlib $(ICONV_DEPENDS)
+  DEPENDS:=+libpthread +librt +libreadline +libopenssl +libncurses +zlib +gconv-modules $(ICONV_DEPENDS)
   TITLE+= libs
   HIDDEN:=1
 endef
@@ -85,7 +83,7 @@ endef
 #export USE_MUSL=YES
 # BUG: outdated host/include/elf.h
 HOST_CFLAGS += $(FPIC) -DAT_HWCAP2=26
-TARGET_CFLAGS += $(FPIC)
+TARGET_CFLAGS += $(FPIC) -I$(STAGING_DIR)/opt/include
 
 # static build for host (hamcorebuilder), avoid -fpic on ncurses/host and shared libs can't be found on host
 define Host/Prepare
@@ -105,7 +103,7 @@ define Host/Install
 endef
 
 define Build/Compile
-	$(call Build/Compile/Default,vpnserver vpnbridge vpnclient vpncmd hamcore-archive-build)
+	$(call Build/Compile/Default,vpnserver vpnbridge vpnclient vpncmd hamcorebuilder)
 endef
 
 define Build/Install
@@ -116,11 +114,12 @@ define Package/softethervpn5-libs/install
 	$(CP) $(PKG_BUILD_DIR)/build/libcedar.so $(1)/opt/lib/
 	$(CP) $(PKG_BUILD_DIR)/build/libmayaqua.so $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/libexec/softethervpn
-	$(CP) $(PKG_BUILD_DIR)/build/hamcore.se2 $(1)/opt/libexec/softethervpn/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/vpncmd $(1)/opt/libexec/softethervpn/
 	$(INSTALL_BIN) files/launcher.sh $(1)/opt/libexec/softethervpn/
 	$(INSTALL_DATA) files/dummy $(1)/opt/libexec/softethervpn/lang.config
+	$(CP) $(PKG_BUILD_DIR)/src/bin/hamcore $(1)/opt/libexec/softethervpn/
 	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tmp/hamcorebuilder $(1)/opt/bin
 	$(LN) ../../opt/libexec/softethervpn/launcher.sh $(1)/opt/bin/vpncmd
 endef
 
@@ -148,6 +147,14 @@ define Package/softethervpn5-client/install
 	$(INSTALL_BIN) files/S05vpnclient $(1)/opt/etc/init.d
 endef
 
+define Package/softethervpn5-libs/postinst
+#!/bin/sh
+
+echo 'Creating hamcore.se2 archive... '
+GCONV_PATH=/opt/lib/gconv hamcorebuilder /opt/libexec/softethervpn/hamcore \
+/opt/libexec/softethervpn/hamcore.se2 && rm -fr /opt/libexec/softethervpn/hamcore
+endef
+
 define Package/softethervpn5-server/conffiles
 /opt/libexec/softethervpn/vpn_server.config
 /opt/libexec/softethervpn/lang.config
@@ -163,7 +170,7 @@ define Package/softethervpn5-client/conffiles
 /opt/libexec/softethervpn/lang.config
 endef
 
-$(eval $(call HostBuild))
+#$(eval $(call HostBuild))
 $(eval $(call BuildPackage,softethervpn5-libs))
 $(eval $(call BuildPackage,softethervpn5-server))
 $(eval $(call BuildPackage,softethervpn5-bridge))

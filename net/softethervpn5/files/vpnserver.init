@@ -26,3 +26,9 @@ stop_service(){
 	
 	/var/softethervpn/vpnserver stop
 }
+
+stop_service(){
+       logger -t 'softethervpn5' "Stopping softether vpnserver service."
+       
+       /var/softethervpn/vpnserver stop
+}
