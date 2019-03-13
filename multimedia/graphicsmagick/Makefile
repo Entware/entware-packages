@@ -73,27 +73,27 @@ CONFIGURE_ARGS += \
 	--without-x
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
+	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/* \
-		$(1)/usr/include/
+		$(PKG_INSTALL_DIR)/opt/include/* \
+		$(1)/opt/include/
 
-	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/*.so* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/*.so* \
+		$(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* \
+		$(1)/opt/lib/pkgconfig/
 endef
 
-GMlibdir:=usr/lib/GraphicsMagick-$(PKG_VERSION)
+GMlibdir:=opt/lib/GraphicsMagick-$(PKG_VERSION)
 define Package/graphicsmagick/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/$(GMlibdir)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/$(GMlibdir)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/$(GMlibdir)/* $(1)/$(GMlibdir)/
 endef
 
