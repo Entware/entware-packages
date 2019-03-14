@@ -30,9 +30,9 @@ CMAKE_OPTIONS += -DLIBTINS_ENABLE_WPA2=0
 CMAKE_OPTIONS += -DLIBTINS_ENABLE_CXX11=1
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/tins $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtins* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/usr/include/ $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/tins $(1)/usr/include/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libtins* $(1)/usr/lib/
 endef
 
 define Package/libtins
@@ -48,8 +48,8 @@ libtins is a high-level, multiplatform C++ network packet sniffing and crafting 
 endef
 
 define Package/libtins/install
-    $(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libtins.so $(1)/opt/lib/
+    $(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libtins.so.* $(1)/usr/lib/
 endef
 
 $(eval $(call BuildPackage,libtins))

@@ -24,7 +24,7 @@ include $(INCLUDE_DIR)/nls.mk
 include $(INCLUDE_DIR)/host-build.mk
 
 TARGET_LDFLAGS+=\
-        -Wl,-rpath-link=$(STAGING_DIR)/opt/lib
+        -Wl,-rpath-link=$(STAGING_DIR)/usr/lib
 
 define Package/vala
   SECTION:=lang
@@ -48,45 +48,45 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) \
-		$(1)/opt/share/vala-0.34/vapi \
-		$(1)/opt/lib \
-		$(1)/opt/lib/pkgconfig
+		$(1)/usr/share/vala-0.34/vapi \
+		$(1)/usr/lib \
+		$(1)/usr/lib/pkgconfig
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/share/vala-0.34/vapi/* \
-		$(1)/opt/share/vala-0.34/vapi
+		$(PKG_INSTALL_DIR)/usr/share/vala-0.34/vapi/* \
+		$(1)/usr/share/vala-0.34/vapi
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/lib/libvala-0.34.{so*,la} \
-		$(1)/opt/lib
+		$(PKG_INSTALL_DIR)/usr/lib/libvala-0.34.{so*,la} \
+		$(1)/usr/lib
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
-		$(1)/opt/lib/pkgconfig
+		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/*.pc \
+		$(1)/usr/lib/pkgconfig
 endef
 
 define Package/vala/install
 	$(INSTALL_DIR) \
-		$(1)/opt/share/vala-0.34/vapi \
-		$(1)/opt/lib \
-		$(1)/opt/lib/pkgconfig \
-		$(1)/opt/bin
+		$(1)/usr/share/vala-0.34/vapi \
+		$(1)/usr/lib \
+		$(1)/usr/lib/pkgconfig \
+		$(1)/usr/bin
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/share/vala-0.34/vapi/* \
-		$(1)/opt/share/vala-0.34/vapi
+		$(PKG_INSTALL_DIR)/usr/share/vala-0.34/vapi/* \
+		$(1)/usr/share/vala-0.34/vapi
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/lib/libvala-0.34.{so*,la} \
-		$(1)/opt/lib
+		$(PKG_INSTALL_DIR)/usr/lib/libvala-0.34.{so*,la} \
+		$(1)/usr/lib
 
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/opt/bin/{vala,vala-0.34,valac,valac-0.34,vapicheck,vapicheck-0.34,vapigen,vapigen-0.34,vala-gen-introspect,vala-gen-introspect-0.34} \
-		$(1)/opt/bin
+		$(PKG_INSTALL_DIR)/usr/bin/{vala,vala-0.34,valac,valac-0.34,vapicheck,vapicheck-0.34,vapigen,vapigen-0.34,vala-gen-introspect,vala-gen-introspect-0.34} \
+		$(1)/usr/bin
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
-		$(1)/opt/lib/pkgconfig
+		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/*.pc \
+		$(1)/usr/lib/pkgconfig
 endef
 
 $(eval $(call HostBuild))

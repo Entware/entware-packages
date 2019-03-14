@@ -51,7 +51,7 @@ define Package/dhcp-forwarder/description
 endef
 
 define Package/dhcp-forwarder/conffiles
-/opt/etc/dhcp-fwd.conf
+/etc/dhcp-fwd.conf
 endef
 
 CONFIGURE_ARGS += \
@@ -60,14 +60,15 @@ CONFIGURE_ARGS += \
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 	  DESTDIR="$(PKG_INSTALL_DIR)" \
-	  cfg_filename="/opt/etc/dhcp-fwd.conf" \
+	  cfg_filename="/etc/dhcp-fwd.conf" \
 	  all install
 endef
 
 define Package/dhcp-forwarder/install
-	$(INSTALL_DIR) $(1)/opt/{sbin,etc}
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dhcp-fwd $(1)/opt/sbin/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/contrib/dhcp-fwd.conf $(1)/opt/etc/
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc $(1)/etc/init.d
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dhcp-fwd $(1)/usr/bin/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/contrib/dhcp-fwd.conf $(1)/etc/
+	$(INSTALL_BIN) ./files/dhcp-fwd.init $(1)/etc/init.d/dhcp-fwd
 endef
 
 $(eval $(call BuildPackage,dhcp-forwarder))

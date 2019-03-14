@@ -59,8 +59,8 @@ CONFIGURE_ARGS+= \
 endif
 
 define Package/jupp/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/joe $(1)/opt/bin/jupp
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/joe $(1)/usr/bin/jupp
 endef
 
 define Package/jupp-data
@@ -72,25 +72,25 @@ $(call Package/jupp/Default)
 endef
 
 define Package/jupp-data/install
-	$(INSTALL_DIR) $(1)/opt/etc/jupp
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jmacsrc $(1)/opt/etc/jupp/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/joerc $(1)/opt/etc/jupp/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jpicorc $(1)/opt/etc/jupp/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jstarrc $(1)/opt/etc/jupp/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jupprc $(1)/opt/etc/jupp/
-	$(INSTALL_DIR) $(1)/opt/etc/jupp/charmaps
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/charmaps/klingon $(1)/opt/etc/jupp/charmaps/
-	$(INSTALL_DIR) $(1)/opt/etc/jupp/syntax
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/syntax/*.jsf $(1)/opt/etc/jupp/syntax/
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(LN) jupp $(1)/opt/bin/jmacs
-	$(LN) jupp $(1)/opt/bin/joe
-	$(LN) jupp $(1)/opt/bin/jpico
-	$(LN) jupp $(1)/opt/bin/jstar
+	$(INSTALL_DIR) $(1)/etc/jupp
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jmacsrc $(1)/etc/jupp/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/joerc $(1)/etc/jupp/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jpicorc $(1)/etc/jupp/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jstarrc $(1)/etc/jupp/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/jupprc $(1)/etc/jupp/
+	$(INSTALL_DIR) $(1)/etc/jupp/charmaps
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/charmaps/klingon $(1)/etc/jupp/charmaps/
+	$(INSTALL_DIR) $(1)/etc/jupp/syntax
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/syntax/*.jsf $(1)/etc/jupp/syntax/
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(LN) jupp $(1)/usr/bin/jmacs
+	$(LN) jupp $(1)/usr/bin/joe
+	$(LN) jupp $(1)/usr/bin/jpico
+	$(LN) jupp $(1)/usr/bin/jstar
 endef
 
 define Package/jupp-data/conffiles
-/opt/etc/jupp
+/etc/jupp
 endef
 
 $(eval $(call BuildPackage,jupp))

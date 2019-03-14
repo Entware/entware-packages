@@ -38,19 +38,17 @@ endef
 
 define Build/Compile
 	$(call Build/Compile/PyMod,., \
-		install --prefix="/opt" --root="$(PKG_INSTALL_DIR)", \
+		install --prefix="/usr" --root="$(PKG_INSTALL_DIR)", \
 	)
 endef
 
 define Package/scapy/install
 	$(INSTALL_DIR) $(1)$(PYTHON_PKG_DIR)
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/usr/bin
 	$(CP) \
 		$(PKG_INSTALL_DIR)$(PYTHON_PKG_DIR)/* \
 		$(1)$(PYTHON_PKG_DIR)/
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
-# fix shabang
-	$(SED) '1c\#!/opt/bin/python' $(1)/opt/bin/{scapy,UTscapy}
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin
 endef
 
 $(eval $(call BuildPackage,scapy))

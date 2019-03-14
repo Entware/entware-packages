@@ -10,6 +10,6 @@ index 666472d..41dc58c 100644
 -		-e 's|[@]includedir@|$(PREFIX)/include/openzwave/|g' \
 +		-e 's|[@]libdir@|$${prefix}/lib|g' \
 +		-e 's|[@]includedir@|$${prefix}/include/openzwave/|g' \
-                 -e 's|[@]sysconfdir@|/opt/etc/openzwave/|g' \
+                 -e 's|[@]sysconfdir@|/etc/openzwave/|g' \
                  -e 's|[@]gitversion@|$(GITVERSION)|g' \
                  -e 's|[@]docdir@|$(docdir)/|g' \

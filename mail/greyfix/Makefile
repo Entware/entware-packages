@@ -35,12 +35,12 @@ define Package/greyfix/description
 endef
 
 CONFIGURE_ARGS += \
-	--localstatedir=/opt/lib \
+	--localstatedir=/usr/lib \
 
 define Package/greyfix/install
-	$(INSTALL_DIR)  $(1)/opt/sbin \
-			$(1)/opt/lib/greyfix
-	$(CP) $(PKG_BUILD_DIR)/greyfix $(1)/opt/sbin/
+	$(INSTALL_DIR)  $(1)/usr/sbin \
+			$(1)/usr/lib/greyfix
+	$(CP) $(PKG_BUILD_DIR)/greyfix $(1)/usr/sbin/
 endef
 
 $(eval $(call BuildPackage,greyfix))

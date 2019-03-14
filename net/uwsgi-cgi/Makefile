@@ -47,8 +47,8 @@ define Build/Compile
 endef
 
 define Package/uwsgi-cgi/install
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/uwsgi $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/uwsgi $(1)/usr/sbin/
 endef
 
 define Package/uwsgi-cgi-luci-support/install
@@ -58,4 +58,4 @@ define Package/uwsgi-cgi-luci-support/install
 endef
 
 $(eval $(call BuildPackage,uwsgi-cgi))
-#$(eval $(call BuildPackage,uwsgi-cgi-luci-support))
+$(eval $(call BuildPackage,uwsgi-cgi-luci-support))

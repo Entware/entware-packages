@@ -59,9 +59,9 @@ MAKE_FLAGS += \
 	LD="$(TARGET_CROSS)g++" \
 	LIBDIR="$(PKG_BUILD_DIR)" \
 	PREFIX=$(CONFIGURE_PREFIX) \
-	instlibdir=/opt/lib \
-	pkgconfigdir=/opt/lib/pkgconfig \
-	sysconfdir=/opt/etc/openzwave
+	instlibdir=/usr/lib \
+	pkgconfigdir=/usr/lib/pkgconfig \
+	sysconfdir=/etc/openzwave
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -70,27 +70,27 @@ define Build/Prepare
 endef
 
 define Package/libopenzwave/install
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libopenzwave.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libopenzwave.so* $(1)/usr/lib/
 endef
 
 define Package/openzwave/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/MinOZW $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/MinOZW $(1)/usr/bin/
 endef
 
 define Package/openzwave-config/install
-	$(INSTALL_DIR) $(1)/opt/etc/
-	$(CP) $(PKG_INSTALL_DIR)/opt/etc/openzwave $(1)/opt/etc/
+	$(INSTALL_DIR) $(1)/etc/
+	$(CP) $(PKG_INSTALL_DIR)/etc/openzwave $(1)/etc/
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/openzwave $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libopenzwave.* $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libopenzwave.pc $(1)/opt/lib/pkgconfig/
+	$(INSTALL_DIR) $(1)/usr/include
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/openzwave $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libopenzwave.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libopenzwave.pc $(1)/usr/lib/pkgconfig/
 endef
 
 $(eval $(call BuildPackage,libopenzwave))
