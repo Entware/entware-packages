@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: added nls.mk, replce $(EXTRA_LDFLAGS) to $(TARGET_LDFLAGS)
+# Entware specific: add nls.mk, replace $(EXTRA_LDFLAGS) to $(TARGET_LDFLAGS)
 
 include $(TOPDIR)/rules.mk
 

@@ -53,8 +53,9 @@ CONFIGURE_ARGS += \
 	--enable-frag \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6)
 
-# XXX Entware specific: set _DEFAULT_SOURCE
+# Entware specific: set _DEFAULT_SOURCE
 TARGET_CFLAGS += -D_DEFAULT_SOURCE
+
 # override CFLAGS holding "-Werror" that break builds on compile warnings
 MAKE_FLAGS+=\
 	CFLAGS="$(TARGET_CFLAGS) $(EXTRA_CFLAGS) $(TARGET_CPPFLAGS) $(EXTRA_CPPFLAGS)"

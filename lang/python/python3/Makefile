@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Don't lose CONFIGURE_ARGS+= --with-system-expat="$(STAGING_DIR)/opt" 
+# Entware specific: CONFIGURE_ARGS+= --with-system-expat="$(STAGING_DIR)/opt"
 
 include $(TOPDIR)/rules.mk
 

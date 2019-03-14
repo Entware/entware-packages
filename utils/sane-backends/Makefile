@@ -5,7 +5,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# The original Makefile splits backends into many small packages.
+# Entware specific: all backends merged into sane-backends
 
 include $(TOPDIR)/rules.mk
 

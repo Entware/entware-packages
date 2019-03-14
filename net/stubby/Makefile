@@ -1,7 +1,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: newer 0.2.5 version
+# Entware specific: bumped form 0.2.4 to 0.2.5
 
 include $(TOPDIR)/rules.mk
 

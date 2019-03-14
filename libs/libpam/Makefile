@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: help other packages find headers
 
 include $(TOPDIR)/rules.mk
 

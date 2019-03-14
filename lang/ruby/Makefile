@@ -8,7 +8,8 @@
 # To Do:
 #  - dirs not removed when uninstalling! opkg bug?
 #
-# Entware - edited with-out-ext for host build. More host gems are needed for rake->mkvtoolnix build system
+# Entware specific: --with-out-ext= for host build extended.
+# More host gems are needed for rake->mkvtoolnix build system
 
 include $(TOPDIR)/rules.mk
 

@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Script was brought from another package
+# Entware specific: script was brought from another package
 
 include $(TOPDIR)/rules.mk
 

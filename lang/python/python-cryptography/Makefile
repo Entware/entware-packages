@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: bump from 2.5 to 2.6.1
 
 include $(TOPDIR)/rules.mk
 

@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific $(INSTALL_DIR) $(1)/opt/var/run/xl2tpd
+# Entware specific: $(INSTALL_DIR) $(1)/opt/var/run/xl2tpd
 
 include $(TOPDIR)/rules.mk
 

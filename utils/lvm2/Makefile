@@ -59,7 +59,7 @@ CONFIGURE_ARGS += \
   --with-default-locking-dir=/opt/var/lock/lvm \
   --with-confdir=/opt/etc
 
-#XXX Entware specific: added -lblkid
+# Entware specific: added -lblkid
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(TARGET_LDFLAGS) $(FPIC)" \

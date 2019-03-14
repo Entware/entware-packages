@@ -5,8 +5,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Downgraded from 1.7.2.The newer haproxy versions enable extra openssl compile flags
-# USE_GETADDRINFO=1 option added
+# Entware specific: downgraded from 1.8.19. The newer haproxy versions enable
+# extra openssl compile flags. USE_GETADDRINFO=1 option added
 
 include $(TOPDIR)/rules.mk
 

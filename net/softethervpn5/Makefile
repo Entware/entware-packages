@@ -155,6 +155,13 @@ GCONV_PATH=/opt/lib/gconv hamcorebuilder /opt/libexec/softethervpn/hamcore \
 /opt/libexec/softethervpn/hamcore.se2 && rm -fr /opt/libexec/softethervpn/hamcore
 endef
 
+define Package/softethervpn5-libs/prerm
+#!/bin/sh
+
+echo 'Deleting hamcore.se2 archive... '
+rm -fr /opt/libexec/softethervpn/hamcore.se2
+endef
+
 define Package/softethervpn5-server/conffiles
 /opt/libexec/softethervpn/vpn_server.config
 /opt/libexec/softethervpn/lang.config

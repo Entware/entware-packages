@@ -44,10 +44,10 @@ Package/rtty-mbedtls=$(call Package/rtty/Default,mbedtls,+PACKAGE_rtty-mbedtls:l
 Package/rtty-nossl=$(call Package/rtty/Default,nossl,+PACKAGE_rtty-nossl:libuwsc-nossl)
 
 define Package/rtty-$(BUILD_VARIANT)/install
-	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/init.d
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/rtty $(1)/opt/sbin
-#	$(INSTALL_BIN) ./files/rtty.init $(1)/etc/init.d/rtty
-#	$(INSTALL_CONF) ./files/rtty.config $(1)/etc/config/rtty
+	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d $(1)/etc/config
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/rtty $(1)/usr/sbin
+	$(INSTALL_BIN) ./files/rtty.init $(1)/etc/init.d/rtty
+	$(INSTALL_CONF) ./files/rtty.config $(1)/etc/config/rtty
 endef
 
 $(eval $(call BuildPackage,rtty-openssl))

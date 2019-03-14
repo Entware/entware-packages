@@ -4,9 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-#
-# Entware version! 
-# 002-no-utility.patch removed, flac and metaflac utilities added
+# Entware specific: 002-no-utility.patch removed, flac and utilities added
 #
 
 include $(TOPDIR)/rules.mk

@@ -5,12 +5,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: bump from 1.0.110~bpo9+1 to 1.0.114
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=debootstrap
 PKG_VERSION:=1.0.114
-PKG_RELEASE:=1a
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz

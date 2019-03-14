@@ -5,7 +5,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: we use cups & sane-libs packages
+# Entware specific: hplip-common and hplip-sane merged into hplip-full
+# We use cups & sane-libs packages
 
 include $(TOPDIR)/rules.mk
 

@@ -99,7 +99,6 @@ TARGET_CFLAGS += $(FPIC) -Wno-error
 TARGET_CPPFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
 TARGET_LDFLAGS += -lpthread
 
-# warning: libiconv.so.2, needed by .../opt/lib/libaprutil-1.so, not found (try using -rpath or -rpath-link)
 TARGET_LDFLAGS += -L$(STAGING_DIR)/opt/lib/libiconv-full/lib -liconv
 
 define Build/Configure

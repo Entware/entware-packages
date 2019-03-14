@@ -48,7 +48,7 @@ CONFIGURE_ARGS += \
 
 TARGET_CFLAGS += $(FPIC) $(if $(ICONV_FULL),-liconv) $(if $(INTL_FULL),-lintl)
 
-# XXX: VFP_CFLAGS is set to '-mfpu=vfp' on arm by configure, but that breaks 
+# VFP_CFLAGS is set to '-mfpu=vfp' on arm by configure, but that breaks 
 # final linking stages, so override it until we find why
 MAKE_FLAGS += \
 	VFP_CFLAGS="" \

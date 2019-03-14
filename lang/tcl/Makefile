@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Downgraded from 8.6.4 to 8.5.18, upstream package is broken
+# Entware specific: downgraded from 8.6.9 to 8.5.18, upstream package is broken
 # Threads support is broken on MIPS
 # Missing tcl files added to package (/opt/lib/tcl*)
 

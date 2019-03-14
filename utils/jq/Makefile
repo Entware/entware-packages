@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# oniguruma dep added
+# Entware specific: oniguruma dependency added
 
 include $(TOPDIR)/rules.mk
 

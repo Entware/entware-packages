@@ -4,6 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: findutils-find, findutils-xargs merged with findutils
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=findutils

@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Bunch of our patches for thumbnail support and other featues
+# Entware specific: bunch of patches for thumbnail support and other features
 
 include $(TOPDIR)/rules.mk
 

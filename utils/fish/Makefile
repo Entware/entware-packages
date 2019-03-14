@@ -38,7 +38,7 @@ endef
 
 CONFIGURE_VARS += ac_cv_file__proc_self_stat=yes
 TARGET_CXXFLAGS += -std=c++0x
-# XXX Entware specific:
+# Entware specific:
 MAKE_FLAGS += EXTRA_CXXFLAGS="-I$(STAGING_DIR)/opt/include"
 
 define Package/fish/install

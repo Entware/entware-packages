@@ -37,7 +37,7 @@ define Package/motion/conffiles
 /opt/etc/motion/motion.conf
 endef
 
-# XXX Entware specific: help motion find the correct microhttpd.h (CFLAGS...)
+# Entware specific: help motion find the correct microhttpd.h (CFLAGS...)
 CONFIGURE_ARGS+= \
 	--without-optimizecpu \
 	--without-ffmpeg \

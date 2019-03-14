@@ -4,7 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# perl-dev package (with headers only) for native perl modules building added at the end of Makefile
+# Entware specific: base.config
+# perl-dev package (with headers only) for native perl modules building added
 
 include $(TOPDIR)/rules.mk
 

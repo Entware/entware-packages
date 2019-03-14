@@ -73,9 +73,6 @@ define Package/v4l-utils/description
 endef
 
 TARGET_CFLAGS += -flto
-#  CCLD     media-ctl
-#../opt/lib/libudev.so: undefined reference to `pthread_join'
-#../opt/lib/libudev.so: undefined reference to `pthread_create'
 TARGET_LDFLAGS += -lpthread -Wl,--gc-sections
 
 CONFIGURE_ARGS+= \
@@ -83,7 +80,7 @@ CONFIGURE_ARGS+= \
 	--disable-libdvbv5 \
 	--disable-qv4l2 \
 	--disable-qvidcap \
-	--without-jpeg
+	--without-jpeg \
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include

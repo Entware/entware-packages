@@ -2,7 +2,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Switched from ncurses to slang to support broken terminals
+# Entware specific: switched from ncurses to slang to support broken terminals
 
 include $(TOPDIR)/rules.mk
 

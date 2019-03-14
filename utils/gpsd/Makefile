@@ -78,7 +78,7 @@ define Package/libgps/description
   $(call Package/gpsd/Default/description)
   This package contains the libgps library.
 endef
-# XXX Entware specific: help gpsd find the correct curses headers (CFLGS...)
+# Entware specific: help gpsd find the correct curses headers (CFLAGS...)
 SCONS_VARS += \
 	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	LINKFLAGS="$(TARGET_LDFLAGS)"
