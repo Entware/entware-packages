@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Downgraded from 3.3. The newer versions fail to build on intel
+# Entware specific: downgraded from 3.5.1. The newer versions fail to build on intel
 
 include $(TOPDIR)/rules.mk
 
