@@ -66,7 +66,7 @@ endef
 define Package/hplip-full
 $(call Package/hplip/Default)
   TITLE+= (full files)
-  DEPENDS+=+libjpeg +libtiff +libusb-compat +cups +sane-libs +dbus +python +libcupsimage
+  DEPENDS:=+libusb-compat +sane-libs +dbus +python +libcups
 endef
 
 define Package/hplip-full/description
