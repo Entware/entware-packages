@@ -6,13 +6,13 @@
 # See /LICENSE for more information.
 #
 # Entware specific: hplip-common and hplip-sane merged into hplip-full
-# We use cups & sane-libs packages
+# We use sane-libs packages
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
 PKG_VERSION:=3.18.12
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
@@ -23,7 +23,7 @@ PKG_LICENSE:=GPL-2.0 GPL-2.0+
 PKG_LICENSE_FILES:=COPYING LICENSE
 
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:= python cups
+PKG_BUILD_DEPENDS:= python libcups
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
