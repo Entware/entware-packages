@@ -55,27 +55,20 @@ TARGET_LDFLAGS+=-Wl,-rpath-link=$(STAGING_DIR)/opt/lib
 
 CONFIGURE_ARGS+=--with-cups-user="nobody" \
 		--with-cups-group="nogroup" \
-		--with-components="embedded" \
-		--with-pdftops="none" \
 		--without-perl \
 		--without-python \
 		--without-php \
 		--enable-shared \
-		--enable-image \
 		--enable-libusb \
 		--disable-acl \
 		--disable-dbus \
 		--disable-dnssd \
 		--disable-launchd \
-		--disable-ldap \
 		--disable-pam \
-		--disable-slp \
 		--disable-gnutls \
-		--disable-openssl \
 		--disable-cdsassl \
 		--disable-ssl \
 		--disable-gssapi \
-		--disable-tiff \
 		--with-cupsd-file-perm="0700" \
 		--without-java \
 		--disable-avahi \
@@ -115,6 +108,8 @@ define Package/cups/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/{bin,sbin,etc,share,var} $(1)/opt/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/cups $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S60cupsd $(1)/opt/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,libcups))
