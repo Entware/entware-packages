@@ -4,6 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: use shipped openssl and libuv to prevent do_page_fault()
+# runtime error on MIPS platforms.
 
 include $(TOPDIR)/rules.mk
 
@@ -37,7 +39,7 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=https://nodejs.org/
-  DEPENDS:=+libstdcpp +libopenssl +zlib +libnghttp2 +libuv +libhttp-parser +USE_UCLIBC:libpthread +USE_UCLIBC:librt +NODEJS_ICU:icu
+  DEPENDS:=+libstdcpp +zlib +libnghttp2 +libhttp-parser +USE_UCLIBC:libpthread +USE_UCLIBC:librt +NODEJS_ICU:icu
 endef
 
 define Package/node/description
@@ -85,9 +87,7 @@ CONFIGURE_ARGS:= \
 	--dest-os=linux \
 	--without-snapshot \
 	--shared-zlib \
-	--shared-openssl \
 	--shared-nghttp2 \
-	--shared-libuv \
 	--shared-http-parser \
 	--with-intl=$(if $(CONFIG_NODEJS_ICU),system-icu,none) \
 	$(if $(findstring mips,$(NODEJS_CPU)), \
