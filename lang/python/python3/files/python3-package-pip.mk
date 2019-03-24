@@ -15,6 +15,7 @@ endef
 define Package/python3-pip/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
 	$(CP) $(PKG_BUILD_DIR)/install-pip/bin/pip3* $(1)/opt/bin
+	$(SED) 's,^#!$(HOST_PYTHON3_BIN),#!/opt/bin/python3,g' $(1)/opt/bin/pip3*
 	$(CP) \
 		$(PKG_BUILD_DIR)/install-pip/lib/python$(PYTHON3_VERSION)/site-packages/pip \
 		$(PKG_BUILD_DIR)/install-pip/lib/python$(PYTHON3_VERSION)/site-packages/pip-$(PYTHON3_PIP_VERSION).dist-info \
