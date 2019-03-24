@@ -1,0 +1,8 @@
+--- a/ndiff/scripts/ndiff
++++ b/ndiff/scripts/ndiff
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/opt/bin/python
+ 
+ # Ndiff
+ #
