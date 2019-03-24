@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xz
 PKG_VERSION:=5.2.4
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/lzmautils
@@ -82,6 +82,9 @@ CONFIGURE_ARGS += \
 	--disable-symbol-versions \
 	--disable-werror \
 	--with-pic
+
+CONFIGURE_VARS += \
+	gl_cv_posix_shell="/opt/bin/bash"
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
