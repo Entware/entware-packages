@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lm-sensors
 PKG_VERSION:=3.5.0
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_VERSION_SUBST=$(subst .,-,$(PKG_VERSION))
 PKG_SOURCE_URL:=https://codeload.github.com/lm-sensors/lm-sensors/tar.gz/V$(PKG_VERSION_SUBST)?
