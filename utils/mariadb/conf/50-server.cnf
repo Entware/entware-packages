@@ -15,8 +15,8 @@
 # * Basic Settings
 #
 user		= root
-pid-file	= /opt/var/run/mysqld/mysqld.pid
-socket		= /opt/var/run/mysqld/mysqld.sock
+pid-file	= /opt/var/run/mysqld.pid
+socket		= /opt/var/run/mysqld.sock
 port		= 3306
 basedir		= /opt
 # Don't put this on flash memory
