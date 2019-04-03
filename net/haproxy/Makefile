@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=haproxy
 PKG_VERSION:=1.8.19
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=haproxy-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.haproxy.org/download/1.8/src/
@@ -156,6 +156,7 @@ define Build/Compile
 
 	$(MAKE_VARS) $(MAKE) -C $(PKG_BUILD_DIR)/contrib/halog \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(MAKE_FLAGS) \
 		ADDLIB="-lcrypto" \
 		halog

@@ -1,0 +1,11 @@
+--- a/contrib/halog/Makefile
++++ b/contrib/halog/Makefile
+@@ -16,7 +16,7 @@
+ OBJS     = halog
+ 
+ halog: halog.c fgets2.c
+-	$(CC) $(OPTIMIZE) $(DEFINE) -o $@ $(INCLUDE) $(EBTREE_DIR)/ebtree.c $(EBTREE_DIR)/eb32tree.c $(EBTREE_DIR)/eb64tree.c $(EBTREE_DIR)/ebmbtree.c $(EBTREE_DIR)/ebsttree.c $(EBTREE_DIR)/ebistree.c $(EBTREE_DIR)/ebimtree.c $^
++	$(CC) $(OPTIMIZE) $(DEFINE) $(LDFLAGS) -o $@ $(INCLUDE) $(EBTREE_DIR)/ebtree.c $(EBTREE_DIR)/eb32tree.c $(EBTREE_DIR)/eb64tree.c $(EBTREE_DIR)/ebmbtree.c $(EBTREE_DIR)/ebsttree.c $(EBTREE_DIR)/ebistree.c $(EBTREE_DIR)/ebimtree.c $^
+ 
+ clean:
+ 	rm -f $(OBJS) *.[oas]
