@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=io
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -25,7 +25,7 @@ define Package/io/description
 endef
 
 define Build/Compile
-	$(TARGET_CC) $(TARGET_CFLAGS) -Wall $(PKG_BUILD_DIR)/io.c -o $(PKG_BUILD_DIR)/$(PKG_NAME)
+	$(TARGET_CC) $(TARGET_CFLAGS) -Wall $(PKG_BUILD_DIR)/io.c $(TARGET_LDFLAGS) -o $(PKG_BUILD_DIR)/$(PKG_NAME)
 endef
 
 define Package/io/install
