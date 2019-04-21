@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
 PKG_VERSION:=9.12.3-P4
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 USERID:=bind=57:bind=57
 
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>
@@ -164,6 +164,13 @@ else
 	CONFIGURE_ARGS += \
 		--with-libxml2=no
 endif
+
+ifeq ($(CONFIG_TARGET_armv7_2_6),y)
+	CONFIGURE_ARGS += \
+		--disable-tcp-fastopen		
+endif
+
+
 
 CONFIGURE_VARS += \
 	BUILD_CC="$(TARGET_CC)" \
