@@ -53,19 +53,19 @@ endef
 
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libnet.h $(STAGING_DIR)/usr/include
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libnet.h $(STAGING_DIR)/opt/include
 
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/include/libnet
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libnet/libnet-*.h $(STAGING_DIR)/usr/include/libnet
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/include/libnet
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libnet/libnet-*.h $(STAGING_DIR)/opt/include/libnet
 
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libnet.{a,la,so*} $(STAGING_DIR)/usr/lib
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnet.{a,la,so*} $(STAGING_DIR)/opt/lib
 endef
 
 define Package/libnet-1.2.x/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libnet.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnet.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libnet-1.2.x))
