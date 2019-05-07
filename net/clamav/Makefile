@@ -64,17 +64,17 @@ CONFIGURE_VARS += \
 
 define Build/Configure
 	$(call Build/Configure/Default, \
-		--sysconfdir=/etc/clamav/ \
-		--prefix=/usr/ \
-		--exec-prefix=/usr/ \
+		--sysconfdir=/opt/etc/clamav/ \
+		--prefix=/opt/ \
+		--exec-prefix=/opt/ \
 		--enable-milter \
 		--with-xml=no \
 		--disable-bzip2 \
 		--with-user nobody \
 		--with-group nogroup \
-		--with-pcre="$(STAGING_DIR)/usr/" \
-		--with-openssl="$(STAGING_DIR)/usr/" \
-		--with-zlib="$(STAGING_DIR)/usr/" \
+		--with-pcre="$(STAGING_DIR)/opt/" \
+		--with-openssl="$(STAGING_DIR)/opt/" \
+		--with-zlib="$(STAGING_DIR)/opt/" \
 		--disable-zlib-vcheck \
 		--disable-clamdtop \
 	)
@@ -87,41 +87,41 @@ define Build/Compile
 endef
 
 define Package/clamav/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/clamd $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/clamav-milter $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/clamav-config $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/clambc $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/clamconf $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/clamdscan $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/clamscan $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/sigtool $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/clamd $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/clamav-milter $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamav-config $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clambc $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamconf $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamdscan $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamscan $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sigtool $(1)/opt/sbin/
 
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/clamav.h $(1)/usr/include/
+#	$(INSTALL_DIR) $(1)/opt/include
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/clamav.h $(1)/opt/include/
 
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib*/* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*so* $(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/clamav.config $(1)/etc/config/clamav
+#	$(INSTALL_DIR) $(1)/opt/etc/config
+#	$(INSTALL_CONF) ./files/clamav.config $(1)/opt/etc/config/clamav
 
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) ./files/clamav.init $(1)/etc/init.d/clamav
+#	$(INSTALL_DIR) $(1)/opt/etc/init.d/
+#	$(INSTALL_BIN) ./files/clamav.init $(1)/opt/etc/init.d/clamav
 
-	$(INSTALL_DIR) $(1)/usr/share/clamav
-	$(CP) ./files/bytecode.cvd $(1)/usr/share/clamav/
+	$(INSTALL_DIR) $(1)/opt/share/clamav
+	$(CP) ./files/bytecode.cvd $(1)/opt/share/clamav/
 endef
 
 define Package/freshclam/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/freshclam $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/freshclam $(1)/opt/sbin/
 
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/freshclam.config $(1)/etc/config/freshclam
+#	$(INSTALL_DIR) $(1)/opt/etc/config
+#	$(INSTALL_CONF) ./files/freshclam.config $(1)/opt/etc/config/freshclam
 
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) ./files/freshclam.init $(1)/etc/init.d/freshclam
+#	$(INSTALL_DIR) $(1)/opt/etc/init.d/
+#	$(INSTALL_BIN) ./files/freshclam.init $(1)/opt/etc/init.d/freshclam
 endef
 
 $(eval $(call BuildPackage,clamav))
