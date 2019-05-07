@@ -3,6 +3,9 @@
 #
 # This is free software, licensed under the GNU General Public License v3.
 #
+# Entware specific:
+# * confLIBSEARCHPATH, confLIBDIRS at ./files/OpenWrt
+# * confLIBS at ./files/site.OpenWrt.m4
 
 include $(TOPDIR)/rules.mk
 
@@ -101,7 +104,7 @@ define Build/Prepare
 	$(CP) files/sharedlibrary.m4 $(PKG_BUILD_DIR)/devtools/M4/UNIX/
 	$(CP) $(PKG_BUILD_DIR)/cf/cf/generic-linux.mc $(PKG_BUILD_DIR)/cf/cf/sendmail.mc
 	$(SED) 's@TARGET_CC@$(TARGET_CC)@g' $(PKG_BUILD_DIR)/devtools/Site/$(SITECONFIG)
-	$(SED) 's@TARGET_CFLAGS@$(TARGET_CFLAGS)@g' $(PKG_BUILD_DIR)/devtools/Site/$(SITECONFIG)
+	$(SED) 's@TARGET_CFLAGS@$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include@g' $(PKG_BUILD_DIR)/devtools/Site/$(SITECONFIG)
 	$(SED) 's@STAGING_DIR@$(STAGING_DIR)@g' $(PKG_BUILD_DIR)/devtools/OS/$(TARGET_OS)
 endef
 
@@ -113,14 +116,14 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/libmilter $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libmilter/* $(1)/usr/include/libmilter/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmilter.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include/libmilter $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/include/libmilter/* $(1)/opt/include/libmilter/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmilter.so* $(1)/opt/lib/
 endef
 
 define Package/libmilter-sendmail/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmilter.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmilter.so* $(1)/opt/lib/
 endef
 
 #define Package/sendmail/install
