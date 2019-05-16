@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.15.8
+PKG_VERSION:=1.16.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
-PKG_HASH:=a8bdafbca87eb99813ae4fcac1ad0875bf725ce19eb265d28268c309b2b40787
+PKG_HASH:=4fd376bad78797e7f18094a00f0f1088259326436b537eb5af69b01be2ca1345
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de> \
 				Ansuel Smith <ansuelsmth@gmail.com>
@@ -71,6 +71,8 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_NGINX_STREAM_SSL_PREREAD_MODULE \
 	CONFIG_NGINX_RTMP_MODULE \
 	CONFIG_NGINX_TS_MODULE \
+	CONFIG_OPENSSL_ENGINE \
+	CONFIG_OPENSSL_WITH_NPN
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -80,7 +82,7 @@ define Package/nginx/default
   SUBMENU:=Web Servers/Proxies
   TITLE:=Nginx web server
   URL:=http://nginx.org/
-  DEPENDS:=+NGINX_PCRE:libpcre +(NGINX_SSL||NGINX_HTTP_CACHE||NGINX_HTTP_AUTH_BASIC):libopenssl \
+  DEPENDS:=+NGINX_PCRE:libpcre +NGINX_SSL:libopenssl \
 	+NGINX_HTTP_GZIP:zlib +NGINX_LUA:liblua +libpthread +NGINX_DAV:libexpat
 endef
 
@@ -104,7 +106,7 @@ define Package/nginx-ssl
 endef
 
 Package/nginx-ssl/description = $(Package/nginx/description) \
-  This varian is compiled with SSL support enabled. To enable additional module \
+  This variant is compiled with SSL support enabled. To enable additional module \
   select them in the nginx default configuration menu.
 
 define Package/nginx-all-module
@@ -116,7 +118,7 @@ define Package/nginx-all-module
 endef
 
 Package/nginx-all-module/description = $(Package/nginx/description) \
-  This varian is compiled with ALL module selected.
+  This variant is compiled with ALL module selected.
 
 define Package/nginx/config
   source "$(SOURCE)/Config.in"
