@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gst1-plugins-ugly
-PKG_VERSION:=1.14.4
+PKG_VERSION:=1.16.0
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org> \
@@ -20,13 +20,14 @@ PKG_LICENSE_FILES:=COPYING
 PKG_BUILD_DIR:=$(BUILD_DIR)/gst-plugins-ugly-$(PKG_VERSION)
 PKG_SOURCE:=gst-plugins-ugly-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://gstreamer.freedesktop.org/src/gst-plugins-ugly
-PKG_HASH:=ac02d837f166c35ff6ce0738e281680d0b90052cfb1f0255dcf6aaca5f0f6d23
+PKG_HASH:=e30964c5f031c32289e0b25e176c3c95a5737f2052dfc81d0f7427ef0233a4c2
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_gst1-mod-asf \
 	CONFIG_PACKAGE_gst1-mod-mpeg2dec \
 
 PKG_FIXUP:=autoreconf
+PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -96,6 +97,12 @@ GST_VERSION:=1.0
 CONFIGURE_ARGS += \
 	--disable-debug \
 	--disable-examples \
+	--disable-fatal-warnings \
+	--disable-glib-asserts \
+	--disable-gobject-cast-checks \
+	--disable-gtk-doc-html \
+	--disable-valgrind \
+	--disable-rpath \
 	\
 	--disable-a52dec \
 	--disable-amrnb \
@@ -117,11 +124,7 @@ CONFIGURE_ARGS += \
 	\
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
-
-EXTRA_LDFLAGS+= \
-	-Wl,-rpath-link=$(STAGING_DIR)/usr/lib \
-	$(if $(ICONV_FULL),-liconv) \
-
+	--with-pic
 
 define Package/gst1-plugins-ugly/install
 	/bin/true
