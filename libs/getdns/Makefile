@@ -1,12 +1,11 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: bumped from 1.5.0 to 1.5.1
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=getdns
-PKG_VERSION:=1.5.1
+PKG_VERSION:=1.5.2
 PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
@@ -15,7 +14,7 @@ PKG_MAINTAINER:=Jonathan Underwood <jonathan.underwood@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://getdnsapi.net/dist/
-PKG_HASH:=5686e61100599c309ce03535f9899a5a3d94a82cc08d10718e2cd73ad3dc28af
+PKG_HASH:=1826a6a221ea9e9301f2c1f5d25f6f5588e841f08b967645bf50c53b970694c0
 
 PKG_FIXUP:=autoreconf
 
