@@ -1,0 +1,19 @@
+--- a/os-daq-modules/daq_afpacket.c
++++ b/os-daq-modules/daq_afpacket.c
+@@ -49,6 +49,16 @@
+ #define AF_PACKET_DEFAULT_BUFFER_SIZE   128
+ #define AF_PACKET_MAX_INTERFACES    32
+ 
++#ifndef PACKET_FANOUT_ROLLOVER
++#define PACKET_FANOUT_ROLLOVER	3
++#endif
++#ifndef PACKET_FANOUT_RND
++#define PACKET_FANOUT_RND	4
++#endif
++#ifndef PACKET_FANOUT_FLAG_ROLLOVER
++#define PACKET_FANOUT_FLAG_ROLLOVER	0x1000
++#endif
++
+ union thdr
+ {
+     struct tpacket2_hdr *h2;
