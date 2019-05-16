@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gst1-plugins-bad
-PKG_VERSION:=1.14.4
+PKG_VERSION:=1.16.0
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org> \
@@ -20,9 +20,10 @@ PKG_LICENSE_FILES:=COPYING.LIB COPYING
 PKG_BUILD_DIR:=$(BUILD_DIR)/gst-plugins-bad-$(PKG_VERSION)
 PKG_SOURCE:=gst-plugins-bad-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://gstreamer.freedesktop.org/src/gst-plugins-bad/
-PKG_HASH:=910b4e0e2e897e8b6d06767af1779d70057c309f67292f485ff988d087aa0de5
+PKG_HASH:=22139de35626ada6090bdfa3423b27b7fc15a0198331d25c95e6b12cb1072b05
 
 PKG_FIXUP:=autoreconf
+PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -96,9 +97,16 @@ endef
 GST_VERSION:=1.0
 
 CONFIGURE_ARGS += \
+	--disable-Bsymbolic \
 	--disable-debug \
 	--disable-examples \
-	--disable-nls	\
+	--disable-fatal-warnings \
+	--disable-glib-asserts \
+	--disable-gobject-cast-checks \
+	--disable-gtk-doc-html \
+	--disable-introspection \
+	--disable-valgrind \
+	--disable-rpath \
 	\
 	--disable-directsound \
 	--disable-directdraw \
@@ -147,17 +155,11 @@ CONFIGURE_ARGS += \
 	--disable-zbar \
 	--disable-srtp \
 	\
+	--without-html-dir \
 	--without-libiconv-prefix \
 	--without-libintl-prefix \
 	--with-libgcrypt-prefix="$(STAGING_DIR)/usr" \
-	--without-x \
-
-TARGET_CFLAGS+= -std=gnu99
-
-EXTRA_LDFLAGS+= \
-	-Wl,-rpath-link=$(STAGING_DIR)/usr/lib \
-	$(if $(ICONV_FULL),-liconv) \
-
+	--with-pic
 
 define Package/gst1-plugins-bad/install
 	/bin/true
