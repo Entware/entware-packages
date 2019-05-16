@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tiff
 PKG_VERSION:=4.0.10
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.osgeo.org/libtiff
@@ -83,8 +83,9 @@ define Build/InstallDev/hxx
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/{lib,include}
+	$(INSTALL_DIR) $(1)/opt/{lib,include} $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc $(1)/opt/lib/pkgconfig/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
 	$(if $(CONFIG_PACKAGE_libtiffxx), $(call Build/InstallDev/hxx,$(1)))
 endef
