@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2018 OpenWrt.org
+# Copyright (C) 2007-2019 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -12,9 +12,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/erikd/libsndfile.git
-PKG_SOURCE_DATE:=2019-02-26
-PKG_SOURCE_VERSION:=7c5da26b703753ec4ec598d95893a36a8639eece
-PKG_MIRROR_HASH:=bb6fc0d755f4a0a346109f239c8efbdfb2257f03266999c5b67f241159a07e32
+PKG_SOURCE_DATE:=2019-04-21
+PKG_SOURCE_VERSION:=25824cb914fb3b79e18f31fb861e218c84be7d34
+PKG_MIRROR_HASH:=9b3beef70003456ff297ce50ecd5cb1d066ca98f10f6363562431d773b3fcb3d
 
 PKG_LICENSE:=LGPLv2.1
 PKG_LICENSE_FILES:=COPYING
