@@ -33,8 +33,8 @@ define HostPython3
 		export PYTHONPATH="$(PYTHON3PATH)"; \
 		export PYTHONDONTWRITEBYTECODE=1; \
 		export _python_sysroot="$(STAGING_DIR)"; \
-		export _python_prefix="/usr"; \
-		export _python_exec_prefix="/usr"; \
+		export _python_prefix="/opt"; \
+		export _python_exec_prefix="/opt"; \
 	fi; \
 	export PYTHONOPTIMIZE=""; \
 	$(1) \
