@@ -1,0 +1,49 @@
+--- a/select.c
++++ b/select.c
+@@ -89,7 +89,7 @@
+ select_add(struct event *ev)
+ {
+ 
+-	assert(ev->fd < FD_SETSIZE);
++//	assert(ev->fd < FD_SETSIZE);
+ 
+ 	switch (ev->rdwr) {
+ 	case EVENT_READ:
+@@ -106,7 +106,7 @@
+ 	events[nevents] = ev;
+ 	ev->index = nevents++;
+ 
+-	assert(nevents < FD_SETSIZE);
++//	assert(nevents < FD_SETSIZE);
+ 
+ 	return (0);
+ }
+@@ -115,7 +115,7 @@
+ select_del(struct event *ev, int flags)
+ {
+ 
+-	assert(ev->fd < FD_SETSIZE);
++//	assert(ev->fd < FD_SETSIZE);
+ 
+ 	switch (ev->rdwr) {
+ 	case EVENT_READ:
+--- a/upnpevents.c
++++ b/upnpevents.c
+@@ -235,7 +235,7 @@
+ 	unsigned short port;
+ 	struct sockaddr_in addr;
+ 
+-	assert(sub);
++//	assert(sub);
+ 
+ 	obj = calloc(1, sizeof(struct upnp_event_notify));
+ 	if(!obj) {
+@@ -330,7 +330,7 @@
+ 	char * xml;
+ 	int l;
+ 
+-	assert(obj->sub);
++//	assert(obj->sub);
+ 
+ 	switch(obj->sub->service) {
+ 	case EContentDirectory:

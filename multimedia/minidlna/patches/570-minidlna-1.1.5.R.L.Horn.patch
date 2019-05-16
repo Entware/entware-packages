@@ -1,6 +1,3 @@
-diff --git a/icons.h b/icons.h
-new file mode 100644
-index 0000000..715234e
 --- /dev/null
 +++ b/icons.h
 @@ -0,0 +1,24 @@
@@ -28,9 +25,6 @@ index 0000000..715234e
 +extern struct icon_struct icons;
 +
 +#endif
-diff --git a/tagutils/tagutils-ops.c b/tagutils/tagutils-ops.c
-new file mode 100644
-index 0000000..1ea8297
 --- /dev/null
 +++ b/tagutils/tagutils-ops.c
 @@ -0,0 +1,60 @@
@@ -94,9 +88,6 @@ index 0000000..1ea8297
 +	op_free (opusfile);
 +	return 0;
 +}
-diff --git a/tagutils/tagutils-ops.h b/tagutils/tagutils-ops.h
-new file mode 100644
-index 0000000..73e2d32
 --- /dev/null
 +++ b/tagutils/tagutils-ops.h
 @@ -0,0 +1,6 @@
@@ -106,8 +97,6 @@ index 0000000..73e2d32
 +//=========================================================================
 +
 +static int _get_opusfileinfo(char *filename, struct song_metadata *psong);
-diff --git a/Makefile.am b/Makefile.am
-index 9273aa5..59b0f70 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -15,13 +15,14 @@
@@ -127,7 +116,7 @@ index 9273aa5..59b0f70 100644
  			upnpreplyparse.c minixml.c clients.c \
  			getifaddr.c process.c upnpglobalvars.c \
  			options.c minissdp.c uuid.c upnpevents.c \
-@@ -46,6 +47,7 @@
+@@ -52,6 +53,7 @@ endif
  
  minidlnad_LDADD = \
  	@LIBJPEG_LIBS@ \
@@ -135,7 +124,7 @@ index 9273aa5..59b0f70 100644
  	@LIBID3TAG_LIBS@ \
  	@LIBSQLITE3_LIBS@ \
  	@LIBAVFORMAT_LIBS@ \
-@@ -53,7 +53,8 @@
+@@ -59,7 +61,8 @@ minidlnad_LDADD = \
  	@LIBEXIF_LIBS@ \
  	@LIBINTL@ \
  	@LIBICONV@ \
@@ -145,8 +134,6 @@ index 9273aa5..59b0f70 100644
  
  minidlnad_LDFLAGS = @STATIC_LDFLAGS@
  
-diff --git a/albumart.c b/albumart.c
-index 20ed14e..96b21fd 100644
 --- a/albumart.c
 +++ b/albumart.c
 @@ -39,19 +39,30 @@
@@ -182,19 +169,19 @@ index 20ed14e..96b21fd 100644
  {
  	int dstw, dsth;
  	image_s *imdst;
-@@ -83,6 +94,11 @@
- 		free(cache_file);
+@@ -84,6 +95,11 @@ save_resized_album_art(image_s *imsrc, c
  		return NULL;
  	}
-+
+ 
 +#if HAVE_LIBPNG
 +	if (alpha)
 +		image_png_composite (imdst);
 +#endif
- 
++
  	cache_file = image_save_to_jpeg_file(imdst, cache_file);
  	image_free(imdst);
-@@ -173,6 +189,7 @@
+ 	
+@@ -173,6 +189,7 @@ check_embedded_art(const char *path, uin
  	static unsigned int last_hash = 0;
  	static int last_success = 0;
  	unsigned int hash;
@@ -202,7 +189,7 @@ index 20ed14e..96b21fd 100644
  
  	if( !image_data || !image_size || !path )
  	{
-@@ -207,6 +224,15 @@
+@@ -207,6 +224,15 @@ check_embedded_art(const char *path, uin
  	}
  	last_hash = hash;
  
@@ -218,7 +205,7 @@ index 20ed14e..96b21fd 100644
  	imsrc = image_new_from_jpeg(NULL, 0, image_data, image_size, 1, ROTATE_NONE);
  	if( !imsrc )
  	{
-@@ -218,7 +244,7 @@
+@@ -218,7 +244,7 @@ check_embedded_art(const char *path, uin
  
  	if( width > 160 || height > 160 )
  	{
@@ -227,7 +214,7 @@ index 20ed14e..96b21fd 100644
  	}
  	else if( width > 0 && height > 0 )
  	{
-@@ -274,6 +300,9 @@
+@@ -274,6 +300,9 @@ check_for_album_file(const char *path)
  	const char *dir;
  	struct stat st;
  	int ret;
@@ -237,7 +224,7 @@ index 20ed14e..96b21fd 100644
  
  	if( stat(path, &st) != 0 )
  		return NULL;
-@@ -331,14 +360,24 @@
+@@ -331,14 +360,24 @@ existing_file:
  				return art_file;
  			}
  			free(art_file);
@@ -263,8 +250,6 @@ index 20ed14e..96b21fd 100644
  			else
  				art_file = strdup(file);
  			image_free(imsrc);
-diff --git a/clients.c b/clients.c
-index a8609d2..dcba210 100644
 --- a/clients.c
 +++ b/clients.c
 @@ -15,6 +15,8 @@
@@ -276,11 +261,9 @@ index a8609d2..dcba210 100644
  #include <stdio.h>
  #include <string.h>
  #include <time.h>
-diff --git a/configure.ac b/configure.ac
-index 3a8a54c..8dda43e 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -405,6 +405,11 @@
+@@ -406,6 +406,11 @@ done
  test x"$ac_cv_lib_jpeg_jpeg_set_defaults" = x"yes" || AC_MSG_ERROR([Could not find libexif])
  AC_SUBST(LIBEXIF_LIBS)
  
@@ -292,7 +275,7 @@ index 3a8a54c..8dda43e 100644
  LDFLAGS_SAVE="$LDFLAGS"
  for dir in "" /usr/local $SEARCH_DIR; do
      if test -n "$dir"; then
-@@ -485,6 +490,13 @@
+@@ -486,6 +491,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
           AM_CONDITIONAL(HAVE_AVAHI, false),
          -lavahi-client -lavahi-common)
  
@@ -306,8 +289,6 @@ index 3a8a54c..8dda43e 100644
  ################################################################################################################
  ### Header checks
  
-diff --git a/getifaddr.c b/getifaddr.c
-index f0d3af3..5c9a481 100644
 --- a/getifaddr.c
 +++ b/getifaddr.c
 @@ -26,6 +26,8 @@
@@ -324,11 +305,9 @@ index f0d3af3..5c9a481 100644
  #endif
  
 -#include "config.h"
+ #include "event.h"
  #if HAVE_GETIFADDRS
  # include <ifaddrs.h>
- # ifdef __linux__
-diff --git a/icons.c b/icons.c
-index 0161a2c..23c4e91 100644
 --- a/icons.c
 +++ b/icons.c
 @@ -18,6 +18,8 @@
@@ -340,7 +319,7 @@ index 0161a2c..23c4e91 100644
  #ifdef NETGEAR
  /* NG_Icon_48x48.png */
  unsigned char
-@@ -2929,3 +2931,10 @@ jpeg_lrg[] = "\xff\xd8\xff\xe0\x00\x10\x4a\x46\x49\x46\x00\x01\x01\x01\x00\x5a\x
+@@ -2929,3 +2931,10 @@ jpeg_lrg[] = "\xff\xd8\xff\xe0\x00\x10\x
               "\x1e\x88\x20\xa8\xd8\xba\xe2\x7e\xdc\x26\x9a\x69\x08\xf7\x22\x22\x02\x82\x28\x82\x29\xe8\x88\x9e"
               "\xda\x69\xa6\x90\x8f\xff\xd9";
  #endif
@@ -351,8 +330,6 @@ index 0161a2c..23c4e91 100644
 +		sizeof (jpeg_lrg)-1, sizeof (jpeg_sm)-1 },
 +	{ 0, 0, 0, 0 }
 +};
-diff --git a/image_utils.c b/image_utils.c
-index d90875a..a8ca871 100644
 --- a/image_utils.c
 +++ b/image_utils.c
 @@ -31,7 +31,15 @@
@@ -381,7 +358,7 @@ index d90875a..a8ca871 100644
  /* Destination manager to store data in a buffer */
  static void
  my_dst_mgr_init(j_compress_ptr cinfo)
-@@ -573,6 +584,472 @@ image_new_from_jpeg(const char *path, int is_file, const uint8_t *buf, int size,
+@@ -573,6 +584,472 @@ image_new_from_jpeg(const char *path, in
  	return vimage;
  }
  
@@ -854,8 +831,6 @@ index d90875a..a8ca871 100644
  void
  image_upsize(image_s * pdest, image_s * psrc, int32_t width, int32_t height)
  {
-diff --git a/image_utils.h b/image_utils.h
-index 7011c73..47ef89f 100644
 --- a/image_utils.h
 +++ b/image_utils.h
 @@ -28,6 +28,16 @@
@@ -904,25 +879,22 @@ index 7011c73..47ef89f 100644
  
  image_s *
  image_resize(image_s * src_image, int32_t width, int32_t height);
-@@ -56,3 +86,6 @@ image_save_to_jpeg_buf(image_s * pimage, int * size);
+@@ -56,3 +86,6 @@ image_save_to_jpeg_buf(image_s * pimage,
  
  char *
  image_save_to_jpeg_file(image_s * pimage, char * path);
 +
 +void
 +image_bgcolor_composite (image_s *img, int32_t bgcolor1, int32_t bgcolor2);
-diff --git a/metadata.c b/metadata.c
-index c08ca3f..09df44c 100644
 --- a/metadata.c
 +++ b/metadata.c
-@@ -335,11 +335,55 @@
+@@ -343,11 +343,55 @@ GetAudioMetadata(const char *path, const
  		strcpy(type, "wav");
  		m.mime = strdup("audio/x-wav");
  	}
 -	else if( ends_with(path, ".ogg") || ends_with(path, ".oga") )
--	{
 +	else if( ends_with(path, ".oga") || ends_with(path, ".ogg") )
-+	{
+ 	{
 +		/* The .ogg/.oga file extensions present something of a problem.
 +		 * ".ogg" has been deprecated in favor of ".oga" for some time, but
 +		 * many applications still only recognize ".ogg".
@@ -957,8 +929,7 @@ index c08ca3f..09df44c 100644
 +
  		strcpy(type, "ogg");
 -		m.mime = strdup("audio/ogg");
--	}
-+	}
+ 	}
 +	else if ( ends_with(path, ".opus") )
 +	{
 +		strcpy(type, "ops");
@@ -975,7 +946,7 @@ index c08ca3f..09df44c 100644
  	else if( ends_with(path, ".pcm") )
  	{
  		strcpy(type, "pcm");
-@@ -493,8 +537,8 @@
+@@ -511,8 +555,8 @@ libjpeg_error_handler(j_common_ptr cinfo
  	return;
  }
  
@@ -986,12 +957,10 @@ index c08ca3f..09df44c 100644
  {
  	ExifData *ed;
  	ExifEntry *e = NULL;
-@@ -661,6 +705,298 @@
- 	free_metadata(&m, free_flags);
- 
+@@ -681,6 +725,298 @@ no_exifdata:
  	return ret;
-+}
-+
+ }
+ 
 +static uint8_t *
 +_png_readchunk (FILE *file, size_t size)
 +{
@@ -1282,10 +1251,12 @@ index c08ca3f..09df44c 100644
 +	}
 +	else
 +		return 0;
- }
- 
++}
++
  int64_t
-@@ -844,6 +1180,8 @@
+ GetVideoMetadata(const char *path, const char *name)
+ {
+@@ -862,6 +1198,8 @@ GetVideoMetadata(const char *path, const
  			xasprintf(&m.mime, "video/x-matroska");
  		else if( strcmp(ctx->iformat->name, "flv") == 0 )
  			xasprintf(&m.mime, "video/x-flv");
@@ -1294,8 +1265,6 @@ index c08ca3f..09df44c 100644
  		if( m.mime )
  			goto video_no_dlna;
  
-diff --git a/minidlna.c b/minidlna.c
-index c9303b1..1e4f536 100644
 --- a/minidlna.c
 +++ b/minidlna.c
 @@ -46,6 +46,8 @@
@@ -1307,16 +1276,16 @@ index c9303b1..1e4f536 100644
  #include <stdlib.h>
  #include <unistd.h>
  #include <string.h>
-@@ -69,8 +71,6 @@
- #include <libgen.h>
+@@ -70,8 +72,6 @@
  #include <pwd.h>
+ #include <grp.h>
  
 -#include "config.h"
 -
  #ifdef ENABLE_NLS
  #include <locale.h>
  #include <libintl.h>
-@@ -95,6 +95,8 @@
+@@ -98,6 +98,8 @@
  #include "tivo_beacon.h"
  #include "tivo_utils.h"
  #include "avahi.h"
@@ -1325,11 +1294,10 @@ index c9303b1..1e4f536 100644
  
  #if SQLITE_VERSION_NUMBER < 3005001
  # warning "Your SQLite3 library appears to be too old!  Please use 3.5.1 or newer."
-@@ -254,6 +256,127 @@
- 	snprintf(buf+off, len-off, "%s", logname?logname:"Unknown");
+@@ -300,6 +302,127 @@ getfriendlyname(char *buf, int len)
  #endif
  }
-+
+ 
 +#define DESTROY_ICON(s,i) \
 +	if (s->dynamic[i]) free (s->icon[i])
 +
@@ -1450,12 +1418,13 @@ index c9303b1..1e4f536 100644
 +	icons = newicons;
 +}
 +#endif	/* HAVE_LIBPNG */
- 
++
  static time_t
  _get_dbtime(void)
-@@ -752,6 +875,34 @@
- 			if (strcasecmp(ary_options[i].value, "beacon") == 0)
- 				CLEARFLAG(TIVO_BONJOUR_MASK);
+ {
+@@ -810,6 +933,34 @@ init(int argc, char **argv)
+ 			if (!strtobool(ary_options[i].value))
+ 				CLEARFLAG(SUBTITLES_MASK);
  			break;
 +#ifdef HAVE_LIBPNG
 +		case ICON:
@@ -1488,11 +1457,9 @@ index c9303b1..1e4f536 100644
  		default:
  			DPRINTF(E_ERROR, L_GENERAL, "Unknown option in file %s\n",
  				optionsfile);
-diff --git a/minidlna.conf b/minidlna.conf
-index 7e00e89..ec8a70c 100644
 --- a/minidlna.conf
 +++ b/minidlna.conf
-@@ -86,5 +86,14 @@
+@@ -89,6 +89,15 @@ model_number=1
  # note: many clients open several simultaneous connections while streaming
  #max_connections=50
  
@@ -1507,11 +1474,10 @@ index 7e00e89..ec8a70c 100644
 +
  # set this to yes to allow symlinks that point outside user-defined media_dirs.
  #wide_links=no
-diff --git a/options.c b/options.c
-index 2fa8c06..225aca9 100644
+ 
 --- a/options.c
 +++ b/options.c
-@@ -65,6 +65,10 @@
+@@ -65,6 +65,10 @@ static const struct {
  	{ FORCE_SORT_CRITERIA, "force_sort_criteria" },
  	{ MAX_CONNECTIONS, "max_connections" },
  	{ MERGE_MEDIA_DIRS, "merge_media_dirs" },
@@ -1521,12 +1487,10 @@ index 2fa8c06..225aca9 100644
 +#endif
  	{ WIDE_LINKS, "wide_links" },
  	{ TIVO_DISCOVERY, "tivo_discovery" },
- };
-diff --git a/options.h b/options.h
-index 159255f..8fbfdc9 100644
+ 	{ ENABLE_SUBTITLES, "enable_subtitles" },
 --- a/options.h
 +++ b/options.h
-@@ -58,6 +58,10 @@
+@@ -58,6 +58,10 @@ enum upnpconfigoptions {
  	FORCE_SORT_CRITERIA,		/* force sorting by a given sort criteria */
  	MAX_CONNECTIONS,		/* maximum number of simultaneous connections */
  	MERGE_MEDIA_DIRS,		/* don't add an extra directory level when there are multiple media dirs */
@@ -1536,9 +1500,7 @@ index 159255f..8fbfdc9 100644
 +#endif
  	WIDE_LINKS,			/* allow following symlinks outside the defined media_dirs */
  	TIVO_DISCOVERY,			/* TiVo discovery protocol: bonjour or beacon. Defaults to bonjour if supported */
- };
-diff --git a/process.c b/process.c
-index 96ec1c3..926183d 100644
+ 	ENABLE_SUBTITLES,		/* Enable generic subtitle support for all clients by default */
 --- a/process.c
 +++ b/process.c
 @@ -27,6 +27,8 @@
@@ -1550,27 +1512,26 @@ index 96ec1c3..926183d 100644
  #include <sys/types.h>
  #include <sys/stat.h>
  #include <unistd.h>
-@@ -40,7 +42,6 @@
+@@ -38,7 +40,6 @@
+ #include <signal.h>
+ #include <sys/wait.h>
  
+-#include "config.h"
+ #include "event.h"
  #include "upnpglobalvars.h"
  #include "process.h"
--#include "config.h"
- #include "log.h"
- 
- struct child *children = NULL;
-@@ -109,8 +110,9 @@
+@@ -113,8 +114,9 @@ void
  process_handle_child_termination(int signal)
  {
  	pid_t pid;
--
--	while ((pid = waitpid(-1, NULL, WNOHANG)))
 +	int status;
-+
+ 
+-	while ((pid = waitpid(-1, NULL, WNOHANG)))
 +	while ((pid = waitpid(-1, &status, WNOHANG)))
  	{
  		if (pid == -1)
  		{
-@@ -119,8 +121,29 @@
+@@ -123,8 +125,29 @@ process_handle_child_termination(int sig
  			else
  				break;
  		}
@@ -1600,8 +1561,6 @@ index 96ec1c3..926183d 100644
  	}
  }
  
-diff --git a/scanner.c b/scanner.c
-index ee3af48..25fbaad 100644
 --- a/scanner.c
 +++ b/scanner.c
 @@ -15,6 +15,8 @@
@@ -1613,20 +1572,18 @@ index ee3af48..25fbaad 100644
  #include <stdio.h>
  #include <string.h>
  #include <stdlib.h>
-@@ -27,8 +29,6 @@
- #include <sys/stat.h>
+@@ -28,8 +30,6 @@
  #include <sys/time.h>
  #include <sys/resource.h>
--
--#include "config.h"
  
+-#include "config.h"
+-
  #ifdef ENABLE_NLS
  #include <libintl.h>
-diff --git a/tagutils/tagutils-asf.c b/tagutils/tagutils-asf.c
-index fca0597..bca6a83 100644
+ #endif
 --- a/tagutils/tagutils-asf.c
 +++ b/tagutils/tagutils-asf.c
-@@ -470,7 +470,12 @@ _asf_load_picture(FILE *fp, int size, void *bm, int *bm_size)
+@@ -470,7 +470,12 @@ _asf_load_picture(FILE *fp, int size, vo
  
  	if(!strcasecmp(buf, "image/jpeg") ||
  	   !strcasecmp(buf, "image/jpg") ||
@@ -1640,11 +1597,9 @@ index fca0597..bca6a83 100644
  	{
  
  		while(0 != fget_le16(fp))
-diff --git a/tagutils/tagutils-misc.c b/tagutils/tagutils-misc.c
-index 9f9436b..0b28b87 100644
 --- a/tagutils/tagutils-misc.c
 +++ b/tagutils/tagutils-misc.c
-@@ -180,12 +180,236 @@ _get_utf8_text(const id3_ucs4_t* native_text)
+@@ -180,12 +180,236 @@ _get_utf8_text(const id3_ucs4_t* native_
  	return utf8_text;
  }
  
@@ -1881,11 +1836,9 @@ index 9f9436b..0b28b87 100644
  	if(length > (sizeof(strbuf) - 1))
  	{
  		if( strncasecmp(comment, "LYRICS=", 7) != 0 )
-diff --git a/tagutils/tagutils-mp3.c b/tagutils/tagutils-mp3.c
-index c87a065..876dd86 100644
 --- a/tagutils/tagutils-mp3.c
 +++ b/tagutils/tagutils-mp3.c
-@@ -79,7 +79,12 @@ _get_mp3tags(char *file, struct song_metadata *psong)
+@@ -79,7 +79,12 @@ _get_mp3tags(char *file, struct song_met
  		{
  			if( (strcmp((char*)id3_field_getlatin1(&pid3frame->fields[1]), "image/jpeg") == 0) ||
  			    (strcmp((char*)id3_field_getlatin1(&pid3frame->fields[1]), "image/jpg") == 0) ||
@@ -1899,11 +1852,9 @@ index c87a065..876dd86 100644
  			{
  				image = id3_field_getbinarydata(&pid3frame->fields[4], &image_size);
  				if( image_size )
-diff --git a/tagutils/tagutils-ogg.c b/tagutils/tagutils-ogg.c
-index 3e1417f..bc4f417 100644
 --- a/tagutils/tagutils-ogg.c
 +++ b/tagutils/tagutils-ogg.c
-@@ -429,7 +429,9 @@ _get_oggfileinfo(char *filename, struct song_metadata *psong)
+@@ -429,7 +429,9 @@ _get_oggfileinfo(char *filename, struct
  
  	if(!file)
  	{
@@ -1914,8 +1865,6 @@ index 3e1417f..bc4f417 100644
  			"Error opening input file \"%s\": %s\n", filename,  strerror(errno));
  		_ogg_free_stream_set(processors);
  		return -1;
-diff --git a/tagutils/tagutils.c b/tagutils/tagutils.c
-index 794e7b9..9739064 100644
 --- a/tagutils/tagutils.c
 +++ b/tagutils/tagutils.c
 @@ -22,6 +22,7 @@
@@ -1944,7 +1893,7 @@ index 794e7b9..9739064 100644
  
  struct id3header {
  	unsigned char id[3];
-@@ -107,6 +112,9 @@
+@@ -107,6 +112,9 @@ char *winamp_genre[] = {
  #ifdef HAVE_VORBISFILE
  #include "tagutils-ogg.h"
  #endif
@@ -1954,28 +1903,26 @@ index 794e7b9..9739064 100644
  #include "tagutils-flc.h"
  #include "tagutils-asf.h"
  #include "tagutils-wav.h"
-@@ -133,6 +141,9 @@
+@@ -135,6 +143,9 @@ static taghandler taghandlers[] = {
  #ifdef HAVE_VORBISFILE
- 	{ "ogg", 0,            _get_oggfileinfo                                  },
+ 	{ "ogg", NULL,		_get_oggfileinfo },
  #endif
 +#ifdef HAVE_OPUS
-+	{ "ops", 0,	       _get_opusfileinfo				 },
++	{ "ops", NULL,	        _get_opusfileinfo },
 +#endif
- 	{ "asf", 0,            _get_asffileinfo                                  },
- 	{ "wav", _get_wavtags, _get_wavfileinfo                                  },
- 	{ "pcm", 0,            _get_pcmfileinfo                                  },
-@@ -147,6 +158,9 @@
- #include "tagutils-aac.c"
+ 	{ "asf", NULL,		_get_asffileinfo },
+ 	{ "wav", _get_wavtags,	_get_wavfileinfo },
+ 	{ "pcm", NULL,		_get_pcmfileinfo },
+@@ -152,6 +163,9 @@ static taghandler taghandlers[] = {
  #ifdef HAVE_VORBISFILE
  #include "tagutils-ogg.c"
-+#endif
+ #endif
 +#ifdef HAVE_OPUS
 +#include "tagutils-ops.c"
- #endif
++#endif
  #include "tagutils-flc.c"
  #include "tagutils-asf.c"
-diff --git a/tagutils/tagutils.h b/tagutils/tagutils.h
-index 4daf5d4..87ebad9 100644
+ #include "tagutils-wav.c"
 --- a/tagutils/tagutils.h
 +++ b/tagutils/tagutils.h
 @@ -54,6 +54,7 @@ struct song_metadata {
@@ -1986,8 +1933,6 @@ index 4daf5d4..87ebad9 100644
  
  	char *title;                            // TIT2
  	char *album;                            // TALB
-diff --git a/testupnpdescgen.c b/testupnpdescgen.c
-index 5d88443..1f4beb5 100644
 --- a/testupnpdescgen.c
 +++ b/testupnpdescgen.c
 @@ -26,11 +26,12 @@
@@ -2004,8 +1949,6 @@ index 5d88443..1f4beb5 100644
  #include "upnpdescgen.h"
  
  char uuidvalue[] = "uuid:12345678-0000-0000-0000-00000000abcd";
-diff --git a/upnpdescgen.c b/upnpdescgen.c
-index c00cee0..09f14f5 100644
 --- a/upnpdescgen.c
 +++ b/upnpdescgen.c
 @@ -26,11 +26,12 @@
@@ -2019,11 +1962,9 @@ index c00cee0..09f14f5 100644
  #include <string.h>
  
 -#include "config.h"
+ #include "event.h"
  #include "getifaddr.h"
  #include "upnpdescgen.h"
- #include "minidlnapath.h"
-diff --git a/upnpglobalvars.c b/upnpglobalvars.c
-index fff02c8..555820c 100644
 --- a/upnpglobalvars.c
 +++ b/upnpglobalvars.c
 @@ -46,12 +46,13 @@
@@ -2041,8 +1982,6 @@ index fff02c8..555820c 100644
  #include "upnpglobalvars.h"
  
  /* startup time */
-diff --git a/upnphttp.c b/upnphttp.c
-index 418cde4..ee27245 100644
 --- a/upnphttp.c
 +++ b/upnphttp.c
 @@ -46,6 +46,8 @@
@@ -2059,10 +1998,10 @@ index 418cde4..ee27245 100644
  #include <limits.h>
  
 -#include "config.h"
+ #include "event.h"
  #include "upnpglobalvars.h"
  #include "upnphttp.h"
- #include "upnpdescgen.h"
-@@ -81,14 +82,13 @@
+@@ -82,14 +83,13 @@
  #include "clients.h"
  #include "process.h"
  #include "sendfile.h"
@@ -2078,7 +2017,7 @@ index 418cde4..ee27245 100644
  enum event_type {
  	E_INVALID,
  	E_SUBSCRIBE,
-@@ -1389,29 +1389,29 @@ SendResp_icon(struct upnphttp * h, char * icon)
+@@ -1393,29 +1393,29 @@ SendResp_icon(struct upnphttp * h, char
  	if( strcmp(icon, "sm.png") == 0 )
  	{
  		DPRINTF(E_DEBUG, L_HTTP, "Sending small PNG icon\n");
@@ -2116,7 +2055,7 @@ index 418cde4..ee27245 100644
  		strcpy(mime+6, "jpeg");
  	}
  	else
-@@ -1628,8 +1628,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1632,8 +1632,10 @@ SendResp_resizedimg(struct upnphttp * h,
  	int scale = 1;
  	const char *tmode;
  
@@ -2128,7 +2067,7 @@ index 418cde4..ee27245 100644
  	ret = sql_get_table(db, buf, &result, &rows, NULL);
  	if( ret != SQLITE_OK )
  	{
-@@ -1638,9 +1640,9 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1642,9 +1644,9 @@ SendResp_resizedimg(struct upnphttp * h,
  	}
  	if( rows )
  	{
@@ -2141,7 +2080,7 @@ index 418cde4..ee27245 100644
  	}
  	if( !file_path || !resolution || (access(file_path, F_OK) != 0) )
  	{
-@@ -1650,6 +1652,20 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1654,6 +1656,20 @@ SendResp_resizedimg(struct upnphttp * h,
  		return;
  	}
  
@@ -2162,7 +2101,7 @@ index 418cde4..ee27245 100644
  	if( saveptr )
  		saveptr = strchr(saveptr, '?');
  	path = saveptr ? saveptr + 1 : object;
-@@ -1773,7 +1789,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1777,7 +1793,12 @@ SendResp_resizedimg(struct upnphttp * h,
  	if( strcmp(h->HttpVer, "HTTP/1.0") == 0 )
  	{
  		chunked = 0;
@@ -2176,7 +2115,7 @@ index 418cde4..ee27245 100644
  	}
  	else
  	{
-@@ -1791,6 +1812,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1795,6 +1816,10 @@ SendResp_resizedimg(struct upnphttp * h,
  		}
  
  		imdst = image_resize(imsrc, dstw, dsth);
@@ -2187,7 +2126,7 @@ index 418cde4..ee27245 100644
  		data = image_save_to_jpeg_buf(imdst, &size);
  
  		strcatf(&str, "Content-Length: %d\r\n\r\n", size);
-@@ -1800,7 +1825,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1804,7 +1829,12 @@ SendResp_resizedimg(struct upnphttp * h,
  	{
  		if( chunked )
  		{
@@ -2201,7 +2140,7 @@ index 418cde4..ee27245 100644
  			if( !imsrc )
  			{
  				DPRINTF(E_WARN, L_HTTP, "Unable to open image %s!\n", file_path);
-@@ -1808,6 +1838,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1812,6 +1842,10 @@ SendResp_resizedimg(struct upnphttp * h,
  				goto resized_error;
  			}
  			imdst = image_resize(imsrc, dstw, dsth);
@@ -2212,11 +2151,9 @@ index 418cde4..ee27245 100644
  			data = image_save_to_jpeg_buf(imdst, &size);
  
  			ret = sprintf(buf, "%x\r\n", size);
-diff --git a/utils.c b/utils.c
-index 5a233dc..1fb7a02 100644
 --- a/utils.c
 +++ b/utils.c
-@@ -345,8 +345,15 @@
+@@ -345,8 +345,15 @@ mime_to_ext(const char * mime)
  				return "pcm";
  			else if( strcmp(mime+6, "3gpp") == 0 )
  				return "3gp";
@@ -2231,10 +2168,10 @@ index 5a233dc..1fb7a02 100644
 +
 +				return "oga";
 +			}
+ 			else if( strcmp(mime+6, "x-dsd") == 0 )
+ 				return "dsd";
  			break;
- 		case 'v':
- 			if( strcmp(mime+6, "avi") == 0 )
-@@ -375,6 +382,8 @@
+@@ -377,6 +384,8 @@ mime_to_ext(const char * mime)
  				return "3gp";
  			else if( strncmp(mime+6, "x-tivo-mpeg", 11) == 0 )
  				return "TiVo";
@@ -2243,7 +2180,7 @@ index 5a233dc..1fb7a02 100644
  			break;
  		case 'i':
  			if( strcmp(mime+6, "jpeg") == 0 )
-@@ -399,6 +408,7 @@
+@@ -401,6 +410,7 @@ is_video(const char * file)
  		ends_with(file, ".m2t") || ends_with(file, ".mkv")   ||
  		ends_with(file, ".vob") || ends_with(file, ".ts")    ||
  		ends_with(file, ".flv") || ends_with(file, ".xvid")  ||
@@ -2251,15 +2188,16 @@ index 5a233dc..1fb7a02 100644
  #ifdef TIVO_SUPPORT
  		ends_with(file, ".TiVo") ||
  #endif
-@@ -414,13 +424,18 @@
- 		ends_with(file, ".m4a") || ends_with(file, ".aac")  ||
+@@ -417,13 +427,18 @@ is_audio(const char * file)
  		ends_with(file, ".mp4") || ends_with(file, ".m4p")  ||
  		ends_with(file, ".wav") || ends_with(file, ".ogg")  ||
-+		ends_with(file, ".oga") ||
+ 		ends_with(file, ".pcm") || ends_with(file, ".3gp")  ||
+-		ends_with(file, ".dsf") || ends_with(file, ".dff"));
++		ends_with(file, ".dsf") || ends_with(file, ".dff")  ||
 +#ifdef HAVE_OPUS
 +		ends_with(file, ".opus") ||
 +#endif
- 		ends_with(file, ".pcm") || ends_with(file, ".3gp"));
++		ends_with(file, ".ogg") || ends_with(file, ".oga"));
  }
  
  int

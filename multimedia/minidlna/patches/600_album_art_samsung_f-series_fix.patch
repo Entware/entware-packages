@@ -1,6 +1,6 @@
 --- a/upnpsoap.c
 +++ b/upnpsoap.c
-@@ -1125,7 +1125,11 @@
+@@ -1183,7 +1183,11 @@ callback(void *args, int argc, char **ar
  			if( *mime == 'v' && (passed_args->filter & FILTER_RES) && !(passed_args->flags & FLAG_MS_PFS) ) {
  				ret = strcatf(str, "&lt;res protocolInfo=\"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN\"&gt;"
  				                   "http://%s:%d/AlbumArt/%s-%s.jpg"

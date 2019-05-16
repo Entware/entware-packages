@@ -1,6 +1,5 @@
-diff -ruN 1/albumart.c 2/albumart.c
---- 1/albumart.c	2015-02-28 20:28:01.000000000 +0200
-+++ 2/albumart.c	2015-02-28 20:37:07.000000000 +0200
+--- a/albumart.c
++++ b/albumart.c
 @@ -31,6 +31,9 @@
  #include <errno.h>
  
@@ -11,7 +10,7 @@ diff -ruN 1/albumart.c 2/albumart.c
  
  #include "upnpglobalvars.h"
  #include "albumart.h"
-@@ -387,6 +390,50 @@
+@@ -387,6 +390,50 @@ found_file:
  	return NULL;
  }
  
@@ -62,7 +61,7 @@ diff -ruN 1/albumart.c 2/albumart.c
  int64_t
  find_album_art(const char *path, uint8_t *image_data, int image_size)
  {
-@@ -395,6 +442,18 @@
+@@ -395,6 +442,18 @@ find_album_art(const char *path, uint8_t
  
  	if( (image_size && (album_art = check_embedded_art(path, image_data, image_size))) ||
  	    (album_art = check_for_album_file(path)) )
@@ -81,10 +80,9 @@ diff -ruN 1/albumart.c 2/albumart.c
  	{
  		ret = sql_get_int_field(db, "SELECT ID from ALBUM_ART where PATH = '%q'", album_art);
  		if( !ret )
-diff -ruN 1/configure.ac 2/configure.ac
---- 1/configure.ac	2015-02-28 20:28:01.000000000 +0200
-+++ 2/configure.ac	2015-02-28 20:39:16.000000000 +0200
-@@ -629,7 +629,22 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -632,7 +632,22 @@ AC_ARG_ENABLE(static,
          ]
  )
  
@@ -108,10 +106,9 @@ diff -ruN 1/configure.ac 2/configure.ac
  case "$target_os" in
  	darwin*)
  		;;
-diff -ruN 1/Makefile.am 2/Makefile.am
---- 1/Makefile.am	2015-02-28 20:28:01.000000000 +0200
-+++ 2/Makefile.am	2015-02-28 20:33:01.000000000 +0200
-@@ -56,6 +56,7 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -62,6 +62,7 @@ minidlnad_LDADD = \
  	@LIBINTL@ \
  	@LIBICONV@ \
  	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
@@ -119,10 +116,9 @@ diff -ruN 1/Makefile.am 2/Makefile.am
  	@opus_LIBS@
  
  minidlnad_LDFLAGS = @STATIC_LDFLAGS@
-diff -ruN 1/minidlna.c 2/minidlna.c
---- 1/minidlna.c	2015-02-28 20:28:01.000000000 +0200
-+++ 2/minidlna.c	2015-02-28 20:48:47.000000000 +0200
-@@ -661,6 +661,11 @@
+--- a/minidlna.c
++++ b/minidlna.c
+@@ -709,6 +709,11 @@ init(int argc, char **argv)
  	runtime_vars.max_connections = 50;
  	runtime_vars.root_container = NULL;
  	runtime_vars.ifaces[0] = NULL;
@@ -134,7 +130,7 @@ diff -ruN 1/minidlna.c 2/minidlna.c
  
  	/* read options file first since
  	 * command line arguments have final say */
-@@ -871,6 +876,30 @@
+@@ -925,6 +930,30 @@ init(int argc, char **argv)
  			if (strtobool(ary_options[i].value))
  				SETFLAG(WIDE_LINKS_MASK);
  			break;
@@ -165,10 +161,9 @@ diff -ruN 1/minidlna.c 2/minidlna.c
  		case TIVO_DISCOVERY:
  			if (strcasecmp(ary_options[i].value, "beacon") == 0)
  				CLEARFLAG(TIVO_BONJOUR_MASK);
-diff -ruN 1/minidlna.conf 2/minidlna.conf
---- 1/minidlna.conf	2015-02-28 20:28:01.000000000 +0200
-+++ 2/minidlna.conf	2015-02-28 20:49:58.000000000 +0200
-@@ -95,5 +95,17 @@
+--- a/minidlna.conf
++++ b/minidlna.conf
+@@ -98,6 +98,18 @@ model_number=1
  # be used.
  #bgcolor=666666,999999
  
@@ -186,10 +181,10 @@ diff -ruN 1/minidlna.conf 2/minidlna.conf
 +
  # set this to yes to allow symlinks that point outside user-defined media_dirs.
  #wide_links=no
-diff -ruN 1/minidlnatypes.h 2/minidlnatypes.h
---- 1/minidlnatypes.h	2015-02-28 20:28:01.000000000 +0200
-+++ 2/minidlnatypes.h	2015-02-28 20:50:37.000000000 +0200
-@@ -51,6 +51,10 @@
+ 
+--- a/minidlnatypes.h
++++ b/minidlnatypes.h
+@@ -51,6 +51,10 @@ struct runtime_vars_s {
  	int max_connections;	/* max number of simultaneous conenctions */
  	const char *root_container;	/* root ObjectID (instead of "0") */
  	const char *ifaces[MAX_LAN_ADDR];	/* list of configured network interfaces */
@@ -200,10 +195,9 @@ diff -ruN 1/minidlnatypes.h 2/minidlnatypes.h
  };
  
  struct string_s {
-diff -ruN 1/options.c 2/options.c
---- 1/options.c	2015-02-28 20:28:01.000000000 +0200
-+++ 2/options.c	2015-02-28 20:51:54.000000000 +0200
-@@ -64,7 +64,15 @@
+--- a/options.c
++++ b/options.c
+@@ -64,7 +64,15 @@ static const struct {
  	{ USER_ACCOUNT, "user" },
  	{ FORCE_SORT_CRITERIA, "force_sort_criteria" },
  	{ MAX_CONNECTIONS, "max_connections" },
@@ -219,10 +213,9 @@ diff -ruN 1/options.c 2/options.c
  #ifdef HAVE_LIBPNG
  	{ ICON, "icon" },
  	{ BGCOLOR, "bgcolor" },
-diff -ruN 1/options.h 2/options.h
---- 1/options.h	2015-02-28 20:28:01.000000000 +0200
-+++ 2/options.h	2015-02-28 20:52:52.000000000 +0200
-@@ -57,7 +57,15 @@
+--- a/options.h
++++ b/options.h
+@@ -57,7 +57,15 @@ enum upnpconfigoptions {
  	USER_ACCOUNT,			/* user account to run as */
  	FORCE_SORT_CRITERIA,		/* force sorting by a given sort criteria */
  	MAX_CONNECTIONS,		/* maximum number of simultaneous connections */
@@ -238,24 +231,22 @@ diff -ruN 1/options.h 2/options.h
  #ifdef HAVE_LIBPNG
  	ICON,				/* user-supplied PNG icon */
  	BGCOLOR,			/* user-supplied BG color */
-diff -ruN 1/upnpglobalvars.h 2/upnpglobalvars.h
---- 1/upnpglobalvars.h	2015-02-28 20:28:01.000000000 +0200
-+++ 2/upnpglobalvars.h	2015-02-28 20:56:11.000000000 +0200
-@@ -195,6 +195,10 @@
- #endif
- #define SCANNING_MASK         0x0100
+--- a/upnpglobalvars.h
++++ b/upnpglobalvars.h
+@@ -204,6 +204,10 @@ extern uint32_t runtime_flags;
  #define RESCAN_MASK           0x0200
+ #define SUBTITLES_MASK        0x0400
+ #define FORCE_ALPHASORT_MASK  0x0800
 +#ifdef THUMBNAIL_CREATION
-+#define THUMB_MASK            0x0400
-+#define THUMB_FILMSTRIP       0x0800
++#define THUMB_MASK            0x1000
++#define THUMB_FILMSTRIP       0x2000
 +#endif
  
  #define SETFLAG(mask)	runtime_flags |= mask
  #define GETFLAG(mask)	(runtime_flags & mask)
-diff -ruN 1/utils.c 2/utils.c
---- 1/utils.c	2015-02-28 20:28:01.000000000 +0200
-+++ 2/utils.c	2015-02-28 20:57:13.000000000 +0200
-@@ -533,6 +533,20 @@
+--- a/utils.c
++++ b/utils.c
+@@ -536,6 +536,20 @@ resolve_unknown_type(const char * path,
  	return type;
  }
  
@@ -276,10 +267,9 @@ diff -ruN 1/utils.c 2/utils.c
  media_types
  valid_media_types(const char *path)
  {
-diff -ruN 1/utils.h 2/utils.h
---- 1/utils.h	2015-02-28 20:28:01.000000000 +0200
-+++ 2/utils.h	2015-02-28 20:58:06.000000000 +0200
-@@ -100,5 +100,8 @@
+--- a/utils.h
++++ b/utils.h
+@@ -100,6 +100,9 @@ const char *mime_to_ext(const char * mim
  /* Others */
  int make_dir(char * path, mode_t mode);
  unsigned int DJBHash(uint8_t *data, int len);
@@ -287,4 +277,5 @@ diff -ruN 1/utils.h 2/utils.h
 +int rename_artcache_dir(const char * oldpath, const char * newpath);
 +#endif
  
- #endif
+ /* Timeval manipulations */
+ void	timevaladd(struct timeval *t1, const struct timeval *t2);
