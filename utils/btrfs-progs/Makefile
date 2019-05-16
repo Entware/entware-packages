@@ -6,15 +6,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=btrfs-progs
-PKG_VERSION:=4.20.1
-PKG_RELEASE:=2
+PKG_VERSION:=4.20.2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/kernel/people/kdave/btrfs-progs
-PKG_HASH:=562f5d1ff1d17867c4c2be2768c653b62f1f257c42f9bb3e1a36380c02ec4fcd
+PKG_HASH:=890f8b7e162f2bbfaa5c7b23e8b6f791fd3f325239a0510871fa4b45e4a80e7c
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 
-PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
+PKG_MAINTAINER:=Karel Kočí <karel.koci@nic.cz>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
 
@@ -28,7 +28,7 @@ define Package/btrfs-progs
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Filesystem
-  DEPENDS:=+libattr +libuuid +zlib +libblkid +liblzo +libpthread
+  DEPENDS:=+libattr +libuuid +zlib +libblkid +liblzo +libpthread +BTRFS_PROGS_ZSTD:libzstd
   TITLE:=Btrfs filesystems utilities
   URL:=https://btrfs.wiki.kernel.org/
 endef
@@ -38,6 +38,10 @@ define Package/btrfs-progs/description
  advanced features while focusing on fault tolerance, repair and easy
  administration. Initially developed by Oracle, Btrfs is licensed under the
  GPL and open for contribution from anyone.
+endef
+
+define Package/btrfs-progs/config
+	source "$(SOURCE)/Config.in"
 endef
 
 progs = btrfs btrfs-find-root btrfs-image btrfs-map-logical \
@@ -52,8 +56,10 @@ CONFIGURE_ARGS += \
 	--disable-backtrace \
 	--disable-convert \
 	--disable-documentation \
-	--disable-python \
-	--disable-zstd
+	--disable-python
+ifneq ($(CONFIG_BTRFS_PROGS_ZSTD),y)
+CONFIGURE_ARGS += --disable-zstd
+endif
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include $(1)/usr/lib
