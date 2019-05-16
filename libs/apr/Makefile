@@ -9,13 +9,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apr
 PKG_VERSION:=1.6.5
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/apr/
 PKG_HASH:=a67ca9fcf9c4ff59bce7f428a323c8b5e18667fdea7b0ebad47d194371b0a105
+
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
-PKG_LICENSE:=Apache License
+PKG_LICENSE:=Apache-2.0
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 build/ltmain.sh
@@ -32,31 +33,32 @@ define Package/libapr
   URL:=https://apr.apache.org/
 endef
 
-TARGET_CFLAGS += $(FPIC)
-TARGET_CPPFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
+TARGET_CFLAGS += $(FPIC) -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
 
 CONFIGURE_ARGS += \
+	--without-pic \
 	--with-devrandom=/dev/urandom \
-	--disable-dso \
 	$(call autoconf_bool,CONFIG_IPV6,ipv6)
 
 # XXX: ac_cv_sizeof_struct_iovec=1 is just to trick configure
 CONFIGURE_VARS += \
-	ac_cv_file__dev_zero=yes \
-	ac_cv_func_setpgrp_void=yes \
 	ac_cv_sizeof_struct_iovec=1 \
 	ac_cv_struct_rlimit=yes \
-	apr_cv_process_shared_works=no \
-	apr_cv_mutex_robust_shared=no \
+	ac_cv_func_sem_open=yes \
+	ac_cv_func_pthread_mutexattr_setpshared=yes \
+	apr_cv_mutex_robust_shared=yes \
 	apr_cv_tcp_nodelay_with_cork=yes \
-	apr_cv_use_lfs64=yes \
-	apr_cv_pthreads_lib="-lpthread" \
+	apr_cv_sock_cloexec=yes \
+	apr_cv_process_shared_works=yes \
 	apr_cv_mutex_recursive=yes \
+	apr_cv_epoll_create1=yes \
+	apr_cv_epoll=yes \
+	apr_cv_dup3=yes \
+	apr_cv_accept4=yes
 
 ifneq ($(CONFIG_ARCH_64BIT),y)
 CONFIGURE_VARS += \
-	ac_cv_sizeof_pid_t=4 \
-
+	ac_cv_sizeof_pid_t=4
 endif
 
 define Build/InstallDev
