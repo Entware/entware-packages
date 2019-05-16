@@ -20,6 +20,7 @@ define Package/vpnc-scripts
   TITLE:=VPN configuration script for vpnc and OpenConnect
   MAINTAINER:=Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
   SUBMENU:=VPN
+  PKGARCH:=all
 endef
 
 define Package/vpnc-scripts/description
