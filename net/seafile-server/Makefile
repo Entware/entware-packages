@@ -11,13 +11,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-server
 PKG_VERSION:=6.3.4
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/haiwen/seafile-server/tar.gz/v$(PKG_VERSION)-server?
 PKG_HASH:=1ba4c641bad8d7592fd2592827e81470c88b8e802707d2b1e6d551c16d0da100
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-server
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -26,11 +27,19 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 include ../../lang/python/python-package.mk
 
+# Check that the actual Makefile version-relase match the above.
+$(eval $(shell awk '/^PKG_VERSION.*=/ { print "SEAHUB_" $$$$0 }' ../seafile-seahub/Makefile))
+ifneq ($(PKG_VERSION),$(SEAHUB_PKG_VERSION))
+    $(error $(if $(SEAHUB_PKG_VERSION), \
+		Version mismatch between seafile-seahub ($(SEAHUB_PKG_VERSION)) and \
+		seafile-server ($(PKG_VERSION)), \
+		Could not get PKG_VERSION from seafile-seahub Makefile))
+endif
+
 define Package/seafile-server
     SECTION:=net
     CATEGORY:=Network
     TITLE:=Seafile server
-    MAINTAINER:=Gergely Kiss <mail.gery@gmail.com>
     URL:=https://seafile.com/
     DEPENDS:=+libarchive +libopenssl +glib2 +libsearpc +seafile-ccnet +seafile-seahub +sqlite3-cli +python-mysql +python-urllib3 \
 		+jansson +libevent2 +libevent2-openssl +zlib +libzdb +libsqlite3 +libmysqlclient \
@@ -46,11 +55,7 @@ define Package/seafile-server/description
    Open source cloud storage with advanced features on privacy protection and teamwork.
 endef
 
-CONFIGURE_ARGS += --disable-client \
-		    --enable-server \
-		    --enable-python \
-		    --disable-static-build \
-		    --disable-server-pkg
+CONFIGURE_ARGS += --enable-python
 
 ifeq ($(CONFIG_SEAFILE_FUSE_SUPPORT),y)
 	CONFIGURE_ARGS += --enable-fuse
@@ -63,12 +68,6 @@ ifeq ($(CONFIG_SEAFILE_CONSOLE_SUPPORT),y)
 	CONFIGURE_ARGS += --enable-console
 else
 	CONFIGURE_ARGS += --disable-console
-endif
-
-ifeq ($(CONFIG_SEAFILE_RIAK_SUPPORT),y)
-	CONFIGURE_ARGS += --enable-riak
-else
-	CONFIGURE_ARGS += --disable-riak
 endif
 
 PKG_BUILD_DEPENDS:=vala/host libevhtp
