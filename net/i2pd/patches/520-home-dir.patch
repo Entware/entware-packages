@@ -1,16 +1,16 @@
 --- a/libi2pd/FS.cpp
 +++ b/libi2pd/FS.cpp
-@@ -78,11 +78,11 @@ namespace fs {
- #endif
-     char *home = getenv("HOME");
-     if (isService) {
--      dataDir = "/var/lib/" + appName;
-+      dataDir = "/opt/var/lib/" + appName;
-     } else if (home != NULL && strlen(home) > 0) {
-       dataDir = std::string(home) + "/." + appName;
-     } else {
--      dataDir = "/tmp/" + appName;
-+      dataDir = "/opt/tmp/" + appName;
-     }
-     return;
+@@ -100,11 +100,11 @@ namespace fs {
+ 		// otherwise use /data/files
+ 		char *home = getenv("HOME");
+ 		if (isService) {
+-			dataDir = "/var/lib/" + appName;
++			dataDir = "/opt/var/lib/" + appName;
+ 		} else if (home != NULL && strlen(home) > 0) {
+ 			dataDir = std::string(home) + "/." + appName;
+ 		} else {
+-			dataDir = "/tmp/" + appName;
++			dataDir = "/opt/tmp/" + appName;
+ 		}
+ 		return;
  #endif

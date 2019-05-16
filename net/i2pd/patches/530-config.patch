@@ -44,7 +44,7 @@
  
  ## Specify a family, router belongs to (default - none)
  # family =
-@@ -191,9 +191,9 @@
+@@ -193,9 +193,9 @@ verify = true
  [addressbook]
  ## AddressBook subscription URL for initial setup
  ## Default: inr.i2p at "mainline" I2P Network
