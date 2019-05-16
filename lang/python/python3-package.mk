@@ -68,6 +68,7 @@ define Py3Package
 
   define Package/$(1)/install
 	$$(call Py3Package/$(1)/install,$$(1))
+	SED="$(SED)" \
 	$(SHELL) $(python3_mk_path)python-package-install.sh "3" \
 		"$(PKG_INSTALL_DIR)" "$$(1)" \
 		"$(HOST_PYTHON3_BIN)" "$$(2)" \
@@ -114,6 +115,7 @@ define Build/Compile/Py3Mod
 endef
 
 PYTHON3_PKG_SETUP_DIR ?=
+PYTHON3_PKG_SETUP_GLOABL_ARGS ?=
 PYTHON3_PKG_SETUP_ARGS ?= --single-version-externally-managed
 PYTHON3_PKG_SETUP_VARS ?=
 
@@ -123,6 +125,7 @@ define Py3Build/Compile/Default
 	)
 	$(call Build/Compile/Py3Mod, \
 		$(PYTHON3_PKG_SETUP_DIR), \
+		$(PYTHON3_PKG_SETUP_GLOBAL_ARGS) \
 		install --prefix="/opt" --root="$(PKG_INSTALL_DIR)" \
 		$(PYTHON3_PKG_SETUP_ARGS), \
 		$(PYTHON3_PKG_SETUP_VARS) \
