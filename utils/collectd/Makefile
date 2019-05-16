@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.8.1
-PKG_RELEASE:=3
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -137,6 +137,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	irq \
 	load \
 	logfile \
+	lua \
 	madwifi \
 	match_empty_counter \
 	match_hashed \
@@ -197,7 +198,11 @@ endef
 
 define Package/collectd
 $(call Package/collectd/Default)
-  DEPENDS:= +libpthread +zlib +libltdl +libgpg-error
+  DEPENDS:= +libpthread \
+	  +zlib \
+	  +libltdl \
+	  +libgpg-error \
+	  +PACKAGE_collectd-mod-lua:liblua
   MENU:=1
 endef
 
@@ -227,7 +232,12 @@ CONFIGURE_ARGS+= \
 CONFIGURE_VARS+= \
 	CFLAGS="$$$$CFLAGS $(FPIC)" \
 	LDFLAGS="$$$$LDFLAGS -lm -lz" \
-	KERNEL_DIR="$(LINUX_DIR)" \
+	KERNEL_DIR="$(LINUX_DIR)"
+
+ifneq ($(CONFIG_PACKAGE_collectd-mod-lua),)
+CONFIGURE_VARS+= \
+	LDFLAGS="$$$$LDFLAGS -ldl -llua"
+endif
 
 ifneq ($(CONFIG_PACKAGE_COLLECTD_ENCRYPTED_NETWORK),)
 CONFIGURE_ARGS+= \
@@ -328,6 +338,11 @@ define BuildPlugin
 			$(PKG_INSTALL_DIR)/opt/lib/collectd/$$$$$$$${m}.so \
 			$$(1)/opt/lib/collectd/ ; \
 	done
+#	if [ -f ./files/usr/share/collectd/plugin/$(1).json ]; then \
+#		$(INSTALL_DIR) $$(1)/usr/share/collectd/plugin ; \
+#		$(INSTALL_DATA) ./files/usr/share/collectd/plugin/$(1).json \
+#			$$(1)/usr/share/collectd/plugin/$(1).json ; \
+#	fi
   endef
 
   $$(eval $$(call BuildPackage,collectd-mod-$(1)))
@@ -365,6 +380,7 @@ $(eval $(call BuildPlugin,irq,interrupt usage input,irq,))
 #$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
 $(eval $(call BuildPlugin,load,system load input,load,))
 $(eval $(call BuildPlugin,logfile,log files output,logfile,))
+$(eval $(call BuildPlugin,lua,lua input/output,lua,+liblua))
 $(eval $(call BuildPlugin,madwifi,MadWifi status input,madwifi,))
 $(eval $(call BuildPlugin,match-empty-counter,empty-counter match,match_empty_counter,))
 $(eval $(call BuildPlugin,match-hashed,hashed match,match_hashed,))
