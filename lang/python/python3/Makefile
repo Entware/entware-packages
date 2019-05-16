@@ -15,7 +15,7 @@ PYTHON_VERSION:=$(PYTHON3_VERSION)
 PYTHON_VERSION_MICRO:=$(PYTHON3_VERSION_MICRO)
 
 PKG_NAME:=python3
-PKG_RELEASE:=4a
+PKG_RELEASE:=10
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
@@ -24,6 +24,9 @@ PKG_HASH:=d83fe8ce51b1bb48bbcf0550fd265b9a75cdfdfa93f916f9e700aef8444bf1bb
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
+PKG_CPE_ID:=cpe:/a:python:python
+
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 
 # This file provides the necsessary host build variables
 include ../python3-host.mk
@@ -55,7 +58,6 @@ define Package/python3/Default
   CATEGORY:=Languages
   TITLE:=Python $(PYTHON_VERSION) programming language
   URL:=https://www.python.org/
-  MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 endef
 
 define Package/python3/Default/description
@@ -198,23 +200,21 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib $(1)/opt/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/include/python$(PYTHON_VERSION) \
 		$(1)/opt/include/
 	$(CP) \
-		$(HOST_PYTHON3_LIB_DIR) \
+		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION) \
 		$(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* \
 		$(1)/opt/lib/
 	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/python3.pc \
-		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/python-$(PYTHON3_VERSION).pc \
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/python*.pc \
 		$(1)/opt/lib/pkgconfig
-	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config-$(PYTHON_VERSION) \
-		$(1)/opt/lib/python$(PYTHON_VERSION)/
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/opt/bin/python$(PYTHON_VERSION)-config \
+		$(1)/opt/bin/
 endef
 
 PYTHON3_BASE_LIB_FILES:= \
