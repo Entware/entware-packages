@@ -12,14 +12,17 @@ include ../python-version.mk
 
 PKG_NAME:=python
 PKG_VERSION:=$(PYTHON_VERSION).$(PYTHON_VERSION_MICRO)
-PKG_RELEASE:=5
+PKG_RELEASE:=4
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=22d9b1ac5b26135ad2b8c2901a9413537e08749a753356ee913c84dbd2df5574
+PKG_HASH:=f222ef602647eecb6853681156d32de4450a2c39f4de93bd5b20235f2e660ed7
 
 PKG_LICENSE:=PSF
 PKG_LICENSE_FILES:=LICENSE Modules/_ctypes/libffi_msvc/LICENSE Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi/LICENSE Modules/_ctypes/libffi_osx/LICENSE Tools/pybench/LICENSE
+PKG_CPE_ID:=cpe:/a:python:python
+
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 
 # This file provides the necsessary host build variables
 include ../python-host.mk
@@ -51,7 +54,6 @@ define Package/python/Default
   CATEGORY:=Languages
   TITLE:=Python $(PYTHON_VERSION) programming language
   URL:=https://www.python.org/
-  MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 endef
 
 define Package/python/Default/description
@@ -192,23 +194,28 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/ $(1)/opt/lib/ $(1)/opt/lib/pkgconfig
-	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)/
+	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib $(1)/opt/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON_VERSION)-openwrt
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/include/python$(PYTHON_VERSION) \
 		$(1)/opt/include/
 	$(CP) \
-		$(HOST_PYTHON_LIB_DIR) \
+		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION) \
 		$(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON_VERSION).so* \
 		$(1)/opt/lib/
 	$(CP) \
-		$(HOST_PYTHON_DIR)/lib/pkgconfig/python.pc \
-		$(HOST_PYTHON_DIR)/lib/pkgconfig/python2.pc \
-		$(HOST_PYTHON_DIR)/lib/pkgconfig/python-$(PYTHON_VERSION).pc \
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/python*.pc \
 		$(1)/opt/lib/pkgconfig
+	$(INSTALL_BIN) \
+		./files/python-config.in \
+		$(1)/opt/bin/python$(PYTHON_VERSION)-config
+	$(SED) \
+		's|@EXENAME@|$(HOST_PYTHON_DIR)/bin/python$(PYTHON_VERSION)|' \
+		$(1)/opt/bin/python$(PYTHON_VERSION)-config
 	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config \
-		$(1)/opt/lib/python$(PYTHON_VERSION)/
+		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/_sysconfigdata.py \
+		$(1)/opt/lib/python$(PYTHON_VERSION)-openwrt/_sysconfigdatatarget.py
 endef
 
 PYTHON_BASE_LIB_FILES:= \
