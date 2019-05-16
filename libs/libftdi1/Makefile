@@ -19,6 +19,9 @@ PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
 PKG_LICENSE:=LGPL-2.0
 PKG_LICENSE_FILES:=COPYING.LIB
 
+# */libftdi1-1.4/ftdipp/ftdi.hpp:34:10: fatal error: boost/shared_ptr.hpp: No such file or directory
+PKG_BUILD_DEPENDS:=boost
+
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
 
