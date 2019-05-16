@@ -60,3 +60,4 @@ endef
 
 $(eval $(call PyPackage,obfsproxy))
 $(eval $(call BuildPackage,obfsproxy))
+$(eval $(call BuildPackage,obfsproxy-src))
