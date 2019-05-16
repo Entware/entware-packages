@@ -1,12 +1,11 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: bumped form 0.2.4 to 0.2.5
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stubby
-PKG_VERSION:=0.2.5
+PKG_VERSION:=0.2.6
 PKG_RELEASE:=1
 
 PKG_LICENSE:=BSD-3-Clause
@@ -14,10 +13,9 @@ PKG_LICENSE_FILES:=COPYING
 PKG_MAINTAINER:=Jonathan Underwood <jonathan.underwood@gmail.com>
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/getdnsapi/$(PKG_NAME)
-PKG_SOURCE_VERSION:=9c6e55a16af8f3258736b804b17eac3d35daebf3
-PKG_MIRROR_HASH:=b50fec400a6277f667e9c26b7a7fd2903412c158a6ed73224fa5485ae87aca28
+PKG_SOURCE_VERSION:=v$(PKG_VERSION)
+PKG_MIRROR_HASH:=af896c471ac67b31c2263d11fcdfcdb32a213621c2f8789f4b0a4ceca4437108
 
 PKG_FIXUP:=autoreconf
 
