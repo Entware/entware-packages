@@ -10,11 +10,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v8.14.1
-PKG_RELEASE:=1
+PKG_VERSION:=v8.16.0
+PKG_RELEASE:=2
 PKG_SOURCE:=node-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://nodejs.org/dist/${PKG_VERSION}
-PKG_HASH:=b1df87803ddffb76fc6739f025f69f6b8288514fcd2f278f0d675ac3d52a6b9b
+PKG_HASH:=3515e8e01568a5dc4dff3d91a76ebc6724f5fa2fbb58b4b0c5da7b178a2f7340
 
 HOST_BUILD_DEPENDS:=python/host
 PKG_BUILD_DEPENDS:=python/host
@@ -39,7 +39,9 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=https://nodejs.org/
-  DEPENDS:=+libstdcpp +zlib +libnghttp2 +libhttp-parser +USE_UCLIBC:libpthread +USE_UCLIBC:librt +NODEJS_ICU:icu
+  DEPENDS:=@!arc @!armeb \
+	   +libstdcpp +zlib +libnghttp2 +libhttp-parser \
+	   +NODEJS_ICU:icu
 endef
 
 define Package/node/description
@@ -62,13 +64,13 @@ define Package/node-npm/description
 endef
 
 define Package/node/config
-	menu "Module Selection"
+	if PACKAGE_node
 
 	config NODEJS_ICU
 		bool "enable i18n features"
 		default n
 
-	endmenu
+	endif
 endef
 
 NODEJS_CPU:=$(subst powerpc,ppc,$(subst aarch64,arm64,$(subst x86_64,x64,$(subst i386,ia32,$(ARCH)))))
@@ -125,9 +127,8 @@ define Package/node-npm/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/bin/npx-cli.js $(1)/opt/lib/node_modules/npm/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/lib/* $(1)/opt/lib/node_modules/npm/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/node_modules/* $(1)/opt/lib/node_modules/npm/node_modules/
-###
-	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/bin/npm-cli.js
-	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/bin/npx-cli.js
+	###
+	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/bin/np{m,x}-cli.js
 endef
 
 $(eval $(call HostBuild))
