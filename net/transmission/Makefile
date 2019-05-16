@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=transmission
 PKG_VERSION:=2.94
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GITHUB/transmission/transmission-releases/master
@@ -87,6 +87,7 @@ define Package/transmission-web
   $(call Package/transmission/template)
   TITLE+= (webinterface)
   DEPENDS:=@(PACKAGE_transmission-daemon-openssl||PACKAGE_transmission-daemon-mbedtls)
+  PKGARCH:=all
 endef
 
 
@@ -134,14 +135,12 @@ CONFIGURE_ARGS += \
 	--without-systemd-daemon
 
 ifeq ($(BUILD_VARIANT),mbedtls)
-  CONFIGURE_ARGS += \
-	--with-crypto=polarssl
+  CONFIGURE_ARGS += --with-crypto=polarssl
   CONFIGURE_VARS += \
 	MBEDTLS_CFLAGS="-I$(STAGING_DIR)/opt/include/mbedtls" \
 	MBEDTLS_LIBS="-lmbedtls -lmbedcrypto"
 else
-  CONFIGURE_ARGS += \
-	--with-crypto=openssl
+  CONFIGURE_ARGS += --with-crypto=openssl
 endif
 
 define Package/transmission-daemon-openssl/install
