@@ -46,8 +46,8 @@ define Build/Compile
 endef
 
 define Package/luabitop/install
-	$(INSTALL_DIR) $(1)/usr/lib/lua
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bit.so $(1)/usr/lib/lua
+	$(INSTALL_DIR) $(1)/opt/lib/lua
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bit.so $(1)/opt/lib/lua
 endef
 
 $(eval $(call BuildPackage,luabitop))
