@@ -12,7 +12,7 @@ PKG_VERSION_MAJOR:=4
 PKG_VERSION_PATCH:=9700
 PKG_COMMIT:=
 PKG_VERSION:=$(PKG_VERSION_MAJOR).$(PKG_VERSION_PATCH)
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 ifeq ($(PKG_COMMIT),)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -108,9 +108,9 @@ endef
 
 define Package/domoticz/install
 	$(INSTALL_DIR) $(1)/opt/etc/config $(1)/opt/etc/hotplug.d/tty $(1)/opt/etc/init.d $(1)/opt/etc/domoticz/plugins
-#	$(INSTALL_BIN) ./files/domoticz.hotplug $(1)/opt/etc/hotplug.d/tty/domoticz
-#	$(INSTALL_BIN) ./files/domoticz.init $(1)/opt/etc/init.d/domoticz
-#	$(INSTALL_CONF) ./files/domoticz.config $(1)/opt/etc/config/domoticz
+#	$(INSTALL_BIN) ./files/domoticz.hotplug $(1)/etc/hotplug.d/tty/domoticz
+#	$(INSTALL_BIN) ./files/domoticz.init $(1)/etc/init.d/domoticz
+#	$(INSTALL_CONF) ./files/domoticz.config $(1)/etc/config/domoticz
 	$(INSTALL_DIR) $(1)/opt/share/domoticz $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/dzVents $(1)/opt/share/domoticz/dzVents
 	$(CP) $(PKG_INSTALL_DIR)/opt/Config $(1)/opt/share/domoticz/Config
