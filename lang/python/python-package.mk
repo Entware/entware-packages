@@ -69,6 +69,7 @@ define PyPackage
 
   define Package/$(1)/install
 	$$(call PyPackage/$(1)/install,$$(1))
+	SED="$(SED)" \
 	$(SHELL) $(python_mk_path)python-package-install.sh "2" \
 		"$(PKG_INSTALL_DIR)" "$$(1)" \
 		"$(HOST_PYTHON_BIN)" "$$(2)" \
@@ -115,6 +116,7 @@ define Build/Compile/PyMod
 endef
 
 PYTHON_PKG_SETUP_DIR ?=
+PYTHON_PKG_SETUP_GLOBAL_ARGS ?=
 PYTHON_PKG_SETUP_ARGS ?= --single-version-externally-managed
 PYTHON_PKG_SETUP_VARS ?=
 
@@ -124,6 +126,7 @@ define PyBuild/Compile/Default
 	)
 	$(call Build/Compile/PyMod, \
 		$(PYTHON_PKG_SETUP_DIR), \
+		$(PYTHON_PKG_SETUP_GLOBAL_ARGS) \
 		install --prefix="/opt" --root="$(PKG_INSTALL_DIR)" \
 		$(PYTHON_PKG_SETUP_ARGS), \
 		$(PYTHON_PKG_SETUP_VARS) \
