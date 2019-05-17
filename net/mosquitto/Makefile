@@ -231,6 +231,7 @@ ifeq ($(BUILD_VARIANT),nossl)
 else
 	MAKE_FLAGS += WITH_WEBSOCKETS=$(if $(CONFIG_MOSQUITTO_LWS),"yes","no")
 	MAKE_FLAGS += WITH_TLS_PSK=$(if $(CONFIG_OPENSSL_WITH_PSK),"yes","no")
+	MAKE_FLAGS += CLIENT_LDFLAGS="$$(CLIENT_LDFLAGS) -L$(STAGING_DIR)/opt/lib -lssl -lcrypto"
 endif
 
 $(eval $(call BuildPackage,mosquitto-ssl))
