@@ -48,7 +48,7 @@ define Package/smcroute/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/smcrouted $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/smcroutectl $(1)/opt/bin/
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/smcroute.conf $(1)/opt/etc
-	$(INSTALL_BIN) ./files/S50smcroute $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/S50smcroute $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,smcroute))
