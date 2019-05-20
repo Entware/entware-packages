@@ -128,7 +128,7 @@ endef
 define Package/zabbix-proxy
   $(call Package/zabbix/Default)
   TITLE+= proxy
-  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient
+  DEPENDS += +ZABBIX_POSTGRESQL:libpq +ZABBIX_MYSQL:libmariadbclient +libevent2
 endef
 
 define Package/zabbix-extra-mac80211/description
@@ -157,9 +157,10 @@ CONFIGURE_ARGS+= \
 	--disable-java \
 	$(if $(CONFIG_ZABBIX_MYSQL),--with-mysql) \
 	$(if $(CONFIG_ZABBIX_POSTGRESQL),--with-postgresql) \
-	--with-libevent=$(STAGING_DIR)/opt/include/libevent \
-	--with-libpcre=$(STAGING_DIR)/opt/include \
-	--with-zlib=$(STAGING_DIR)/opt/include \
+	--with-libevent-include=$(STAGING_DIR)/opt/include/libevent \
+	--with-libevent-lib=$(STAGING_DIR)/opt/lib \
+	--with-libpcre=$(STAGING_DIR)/opt \
+	--with-zlib=$(STAGING_DIR)/opt \
 	$(if $(CONFIG_ZABBIX_GNUTLS),--with-gnutls="$(STAGING_DIR)/opt") \
 	$(if $(CONFIG_ZABBIX_OPENSSL),--with-openssl="$(STAGING_DIR)/opt")
 
