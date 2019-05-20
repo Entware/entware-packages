@@ -7,7 +7,5 @@ PREARGS=""
 DESC=$PROCS
 PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-iptables -I INPUT -p tcp --destination-port 443 -j ACCEPT
-iptables -I INPUT -p udp --destination-port 443 -j ACCEPT
 . /opt/etc/init.d/rc.func
 
