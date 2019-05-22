@@ -1,8 +1,8 @@
-commit b63dfd7ce6f5230de7e6248f99c714c295f2296c
-Merge: 3429e7ad0 70c34ef47
-Author: Hannu Nyman <hannu.nyman@iki.fi>
-Date:   Tue Feb 26 23:39:05 2019 +0200
+commit 6adfd66f4222d4c9f8b8b6631106268b1d250a89
+Merge: 867e41ce8 531b9adf9
+Author: Rosen Penev <rosenp@gmail.com>
+Date:   Thu May 16 08:43:35 2019 -0700
 
-    Merge pull request #8231 from neheb/tran
+    Merge pull request #8887 from neheb/ib
     
-    transmission: Add LTO support to shave off 35KB off of the ipk
+    ibrdtnd: Fix compilation with uClibc-ng
