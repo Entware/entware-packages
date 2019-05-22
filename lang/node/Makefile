@@ -40,7 +40,7 @@ define Package/node
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=https://nodejs.org/
   DEPENDS:=@!arc @!armeb \
-	   +libstdcpp +zlib +libnghttp2 +libhttp-parser \
+	   +libstdcpp +libopenssl +zlib +libnghttp2 +libuv +libhttp-parser \
 	   +NODEJS_ICU:icu
 endef
 
@@ -89,7 +89,9 @@ CONFIGURE_ARGS:= \
 	--dest-os=linux \
 	--without-snapshot \
 	--shared-zlib \
+	--shared-openssl \
 	--shared-nghttp2 \
+	--shared-libuv \
 	--shared-http-parser \
 	--with-intl=$(if $(CONFIG_NODEJS_ICU),system-icu,none) \
 	$(if $(findstring mips,$(NODEJS_CPU)), \
