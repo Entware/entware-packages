@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pycurl
 PKG_VERSION:=7.43.0.2
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=pycurl-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://files.pythonhosted.org/packages/source/p/pycurl
@@ -30,7 +30,7 @@ define Package/python-curl/Default
   SUBMENU:=Python
   TITLE:=Python module interface to the cURL library
   URL:=http://pycurl.io/
-  DEPENDS:=+libcurl +libmbedtls
+  DEPENDS:=+libcurl
 endef
 
 define Package/python-curl
@@ -55,8 +55,20 @@ $(call Package/python-curl/description)
 (Variant for Python3)
 endef
 
-PYTHON_PKG_SETUP_ARGS:=--with-mbedtls
-PYTHON3_PKG_SETUP_ARGS:=--with-mbedtls
+ifdef CONFIG_LIBCURL_OPENSSL
+  PYTHON_PKG_SETUP_ARGS:=--with-openssl
+  PYTHON3_PKG_SETUP_ARGS:=--with-openssl
+endif
+
+ifdef CONFIG_LIBCURL_GNUTLS
+  PYTHON_PKG_SETUP_ARGS:=--with-gnutls
+  PYTHON3_PKG_SETUP_ARGS:=--with-gnutls
+endif
+
+ifdef CONFIG_LIBCURL_MBEDTLS
+  PYTHON_PKG_SETUP_ARGS:=--with-mbedtls
+  PYTHON3_PKG_SETUP_ARGS:=--with-mbedtls
+endif
 
 $(eval $(call PyPackage,python-curl))
 $(eval $(call BuildPackage,python-curl))
