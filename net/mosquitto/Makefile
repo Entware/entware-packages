@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
 PKG_VERSION:=1.6.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
 PKG_CPE_ID:=cpe:/a:eclipse:mosquitto
@@ -231,7 +231,7 @@ ifeq ($(BUILD_VARIANT),nossl)
 else
 	MAKE_FLAGS += WITH_WEBSOCKETS=$(if $(CONFIG_MOSQUITTO_LWS),"yes","no")
 	MAKE_FLAGS += WITH_TLS_PSK=$(if $(CONFIG_OPENSSL_WITH_PSK),"yes","no")
-	MAKE_FLAGS += CLIENT_LDFLAGS="$$(CLIENT_LDFLAGS) -L$(STAGING_DIR)/opt/lib -lssl -lcrypto"
+	MAKE_FLAGS += CLIENT_LDFLAGS="$$(TARGET_LDFLAGS) -L$(STAGING_DIR)/opt/lib -lssl -lcrypto"
 endif
 
 $(eval $(call BuildPackage,mosquitto-ssl))
