@@ -1,0 +1,35 @@
+From 29951f22fb753cb1fb937ad10c5f7ccca3544a99 Mon Sep 17 00:00:00 2001
+From: Vladislav Grishenko <themiron@mail.ru>
+Date: Thu, 30 May 2019 08:03:38 +0500
+Subject: restrict ipv6 sockets to be ipv6-only
+
+there are separate sockets for ipv4, fixes possible binding errors.
+
+---
+ wsdd2.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/wsdd2.c b/wsdd2.c
+index 580aa74..9a25428 100644
+--- a/wsdd2.c
++++ b/wsdd2.c
+@@ -376,6 +376,16 @@ static int open_ep(struct endpoint **epp, struct service *sv,
+ 	setsockopt(ep->sock, SOL_SOCKET, SO_REUSEPORT,
+ 				&enable, sizeof enable);
+ #endif
++#ifdef IPV6_V6ONLY
++	if ((ep->family == AF_INET6) &&
++		setsockopt(ep->sock, sp->ipproto_ip, IPV6_V6ONLY,
++				&enable, sizeof enable)) {
++		ep->errstr = __FUNCTION__ ": IPV6_V6ONLY";
++		ep->_errno = errno;
++		close(ep->sock);
++		return -1;
++	}
++#endif
+ 
+ 	if (bind(ep->sock, (struct sockaddr *)&ep->local, ep->llen)) {
+ 		ep->errstr = __FUNCTION__ ": bind";
+-- 
+2.17.1
+

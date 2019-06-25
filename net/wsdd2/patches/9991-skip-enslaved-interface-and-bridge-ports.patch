@@ -1,0 +1,54 @@
+From e9ce48fd2e64af79143d3c53070fc6f070ee54e8 Mon Sep 17 00:00:00 2001
+From: Vladislav Grishenko <themiron@mail.ru>
+Date: Thu, 30 May 2019 12:42:25 +0500
+Subject: skip enslaved and bridged interfaces
+
+they are not usable anyway, limit socket count and send error logging.
+
+---
+ wsdd.h  | 1 +
+ wsdd2.c | 9 +++++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/wsdd.h b/wsdd.h
+index 4315e4f..7fd0c96 100644
+--- a/wsdd.h
++++ b/wsdd.h
+@@ -39,6 +39,7 @@
+ #include <time.h>
+ #include <syslog.h>
+ #include <sys/socket.h>
++#include <sys/stat.h>
+ #include <arpa/inet.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
+diff --git a/wsdd2.c b/wsdd2.c
+index 140178d..580aa74 100644
+--- a/wsdd2.c
++++ b/wsdd2.c
+@@ -677,6 +677,7 @@ again:
+ 				if (!ifa->ifa_addr ||
+ 					(ifa->ifa_addr->sa_family != sv->family) ||
+ 					(ifa->ifa_flags & IFF_LOOPBACK) ||
++					(ifa->ifa_flags & IFF_SLAVE) ||
+ 					(!strcmp(ifa->ifa_name, "LeafNets")) ||
+ 					(!strncmp(ifa->ifa_name, "docker", 6)) ||
+ 					(!strncmp(ifa->ifa_name, "veth", 4)) ||
+@@ -686,6 +687,14 @@ again:
+ 					!(ifa->ifa_flags & IFF_MULTICAST)))
+ 					continue;
+ 
++				{
++					char path[sizeof("/sys/class/net//brport")+IFNAMSIZ];
++					struct stat st;
++					snprintf(path, sizeof(path), "/sys/class/net/%s/brport", ifa->ifa_name);
++					if (stat(path, &st) == 0)
++						continue;
++				}
++
+ 				char ifaddr[_ADDRSTRLEN];
+ 				void *addr =
+ 					_SIN_ADDR((_saddr_t *)ifa->ifa_addr);
+-- 
+2.17.1
+
