@@ -10,17 +10,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=haproxy
-PKG_VERSION:=1.8.20
+PKG_VERSION:=2.0.5
 PKG_RELEASE:=1
 
-PKG_SOURCE:=haproxy-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://www.haproxy.org/download/1.8/src/
-PKG_HASH:=3228f78d5fe1dfbaccf41bf387e36b08eeef6e16330053cafde5fa303e262b16
-
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://www.haproxy.org/download/2.0/src
+PKG_HASH:=3f2e0d40af66dd6df1dc2f6055d3de106ba62836d77b4c2e497a82a4bdbc5422
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
-PKG_LICENSE:=GPL-2.0
-MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>, \
+
+PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>, \
 		Christian Lachner <gladiac@gmail.com>
+PKG_LICENSE:=GPL-2.0-only
+PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:haproxy:haproxy
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -91,13 +93,13 @@ ENABLE_LUA:=y
 ENABLE_REGPARM:=n
 
 ifeq ($(CONFIG_TARGET_x86),y)
-  ENABLE_REGPARM:=y
+	ENABLE_REGPARM:=y
 endif
 
-ifeq ($(CONFIG_LINUX_2_6_36),y)
-  LINUX_TARGET:=linux26
+ifeq ($(CONFIG_USE_UCLIBC),y)
+	LINUX_TARGET:=linux-uclibc
 else
-  LINUX_TARGET:=linux2628
+	LINUX_TARGET:=linux-glibc
 endif
 
 ifeq ($(BUILD_VARIANT),ssl)
@@ -137,14 +139,16 @@ define Build/Compile
 		CC="$(TARGET_CC)" \
 		PCREDIR="$(STAGING_DIR)/opt/" \
 		SMALL_OPTS="-DBUFSIZE=16384 -DMAXREWRITE=1030 -DSYSTEM_MAXCONN=165530" \
-		USE_LINUX_TPROXY=1 USE_LINUX_SPLICE=1 USE_TFO=1 \
-		USE_ZLIB=yes USE_PCRE=1 USE_PCRE_JIT=1 USE_GETADDRINFO=1 \
+		USE_LINUX_TPROXY=1 USE_LINUX_SPLICE=1 USE_TFO=1 USE_NS=1 \
+		USE_ZLIB=1 USE_PCRE=1 USE_PCRE_JIT=1 USE_GETADDRINFO=1 \
+		USE_THREAD=1 USE_PTHREAD_PSHARED=1 \
 		VERSION="$(PKG_VERSION)" SUBVERS="-$(PKG_RELEASE)" \
 		VERDATE="$(shell date -d @$(SOURCE_DATE_EPOCH) '+%Y/%m/%d')" IGNOREGIT=1 \
 		$(ADDON) \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS) -fno-strict-aliasing -Wdeclaration-after-statement -fwrapv -Wno-format-truncation -Wno-unused-label -Wno-sign-compare -Wno-unused-parameter -Wno-old-style-declaration -Wno-ignored-qualifiers -Wno-clobbered -Wno-missing-field-initializers -Wno-implicit-fallthrough -Wno-stringop-overflow -Wno-cast-function-type -Wtype-limits -Wshift-negative-value -Wshift-overflow=2 -Wduplicated-cond -Wnull-dereference" \
 		LD="$(TARGET_CC)" \
-		LDFLAGS="$(TARGET_LDFLAGS) -latomic"
+		LDFLAGS="$(TARGET_LDFLAGS) -latomic" \
+		EXTRA_OBJS="contrib/prometheus-exporter/service-prometheus.o"
 
 	$(MAKE_VARS) $(MAKE) -C $(PKG_BUILD_DIR) \
 		PREFIX="/opt" \
@@ -158,6 +162,7 @@ define Build/Compile
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		$(MAKE_FLAGS) \
+		OPTIMIZE="$(TARGET_CFLAGS)" \
 		ADDLIB="-lcrypto" \
 		halog
 endef

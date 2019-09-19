@@ -1,6 +1,6 @@
 --- a/contrib/halog/Makefile
 +++ b/contrib/halog/Makefile
-@@ -16,7 +16,7 @@
+@@ -16,7 +16,7 @@ DEFINE   =
  OBJS     = halog
  
  halog: halog.c fgets2.c
