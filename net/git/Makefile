@@ -8,16 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.21.0
+PKG_VERSION:=2.22.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=8ccb1ce743ee991d91697e163c47c11be4bf81efbdd9fb0b4a7ad77cc0020d28
+PKG_HASH:=159e4b599f8af4612e70b666600a3139541f8bacc18124daf2cbe8d1b934f29f
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
+
+PKG_CPE_ID:=cpe:/a:git:git
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -133,6 +135,9 @@ define Package/git/install
 	) | ( cd $(1); $(TAR) -xf - )
 	ln $(1)/opt/lib/git-core/git $(1)/opt/bin/git
 	ln $(1)/opt/lib/git-core/git-shell $(1)/opt/bin/git-shell
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' \
+		$(1)/opt/share/git-core/templates/hooks/fsmonitor-watchman.sample
 endef
 
 define Package/git-http/install
