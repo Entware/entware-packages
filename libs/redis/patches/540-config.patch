@@ -1,0 +1,29 @@
+--- a/redis.conf
++++ b/redis.conf
+@@ -133,7 +133,7 @@ tcp-keepalive 300
+ 
+ # By default Redis does not run as a daemon. Use 'yes' if you need it.
+ # Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+-daemonize no
++daemonize yes
+ 
+ # If you run Redis from upstart or systemd, Redis can interact with your
+ # supervision tree. Options:
+@@ -155,7 +155,7 @@ supervised no
+ #
+ # Creating a pid file is best effort: if Redis is not able to create it
+ # nothing bad happens, the server will start and run normally.
+-pidfile /var/run/redis_6379.pid
++pidfile /opt/var/run/redis_6379.pid
+ 
+ # Specify the server verbosity level.
+ # This can be one of:
+@@ -260,7 +260,7 @@ dbfilename dump.rdb
+ # The Append Only File will also be created inside this directory.
+ #
+ # Note that you must specify a directory here, not a file name.
+-dir ./
++dir /opt/var
+ 
+ ################################# REPLICATION #################################
+ 
