@@ -9,23 +9,19 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libftdi1
 PKG_VERSION:=1.4
-PKG_RELEASE:=2
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.intra2net.com/en/developer/libftdi/download/
 PKG_HASH:=ec36fb49080f834690c24008328a5ef42d3cf584ef4060f3a35aa4681cb31b74
-PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
 
-PKG_LICENSE:=LGPL-2.0
+PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
+PKG_LICENSE:=LGPL-2.1-only
 PKG_LICENSE_FILES:=COPYING.LIB
 
-# */libftdi1-1.4/ftdipp/ftdi.hpp:34:10: fatal error: boost/shared_ptr.hpp: No such file or directory
-PKG_BUILD_DEPENDS:=boost
-
-PKG_INSTALL:=1
+CMAKE_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
-
-CMAKE_OPTIONS:=-DBUILD_TESTS=OFF
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -63,21 +59,17 @@ define Package/ftdi_eeprom/description
   read. Otherwise, you will still get the old values.
 endef
 
+CMAKE_OPTIONS += \
+	-DBoost_NO_BOOST_CMAKE=ON \
+	-DBUILD_TESTS=OFF \
+	-DEXAMPLES=OFF
+
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/libftdi1/
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/libftdi1/ftdi.h $(1)/opt/include/libftdi1/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libftdi1.{a,so*} $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/cmake/libftdi1
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/cmake/libftdi1/* $(1)/opt/lib/cmake/libftdi1/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libftdi1.pc $(1)/opt/lib/pkgconfig/libftdi1.pc
-	$(SED) \
-		's,/opt/include,$$$${prefix}/include,g' \
-		 $(1)/opt/lib/pkgconfig/libftdi1.pc
-	$(SED) \
-		's,/opt/lib,$$$${prefix}/lib,g' \
-		 $(1)/opt/lib/pkgconfig/libftdi1.pc
+	$(call Build/InstallDev/cmake,$(1))
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libftdi1.pc
+	$(SED) 's,/opt/lib,$$$${prefix}/lib,g' $(1)/opt/lib/pkgconfig/libftdi1.pc
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libftdipp1.pc
+	$(SED) 's,/opt/lib,$$$${prefix}/lib,g' $(1)/opt/lib/pkgconfig/libftdipp1.pc
 endef
 
 define Package/libftdi1/install
