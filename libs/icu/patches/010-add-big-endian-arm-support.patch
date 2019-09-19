@@ -10,7 +10,7 @@ This fixes compilation on such platforms.
 
 diff --git a/source/i18n/double-conversion-utils.h b/source/i18n/double-conversion-utils.h
 index 1e44fca..b715c65 100644
---- a/18n/double-conversion-utils.h
+--- a/i18n/double-conversion-utils.h
 +++ b/i18n/double-conversion-utils.h
 @@ -99,7 +99,7 @@ int main(int argc, char** argv) {
      defined(_POWER) || defined(_ARCH_PPC) || defined(_ARCH_PPC64) || \
