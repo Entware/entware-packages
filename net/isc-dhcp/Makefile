@@ -10,11 +10,12 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=isc-dhcp
 UPSTREAM_NAME:=dhcp
 PKG_VERSION:=4.4.1
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Philip Prindeville <philipp@redfish-solutions.com>
+PKG_CPE_ID:=cpe:/a:isc:dhcp
 
 PKG_SOURCE:=$(UPSTREAM_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=ftp://ftp.isc.org/isc/dhcp/$(PKG_VERSION) \
@@ -161,7 +162,6 @@ $(call Package/isc-dhcp-omshell/description)
 endef
 
 CONFIGURE_ARGS += \
-	--disable-tracing 		\
 	--enable-paranoia		\
 	--disable-dependency-tracking	\
 	--with-randomdev=/dev/urandom \

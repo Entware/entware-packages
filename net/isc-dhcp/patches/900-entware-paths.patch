@@ -1,6 +1,6 @@
 --- a/includes/dhcpd.h
 +++ b/includes/dhcpd.h
-@@ -1524,61 +1524,61 @@
+@@ -1542,61 +1542,61 @@ typedef unsigned char option_mask [16];
  #else /* !DEBUG */
  
  #ifndef _PATH_DHCPD_CONF
