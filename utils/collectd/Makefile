@@ -4,22 +4,23 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: battery, madwifi, swap plugins added; iptables, iwinfo removed
+# Entware specific: battery, madwifi, swap, write_log plugins added; iptables, iwinfo, routeros removed
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
-PKG_VERSION:=5.8.1
+PKG_VERSION:=5.9.0
 PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
 	https://github.com/collectd/collectd/releases/download/collectd-$(PKG_VERSION)
-PKG_HASH:=e796fda27ce06377f491ad91aa286962a68c2b54076aa77a29673d53204453da
+PKG_HASH:=7b220f8898a061f6e7f29a8c16697d1a198277f813da69474a67911097c0626b
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libltdl/aclocal.m4
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>, Hannu Nyman <hannu.nyman@iki.fi>
+PKG_CPE_ID:=cpe:/a:collectd:collectd
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -27,6 +28,7 @@ PKG_USE_MIPS16:=0
 
 COLLECTD_PLUGINS_DISABLED:= \
 	amqp \
+	ampq1 \
 	apple_sensors \
 	aquaero \
 	barometer \
@@ -43,6 +45,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	genericjmx \
 	gmond \
 	gps \
+	gpu_nvidia \
 	grpc \
 	hddtemp \
 	hugepages \
@@ -55,7 +58,6 @@ COLLECTD_PLUGINS_DISABLED:= \
 	iwinfo \
 	java \
 	log_logstash \
-	lua \
 	lvm \
 	lpar \
 	mbmon \
@@ -77,6 +79,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	oracle \
 	ovs_events \
 	ovs_stats \
+	pcie_errors \
 	perl \
 	pf \
 	pinba \
@@ -104,6 +107,8 @@ COLLECTD_PLUGINS_DISABLED:= \
 	write_redis \
 	write_riemann \
 	write_sensu \
+	write_stackdriver \
+	write_syslog \
 	write_tsdb \
 	xencpu \
 	xmms \
@@ -173,6 +178,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	teamspeak2 \
 	ted \
 	thermal \
+	threshold \
 	unixsock \
 	uptime \
 	users \
@@ -180,6 +186,7 @@ COLLECTD_PLUGINS_SELECTED:= \
 	wireless \
 	write_graphite \
 	write_http \
+	write_log
 
 PKG_CONFIG_DEPENDS:= \
 	$(patsubst %,CONFIG_PACKAGE_collectd-mod-%,$(subst _,-,$(COLLECTD_PLUGINS_SELECTED))) \
@@ -380,7 +387,7 @@ $(eval $(call BuildPlugin,irq,interrupt usage input,irq,))
 #$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
 $(eval $(call BuildPlugin,load,system load input,load,))
 $(eval $(call BuildPlugin,logfile,log files output,logfile,))
-$(eval $(call BuildPlugin,lua,lua input/output,lua,+liblua))
+$(eval $(call BuildPlugin,lua,lua input/output,lua,+PACKAGE_collectd-mod-lua:liblua))
 $(eval $(call BuildPlugin,madwifi,MadWifi status input,madwifi,))
 $(eval $(call BuildPlugin,match-empty-counter,empty-counter match,match_empty_counter,))
 $(eval $(call BuildPlugin,match-hashed,hashed match,match_hashed,))
@@ -402,8 +409,9 @@ $(eval $(call BuildPlugin,openvpn,OpenVPN traffic/compression input,openvpn,))
 $(eval $(call BuildPlugin,ping,ping status input,ping,+PACKAGE_collectd-mod-ping:liboping))
 $(eval $(call BuildPlugin,postgresql,PostgreSQL status input,postgresql,+PACKAGE_collectd-mod-postgresql:libpq))
 $(eval $(call BuildPlugin,powerdns,PowerDNS server status input,powerdns,))
-$(eval $(call BuildPlugin,processes,process status input,processes,))
+$(eval $(call BuildPlugin,processes,process status input,processes,+PACKAGE_collectd-mod-processes:libmnl))
 $(eval $(call BuildPlugin,protocols,network protocols input,protocols,))
+#$(eval $(call BuildPlugin,routeros,MikroTik RouterOS input,routeros,+PACKAGE_collectd-mod-routeros:librouteros))
 $(eval $(call BuildPlugin,rrdtool,RRDtool output,rrdtool,+PACKAGE_collectd-mod-rrdtool:librrd1))
 $(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod-sensors:libsensors))
 $(eval $(call BuildPlugin,snmp,SNMP input,snmp,+PACKAGE_collectd-mod-snmp:libnetsnmp))
@@ -416,6 +424,7 @@ $(eval $(call BuildPlugin,teamspeak2,TeamSpeak2 input,teamspeak2,))
 $(eval $(call BuildPlugin,ted,The Energy Detective input,ted,))
 $(eval $(call BuildPlugin,tcpconns,TCP connection tracking input,tcpconns,))
 $(eval $(call BuildPlugin,thermal,system temperatures input,thermal,))
+$(eval $(call BuildPlugin,threshold,Notifications and thresholds,threshold,))
 $(eval $(call BuildPlugin,unixsock,unix socket output,unixsock,))
 $(eval $(call BuildPlugin,uptime,uptime status input,uptime,))
 $(eval $(call BuildPlugin,users,user logged in status input,users,))
@@ -423,3 +432,4 @@ $(eval $(call BuildPlugin,vmem,virtual memory usage input,vmem,))
 $(eval $(call BuildPlugin,wireless,wireless status input,wireless,))
 $(eval $(call BuildPlugin,write-graphite,Carbon/Graphite output,write_graphite,+PACKAGE_collectd-mod-write-graphite:libpthread))
 $(eval $(call BuildPlugin,write-http,HTTP POST output,write_http,+PACKAGE_collectd-mod-write-http:libcurl))
+$(eval $(call BuildPlugin,write-log,Log output,write_log,))
