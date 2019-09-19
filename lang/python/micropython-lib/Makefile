@@ -45,8 +45,8 @@ MAKE_FLAGS:=\
 define Package/micropython-lib/install
 	$(INSTALL_DIR) $(1)/opt/lib/micropython
 	$(CP) $(PKG_BUILD_DIR)/_install_tmp/dist/* $(1)/opt/lib/micropython
-	# fix python exec path in scripts
-	find $(PKG_BUILD_DIR) -name *.py | xargs $(SED) 's|/usr/bin/env python|/opt/bin/python|'
+	# Entware specific: fix exec path in scripts
+	$(FIND) $(1)/opt -name '*.py' | $(XARGS) $(SED) 's,^#!.*python,#!/opt/bin/python,'
 endef
 
 $(eval $(call BuildPackage,micropython-lib))
