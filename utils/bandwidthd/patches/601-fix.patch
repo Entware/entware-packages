@@ -1,6 +1,6 @@
 --- a/etc/bandwidthd.conf
 +++ b/etc/bandwidthd.conf
-@@ -52,7 +52,7 @@
+@@ -52,7 +52,7 @@ graph false
  #meta_refresh 150
  
  # SQLite DB path

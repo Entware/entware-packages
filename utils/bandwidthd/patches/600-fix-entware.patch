@@ -1,6 +1,6 @@
 --- a/bandwidthd.c
 +++ b/bandwidthd.c
-@@ -210,20 +210,20 @@
+@@ -210,20 +210,20 @@ void makepidfile(pid_t pid)
  	{
  	FILE *pidfile;
  
@@ -25,7 +25,7 @@
  	}
  
  
-@@ -258,13 +258,13 @@
+@@ -258,13 +258,13 @@ int main(int argc, char **argv)
  
  	openlog("bandwidthd", LOG_CONS, LOG_DAEMON);
  
@@ -42,7 +42,7 @@
  			exit(1);
  			}
  		else
-@@ -274,7 +274,7 @@
+@@ -274,7 +274,7 @@ int main(int argc, char **argv)
  		}
  	else
  	        {
@@ -51,7 +51,7 @@
  		}
  		
  	if (!bdconfig_in)
-@@ -349,10 +349,10 @@
+@@ -349,10 +349,10 @@ int main(int argc, char **argv)
  
  	if (config.graph)
  		{
@@ -68,7 +68,7 @@
  	/* detach from console. */
 --- a/bandwidthd.service
 +++ b/bandwidthd.service
-@@ -3,7 +3,7 @@
+@@ -3,7 +3,7 @@ Description=Bandwidthd Network Traffic M
  After=network.target
  
  [Service]
@@ -90,9 +90,10 @@
    php_value short_open_tag on
    Require ip 127.0.0.1
  </Directory>
+\ No newline at end of file
 --- a/configure
 +++ b/configure
-@@ -80,8 +80,8 @@
+@@ -80,8 +80,8 @@ exec 6>&1
  #
  # Initializations.
  #
@@ -103,7 +104,7 @@
  subdirs=
  MFLAGS= MAKEFLAGS=
  SHELL=${CONFIG_SHELL-/bin/sh}
-@@ -138,10 +138,10 @@
+@@ -138,10 +138,10 @@ ac_init_version=false
  # The variables have the same names as the options, with
  # dashes changed to underlines.
  cache_file=/dev/null
