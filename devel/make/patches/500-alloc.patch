@@ -1,6 +1,6 @@
 --- a/glob/glob.c
 +++ b/glob/glob.c
-@@ -208,29 +208,8 @@
+@@ -208,29 +208,8 @@ my_realloc (p, n)
  #endif /* __GNU_LIBRARY__ || __DJGPP__ */
  
  
