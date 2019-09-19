@@ -10,7 +10,7 @@ Index: doc/example.conf.in
 @@ -15,6 +15,76 @@ server:
  	# verbosity number, 0 is least verbose. 1 is default.
  	verbosity: 1
-
+ 
 +	############################################################################
 +	# MEMORY CONTROL EXAMPLE
 +	# In the example config settings below memory usage is reduced. Some ser-
