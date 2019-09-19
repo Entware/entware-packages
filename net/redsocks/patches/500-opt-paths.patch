@@ -1,6 +1,6 @@
 --- a/main.c
 +++ b/main.c
-@@ -39,7 +39,7 @@
+@@ -45,7 +45,7 @@ app_subsys *subsystems[] = {
  	&dnstc_subsys,
  };
  
