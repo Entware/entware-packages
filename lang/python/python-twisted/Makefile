@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-twisted
-PKG_VERSION:=19.2.0
+PKG_VERSION:=19.7.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=Twisted-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://files.pythonhosted.org/packages/source/T/Twisted
-PKG_HASH:=1708e1928ae84ec9d3ebab0d427e20e1e38ff721b15bbced476d047d4a43abbe
+PKG_HASH:=d5db93026568f60cacdc0615fcd21d46f694a6bfad0ef3ff53cde2b4bb85a39d
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-twisted-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=libtirpc
