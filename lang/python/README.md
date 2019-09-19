@@ -52,7 +52,7 @@ Leading up to "The Snap":
   * If a replacement cannot be found, the program will be removed during "The Snap"
 
 * Python 2 libraries will remain in the feed until "The Snap"
-  * A Python 2-only library will be transitioned to Python 3 (or a suitable replacement found), if its Python 3 version is a dependency of another package in the feed
+  * For any Python 2-only libraries, a Python 3 version will be added (or a suitable replacement found), if its Python 3 version is a dependency of another package in the feed
   * Python 2 libraries will receive normal updates until 31 October 2019
   * From 31 October 2019 onward:
     * Python 2-only libraries will receive security updates only
@@ -102,6 +102,28 @@ include $(TOPDIR)/feeds/openwrt-packages/lang/python/python3-package.mk
 ```
 
 Each maintainer[s] of external packages feeds is responsible for the local name, and relative inclusion path back to this feed (which is named `packages` by default).
+
+In case there is a need/requirement such that the local package feed is named something else than `packages`, one approach to make the package flexible to change is:
+
+```
+PYTHON_PACKAGE_MK:=$(wildcard $(TOPDIR)/feeds/*/lang/python/python-package.mk)
+
+# verify that there is only one single file returned
+ifneq (1,$(words $(PYTHON_PACKAGE_MK)))
+ifeq (0,$(words $(PYTHON_PACKAGE_MK)))
+$(error did not find python-package.mk in any feed)
+else
+$(error found multiple python-package.mk files in the feeds)
+endif
+else
+$(info found python-package.mk at $(PYTHON_PACKAGE_MK))
+endif
+
+include $(PYTHON_PACKAGE_MK)
+```
+
+Same can be done for `python3-package.mk`.
+This should solve the corner-case where the `python[3]-package.mk` can be in some other feed, or if the packages feed will be named something else locally.
 
 ## Build considerations
 
@@ -228,9 +250,9 @@ endef
 Some considerations here (based on the example above):
 * be sure to make sure that `DEPENDS` are correct for both variants; as seen in the example above, `python-codecs` is needed only for `python-lxml` (see **[note-encodings](#note-encodings)**)
 * consider adding conditional DEPENDS for each variant ; so for each Python[3] package add `+PACKAGE_python-lxml:<dep>` as seen in the above example ; the reason for this is build-time reduction ; if you want to build Python3 only packages, this won't build Python & Python packages + dependencies ; this is a known functionality of OpenWrt build deps
-  * there is an exception to the above consideration: if adding `+PACKAGE_python-lxml` conditional deps creates circular dependencies [for some weird reason], then this can be omitted
+  * this should not happen anymore, but if adding `+PACKAGE_python-lxml` conditional deps creates circular dependencies, then open an issue so this can be resolved again.
 * `VARIANT=python` or `VARIANT=python3` must be added
-* typically each variant package is named `Package/python3-<something>` & `Package/python3-<something>` ; this convention makes things easier to follow, though it could work without naming things this this
+* typically each variant package is named `Package/python-<something>` & `Package/python3-<something>` ; this convention makes things easier to follow, though it could work without naming things this way
 * `TITLE` can be something a bit more verbose/neat ; typically the name is short as seen above
 
 <a name="note-encodings">**note-encodings**</a>: That's because some character encodings are needed, which are present in `python3-base` but not in `python-light` (but are present in `python-codecs`) ; this is because Python3 is designed to be more Unicode friendly than Python2 (it's one of the fundamental differences between the 2), and Python3 won't start without those encodings being present.
@@ -272,12 +294,12 @@ These packages will contain byte-codes and binaries (shared libs & other stuff).
 If a user wishes to ship source code, adding 2 more lines creates 2 more packages that ship Python source code:
 ```
 $(eval $(call PyPackage,python-lxml))
-$(eval $(call PyPackage,python-lxml-src))
 $(eval $(call BuildPackage,python-lxml))
+$(eval $(call BuildPackage,python-lxml-src))
 
 $(eval $(call Py3Package,python3-lxml))
-$(eval $(call Py3Package,python3-lxml-src))
 $(eval $(call BuildPackage,python3-lxml))
+$(eval $(call BuildPackage,python3-lxml-src))
 ```
 
 The name `*-src` must be the Python package name; so for `python-lxml-src` a equivalent `python-lxml` name must exist.
