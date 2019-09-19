@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -275,9 +275,9 @@ ENDIF()
+@@ -297,9 +297,9 @@ ENDIF()
  
  SET(DEFAULT_BASEDIR "${DEFAULT_MYSQL_HOME}")
  IF(INSTALL_MYSQLDATADIR MATCHES "^/.*")

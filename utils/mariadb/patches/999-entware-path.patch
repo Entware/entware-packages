@@ -134,7 +134,7 @@
  /*
 --- a/scripts/CMakeLists.txt
 +++ b/scripts/CMakeLists.txt
-@@ -168,7 +168,7 @@ ENDIF(UNIX)
+@@ -170,7 +170,7 @@ ENDIF(UNIX)
  # the documentation, so better not change this.
  
  IF(INSTALL_LAYOUT MATCHES "STANDALONE")
