@@ -10,13 +10,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ser2net
 PKG_VERSION:=2.10.0
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/ser2net
-PKG_MD5SUM:=cd937041144de83d41d811521e72158c
+PKG_HASH:=98f6193225338e25f35302fef5e1f16688693ed43e7b3c3e9e09187eb54547ac
 
-PKG_LICENSE:=GPL-2.0+
+PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_MAINTAINER:=Nicolas Thill <nico@openwrt.org>
 
@@ -29,7 +29,7 @@ define Package/ser2net
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Serial to Network Proxy
-  URL:=http://sourceforge.net/projects/ser2net/
+  URL:=https://sourceforge.net/projects/ser2net/
 endef
 
 define Package/ser2net/description
