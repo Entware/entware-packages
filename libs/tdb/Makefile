@@ -25,11 +25,11 @@ include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/version.mk
 
 define Package/tdb
-  SUBMENU:=database
+  SUBMENU:=Database
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=Trivial Database
-  DEPENDS:=+libattr +USE_UCLIBC:libpthread
+  DEPENDS:=+libattr
   URL:=http://sourceforge.net/projects/tdb/
   MAINTAINER:=Dmitry V. Zimin <pfzim@mail.ru>
 endef
