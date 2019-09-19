@@ -1,6 +1,6 @@
 --- a/src/openssl/cipher.c
 +++ b/src/openssl/cipher.c
-@@ -189,7 +190,7 @@
+@@ -189,7 +189,7 @@ bool cipher_decrypt(cipher_t *cipher, co
  	} else {
  		int len;
  
@@ -22,7 +22,7 @@
  
  #include "../crypto.h"
  
-@@ -94,11 +97,17 @@
+@@ -94,11 +97,17 @@ void randomize(void *out, size_t outlen)
  void crypto_init(void) {
  	random_init();
  
@@ -40,7 +40,7 @@
  
  	if(!RAND_status()) {
  		fprintf(stderr, "Not enough entropy for the PRNG!\n");
-@@ -107,8 +116,12 @@
+@@ -107,8 +116,12 @@ void crypto_init(void) {
  }
  
  void crypto_exit(void) {
