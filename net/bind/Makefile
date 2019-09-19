@@ -10,8 +10,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.12.3-P4
-PKG_RELEASE:=1a
+PKG_VERSION:=9.14.4
+PKG_RELEASE:=1
 USERID:=bind=57:bind=57
 
 PKG_MAINTAINER:=Noah Meyerhans <frodo@morgul.net>
@@ -22,7 +22,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
 	https://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
 	https://ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_HASH:=d1014453c62623e42323fd83fc89444c12ae6b707fd586466959a052fe21f206
+PKG_HASH:=312efb82a6889074f31ef2849af498b3ec97ca69acd5c4e5e4b4045a8fe6b83f
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
@@ -32,7 +32,6 @@ PKG_USE_MIPS16:=0
 PKG_BUILD_PARALLEL:=1
 
 PKG_CONFIG_DEPENDS := \
-	CONFIG_BIND_ENABLE_FILTER_AAAA \
 	CONFIG_BIND_LIBJSON \
 	CONFIG_BIND_LIBXML2
 
@@ -57,7 +56,7 @@ endef
 define Package/bind-libs
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +zlib
+  DEPENDS:=+libopenssl +zlib +libpthread +libatomic
   TITLE:=bind shared libraries
   URL:=https://www.isc.org/software/bind
 ifdef CONFIG_BIND_LIBJSON
@@ -75,6 +74,12 @@ endef
 
 define Package/bind-server/config
 	source "$(SOURCE)/Config.in"
+endef
+
+define Package/bind-server-filter-aaaa
+  $(call Package/bind-server)
+  DEPENDS:=+bind-server
+  TITLE+= filter AAAA plugin
 endef
 
 define Package/bind-client
@@ -128,33 +133,22 @@ export BUILD_CC="$(TARGET_CC)"
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 CONFIGURE_ARGS += \
-	--enable-ipv6=$(if $(CONFIG_IPV6),yes,no) \
-	--with-randomdev="/dev/urandom" \
-	--disable-threads \
 	--disable-linux-caps \
 	--with-openssl="$(STAGING_DIR)/opt" \
 	--with-libtool \
 	--without-lmdb \
-	--enable-epoll=yes \
-	--with-gost=no \
-	--with-gssapi=no \
-	--with-ecdsa=$(if $(CONFIG_OPENSSL_WITH_EC),yes,no) \
-	--with-eddsa=$(if $(CONFIG_BIND_ENABLE_EDDSA),yes,no) \
-	--with-readline=no \
-	--enable-atomic=no \
+	--enable-epoll \
+	--without-gssapi \
+	--without-readline \
+	--without-python \
 	--sysconfdir=/opt/etc/bind
-
-ifdef CONFIG_BIND_ENABLE_FILTER_AAAA
-	CONFIGURE_ARGS += \
-		--enable-filter-aaaa
-endif
 
 ifdef CONFIG_BIND_LIBJSON
 	CONFIGURE_ARGS += \
 		--with-libjson="$(STAGING_DIR)/opt"
 else
 	CONFIGURE_ARGS += \
-		--with-libjson=no
+		--without-libjson
 endif
 
 ifdef CONFIG_BIND_LIBXML2
@@ -162,14 +156,13 @@ ifdef CONFIG_BIND_LIBXML2
 		--with-libxml2="$(STAGING_DIR)/opt"
 else
 	CONFIGURE_ARGS += \
-		--with-libxml2=no
+		--without-libxml2
 endif
 
 ifeq ($(CONFIG_TARGET_armv7_2_6),y)
 	CONFIGURE_ARGS += \
 		--disable-tcp-fastopen		
 endif
-
 
 
 CONFIGURE_VARS += \
@@ -215,6 +208,11 @@ define Package/bind-server/conffiles
 /opt/etc/bind/db.local
 /opt/etc/bind/db.root
 /opt/etc/bind/named.conf
+endef
+
+define Package/bind-server-filter-aaaa/install
+	$(INSTALL_DIR) $(1)/opt/lib/named
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/named/filter-aaaa.so $(1)/opt/lib/named
 endef
 
 define Package/bind-client/install
@@ -263,6 +261,7 @@ endef
 
 $(eval $(call BuildPackage,bind-libs))
 $(eval $(call BuildPackage,bind-server))
+$(eval $(call BuildPackage,bind-server-filter-aaaa))
 $(eval $(call BuildPackage,bind-client))
 $(eval $(call BuildPackage,bind-tools))
 $(eval $(call BuildPackage,bind-rndc))

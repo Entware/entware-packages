@@ -1,0 +1,20 @@
+--- a/lib/isc/unix/socket.c
++++ b/lib/isc/unix/socket.c
+@@ -106,6 +106,17 @@ typedef struct {
+ #define USE_SELECT
+ #endif	/* HAVE_KQUEUE */
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++/* SO_REUSEPORT since Linux 3.9 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0)
++#define SO_REUSEPORT SO_REUSEADDR
++/* or #define SO_REUSEPORT 0x0200 */
++/* Allow local address and port reuse. */
++#endif
++
+ /*
+  * Set by the -T dscp option on the command line. If set to a value
+  * other than -1, we check to make sure DSCP values match it, and
