@@ -1,6 +1,6 @@
 --- a/src/ui/xupnpd_ui.lua
 +++ b/src/ui/xupnpd_ui.lua
-@@ -531,7 +531,7 @@
+@@ -533,7 +533,7 @@ function ui_api_call(args)
  end
  
  function ui_restart()
