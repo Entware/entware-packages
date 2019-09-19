@@ -9,22 +9,25 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libnatpmp
 PKG_VERSION:=20150609
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://miniupnp.tuxfamily.org/files
 PKG_HASH:=e1aa9c4c4219bc06943d6b2130f664daee213fb262fcb94dd355815b8f4536b0
-PKG_MAINTAINER:=Hauke Mehrtens <hauke@hauke-m.de>
-PKG_LICENSE:=BSD-3c
+
+PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
+PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
+CMAKE_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libnatpmp/Default
   TITLE:=NAT Port Mapping Protocol (NAT-PMP)
-  URL:=http://miniupnp.free.fr/libnatpmp.html
+  URL:=https://miniupnp.tuxfamily.org/libnatpmp.html
 endef
 
 define Package/libnatpmp/Default/description
@@ -39,6 +42,7 @@ define Package/libnatpmp
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE+= library
+  ABI_VERSION:=1
 endef
 
 define Package/libnatpmp/description
@@ -60,27 +64,14 @@ define Package/natpmpc/description
   This package contains the natpmp client.
 endef
 
-MAKE_FLAGS += \
-	COPTS="$(TARGET_CFLAGS)" \
-	PREFIX="$(PKG_INSTALL_DIR)" \
-	OS="Linux"
-
-define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/declspec.h $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/natpmp.h $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libnatpmp*.{so*,a} $(1)/opt/lib/
-endef
-
 define Package/libnatpmp/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/libnatpmp.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnatpmp.so.* $(1)/opt/lib/
 endef
 
 define Package/natpmpc/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/natpmpc $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/natpmpc $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,libnatpmp))
