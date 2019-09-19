@@ -8,16 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.16.0
+PKG_VERSION:=1.16.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
-PKG_HASH:=4fd376bad78797e7f18094a00f0f1088259326436b537eb5af69b01be2ca1345
+PKG_HASH:=f11c2a6dd1d3515736f0324857957db2de98be862461b5a542a3ac6188dbe32b
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de> \
 				Ansuel Smith <ansuelsmth@gmail.com>
 PKG_LICENSE:=2-clause BSD-like license
+PKG_CPE_ID:=cpe:/a:nginx:nginx
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
 
@@ -440,18 +441,18 @@ endif
 
 ifeq ($(CONFIG_NGINX_HTTP_BROTLI),y)
   define Download/nginx-brotli
-    VERSION:=e26248ee361c04e25f581b92b85d95681bdffb39
+    VERSION:=dc37f658ccb5a51d090dc09d1a2aca2f24309869
     SUBDIR:=nginx-brotli
-    FILE:=ngx-brotli-module-$$(VERSION).tar.gz
+    FILE:=ngx-brotli-module-$$(VERSION).tar.xz
     URL:=https://github.com/eustas/ngx_brotli.git
-    MIRROR_HASH:=76b891ba49f82f0cfbc9cba875646e26ee986b522373e0aa2698a9923a4adcdb
+    MIRROR_HASH:=6bc0c40ff24f6e0ac616dfddc803bdc7fcf54764ba9dc4f9cecb3a68beedcdaf
     PROTO:=git
   endef
   $(eval $(call Download,nginx-brotli))
 
   define Prepare/nginx-brotli
 	$(eval $(Download/nginx-brotli))
-	gzip -dc $(DL_DIR)/$(FILE) | tar -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
+	xzcat $(DL_DIR)/$(FILE) | tar -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
   endef
 endif
 

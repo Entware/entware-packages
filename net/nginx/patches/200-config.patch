@@ -23,7 +23,7 @@
  }
  
  
-@@ -22,7 +22,7 @@
+@@ -22,7 +22,7 @@ http {
      #                  '$status $body_bytes_sent "$http_referer" '
      #                  '"$http_user_agent" "$http_x_forwarded_for"';
  
@@ -32,7 +32,7 @@
  
      sendfile        on;
      #tcp_nopush     on;
-@@ -38,10 +38,10 @@
+@@ -38,10 +38,10 @@ http {
  
          #charset koi8-r;
  
