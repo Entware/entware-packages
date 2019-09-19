@@ -9,23 +9,21 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pulseaudio
 PKG_VERSION:=12.2
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://freedesktop.org/software/pulseaudio/releases/
 PKG_HASH:=809668ffc296043779c984f53461c2b3987a45b7a25eb2f0a1d11d9f23ba4055
-PKG_LICENSE:=LGPL-2.1+
-PKG_LICENSE_FILES:=GPL LICENSE
 
-PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=intltool/host
+PKG_LICENSE:=LGPL-2.1-or-later
+PKG_LICENSE_FILES:=GPL LICENSE
+PKG_CPE_ID:=cpe:/a:pulseaudio:pulseaudio
 
 PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
+PKG_BUILD_DEPENDS:=intltool/host glib2/host
 PKG_USE_MIPS16:=0
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)
-
-PKG_INSTALL = 1
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -84,7 +82,7 @@ endef
 define Package/pulseaudio-tools
   SECTION:=sound
   CATEGORY:=Sound
-  DEPENDS:=+libsndfile +pulseaudio
+  DEPENDS:=+libsndfile pulseaudio
   TITLE:=Tools for Pulseaudio
   URL:=http://www.pulseaudio.org
   VARIANT:=noavahi
@@ -93,7 +91,7 @@ endef
 define Package/pulseaudio-profiles
   SECTION:=sound
   CATEGORY:=Sound
-  DEPENDS:=+pulseaudio
+  DEPENDS:=pulseaudio
   TITLE:=Profiles for Pulseaudio
   URL:=http://www.pulseaudio.org
 endef
@@ -119,6 +117,7 @@ CONFIGURE_ARGS += \
 	--disable-jack \
 	--disable-asyncns \
 	--disable-lirc \
+	--disable-tests \
 	--disable-udev \
 	--without-fftw \
 	--without-soxr \
