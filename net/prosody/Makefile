@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=prosody
 PKG_VERSION:=0.11.2
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://prosody.im/downloads/source
@@ -53,7 +53,7 @@ define Build/Configure
 	# this is *NOT* GNU autoconf stuff
 	(cd $(PKG_BUILD_DIR); ./configure \
 		--prefix=/opt \
-		--with-lua="$(STAGING_DIR_HOSTPKG)" \
+		--with-lua-bin="$(STAGING_DIR_HOSTPKG)/bin" \
 		--with-lua-include="$(STAGING_DIR)/opt/include" \
 		--with-lua-lib="$(STAGING_DIR)/opt/lib" \
 		--cflags="$(TARGET_CFLAGS)" \
@@ -104,10 +104,10 @@ define Package/prosody/install
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/prosody/net/websocket/*.lua $(1)/opt/lib/prosody/net/websocket/
 	$(INSTALL_DIR) $(1)/opt/lib/prosody/util
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/prosody/util/*.lua $(1)/opt/lib/prosody/util/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/prosody/util/*.so $(1)/opt/lib/prosody/util/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/prosody/util/*.so $(1)/opt/lib/prosody/util/
 	$(INSTALL_DIR) $(1)/opt/lib/prosody/util/sasl
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/prosody/util/sasl/*.lua $(1)/opt/lib/prosody/util/sasl/
-	#$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/prosody/util/sasl/*.so $(1)/usr/lib/prosody/util/sasl/
+	#$(CP) $(PKG_INSTALL_DIR)/usr/lib/prosody/util/sasl/*.so $(1)/usr/lib/prosody/util/sasl/
 	$(INSTALL_DIR) $(1)/opt/var/{log,run}/prosody
 	# fix opt paths
 	$(SED) '1c\#!/opt/bin/lua' $(1)/opt/bin/prosody{,ctl}
