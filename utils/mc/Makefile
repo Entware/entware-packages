@@ -7,14 +7,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
-PKG_VERSION:=4.8.22
-PKG_RELEASE:=1
+PKG_VERSION:=4.8.23
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
-PKG_LICENSE:=GPL-3.0+
+PKG_LICENSE:=GPL-3.0-or-later
+PKG_CPE_ID:=cpe:/a:midnight_commander:midnight_commander
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ftp.midnight-commander.org/
-PKG_HASH:=ee7868d7ba0498cf2cccefe107d7efee7f2571098806bba2aed5a159db801318
+PKG_HASH:=dd7f7ce74183307b0df25b5c3e60ad3293fd3d3d27d2f37dd7a10efce13dff1c
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf gettext-version
 PKG_BUILD_DEPENDS:=MC_VFS:libtirpc
@@ -62,12 +63,12 @@ CONFIGURE_ARGS += \
 	--without-x \
 	--with-slang-includes="$(STAGING_DIR)/opt/include" \
 	--with-slang-libs="$(STAGING_DIR)/opt/lib" \
-	--with-search-engine=glib \
+	--with-search-engine=glib
 
 CONFIGURE_VARS += \
 	ac_cv_search_addwstr=no \
 	fu_cv_sys_stat_statfs2_bsize=yes \
-	ac_cv_path_GREP=grep \
+	ac_cv_path_GREP=grep
 
 ifeq ($(CONFIG_MC_DIFFVIEWER),)
 CONFIGURE_ARGS += --without-diff-viewer

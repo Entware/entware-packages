@@ -1,6 +1,6 @@
 --- a/lib/global.h
 +++ b/lib/global.h
-@@ -125,7 +125,7 @@
+@@ -131,7 +131,7 @@
  #define PATH_SEP_STR "/"
  #define IS_PATH_SEP(c) ((c) == PATH_SEP)
  #define PATH_ENV_SEP ':'
@@ -8,4 +8,4 @@
 +#define TMPDIR_DEFAULT "/opt/tmp"
  #define SCRIPT_SUFFIX ""
  #define get_default_editor() "vi"
- #define OS_SORT_CASE_SENSITIVE_DEFAULT 1
+ #define OS_SORT_CASE_SENSITIVE_DEFAULT TRUE
