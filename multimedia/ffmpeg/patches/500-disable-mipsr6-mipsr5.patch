@@ -5,7 +5,7 @@ Fixes following linking error while running configure
 
 --- a/configure
 +++ b/configure
-@@ -5279,8 +5279,6 @@
+@@ -5505,8 +5505,6 @@ elif enabled mips; then
          enabled mips64r2 && check_inline_asm_flags mips64r2 '"dext $0, $0, 0, 1"' '-mips64r2'
          disabled mips64r6 && disabled mips64r2 && check_inline_asm_flags mips64r1 '"daddi $0, $0, 0"' '-mips64'
      else
