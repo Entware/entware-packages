@@ -10,11 +10,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v8.16.0
-PKG_RELEASE:=2
+PKG_VERSION:=v8.16.1
+PKG_RELEASE:=1
 PKG_SOURCE:=node-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://nodejs.org/dist/${PKG_VERSION}
-PKG_HASH:=3515e8e01568a5dc4dff3d91a76ebc6724f5fa2fbb58b4b0c5da7b178a2f7340
+PKG_HASH:=d8c190acdf2d967faf49c22df883d31a8d4e249d67852dae3c2d8a0f756b0512
 
 HOST_BUILD_DEPENDS:=python/host
 PKG_BUILD_DEPENDS:=python/host
@@ -105,7 +105,7 @@ CONFIGURE_ARGS:= \
 HOST_CONFIGURE_VARS:=
 
 HOST_CONFIGURE_ARGS:= \
-	--dest-os=linux \
+	--dest-os=$(if $(findstring Darwin,$(HOST_OS)),mac,linux) \
 	--without-snapshot \
 	--prefix=$(STAGING_DIR_HOSTPKG)
 
@@ -129,8 +129,12 @@ define Package/node-npm/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/bin/npx-cli.js $(1)/opt/lib/node_modules/npm/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/lib/* $(1)/opt/lib/node_modules/npm/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/node_modules/* $(1)/opt/lib/node_modules/npm/node_modules/
-	###
-	$(SED) 's,/usr/bin/env node,/opt/bin/node,g' $(1)/opt/lib/node_modules/npm/bin/np{m,x}-cli.js
+	# Entware specific: fix exec path in scripts
+	$(FIND) $(1)/opt/lib/node_modules/npm -type f | $(XARGS) $(SED) \
+		's,^#!.*node,#!/opt/bin/node,;s,^#!.*python,#!/opt/bin/python,;s,^#!.*bash,#!/opt/bin/bash,'
+	$(SED) 's,^#!.*sh,#!/bin/sh,' \
+		$(1)/opt/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin/node-gyp \
+		$(1)/opt/lib/node_modules/npm/node_modules/ajv/scripts/prepare-tests
 endef
 
 $(eval $(call HostBuild))
