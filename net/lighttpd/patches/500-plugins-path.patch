@@ -1,6 +1,6 @@
 --- a/doc/config/conf.d/cgi.conf
 +++ b/doc/config/conf.d/cgi.conf
-@@ -12,11 +12,11 @@
+@@ -12,11 +12,11 @@ server.modules += ( "mod_cgi" )
  ##
  ## For PHP don't forget to set cgi.fix_pathinfo = 1 in the php.ini.
  ##
@@ -19,7 +19,7 @@
  ## to get the old cgi-bin behavior of apache
 --- a/doc/config/conf.d/rrdtool.conf
 +++ b/doc/config/conf.d/rrdtool.conf
-@@ -10,12 +10,12 @@
+@@ -10,12 +10,12 @@ server.modules += ( "mod_rrdtool" )
  ##
  ## Path to the rrdtool binary.
  ##
@@ -36,7 +36,7 @@
  #######################################################################
 --- a/doc/config/conf.d/simple_vhost.conf
 +++ b/doc/config/conf.d/simple_vhost.conf
-@@ -17,7 +17,7 @@
+@@ -17,7 +17,7 @@ server.modules += ( "mod_simple_vhost" )
  ##
  simple-vhost.server-root   = vhosts_dir + "/"
  simple-vhost.default-host  = "default.example.com"
