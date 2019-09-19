@@ -1,36 +1,29 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zstd
-PKG_VERSION:=1.4.0
-PKG_RELEASE:=3
+PKG_VERSION:=1.4.2
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/facebook/zstd/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=63be339137d2b683c6d19a9e34f4fb684790e864fee13c7dd40e197a64c705c1
+PKG_HASH:=7a6e1dad34054b35e2e847eb3289be8820a5d378228802239852f913c6dcf6a7
 
+PKG_MAINTAINER:=Amol Bhave <ambhave@fb.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
-
-include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/host-build.mk
-include $(INCLUDE_DIR)/cmake.mk
 
 PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
 CMAKE_SOURCE_SUBDIR:=build/cmake
 CMAKE_INSTALL:=1
 
-ifeq ($(CONFIG_ZSTD_OPTIMIZE_O3),y)
-	TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS))
-	TARGET_CFLAGS += -O3
-	TARGET_CXXFLAGS := $(filter-out -O%,$(TARGET_CXXFLAGS))
-	TARGET_CXXFLAGS += -O3
-endif
+include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/zstd/Default
 	SUBMENU:=Compression
 	URL:=https://github.com/facebook/zstd
-	MAINTAINER:=Amol Bhave <ambhave@fb.com>
 endef
 
 define Package/libzstd
@@ -38,6 +31,7 @@ $(call Package/zstd/Default)
 	SECTION:=libs
 	CATEGORY:=Libraries
 	TITLE:=zstd library.
+	MENU:=1
 endef
 
 define Package/libzstd/description
@@ -48,6 +42,7 @@ endef
 define Package/libzstd/config
 	config ZSTD_OPTIMIZE_O3
 		bool "Use all optimizations (-O3)"
+		depends on PACKAGE_libzstd
 		default y
 		help
 			This enables additional optmizations using the -O3 compilation flag.
@@ -66,14 +61,27 @@ define Package/zstd/description
 	This package provides the zstd binaries.
 endef
 
+ifeq ($(CONFIG_ZSTD_OPTIMIZE_O3),y)
+TARGET_CFLAGS:= $(filter-out -O%,$(TARGET_CFLAGS)) -O3
+endif
+
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -Wl,--as-needed
+
+define Build/InstallDev
+	$(call Build/InstallDev/cmake,$(1))
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libzstd.pc
+	$(SED) 's,/opt/lib,$$$${prefix}/lib,g' $(1)/opt/lib/pkgconfig/libzstd.pc
+endef
+
 define Package/libzstd/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libzstd.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzstd.so* $(1)/opt/lib/
 endef
 
 define Package/zstd/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{unzstd,zstd,zstdcat,zstdmt} $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{unzstd,zstd,zstdcat,zstdmt} $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,libzstd))
