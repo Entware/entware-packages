@@ -1,6 +1,6 @@
 --- a/scripts/setup-seafile.sh
 +++ b/scripts/setup-seafile.sh
-@@ -353,7 +353,6 @@ function copy_user_manuals() {
+@@ -350,7 +350,6 @@ function copy_user_manuals() {
      src_docs_dir=${INSTALLPATH}/seafile/docs/
      library_template_dir=${seafile_data_dir}/library-template
      mkdir -p ${library_template_dir}
@@ -8,7 +8,7 @@
  }
  
  function parse_params() {
-@@ -454,9 +453,9 @@ check_sanity;
+@@ -451,9 +450,9 @@ check_sanity;
  if [[ "${need_pause}" == "1" ]]; then
      welcome;
  fi
@@ -20,7 +20,7 @@
  
  check_existing_ccnet;
  if [[ ${use_existing_ccnet} != "true" ]]; then
-@@ -479,7 +478,7 @@ if [[ ${use_existing_seafile} != "true"
+@@ -476,7 +475,7 @@ if [[ ${use_existing_seafile} != "true"
      fi
  fi
  
@@ -29,7 +29,7 @@
  
  printf "\nThis is your config information:\n\n"
  
-@@ -503,8 +502,8 @@ if [[ "${need_pause}" == "1" ]]; then
+@@ -500,8 +499,8 @@ if [[ "${need_pause}" == "1" ]]; then
      read dummy
  fi
  
@@ -40,7 +40,7 @@
  
  # -------------------------------------------
  # Create ccnet conf 
-@@ -523,7 +522,7 @@ if [[ "${use_existing_ccnet}" != "true"
+@@ -520,7 +519,7 @@ if [[ "${use_existing_ccnet}" != "true"
      echo
  fi
  
@@ -49,7 +49,7 @@
  
  # -------------------------------------------
  # Create seafile conf
-@@ -624,10 +623,10 @@ function get_seahub_admin_passwd () {
+@@ -621,10 +620,10 @@ function get_seahub_admin_passwd () {
  }
      
  # get_seahub_admin_email;
@@ -62,7 +62,7 @@
  
  # printf "\n\n"
  # echo "This is your seahub admin username/password"
-@@ -728,8 +727,8 @@ echo "----------------------------------
+@@ -725,8 +724,8 @@ echo "----------------------------------
  echo "Your seafile server configuration has been completed successfully." 
  echo "-----------------------------------------------------------------"
  echo 

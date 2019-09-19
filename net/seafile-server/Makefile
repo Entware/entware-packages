@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-server
 PKG_VERSION:=6.3.4
-PKG_RELEASE:=3
+PKG_RELEASE:=6
 PKG_LICENSE:=GPL-3.0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -41,8 +41,9 @@ define Package/seafile-server
     CATEGORY:=Network
     TITLE:=Seafile server
     URL:=https://seafile.com/
-    DEPENDS:=+libarchive +libopenssl +glib2 +libsearpc +seafile-ccnet +seafile-seahub +sqlite3-cli +python-mysql +python-urllib3 \
-		+jansson +libevent2 +libevent2-openssl +zlib +libzdb +libsqlite3 +libmysqlclient \
+    DEPENDS:=+libarchive +libopenssl +glib2 +libsearpc +seafile-ccnet +seafile-seahub +sqlite3-cli \
+		+python-mysqlclient +python-urllib3 \
+		+jansson +libevent2 +libevent2-openssl +zlib +libzdb +libsqlite3 +libmysqlclient +oniguruma \
 		+libpthread +libuuid +bash +procps-ng +procps-ng-pkill +SEAFILE_FUSE_SUPPORT:libfuse $(ICONV_DEPENDS)
     MENU:=1
 endef
@@ -78,6 +79,10 @@ ifdef CONFIG_USE_MIPS16
 endif
 TARGET_LDFLAGS += -Wl,-rpath-link=$(STAGING_DIR)/opt/lib -liconv \
 		    -L$(STAGING_DIR)/opt/lib/mysql -lmysqlclient -lz -levent_openssl -levent
+
+ifdef CONFIG_GCC_LIBSSP
+TARGET_LDFLAGS += -lssp
+endif
 
 MAKE_VARS += LC_ALL= LANG=en_US.UTF-8
 
@@ -116,8 +121,8 @@ endif
 	$(INSTALL_BIN) ./files/S66seafile $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) ./files/S67seahub $(1)/opt/etc/init.d/
 	find $(1) -name "*\.pyc" -o -name "*\.pyo" | xargs rm -f
-	# fix python exec path in scripts
-	find $(PKG_BUILD_DIR) -name *.py | xargs $(SED) 's|/usr/bin/env python|/opt/bin/python|'
+	# Entware specific: fix exec path in scripts
+	$(FIND) $(1)/opt -name '*.py' | $(XARGS) $(SED) 's,^#!.*python,#!/opt/bin/python,'
 endef
 
 define Build/InstallDev
