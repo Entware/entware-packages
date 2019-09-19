@@ -1,6 +1,6 @@
 --- a/file.h
 +++ b/file.h
-@@ -50,13 +50,13 @@
+@@ -50,13 +50,13 @@ struct host
  #define SENSE_DENY 0
  
  #ifndef DEFAULT_AUTH_FILE
