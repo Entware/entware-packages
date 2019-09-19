@@ -8,19 +8,20 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=talloc
 PKG_VERSION:=2.1.14
 MAJOR_VERSION:=2
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.samba.org/ftp/talloc
 PKG_HASH:=b185602756a628bac507fa8af8b9df92ace69d27c0add5dab93190ad7c3367ce
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
-PKG_LICENSE:=LGPL-3.0+
+PKG_LICENSE:=LGPL-3.0-or-later
 
 PKG_BUILD_PARALLEL:=0
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/kernel.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/libtalloc
   SECTION:=libs
@@ -79,7 +80,7 @@ define Build/Configure
 			\nChecking uname machine type: \"$(ARCH)\" \
 			\nChecking uname release type: \"$(LINUX_VERSION)\" \
 			\nChecking uname sysname type: \"Linux\" \
-			\nChecking uname version type: \"$(LINUX_UNAME_VERSION)\" \
+			\nChecking uname version type: \"$(LINUX_VERSION)\" \
 		\n" ; \
 		$(CONFIGURE_VARS) \
 		./buildtools/bin/waf configure \
