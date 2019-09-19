@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libxml2
 PKG_VERSION:=2.9.9
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://xmlsoft.org/sources/
@@ -38,6 +38,34 @@ endef
 
 define Package/libxml2/description
   A library for manipulating XML and HTML resources.
+endef
+
+define Package/libxml2-dev
+  SECTION:=devel
+  CATEGORY:=Development
+  SUBMENU:=Libraries
+  TITLE:=Development files for libxml2
+  URL:=http://xmlsoft.org/
+  DEPENDS:=+libxml2
+endef
+
+define Package/libxml2-dev/description
+  A library for manipulating XML and HTML resources.
+
+  This package contains the headers and xml2-config binary.
+endef
+
+define Package/libxml2-utils
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE:=XML command line utilities (xmllint...)
+  URL:=http://xmlsoft.org/
+  DEPENDS:=+libxml2
+endef
+
+define Package/libxml2-utils/description
+  This package contains the binaries xmllint and xmlcatalog
+  from libxml2, a library for manipulating XML and HTML resources.
 endef
 
 TARGET_CFLAGS += $(FPIC)
@@ -130,7 +158,32 @@ endef
 
 define Package/libxml2/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libxml2.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libxml2.so.* $(1)/opt/lib/
+endef
+
+define Package/libxml2-dev/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/xml2-config $(1)/opt/bin/
+	$(SED) "s,$(STAGING_DIR),,g" $(1)/opt/bin/xml2-config
+
+	$(INSTALL_DIR) $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libxml2.so $(1)/opt/lib/
+
+	$(INSTALL_DIR) $(1)/opt/lib/{cmake,pkgconfig}
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/{cmake,pkgconfig} $(1)/opt/lib/
+	$(SED) "s,$(STAGING_DIR),,g" $(1)/opt/lib/pkgconfig/*.pc
+
+	$(INSTALL_DIR) $(1)/opt/share/aclocal
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/aclocal/* $(1)/opt/share/aclocal
+endef
+
+define Package/libxml2-utils/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/xmllint $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/xmlcatalog $(1)/opt/bin/
 endef
 
 define Host/Install
@@ -140,3 +193,5 @@ endef
 
 $(eval $(call HostBuild))
 $(eval $(call BuildPackage,libxml2))
+$(eval $(call BuildPackage,libxml2-dev))
+$(eval $(call BuildPackage,libxml2-utils))
