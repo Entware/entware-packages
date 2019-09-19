@@ -9,11 +9,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=motion
 PKG_VERSION:=4.2.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_MAINTAINER:=Roger D <rogerdammit@gmail.com>
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
+PKG_CPE_ID:=cpe:/a:lavrsen:motion
 
 PKG_SOURCE:=$(PKG_NAME)-release-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Motion-Project/motion/tar.gz/release-$(PKG_VERSION)?
@@ -47,6 +48,7 @@ CONFIGURE_ARGS+= \
 	--without-pgsql \
 	--without-sqlite3 \
 	--without-bktr \
+	--without-webp \
 	CFLAGS='$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)'
 
 ifeq ($(CONFIG_TARGET_armv7_2_6),y)
