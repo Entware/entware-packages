@@ -1,8 +1,8 @@
-commit 6adfd66f4222d4c9f8b8b6631106268b1d250a89
-Merge: 867e41ce8 531b9adf9
+commit 5de554a04ff1bdb0793a37f1dd8b3bfd15399574
+Merge: 77239beed 64a02079d
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Thu May 16 08:43:35 2019 -0700
+Date:   Wed Sep 18 23:48:26 2019 -0700
 
-    Merge pull request #8887 from neheb/ib
+    Merge pull request #10028 from neheb/dj
     
-    ibrdtnd: Fix compilation with uClibc-ng
+    django: Update to 1.11.24
