@@ -1,6 +1,6 @@
 --- a/lib/defines.h
 +++ b/lib/defines.h
-@@ -299,20 +299,20 @@
+@@ -299,20 +299,20 @@ char *strchr (), *strrchr (), *strtok ()
  	(strncpy((A), (B), sizeof(A) - 1), (A)[sizeof(A) - 1] = '\0')
  
  #ifndef PASSWD_FILE

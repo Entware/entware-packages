@@ -1,6 +1,6 @@
 --- a/lib/getdef.c
 +++ b/lib/getdef.c
-@@ -139,7 +139,7 @@
+@@ -152,7 +152,7 @@ static struct itemdef knowndef_table[] =
  };
  
  #ifndef LOGINDEFS
@@ -8,7 +8,7 @@
 +#define LOGINDEFS "/opt/etc/login.defs"
  #endif
  
- static char def_fname[] = LOGINDEFS;	/* login config defs file       */
+ static const char* def_fname = LOGINDEFS;	/* login config defs file       */
 --- a/etc/login.defs
 +++ b/etc/login.defs
 @@ -1,5 +1,5 @@
@@ -18,7 +18,7 @@
  #
  #	$Id$
  #
-@@ -27,7 +27,7 @@
+@@ -27,7 +27,7 @@ LOG_UNKFAIL_ENAB	no
  LOG_OK_LOGINS		no
  
  #
@@ -27,7 +27,7 @@
  #
  LASTLOG_ENAB		yes
  
-@@ -66,44 +66,44 @@
+@@ -66,44 +66,44 @@ SYSLOG_SG_ENAB		yes
  # a ":" delimited list of device names.  Root logins will be allowed only
  # from these devices.
  #
@@ -80,7 +80,7 @@
  
  #
  # If defined, the command name to display when running "su -".  For
-@@ -118,7 +118,7 @@
+@@ -118,7 +118,7 @@ NOLOGINS_FILE	/etc/nologin
  #   Directory where mailboxes reside, _or_ name of file, relative to the
  #   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
  #
@@ -89,7 +89,7 @@
  #MAIL_FILE	.mail
  
  #
-@@ -127,8 +127,8 @@
+@@ -127,8 +127,8 @@ MAIL_DIR	/var/spool/mail
  # user's name or shell are found in the file.  If not a full pathname, then
  # hushed mode will be enabled if the file exists in the user's home directory.
  #
@@ -100,7 +100,7 @@
  
  #
  # If defined, either a TZ environment parameter spec or the
-@@ -149,7 +149,7 @@
+@@ -149,7 +149,7 @@ ENV_HZ		HZ=100
  # *REQUIRED*  The default PATH settings, for superuser and normal users.
  #
  # (they are minimal, add the rest in the shell startup files)
@@ -109,7 +109,7 @@
  ENV_PATH	PATH=/bin:/usr/bin
  
  #
-@@ -216,7 +216,7 @@
+@@ -216,7 +216,7 @@ SU_WHEEL_ONLY	no
  #
  # If compiled with cracklib support, sets the path to the dictionaries
  #
@@ -118,7 +118,7 @@
  
  #
  # Min/max values for automatic uid selection in useradd(8)
-@@ -356,14 +356,14 @@
+@@ -356,14 +356,14 @@ DEFAULT_HOME	yes
  # If this file exists and is readable, login environment will be
  # read from it.  Every line should be in the form name=value.
  #
