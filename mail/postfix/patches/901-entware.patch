@@ -1,6 +1,6 @@
 --- a/src/util/sys_defs.h
 +++ b/src/util/sys_defs.h
-@@ -775,18 +775,18 @@
+@@ -766,18 +766,18 @@ extern int initgroups(const char *, int)
  #define HAS_NIS
  #endif
  #define GETTIMEOFDAY(t)	gettimeofday(t,(struct timezone *) 0)
@@ -27,7 +27,7 @@
  #else
 --- a/src/global/mail_params.h
 +++ b/src/global/mail_params.h
-@@ -270,7 +270,7 @@
+@@ -279,7 +279,7 @@ extern int var_smtp_mxsess_limit;
    */
  #define VAR_QUEUE_DIR	"queue_directory"
  #ifndef DEF_QUEUE_DIR
@@ -36,7 +36,7 @@
  #endif
  extern char *var_queue_dir;
  
-@@ -279,13 +279,13 @@
+@@ -288,13 +288,13 @@ extern char *var_queue_dir;
    */
  #define VAR_DAEMON_DIR		"daemon_directory"
  #ifndef DEF_DAEMON_DIR
@@ -52,7 +52,7 @@
  #endif
  extern char *var_command_dir;
  
-@@ -303,7 +303,7 @@
+@@ -312,7 +312,7 @@ extern char *var_pid_dir;
    */
  #define VAR_DATA_DIR		"data_directory"
  #ifndef DEF_DATA_DIR
@@ -61,7 +61,7 @@
  #endif
  extern char *var_data_dir;
  
-@@ -317,7 +317,7 @@
+@@ -326,7 +326,7 @@ extern time_t var_starttime;
    */
  #define VAR_CONFIG_DIR		"config_directory"
  #ifndef DEF_CONFIG_DIR
@@ -70,7 +70,7 @@
  #endif
  extern char *var_config_dir;
  
-@@ -552,7 +552,7 @@
+@@ -571,7 +571,7 @@ extern char *var_luser_relay;
    */
  #define VAR_MAIL_SPOOL_DIR	"mail_spool_directory"
  #ifndef DEF_MAIL_SPOOL_DIR
@@ -79,7 +79,7 @@
  #endif
  extern char *var_mail_spool_dir;
  
-@@ -2595,17 +2595,17 @@
+@@ -2689,17 +2689,17 @@ extern int var_fault_inj_code;
    */
  #define VAR_SENDMAIL_PATH		"sendmail_path"
  #ifndef DEF_SENDMAIL_PATH
@@ -100,7 +100,7 @@
  #endif
  
  #define VAR_OPENSSL_PATH		"openssl_path"
-@@ -2615,7 +2615,7 @@
+@@ -2710,7 +2710,7 @@ extern char *var_openssl_path;
  
  #define VAR_MANPAGE_DIR			"manpage_directory"
  #ifndef DEF_MANPAGE_DIR
@@ -109,7 +109,7 @@
  #endif
  
  #define VAR_SAMPLE_DIR			"sample_directory"
-@@ -3917,7 +3917,7 @@
+@@ -4110,7 +4110,7 @@ extern bool var_smtp_tls_conn_reuse;
    */
  #define VAR_SHLIB_DIR	"shlib_directory"
  #ifndef DEF_SHLIB_DIR
