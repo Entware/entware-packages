@@ -9,7 +9,7 @@
  #include "CedarPch.h"
  
  static SERVER *server = NULL;
-@@ -6439,6 +6439,10 @@ UINT SiWriteConfigurationFile(SERVER *s)
+@@ -6487,6 +6487,10 @@ UINT SiWriteConfigurationFile(SERVER *s)
  	{
  		return 0;
  	}
