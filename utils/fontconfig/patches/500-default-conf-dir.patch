@@ -1,6 +1,6 @@
 --- a/configure.ac
-+++ a/configure.ac
-@@ -440,8 +440,8 @@
++++ b/configure.ac
+@@ -440,8 +440,8 @@ yes)
  		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "WINDOWSFONTDIR", 
  				   [Windows font directory])
  	else
