@@ -13,22 +13,23 @@ include $(TOPDIR)/rules.mk
 # - check if default mode has changed from being tcp_only
 #
 PKG_NAME:=shadowsocks-libev
-PKG_VERSION:=3.2.5
-PKG_RELEASE:=3
+PKG_VERSION:=3.3.1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
-PKG_HASH:=02273d571b8bea067eefb203a43c142d052042179904f9050a1f20cb8dc5d242
+PKG_HASH:=afd25ae5e737be385fa53364c66095c354277e98cf141b54beb2be93d9228f4f
 
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 
-PKG_LICENSE:=GPL-3.0+
+PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_USE_MIPS16:=0
 PKG_BUILD_PARALLEL:=1
+PKG_BUILD_DEPENDS:=c-ares pcre
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -59,7 +60,7 @@ define Package/shadowsocks-libev/Default
     SUBMENU:=Web Servers/Proxies
     TITLE:=shadowsocks-libev $(1)
     URL:=https://github.com/shadowsocks/shadowsocks-libev
-    DEPENDS:=+libcares +libev +libmbedtls +libpcre +libpthread +libsodium +shadowsocks-libev-config +zlib
+    DEPENDS:=+libev +libmbedtls +libpthread +libsodium +shadowsocks-libev-config $(DEPENDS_$(1)) +zlib
   endef
 
   define Package/shadowsocks-libev-$(1)/install
@@ -68,6 +69,9 @@ define Package/shadowsocks-libev/Default
   endef
 
 endef
+
+DEPENDS_ss-local = +libpcre
+DEPENDS_ss-server = +libcares +libpcre
 
 SHADOWSOCKS_COMPONENTS:=ss-local ss-redir ss-tunnel ss-server
 define shadowsocks-libev/templates
@@ -110,6 +114,9 @@ CONFIGURE_ARGS += \
 	--disable-silent-rules \
 	--disable-assert \
 	--disable-ssp \
+
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 $(eval $(call BuildPackage,shadowsocks-libev-config))
 $(eval $(call BuildPackage,shadowsocks-libev-ss-rules))
