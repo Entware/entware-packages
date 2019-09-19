@@ -1,5 +1,5 @@
---- a/plugins/input_uvc/v4l2uvc.c	2018-10-25 09:34:44.000000000 +0300
-+++ b/plugins/input_uvc/v4l2uvc.c	2019-04-16 16:01:31.782046436 +0300
+--- a/plugins/input_uvc/v4l2uvc.c
++++ b/plugins/input_uvc/v4l2uvc.c
 @@ -29,6 +29,13 @@
  #include "huffman.h"
  #include "dynctrl.h"
