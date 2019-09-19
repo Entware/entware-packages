@@ -10,16 +10,17 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=squid
 PKG_VERSION:=4.6
-PKG_RELEASE:=1
-
-PKG_LICENSE:=GPL-2.0
-PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www3.us.squid-cache.org/Versions/v4/ \
 	http://www2.pl.squid-cache.org/Versions/v4/ \
 	http://www.squid-cache.org/Versions/v4/
 PKG_HASH:=015bade5d3a4905142c4c605df5c4216471e3d8338079955e0e44b0ae0303d41
+
+PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
+PKG_LICENSE:=GPL-2.0-or-later
+PKG_CPE_ID:=cpe:/a:squid-cache:squid
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -122,6 +123,9 @@ CONFIGURE_VARS += \
 	ac_cv_header_linux_netfilter_ipv4_h=yes \
 	ac_cv_epoll_works=yes
 
+TARGET_CFLAGS += -Wno-error
+TARGET_LDFLAGS += -latomic
+
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR)/lib all
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
@@ -153,9 +157,8 @@ define Package/squid/install
 	$(INSTALL_DIR) $(1)/opt/share/squid/errors/templates/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/squid/errors/templates/* $(1)/opt/share/squid/errors/templates/
 
-	# fix perl exec path in scripts
-	$(SED) 's,^#!.*,#!/opt/bin/perl,' \
-	$(1)/opt/lib/squid/{helper-mux,log_db_daemon,security_fake_certverify,storeid_file_rewrite,url_lfs_rewrite}
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/lib/squid/*
 endef
 
 define Package/squid-mod-cachemgr/install
