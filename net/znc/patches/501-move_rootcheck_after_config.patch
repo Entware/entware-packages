@@ -9,7 +9,7 @@ Subject: [PATCH] Move the root check to after config parsing
 
 --- a/src/main.cpp
 +++ b/src/main.cpp
-@@ -422,23 +422,6 @@ int main(int argc, char** argv) {
+@@ -434,23 +434,6 @@ int main(int argc, char** argv) {
          CUtils::PrintStatus(true, "");
      }
  
@@ -33,7 +33,7 @@ Subject: [PATCH] Move the root check to after config parsing
      if (bMakeConf) {
          if (!pZNC->WriteNewConfig(sConfig)) {
              CZNC::DestroyInstance();
-@@ -460,6 +443,23 @@ int main(int argc, char** argv) {
+@@ -472,6 +455,23 @@ int main(int argc, char** argv) {
          return 1;
      }
  
