@@ -28,7 +28,7 @@
  
  ###############################################################################
  #
-@@ -67,12 +67,10 @@
+@@ -67,12 +67,10 @@ BUILDFOR	:= $(shell file /usr/bin/make |
  
  ifeq ($(origin CFLAGS),undefined)
  ifeq ($(BUILDFOR),32-bit)
@@ -41,7 +41,7 @@
  LIBDIR		:= /lib64
  USRLIBDIR	:= /usr/lib64
  endif
-@@ -184,7 +184,7 @@ ifeq ($(NO_SOLIB),0)
+@@ -184,7 +182,7 @@ ifeq ($(NO_SOLIB),0)
  	$(INSTALL) -D $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
  	$(LNS) $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SONAME)
  	mkdir -p $(DESTDIR)$(USRLIBDIR)
