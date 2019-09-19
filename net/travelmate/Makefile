@@ -6,9 +6,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=travelmate
-PKG_VERSION:=1.4.5
-PKG_RELEASE:=1
-PKG_LICENSE:=GPL-3.0+
+PKG_VERSION:=1.4.12
+PKG_RELEASE:=2
+PKG_LICENSE:=GPL-3.0-or-later
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 
 include $(INCLUDE_DIR)/package.mk
@@ -17,7 +17,7 @@ define Package/travelmate
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=A wlan connection manager for travel router
-	DEPENDS:=+iwinfo +jshn +jsonfilter +uclient-fetch
+	DEPENDS:=+iwinfo +jshn +jsonfilter +uclient-fetch +dnsmasq
 	PKGARCH:=all
 endef
 
@@ -42,13 +42,16 @@ endef
 
 define Package/travelmate/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) ./files/travelmate.sh $(1)/usr/bin/
+	$(INSTALL_BIN) ./files/travelmate.sh $(1)/usr/bin
 
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/travelmate.init $(1)/etc/init.d/travelmate
 
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/travelmate.conf $(1)/etc/config/travelmate
+
+	$(INSTALL_DIR) $(1)/etc/travelmate
+	$(INSTALL_BIN) ./files/*.login $(1)/etc/travelmate
 endef
 
 $(eval $(call BuildPackage,travelmate))
