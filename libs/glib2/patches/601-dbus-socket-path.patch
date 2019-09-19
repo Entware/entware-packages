@@ -1,6 +1,6 @@
 --- a/gio/gdbusaddress.c
 +++ b/gio/gdbusaddress.c
-@@ -1601,7 +1601,7 @@
+@@ -1628,7 +1628,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
        ret = g_strdup (g_getenv ("DBUS_SYSTEM_BUS_ADDRESS"));
        if (ret == NULL)
          {

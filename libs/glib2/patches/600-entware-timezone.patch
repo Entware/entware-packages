@@ -1,6 +1,6 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -412,7 +412,7 @@
+@@ -412,7 +412,7 @@ zone_info_unix (const gchar  *identifier
  
    tzdir = getenv ("TZDIR");
    if (tzdir == NULL)
@@ -9,7 +9,7 @@
  
    /* identifier can be a relative or absolute path name;
       if relative, it is interpreted starting from /usr/share/zoneinfo
-@@ -436,7 +436,7 @@
+@@ -436,7 +436,7 @@ zone_info_unix (const gchar  *identifier
        gchar *canonical_path = NULL;
        GError *read_link_err = NULL;
  
@@ -18,4 +18,3 @@
  
        /* Resolve the actual timezone pointed to by /etc/localtime. */
        resolved_identifier = g_file_read_link (filename, &read_link_err);
-
