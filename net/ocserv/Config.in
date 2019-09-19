@@ -1,7 +1,7 @@
 # ocserv avanced configuration
 
 menu "Configuration"
-#	depends on PACKAGE_ocserv
+	depends on PACKAGE_ocserv
 
 config OCSERV_PAM
 	bool "enable PAM"

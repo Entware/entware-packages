@@ -1,20 +1,18 @@
-diff -Naur ocserv-0.11.2.orig/src/config.c ocserv-0.11.2/src/config.c
---- ocserv-0.11.2.orig/src/config.c	2016-04-12 23:07:41.000000000 +0300
-+++ ocserv-0.11.2/src/config.c	2016-06-05 10:18:09.490172578 +0300
-@@ -54,8 +54,8 @@
- #include <occtl/ctl.h>
- #include "common-config.h"
+--- a/src/config.c
++++ b/src/config.c
+@@ -56,8 +56,8 @@
+ 
+ #include <getopt.h>
  
 -#define OLD_DEFAULT_CFG_FILE "/etc/ocserv.conf"
 -#define DEFAULT_CFG_FILE "/etc/ocserv/ocserv.conf"
 +#define OLD_DEFAULT_CFG_FILE "/opt/etc/ocserv.conf"
 +#define DEFAULT_CFG_FILE "/opt/etc/ocserv/ocserv.conf"
  
- static char pid_file[_POSIX_PATH_MAX] = "";
- static char cfg_file[_POSIX_PATH_MAX] = DEFAULT_CFG_FILE;
-diff -Naur ocserv-0.11.2.orig/src/main-user.c ocserv-0.11.2/src/main-user.c
---- ocserv-0.11.2.orig/src/main-user.c	2016-04-15 20:13:59.000000000 +0300
-+++ ocserv-0.11.2/src/main-user.c	2016-06-05 10:18:49.161998757 +0300
+ static void print_version(void);
+ 
+--- a/src/main-user.c
++++ b/src/main-user.c
 @@ -47,7 +47,7 @@
  #include <script-list.h>
  #include <ccan/list/list.h>
@@ -24,9 +22,8 @@ diff -Naur ocserv-0.11.2.orig/src/main-user.c ocserv-0.11.2/src/main-user.c
  
  #define APPEND_TO_STR(str, val) \
  			ret = str_append_str(str, val); \
-diff -Naur ocserv-0.11.2.orig/src/occtl/ctl.h ocserv-0.11.2/src/occtl/ctl.h
---- ocserv-0.11.2.orig/src/occtl/ctl.h	2016-03-06 12:44:05.000000000 +0300
-+++ ocserv-0.11.2/src/occtl/ctl.h	2016-06-05 10:17:35.421146656 +0300
+--- a/src/occtl/ctl.h
++++ b/src/occtl/ctl.h
 @@ -1,7 +1,7 @@
  #ifndef CTL_H
  # define CTL_H
@@ -36,10 +33,9 @@ diff -Naur ocserv-0.11.2.orig/src/occtl/ctl.h ocserv-0.11.2/src/occtl/ctl.h
  
  enum {
  	CTL_CMD_STATUS = 1,
-diff -Naur ocserv-0.11.2.orig/src/ocpasswd/ocpasswd.c ocserv-0.11.2/src/ocpasswd/ocpasswd.c
---- ocserv-0.11.2.orig/src/ocpasswd/ocpasswd.c	2016-03-06 12:44:05.000000000 +0300
-+++ ocserv-0.11.2/src/ocpasswd/ocpasswd.c	2016-06-05 10:18:25.762304583 +0300
-@@ -37,7 +37,7 @@
+--- a/src/ocpasswd/ocpasswd.c
++++ b/src/ocpasswd/ocpasswd.c
+@@ -42,7 +42,7 @@
  #include <getpass.h>
  #include <minmax.h>
  
