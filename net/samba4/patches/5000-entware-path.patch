@@ -22,7 +22,7 @@
  
 --- a/source3/client/smbspool_krb5_wrapper.c
 +++ b/source3/client/smbspool_krb5_wrapper.c
-@@ -189,11 +189,11 @@ int main(int argc, char *argv[])
+@@ -201,11 +201,11 @@ int main(int argc, char *argv[])
  		goto create_env;
  	}
  
@@ -112,14 +112,3 @@
  #else
  #define KRB5_DEFAULT_CCNAME_FILE "FILE:%{TEMP}/krb5cc_%{uid}"
  #endif
---- a/.ycm_extra_conf.py
-+++ b/.ycm_extra_conf.py
-@@ -48,7 +48,7 @@ flags = [
-     '-DAD_DC_BUILD_IS_ENABLED=1',
-     '-DHAVE_IPV6=1',
-     '-DFALL_THROUGH',
--    '-I/usr/local/include',
-+    '-I$(STAGING_DIR)/opt/include',
-     '-I.',
-     '-Iauth',
-     '-Iauth/credentials',
