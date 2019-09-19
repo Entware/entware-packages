@@ -1,6 +1,6 @@
---- a/src/smsd_cfg.c	2012-04-12 13:12:33.195184453 +0400
-+++ b/src/smsd_cfg.c	2012-04-12 13:22:07.012336003 +0400
-@@ -312,14 +312,14 @@
+--- a/src/smsd_cfg.c
++++ b/src/smsd_cfg.c
+@@ -312,14 +312,14 @@ void initcfg()
    log_unmodified = 0;
    alarmlevel=LOG_WARNING;
  
@@ -18,7 +18,7 @@
    d_failed[0]=0;
    d_failed_copy[0]=0; // 3.1.17.
    d_sent[0]=0;
-@@ -393,8 +393,8 @@
+@@ -393,8 +393,8 @@ void initcfg()
    username[0] = 0;
    groupname[0] = 0;
  
@@ -29,9 +29,9 @@
  
    terminal = 0;
    os_cygwin = 0;
---- a/src/smsd.c	2010-09-21 13:47:47.000000000 +0400
-+++ b/src/smsd.c	2012-04-12 13:22:49.161297293 +0400
-@@ -7666,7 +7666,7 @@
+--- a/src/smsd.c
++++ b/src/smsd.c
+@@ -7667,7 +7667,7 @@ int main(int argc,char** argv)
      if (p && *p && strlen(p) < sizeof(tmpdir))
        snprintf(tmpdir, sizeof(tmpdir), "%s", p);
      else
@@ -42,7 +42,7 @@
    break_workless_delay = 0;
 --- a/src/smsd_cfg.h
 +++ b/src/smsd_cfg.h
-@@ -21,9 +21,9 @@
+@@ -21,9 +21,9 @@ Either version 2 of the License, or (at
  #include <signal.h>
  
  #ifndef __FreeBSD__
@@ -54,7 +54,7 @@
  #endif
  
  #define DATETIME_DEFAULT "%y-%m-%d %H:%M:%S"
-@@ -34,7 +34,7 @@
+@@ -34,7 +34,7 @@ Either version 2 of the License, or (at
  
  #define CONCATENATED_DIR_FNAME "%s/%s-concatenated"
  
