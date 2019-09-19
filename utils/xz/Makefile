@@ -10,14 +10,14 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xz
 PKG_VERSION:=5.2.4
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/lzmautils
 PKG_HASH:=3313fd2a95f43d88e44264e6b015e7d03053e681860b0d5d3f9baca79c57b7bf
 
 PKG_MAINTAINER:=
-PKG_LICENSE:=Public-Domain LGPL-2.1+ GPL-2.0+ GPL-3.0+
+PKG_LICENSE:=Public-Domain LGPL-2.1-or-later GPL-2.0-or-later GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:tukaani:xz
 
@@ -84,7 +84,7 @@ CONFIGURE_ARGS += \
 	--with-pic
 
 CONFIGURE_VARS += \
-	gl_cv_posix_shell="/opt/bin/bash"
+	gl_cv_posix_shell=/bin/sh
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -117,7 +117,7 @@ $(eval $(call BuildSubPackage,lzmadec, +liblzma,))
 $(eval $(call BuildSubPackage,lzmainfo, +liblzma,))
 $(eval $(call BuildSubPackage,xz, +liblzma, lzcat lzma unlzma unxz xzcat))
 $(eval $(call BuildSubPackage,xzdec, +liblzma,))
-$(eval $(call BuildSubPackage,xzdiff, +bash +xz, lzcmp lzdiff xzcmp))
-$(eval $(call BuildSubPackage,xzgrep, +bash +xz, lzegrep lzfgrep lzgrep xzegrep xzfgrep))
-$(eval $(call BuildSubPackage,xzless, +bash +xz, lzless))
-$(eval $(call BuildSubPackage,xzmore, +bash +xz, lzmore))
+$(eval $(call BuildSubPackage,xzdiff, +xz, lzcmp lzdiff xzcmp))
+$(eval $(call BuildSubPackage,xzgrep, +xz, lzegrep lzfgrep lzgrep xzegrep xzfgrep))
+$(eval $(call BuildSubPackage,xzless, +xz, lzless))
+$(eval $(call BuildSubPackage,xzmore, +xz, lzmore))
