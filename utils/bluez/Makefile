@@ -9,15 +9,16 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bluez
 PKG_VERSION:=5.50
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/bluetooth/
 PKG_HASH:=5ffcaae18bbb6155f1591be8c24898dc12f062075a40b538b745bfd477481911
 
-PKG_LICENSE:=GPL-2.0+
+PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_MAINTAINER:=
+PKG_CPE_ID:=cpe:/a:bluez:bluez
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -28,18 +29,6 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/bluez/Default
   TITLE:=Bluetooth
   URL:=http://www.bluez.org/
-endef
-
-define Package/bluez-examples
-$(call Package/bluez/Default)
-  SECTION:=utils
-  CATEGORY:=Utilities
-  TITLE+= python example apps
-  DEPENDS:=+python
-endef
-
-define Package/bluez-examples/description
-  contains many examples apps for bluetooth, requiring python
 endef
 
 define Package/bluez-libs
@@ -55,6 +44,14 @@ $(call Package/bluez/Default)
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= utilities
+  DEPENDS:=+bluez-libs
+endef
+
+define Package/bluez-utils-extra
+$(call Package/bluez/Default)
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE+= additional utilities
   DEPENDS:=+bluez-libs +libpthread +librt +glib2 +libncurses +libreadline $(INTL_DEPENDS) $(ICONV_DEPENDS) +dbus
 endef
 
@@ -63,7 +60,7 @@ $(call Package/bluez/Default)
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE+= daemon
-  DEPENDS:=+bluez-libs +bluez-utils +dbus +libical $(INTL_DEPENDS) $(ICONV_DEPENDS)
+  DEPENDS:=+bluez-libs +bluez-utils +bluez-utils-extra +glib2 +libncurses +libreadline +dbus +libical $(INTL_DEPENDS) $(ICONV_DEPENDS)
 endef
 
 define Package/bluez-daemon/conffiles
@@ -106,12 +103,6 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/bluez.pc $(1)/opt/lib/pkgconfig/
 endef
 
-define Package/bluez-examples/install
-	$(INSTALL_DIR) $(1)/opt/bin/bluez
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/test/* $(1)/opt/bin/bluez/
-	$(SED) 's,/usr/bin/python,/opt/bin/python,g' $(1)/opt/bin/bluez/*
-endef
-
 define Package/bluez-libs/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libbluetooth.so.* $(1)/opt/lib/
@@ -124,7 +115,6 @@ define Package/bluez-utils/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/bluemoon $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/btattach $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/btmon $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/btmgmt $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ciptool $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hciattach $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hciconfig $(1)/opt/bin/
@@ -133,9 +123,14 @@ define Package/bluez-utils/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hex2hcd $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/l2ping $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/l2test $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mpris-proxy $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/rctest $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/rfcomm $(1)/opt/bin/
+endef
+
+define Package/bluez-utils-extra/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/btmgmt $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mpris-proxy $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sdptool $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/attrib/gatttool $(1)/opt/bin/
 endef
@@ -154,7 +149,7 @@ define Package/bluez-daemon/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/profiles/input/input.conf $(1)/opt/etc/bluetooth/input.conf
 endef
 
-$(eval $(call BuildPackage,bluez-examples))
 $(eval $(call BuildPackage,bluez-libs))
 $(eval $(call BuildPackage,bluez-utils))
+$(eval $(call BuildPackage,bluez-utils-extra))
 $(eval $(call BuildPackage,bluez-daemon))
