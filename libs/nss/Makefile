@@ -7,16 +7,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nss
-PKG_VERSION:=3.44
+PKG_VERSION:=3.46
 PKG_RELEASE:=1
-PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
-PKG_LICENCE:=MPL-2.0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
     https://download.cdn.mozilla.net/pub/security/$(PKG_NAME)/releases/NSS_$(subst .,_,$(PKG_VERSION))_RTM/src \
     https://archive.mozilla.org/pub/security/$(PKG_NAME)/releases/NSS_$(subst .,_,$(PKG_VERSION))_RTM/src
-PKG_HASH:=a5620e59b6eeedfd5a12c9298b50ad92e9898b223e214eb675e36f4ffb5b6aff
+PKG_HASH:=6b699649d285602ba258a4b0957cb841eafc94eff5735a9da8da0adbb9a10cef
+
+PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
+PKG_LICENCE:=MPL-2.0
+PKG_LICENSE_FILES:=nss/COPYING
+PKG_CPE_ID:=cpe:/a:mozilla:network_security_services
 
 PKG_BUILD_PARALLEL:=0
 
@@ -40,7 +43,7 @@ define Package/nss-utils
 endef
 
 define Package/libnss/description
-  Network Security Services (NSS) is a set of libraries designed to support 
+  Network Security Services (NSS) is a set of libraries designed to support
   cross-platform development of security-enabled client and server applications.
   Applications built with NSS can support SSL v2 and v3, TLS, PKCS 5, PKCS 7,
   PKCS 11, PKCS 12, S/MIME, X.509 v3 certificates, and other security standards.
