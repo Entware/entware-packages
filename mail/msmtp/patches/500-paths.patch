@@ -1,24 +1,24 @@
 --- a/scripts/msmtpqueue/msmtp-enqueue.sh
 +++ b/scripts/msmtpqueue/msmtp-enqueue.sh
 @@ -1,4 +1,4 @@
--#!/usr/bin/env bash
-+#!/opt/bin/bash
+-#!/usr/bin/env sh
++#!/opt/bin/sh
  
  QUEUEDIR=$HOME/.msmtpqueue
  
 --- a/scripts/msmtpqueue/msmtp-listqueue.sh
 +++ b/scripts/msmtpqueue/msmtp-listqueue.sh
 @@ -1,4 +1,4 @@
--#!/usr/bin/env bash
-+#!/opt/bin/bash
+-#!/usr/bin/env sh
++#!/opt/bin/sh
  
  QUEUEDIR=$HOME/.msmtpqueue
  
 --- a/scripts/msmtpqueue/msmtp-runqueue.sh
 +++ b/scripts/msmtpqueue/msmtp-runqueue.sh
 @@ -1,4 +1,4 @@
--#!/usr/bin/env bash
-+#!/opt/bin/bash
+-#!/usr/bin/env sh
++#!/opt/bin/sh
  
  QUEUEDIR="$HOME/.msmtpqueue"
  LOCKFILE="$QUEUEDIR/.lock"
@@ -26,15 +26,15 @@
 +++ b/scripts/msmtpq/msmtpq
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env bash
-+#!/opt/bin/bash
++#!/opt/bin/sh
  
  ##--------------------------------------------------------------
  ##
 --- a/scripts/msmtpq/msmtp-queue
 +++ b/scripts/msmtpq/msmtp-queue
 @@ -1,4 +1,4 @@
--#!/usr/bin/env bash
-+#!/opt/bin/bash
+-#!/usr/bin/env sh
++#!/opt/bin/sh
  
  ##--------------------------------------------------------------
  ##
