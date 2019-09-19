@@ -6,20 +6,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+# (s)hellcheck exceptions
+# shellcheck disable=1091 disable=2039 disable=2143 disable=2181 disable=2188
+
 # set initial defaults
 #
 LC_ALL=C
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
-ban_ver="0.1.1"
-ban_sysver="unknown"
+ban_ver="0.2.1"
 ban_enabled=0
 ban_automatic="1"
+ban_sources=""
 ban_iface=""
 ban_debug=0
-ban_backup=0
-ban_backupboot=0
 ban_backupdir="/mnt"
 ban_maxqueue=4
+ban_autoblacklist=1
+ban_autowhitelist=1
 ban_fetchutil="uclient-fetch"
 ban_ip="$(command -v ip)"
 ban_ipt="$(command -v iptables)"
@@ -33,25 +36,18 @@ ban_chain="banIP"
 ban_action="${1:-"start"}"
 ban_pidfile="/var/run/banip.pid"
 ban_rtfile="/tmp/ban_runtime.json"
+ban_sshdaemon="dropbear"
 ban_setcnt=0
 ban_cnt=0
-ban_rc=0
 
 # load environment
 #
 f_envload()
 {
-	local sys_call sys_desc sys_model
-
 	# get system information
 	#
-	sys_call="$(ubus -S call system board 2>/dev/null)"
-	if [ -n "${sys_call}" ]
-	then
-		sys_desc="$(printf '%s' "${sys_call}" | jsonfilter -e '@.release.description')"
-		sys_model="$(printf '%s' "${sys_call}" | jsonfilter -e '@.model')"
-		ban_sysver="${sys_model}, ${sys_desc}"
-	fi
+	ban_sysver="$(ubus -S call system board 2>/dev/null | jsonfilter -e '@.model' -e '@.release.description' | \
+		awk 'BEGIN{ORS=", "}{print $0}' | awk '{print substr($0,1,length($0)-2)}')"
 
 	# parse 'global' and 'extra' section by callback
 	#
@@ -104,7 +100,7 @@ f_envload()
 
 	# check status
 	#
-	if [ ${ban_enabled} -eq 0 ]
+	if [ "${ban_enabled}" -eq 0 ]
 	then
 		f_jsnup disabled
 		f_ipset destroy
@@ -121,33 +117,32 @@ f_envcheck()
 {
 	local ssl_lib tmp
 
+	# check backup directory
+	#
+	if [ ! -d "${ban_backupdir}" ]
+	then
+		f_log "err" "the backup directory '${ban_backupdir}' does not exist/is not mounted yet, please create the directory or raise the 'ban_triggerdelay' to defer the banIP start"
+	fi
+
 	# check fetch utility
 	#
 	case "${ban_fetchutil}" in
-		uclient-fetch)
+		"uclient-fetch")
 			if [ -f "/lib/libustream-ssl.so" ]
 			then
 				ban_fetchparm="${ban_fetchparm:-"--timeout=20 --no-check-certificate -O"}"
 				ssl_lib="libustream-ssl"
-			else
-				ban_fetchparm="${ban_fetchparm:-"--timeout=20 -O"}"
 			fi
 		;;
-		wget)
+		"wget")
 			ban_fetchparm="${ban_fetchparm:-"--no-cache --no-cookies --max-redirect=0 --timeout=20 --no-check-certificate -O"}"
 			ssl_lib="built-in"
 		;;
-		wget-nossl)
-			ban_fetchparm="${ban_fetchparm:-"--no-cache --no-cookies --max-redirect=0 --timeout=20 -O"}"
-		;;
-		busybox)
-			ban_fetchparm="${ban_fetchparm:-"-O"}"
-		;;
-		curl)
+		"curl")
 			ban_fetchparm="${ban_fetchparm:-"--connect-timeout 20 --insecure -o"}"
 			ssl_lib="built-in"
 		;;
-		aria2c)
+		"aria2c")
 			ban_fetchparm="${ban_fetchparm:-"--timeout=20 --allow-overwrite=true --auto-file-renaming=false --check-certificate=false -o"}"
 			ssl_lib="built-in"
 		;;
@@ -157,7 +152,7 @@ f_envcheck()
 
 	if [ ! -x "${ban_fetchutil}" ] || [ -z "${ban_fetchutil}" ] || [ -z "${ban_fetchparm}" ]
 	then
-		f_log "err" "download utility not found, please install 'uclient-fetch' with 'libustream-mbedtls' or the full 'wget' package"
+		f_log "err" "download utility not found, please install 'uclient-fetch' with the 'libustream-mbedtls' ssl library or the full 'wget' package"
 	fi
 
 	# get wan device and wan subnets
@@ -212,16 +207,19 @@ f_envcheck()
 #
 f_temp()
 {
-	if [ -z "${ban_tmpdir}" ]
+	if [ -d "/tmp" ] && [ -z "${ban_tmpdir}" ]
 	then
 		ban_tmpdir="$(mktemp -p /tmp -d)"
-		ban_tmpload="$(mktemp -p ${ban_tmpdir} -tu)"
-		ban_tmpfile="$(mktemp -p ${ban_tmpdir} -tu)"
+		ban_tmpload="$(mktemp -p "${ban_tmpdir}" -tu)"
+		ban_tmpfile="$(mktemp -p "${ban_tmpdir}" -tu)"
+	elif [ ! -d "/tmp" ]
+	then
+		f_log "err" "the temp directory '/tmp' does not exist/is not mounted yet, please create the directory or raise the 'ban_triggerdelay' to defer the banIP start"
 	fi
 
 	if [ ! -s "${ban_pidfile}" ]
 	then
-		printf '%s' "${$}" > "${ban_pidfile}"
+		printf "%s" "${$}" > "${ban_pidfile}"
 	fi
 }
 
@@ -242,7 +240,7 @@ f_rmbackup()
 {
 	if [ -d "${ban_backupdir}" ]
 	then
-		rm -f "${ban_backupdir}/banIP."*.gz
+		rm -f "${ban_backupdir}"/banIP.*.gz
 	fi
 }
 
@@ -254,20 +252,26 @@ f_iptrule()
 
 	if [ "${src_name##*_}" = "6" ]
 	then
-		rc="$("${ban_ipt6}" "${timeout}" -C ${rule} 2>/dev/null; printf '%u' ${?})"
-
-		if ([ ${rc} -ne 0 ] && ([ "${action}" = "-A" ] || [ "${action}" = "-I" ])) \
-			|| ([ ${rc} -eq 0 ] && [ "${action}" = "-D" ])
+		if [ -x "${ban_ipt6}" ]
 		then
-			"${ban_ipt6}" "${timeout}" "${action}" ${rule}
+			rc="$("${ban_ipt6}" "${timeout}" -C ${rule} 2>/dev/null; printf "%u" ${?})"
+
+			if { [ "${rc}" -ne 0 ] && { [ "${action}" = "-A" ] || [ "${action}" = "-I" ]; } } || \
+				{ [ "${rc}" -eq 0 ] && [ "${action}" = "-D" ]; }
+			then
+				"${ban_ipt6}" "${timeout}" "${action}" ${rule}
+			fi
 		fi
 	else
-		rc="$("${ban_ipt}" "${timeout}" -C ${rule} 2>/dev/null; printf '%u' ${?})"
-
-		if ([ ${rc} -ne 0 ] && ([ "${action}" = "-A" ] || [ "${action}" = "-I" ])) \
-			|| ([ ${rc} -eq 0 ] && [ "${action}" = "-D" ])
+		if [ -x "${ban_ipt}" ]
 		then
-			"${ban_ipt}" "${timeout}" "${action}" ${rule}
+			rc="$("${ban_ipt}" "${timeout}" -C ${rule} 2>/dev/null; printf "%u" ${?})"
+
+			if { [ "${rc}" -ne 0 ] && { [ "${action}" = "-A" ] || [ "${action}" = "-I" ]; } } || \
+				{ [ "${rc}" -eq 0 ] && [ "${action}" = "-D" ]; }
+			then
+				"${ban_ipt}" "${timeout}" "${action}" ${rule}
+			fi
 		fi
 	fi
 }
@@ -284,7 +288,7 @@ f_iptadd()
 		f_iptrule "-D" "${ban_chain} -o ${dev} -m conntrack --ctstate NEW -m set --match-set ${src_name} dst -j ${target_dst}"
 	done
 
-	if [ -z "${rm}" ] && [ ${cnt} -gt 0 ]
+	if [ -z "${rm}" ] && [ "${cnt}" -gt 0 ]
 	then
 		if [ "${src_ruletype}" != "dst" ]
 		then
@@ -319,9 +323,9 @@ f_iptadd()
 			done
 		fi
 	else
-		if [ -n "$("${ban_ipset}" -n list "${src_name}" 2>/dev/null)" ]
+		if [ -x "${ban_ipset}" ] && [ -n "$("${ban_ipset}" -q -n list "${src_name}")" ]
 		then
-			"${ban_ipset}" destroy "${src_name}"
+			"${ban_ipset}" -q destroy "${src_name}"
 		fi
 	fi
 }
@@ -330,142 +334,147 @@ f_iptadd()
 #
 f_ipset()
 {
-	local rc cnt cnt_ip cnt_cidr size source action ruleset ruleset_6 rule timeout="-w 5" mode="${1}"
+	local out_rc source action ruleset ruleset_6 rule cnt=0 cnt_ip=0 cnt_cidr=0 timeout="-w 5" mode="${1}" in_rc="${src_rc:-0}"
 
 	if [ "${src_name%_6*}" = "whitelist" ]
 	then
-		target_src="ACCEPT"
-		target_dst="ACCEPT"
+		target_src="RETURN"
+		target_dst="RETURN"
 		action="-I"
 	fi
 
 	case "${mode}" in
-		backup)
-			ban_rc=4
-			if [ -d "${ban_backupdir}" ]
-			then
-				gzip -cf "${tmp_load}" 2>/dev/null > "${ban_backupdir}/banIP.${src_name}.gz"
-				ban_rc=${?}
-			fi
-			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, rc: ${ban_rc}"
+		"backup")
+			gzip -cf "${tmp_load}" 2>/dev/null > "${ban_backupdir}/banIP.${src_name}.gz"
+			out_rc="${?:-"${in_rc}"}"
+			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, out_rc: ${out_rc}"
+			return "${out_rc}"
 		;;
-		restore)
-			ban_rc=4
-			if [ -d "${ban_backupdir}" ] && [ -f "${ban_backupdir}/banIP.${src_name}.gz" ]
+		"restore")
+			if [ -f "${ban_backupdir}/banIP.${src_name}.gz" ]
 			then
-				gunzip -cf "${ban_backupdir}/banIP.${src_name}.gz" 2>/dev/null > "${tmp_load}"
-				ban_rc=${?}
+				zcat "${ban_backupdir}/banIP.${src_name}.gz" 2>/dev/null > "${tmp_load}"
+				out_rc="${?}"
 			fi
-			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, rc: ${ban_rc}"
+			out_rc="${out_rc:-"${in_rc}"}"
+			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, out_rc: ${out_rc}"
+			return "${out_rc}"
 		;;
-		remove)
-			if [ -d "${ban_backupdir}" ] && [ -f "${ban_backupdir}/banIP.${src_name}.gz" ]
+		"remove")
+			if [ -f "${ban_backupdir}/banIP.${src_name}.gz" ]
 			then
 				rm -f "${ban_backupdir}/banIP.${src_name}.gz"
+				out_rc="${?}"
 			fi
-			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}"
+			out_rc="${out_rc:-"${in_rc}"}"
+			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, out_rc: ${out_rc}"
+			return "${out_rc}"
 		;;
-		initial)
-			if [ -z "$("${ban_ipt}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
+		"initial")
+			if [ -x "${ban_ipt}" ] && [ -z "$("${ban_ipt}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
 			then
 				"${ban_ipt}" "${timeout}" -N "${ban_chain}"
+			elif [ -x "${ban_ipt}" ]
+			then
+				src_name="ruleset"
+				ruleset="${ban_wan_input_chain:-"input_wan_rule"} ${ban_wan_forward_chain:-"forwarding_wan_rule"} ${ban_lan_input_chain:-"input_lan_rule"} ${ban_lan_forward_chain:-"forwarding_lan_rule"}"
+				for rule in ${ruleset}
+				do
+					f_iptrule "-D" "${rule} -j ${ban_chain}"
+				done
 			fi
-
-			if [ -z "$("${ban_ipt6}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
+			if [ -x "${ban_ipt6}" ] && [ -z "$("${ban_ipt6}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
 			then
 				"${ban_ipt6}" "${timeout}" -N "${ban_chain}"
-			fi
-
-			src_name="ruleset"
-			ruleset="${ban_wan_input_chain:-"input_wan_rule"} ${ban_wan_forward_chain:-"forwarding_wan_rule"} ${ban_lan_input_chain:-"input_lan_rule"} ${ban_lan_forward_chain:-"forwarding_lan_rule"}"
-			for rule in ${ruleset}
-			do
-				f_iptrule "-D" "${rule} -j ${ban_chain}"
-			done
-
-			src_name="ruleset_6"
-			ruleset_6="${ban_wan_input_chain_6:-"input_wan_rule"} ${ban_wan_forward_chain_6:-"forwarding_wan_rule"} ${ban_lan_input_chain_6:-"input_lan_rule"} ${ban_lan_forward_chain_6:-"forwarding_lan_rule"}"
-			for rule in ${ruleset_6}
-			do
-				f_iptrule "-D" "${rule} -j ${ban_chain}"
-			done
-
-			f_log "debug" "f_ipset ::: name: -, mode: ${mode:-"-"}, chain: ${ban_chain:-"-"}, ruleset: ${ruleset}, ruleset_6: ${ruleset_6}"
-		;;
-		create)
-			cnt="$(wc -l 2>/dev/null < "${tmp_file}")"
-			cnt_cidr="$(grep -F "/" "${tmp_file}" | wc -l)"
-			cnt_ip="$(( cnt - cnt_cidr ))"
-			size="$(( cnt / 4 ))"
-
-			if [ ${cnt} -gt 0 ]
+			elif [ -x "${ban_ipt6}" ]
 			then
-				if [ -z "$("${ban_ipset}" -n list "${src_name}" 2>/dev/null)" ]
+				src_name="ruleset_6"
+				ruleset_6="${ban_wan_input_chain_6:-"input_wan_rule"} ${ban_wan_forward_chain_6:-"forwarding_wan_rule"} ${ban_lan_input_chain_6:-"input_lan_rule"} ${ban_lan_forward_chain_6:-"forwarding_lan_rule"}"
+				for rule in ${ruleset_6}
+				do
+					f_iptrule "-D" "${rule} -j ${ban_chain}"
+				done
+			fi
+			f_log "debug" "f_ipset ::: name: -, mode: ${mode:-"-"}, chain: ${ban_chain:-"-"}, ruleset: ${ruleset:-"-"}, ruleset_6: ${ruleset_6:-"-"}"
+		;;
+		"create")
+			if [ -x "${ban_ipset}" ]
+			then
+				if [ -s "${tmp_file}" ] && [ -z "$("${ban_ipset}" -q -n list "${src_name}")" ]
 				then
-					"${ban_ipset}" create "${src_name}" hash:"${src_settype}" hashsize "${size}" maxelem 262144 family "${src_setipv}" counters
+					"${ban_ipset}" -q create "${src_name}" hash:"${src_settype}" hashsize 64 maxelem 262144 family "${src_setipv}" counters
 				else
-					"${ban_ipset}" flush "${src_name}"
+					"${ban_ipset}" -q flush "${src_name}"
 				fi
-
-				"${ban_ipset}" -! restore < "${tmp_file}"
-				printf "%s\n" "1" > "${tmp_set}"
-				printf "%s\n" "${cnt}" > "${tmp_cnt}"
-			fi
-			f_iptadd
-			end_ts="$(date +%s)"
-			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, settype: ${src_settype:-"-"}, setipv: "${src_setipv}", ruletype: ${src_ruletype:-"-"}, count(sum/ip/cidr): ${cnt:-0}/${cnt_ip:-0}/${cnt_cidr:-0}, time(s): $(( end_ts - start_ts ))"
-		;;
-		refresh)
-			if [ -n "$("${ban_ipset}" -n list "${src_name}" 2>/dev/null)" ]
-			then
-				"${ban_ipset}" save "${src_name}" > "${tmp_file}"
 				if [ -s "${tmp_file}" ]
 				then
-					cnt="$(( $(wc -l 2>/dev/null < "${tmp_file}") - 1 ))"
-					cnt_cidr="$(grep -F "/" "${tmp_file}" | wc -l)"
-					cnt_ip="$(( cnt - cnt_cidr ))"
-					printf "%s\n" "1" > "${tmp_set}"
-					printf "%s\n" "${cnt}" > "${tmp_cnt}"
+					"${ban_ipset}" -! restore < "${tmp_file}"
+					out_rc="${?}"
+					"${ban_ipset}" -q save "${src_name}" > "${tmp_file}"
+					cnt="$(($(wc -l 2>/dev/null < "${tmp_file}")-1))"
+					cnt_cidr="$(grep -cF "/" "${tmp_file}")"
+					cnt_ip="$((cnt-cnt_cidr))"
+					printf "%s\\n" "1" > "${tmp_set}"
+					printf "%s\\n" "${cnt}" > "${tmp_cnt}"
 				fi
 				f_iptadd
 			fi
 			end_ts="$(date +%s)"
-			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, count: ${cnt:-0}/${cnt_ip:-0}/${cnt_cidr:-0}, time(s): $(( end_ts - start_ts ))"
+			out_rc="${out_rc:-"${in_rc}"}"
+			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, settype: ${src_settype:-"-"}, setipv: ${src_setipv:-"-"}, ruletype: ${src_ruletype:-"-"}, count(sum/ip/cidr): ${cnt}/${cnt_ip}/${cnt_cidr}, time: $((end_ts-start_ts)), out_rc: ${out_rc}"
 		;;
-		flush)
+		"refresh")
+			if [ -x "${ban_ipset}" ] && [ -n "$("${ban_ipset}" -q -n list "${src_name}")" ]
+			then
+				"${ban_ipset}" -q save "${src_name}" > "${tmp_file}"
+				out_rc="${?}"
+				if [ -s "${tmp_file}" ]
+				then
+					cnt="$(($(wc -l 2>/dev/null < "${tmp_file}")-1))"
+					cnt_cidr="$(grep -cF "/" "${tmp_file}")"
+					cnt_ip="$((cnt-cnt_cidr))"
+					printf "%s\\n" "1" > "${tmp_set}"
+					printf "%s\\n" "${cnt}" > "${tmp_cnt}"
+				fi
+				f_iptadd
+			fi
+			end_ts="$(date +%s)"
+			out_rc="${out_rc:-"${in_rc}"}"
+			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}, count: ${cnt}/${cnt_ip}/${cnt_cidr}, time: $((end_ts-start_ts)), out_rc: ${out_rc}"
+			return "${out_rc}"
+		;;
+		"flush")
 			f_iptadd "remove"
 
-			if [ -n "$("${ban_ipset}" -n list "${src_name}" 2>/dev/null)" ]
+			if [ -x "${ban_ipset}" ] && [ -n "$("${ban_ipset}" -q -n list "${src_name}")" ]
 			then
-				"${ban_ipset}" flush "${src_name}"
-				"${ban_ipset}" destroy "${src_name}"
+				"${ban_ipset}" -q flush "${src_name}"
+				"${ban_ipset}" -q destroy "${src_name}"
 			fi
-
 			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}"
 		;;
-		destroy)
-			if [ -n "$("${ban_ipt}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
+		"destroy")
+			if [ -x "${ban_ipt}" ] && [ -x "${ban_ipt_save}" ] && [ -x "${ban_ipt_restore}" ] && \
+				[ -n "$("${ban_ipt}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
 			then
 				"${ban_ipt_save}" | grep -v -- "-j ${ban_chain}" | "${ban_ipt_restore}"
 				"${ban_ipt}" "${timeout}" -F "${ban_chain}"
 				"${ban_ipt}" "${timeout}" -X "${ban_chain}"
 			fi
-
-			if [ -n "$("${ban_ipt6}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
+			if [ -x "${ban_ipt6}" ] && [ -x "${ban_ipt6_save}" ] && [ -x "${ban_ipt6_restore}" ] && \
+				[ -n "$("${ban_ipt6}" "${timeout}" -nL "${ban_chain}" 2>/dev/null)" ]
 			then
 				"${ban_ipt6_save}" | grep -v -- "-j ${ban_chain}" | "${ban_ipt6_restore}"
 				"${ban_ipt6}" "${timeout}" -F "${ban_chain}"
 				"${ban_ipt6}" "${timeout}" -X "${ban_chain}"
 			fi
-
 			for source in ${ban_sources}
 			do
-				if [ -n "$("${ban_ipset}" -n list "${source}" 2>/dev/null)" ]
+				if [ -x "${ban_ipset}" ] && [ -n "$("${ban_ipset}" -q -n list "${source}")" ]
 				then
-					"${ban_ipset}" destroy "${source}"
+					"${ban_ipset}" -q destroy "${source}"
 				fi
 			done
-
 			f_log "debug" "f_ipset ::: name: ${src_name:-"-"}, mode: ${mode:-"-"}"
 		;;
 	esac
@@ -477,7 +486,7 @@ f_log()
 {
 	local class="${1}" log_msg="${2}"
 
-	if [ -n "${log_msg}" ] && ([ "${class}" != "debug" ] || [ ${ban_debug} -eq 1 ])
+	if [ -n "${log_msg}" ] && { [ "${class}" != "debug" ] || [ "${ban_debug}" -eq 1 ]; }
 	then
 		logger -p "${class}" -t "banIP-[${ban_ver}]" "${log_msg}"
 		if [ "${class}" = "err" ]
@@ -496,14 +505,14 @@ f_log()
 #
 f_main()
 {
-	local start_ts end_ts ip tmp_raw tmp_cnt tmp_setcnt tmp_load tmp_file entry list suffix mem_total mem_free cnt=1
-	local src_name src_on src_url src_rset src_setipv src_settype src_ruletype src_cat src_log src_addon
-	local pid pid_list log_content="$(logread -e "dropbear")"
-	local wan_input wan_forward lan_input lan_forward target_src target_dst
+	local pid pid_list start_ts end_ts ip tmp_raw tmp_cnt tmp_load tmp_file mem_total mem_free cnt=1
+	local src_name src_on src_url src_rset src_setipv src_settype src_ruletype src_cat src_log src_addon src_rc
+	local wan_input wan_forward lan_input lan_forward target_src target_dst log_content
 
+	log_content="$(logread -e "${ban_sshdaemon}")"
 	mem_total="$(awk '/^MemTotal/ {print int($2/1000)}' "/proc/meminfo" 2>/dev/null)"
 	mem_free="$(awk '/^MemFree/ {print int($2/1000)}' "/proc/meminfo" 2>/dev/null)"
-	f_log "debug" "f_main  ::: fetch_util: ${ban_fetchinfo:-"-"}, fetch_parm: ${ban_fetchparm:-"-"}, interface(s): ${ban_iface:-"-"}, device(s): ${ban_dev:-"-"}, all_devices: ${ban_dev_all:-"-"}, backup: ${ban_backup:-"-"}, backup_boot: ${ban_backupboot:-"-"}, backup_dir: ${ban_backupdir:-"-"}, mem_total: ${mem_total:-0}, mem_free: ${mem_free:-0}, max_queue: ${ban_maxqueue}"
+	f_log "debug" "f_main  ::: fetch_util: ${ban_fetchinfo:-"-"}, fetch_parm: ${ban_fetchparm:-"-"}, ssh_daemon: ${ban_sshdaemon}, interface(s): ${ban_iface:-"-"}, device(s): ${ban_dev:-"-"}, all_devices: ${ban_dev_all:-"-"}, backup_dir: ${ban_backupdir:-"-"}, mem_total: ${mem_total:-0}, mem_free: ${mem_free:-0}, max_queue: ${ban_maxqueue}"
 
 	f_ipset initial
 
@@ -511,34 +520,42 @@ f_main()
 	#
 	for src_name in ${ban_sources}
 	do
+		unset src_on
 		if [ "${src_name##*_}" = "6" ]
 		then
-			src_on="$(eval printf '%s' \"\${ban_src_on_6_${src_name%_6*}\}\")"
-			src_url="$(eval printf '%s' \"\${ban_src_6_${src_name%_6*}\}\")"
-			src_rset="$(eval printf '%s' \"\${ban_src_rset_6_${src_name%_6*}\}\")"
-			src_setipv="inet6"
-			wan_input="${ban_wan_input_chain_6:-"input_wan_rule"}"
-			wan_forward="${ban_wan_forward_chain_6:-"forwarding_wan_rule"}"
-			lan_input="${ban_lan_input_chain_6:-"input_lan_rule"}"
-			lan_forward="${ban_lan_forward_chain_6:-"forwarding_lan_rule"}"
-			target_src="${ban_target_src_6:-"DROP"}"
-			target_dst="${ban_target_dst_6:-"REJECT"}"
+			if [ -x "${ban_ipt6}" ]
+			then
+				src_on="$(eval printf "%s" \"\$\{ban_src_on_6_${src_name%_6*}\}\")"
+				src_url="$(eval printf "%s" \"\$\{ban_src_6_${src_name%_6*}\}\")"
+				src_rset="$(eval printf "%s" \"\$\{ban_src_rset_6_${src_name%_6*}\}\")"
+				src_setipv="inet6"
+				wan_input="${ban_wan_input_chain_6:-"input_wan_rule"}"
+				wan_forward="${ban_wan_forward_chain_6:-"forwarding_wan_rule"}"
+				lan_input="${ban_lan_input_chain_6:-"input_lan_rule"}"
+				lan_forward="${ban_lan_forward_chain_6:-"forwarding_lan_rule"}"
+				target_src="${ban_target_src_6:-"DROP"}"
+				target_dst="${ban_target_dst_6:-"REJECT"}"
+			fi
 		else
-			src_on="$(eval printf '%s' \"\${ban_src_on_${src_name}\}\")"
-			src_url="$(eval printf '%s' \"\${ban_src_${src_name}\}\")"
-			src_rset="$(eval printf '%s' \"\${ban_src_rset_${src_name}\}\")"
-			src_setipv="inet"
-			wan_input="${ban_wan_input_chain:-"input_wan_rule"}"
-			wan_forward="${ban_wan_forward_chain:-"forwarding_wan_rule"}"
-			lan_input="${ban_lan_input_chain:-"input_lan_rule"}"
-			lan_forward="${ban_lan_forward_chain:-"forwarding_lan_rule"}"
-			target_src="${ban_target_src:-"DROP"}"
-			target_dst="${ban_target_dst:-"REJECT"}"
+			if [ -x "${ban_ipt}" ]
+			then
+				src_on="$(eval printf "%s" \"\$\{ban_src_on_${src_name}\}\")"
+				src_url="$(eval printf "%s" \"\$\{ban_src_${src_name}\}\")"
+				src_rset="$(eval printf "%s" \"\$\{ban_src_rset_${src_name}\}\")"
+				src_setipv="inet"
+				wan_input="${ban_wan_input_chain:-"input_wan_rule"}"
+				wan_forward="${ban_wan_forward_chain:-"forwarding_wan_rule"}"
+				lan_input="${ban_lan_input_chain:-"input_lan_rule"}"
+				lan_forward="${ban_lan_forward_chain:-"forwarding_lan_rule"}"
+				target_src="${ban_target_src:-"DROP"}"
+				target_dst="${ban_target_dst:-"REJECT"}"
+			fi
 		fi
-		src_settype="$(eval printf '%s' \"\${ban_src_settype_${src_name%_6*}\}\")"
-		src_ruletype="$(eval printf '%s' \"\${ban_src_ruletype_${src_name%_6*}\}\")"
-		src_cat="$(eval printf '%s' \"\${ban_src_cat_${src_name%_6*}\}\")"
+		src_settype="$(eval printf "%s" \"\$\{ban_src_settype_${src_name%_6*}\}\")"
+		src_ruletype="$(eval printf "%s" \"\$\{ban_src_ruletype_${src_name%_6*}\}\")"
+		src_cat="$(eval printf "%s" \"\$\{ban_src_cat_${src_name%_6*}\}\")"
 		src_addon=""
+		src_rc=4
 		tmp_load="${ban_tmpload}.${src_name}"
 		tmp_file="${ban_tmpfile}.${src_name}"
 		tmp_raw="${tmp_load}.raw"
@@ -549,61 +566,81 @@ f_main()
 		#
 		f_log "debug" "f_main  ::: name: ${src_name}, src_on: ${src_on:-"-"}"
 
-		if [ "${src_on}" != "1" ] || [ -z "${src_url}" ] || [ -z "${src_rset}" ] ||\
-			[ -z "${src_settype}" ] || [ -z "${src_ruletype}" ]
+		if [ -z "${src_on}" ] || [ "${src_on}" != "1" ] || [ -z "${src_url}" ] || \
+			[ -z "${src_rset}" ] || [ -z "${src_settype}" ] || [ -z "${src_ruletype}" ]
 		then
 			f_ipset flush
 			f_ipset remove
 			continue
-		elif [ "${ban_action}" = "refresh" ]
+		elif [ "${ban_action}" = "refresh" ] && [ ! -f "${src_url}" ]
 		then
+			start_ts="$(date +%s)"
 			f_ipset refresh
-			continue
+			if [ "${?}" -eq 0 ]
+			then
+				continue
+			fi
 		fi
 
 		# download queue processing
 		#
 		(
 			start_ts="$(date +%s)"
-			if [ ! -f "${src_url}" ] && [ ${ban_backup} -eq 1 ] && [ ${ban_backupboot} -eq 1 ] && [ "${ban_action}" = "start" ]
+			if [ "${ban_action}" = "start" ] && [ ! -f "${src_url}" ]
 			then
 				f_ipset restore
 			fi
-
-			if [ ${ban_rc} -ne 0 ] || [ ! -s "${tmp_load}" ]
+			src_rc="${?}"
+			if [ "${src_rc}" -ne 0 ] || [ ! -s "${tmp_load}" ]
 			then
 				if [ -f "${src_url}" ]
 				then
 					src_log="$(cat "${src_url}" 2>/dev/null > "${tmp_load}")"
-					ban_rc=${?}
+					src_rc="${?}"
 					case "${src_name}" in
-						whitelist)
+						"whitelist")
 							src_addon="${ban_subnets}"
 						;;
-						whitelist_6)
+						"whitelist_6")
 							src_addon="${ban_subnets6}"
 						;;
-						blacklist)
-							pid_list="$(printf "%s\n" "${log_content}" | grep -F "Exit before auth" | awk 'match($0,/(\[[0-9]+\])/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
-							for pid in ${pid_list}
-							do
-								src_addon="${src_addon} $(printf "%s\n" "${log_content}" | grep -F "${pid}" | awk 'match($0,/([0-9]{1,3}\.){3}[0-9]{1,3}/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
-							done
+						"blacklist")
+							if [ "${ban_sshdaemon}" = "dropbear" ]
+							then
+								pid_list="$(printf "%s\\n" "${log_content}" | grep -F "Exit before auth" | awk 'match($0,/(\[[0-9]+\])/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
+								for pid in ${pid_list}
+								do
+									src_addon="${src_addon} $(printf "%s\\n" "${log_content}" | grep -F "${pid}" | awk 'match($0,/([0-9]{1,3}\.){3}[0-9]{1,3}/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
+								done
+							elif [ "${ban_sshdaemon}" = "sshd" ]
+							then
+								src_addon="$(printf "%s\\n" "${log_content}" | grep -E "[0-9]+ \[preauth\]$" | awk 'match($0,/([0-9]{1,3}\.){3}[0-9]{1,3}/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
+							fi
 						;;
-						blacklist_6)
-							pid_list="$(printf "%s\n" "${log_content}" | grep -F "Exit before auth" | awk 'match($0,/(\[[0-9]+\])/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
-							for pid in ${pid_list}
-							do
-								src_addon="${src_addon} $(printf "%s\n" "${log_content}" | grep -F "${pid}" | awk 'match($0,/([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
-							done
+						"blacklist_6")
+							if [ "${ban_sshdaemon}" = "dropbear" ]
+							then
+								pid_list="$(printf "%s\\n" "${log_content}" | grep -F "Exit before auth" | awk 'match($0,/(\[[0-9]+\])/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
+								for pid in ${pid_list}
+								do
+									src_addon="${src_addon} $(printf "%s\\n" "${log_content}" | grep -F "${pid}" | awk 'match($0,/([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
+								done
+							elif [ "${ban_sshdaemon}" = "sshd" ]
+							then
+								src_addon="$(printf "%s\\n" "${log_content}" | grep -E "[0-9]+ \[preauth\]$" | awk 'match($0,/([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}/){ORS=" ";print substr($0,RSTART,RLENGTH)}')"
+							fi
 						;;
 					esac
 					for ip in ${src_addon}
 					do
 						if [ -z "$(grep -F "${ip}" "${src_url}")" ]
 						then
-							printf '%s\n' "${ip}" >> "${tmp_load}"
-							printf '%s\n' "${ip}" >> "${src_url}"
+							printf "%s\\n" "${ip}" >> "${tmp_load}"
+							if { [ "${src_name//_*/}" = "blacklist" ] && [ "${ban_autoblacklist}" -eq 1 ]; } || \
+								{ [ "${src_name//_*/}" = "whitelist" ] && [ "${ban_autowhitelist}" -eq 1 ]; }
+							then
+								printf "%s\\n" "${ip}" >> "${src_url}"
+							fi
 						fi
 					done
 				elif [ -n "${src_cat}" ]
@@ -613,18 +650,18 @@ f_main()
 						for as in ${src_cat}
 						do
 							src_log="$("${ban_fetchutil}" ${ban_fetchparm} "${tmp_raw}" "${src_url}AS${as}" 2>&1)"
-							ban_rc=${?}
-							if [ ${ban_rc} -eq 0 ]
+							src_rc="${?}"
+							if [ "${src_rc}" -eq 0 ]
 							then
 								jsonfilter -i "${tmp_raw}" -e '@.data.prefixes.*.prefix' 2>/dev/null >> "${tmp_load}"
 							else
 								break
 							fi
 						done
-						if [ ${ban_rc} -eq 0 ] && [ ${ban_backup} -eq 1 ]
+						if [ "${src_rc}" -eq 0 ]
 						then
 							f_ipset backup
-						elif [ ${ban_backup} -eq 1 ]
+						elif [ "${ban_action}" != "start" ]
 						then
 							f_ipset restore
 						fi
@@ -632,8 +669,8 @@ f_main()
 						for co in ${src_cat}
 						do
 							src_log="$("${ban_fetchutil}" ${ban_fetchparm} "${tmp_raw}" "${src_url}${co}&v4_format=prefix" 2>&1)"
-							ban_rc=${?}
-							if [ ${ban_rc} -eq 0 ]
+							src_rc="${?}"
+							if [ "${src_rc}" -eq 0 ]
 							then
 								if [ "${src_name##*_}" = "6" ]
 								then
@@ -645,91 +682,92 @@ f_main()
 								break
 							fi
 						done
-						if [ ${ban_rc} -eq 0 ] && [ ${ban_backup} -eq 1 ]
+						if [ "${src_rc}" -eq 0 ]
 						then
 							f_ipset backup
-						elif [ ${ban_backup} -eq 1 ]
+						elif [ "${ban_action}" != "start" ]
 						then
 							f_ipset restore
 						fi
 					fi
 				else
 					src_log="$("${ban_fetchutil}" ${ban_fetchparm} "${tmp_raw}" "${src_url}" 2>&1)"
-					ban_rc=${?}
-					if [ ${ban_rc} -eq 0 ]
+					src_rc="${?}"
+					if [ "${src_rc}" -eq 0 ]
 					then
 						zcat "${tmp_raw}" 2>/dev/null > "${tmp_load}"
-						ban_rc=${?}
-						if [ ${ban_rc} -ne 0 ]
+						src_rc="${?}"
+						if [ "${src_rc}" -ne 0 ]
 						then
 							mv -f "${tmp_raw}" "${tmp_load}"
-							ban_rc=${?}
+							src_rc="${?}"
 						fi
-						if [ ${ban_rc} -eq 0 ] && [ ${ban_backup} -eq 1 ]
+						if [ "${src_rc}" -eq 0 ]
 						then
 							f_ipset backup
+							src_rc="${?}"
 						fi
-					elif [ ${ban_backup} -eq 1 ]
+					elif [ "${ban_action}" != "start" ]
 					then
 						f_ipset restore
+						src_rc="${?}"
 					fi
 				fi
 			fi
 
-			if [ ${ban_rc} -eq 0 ]
+			if [ "${src_rc}" -eq 0 ]
 			then
 				awk "${src_rset}" "${tmp_load}" 2>/dev/null > "${tmp_file}"
-				ban_rc=${?}
-				if [ ${ban_rc} -eq 0 ]
+				src_rc="${?}"
+				if [ "${src_rc}" -eq 0 ]
 				then
 					f_ipset create
-				else
+					src_rc="${?}"
+				elif [ "${ban_action}" != "refresh" ]
+				then
 					f_ipset refresh
+					src_rc="${?}"
 				fi
 			else
-				src_log="$(printf '%s' "${src_log}" | awk '{ORS=" ";print $0}')"
-				f_log "debug" "f_main  ::: name: ${src_name}, url: ${src_url}, rc: ${ban_rc}, log: ${src_log:-"-"}"
-				f_ipset refresh
+				src_log="$(printf "%s" "${src_log}" | awk '{ORS=" ";print $0}')"
+				if [ "${ban_action}" != "refresh" ]
+				then
+					f_ipset refresh
+					src_rc="${?}"
+				fi
+				f_log "debug" "f_main  ::: name: ${src_name}, url: ${src_url}, rc: ${src_rc}, log: ${src_log:-"-"}"
 			fi
-		) &
-		hold=$(( cnt % ban_maxqueue ))
-		if [ ${hold} -eq 0 ]
+		)&
+		hold="$((cnt%ban_maxqueue))"
+		if [ "${hold}" -eq 0 ]
 		then
 			wait
 		fi
-		cnt=$(( cnt + 1 ))
+		cnt="$((cnt+1))"
 	done
-
 	wait
-	if [ ${ban_rc} -eq 0 ]
-	then
-		for cnt in $(cat ${ban_tmpfile}.*.setcnt 2>/dev/null)
-		do
-			ban_setcnt=$(( ban_setcnt + cnt ))
-		done
-		for cnt in $(cat ${ban_tmpfile}.*.cnt 2>/dev/null)
-		do
-			ban_cnt=$(( ban_cnt + cnt ))
-		done
-		f_log "info" "${ban_setcnt} IPSets with overall ${ban_cnt} IPs/Prefixes loaded successfully (${ban_sysver})"
-	fi
+
+	for cnt in $(cat "${ban_tmpfile}".*.setcnt 2>/dev/null)
+	do
+		ban_setcnt="$((ban_setcnt+cnt))"
+	done
+	for cnt in $(cat "${ban_tmpfile}".*.cnt 2>/dev/null)
+	do
+		ban_cnt="$((ban_cnt+cnt))"
+	done
+	f_log "info" "${ban_setcnt} IPSets with overall ${ban_cnt} IPs/Prefixes loaded successfully (${ban_sysver})"
 	f_jsnup
 	f_rmtemp
-	exit ${ban_rc}
 }
 
 # update runtime information
 #
 f_jsnup()
 {
-	local rundate="$(/bin/date "+%d.%m.%Y %H:%M:%S")" mode="normal mode" status="${1:-"enabled"}"
+	local rundate status="${1:-"enabled"}"
 
+	rundate="$(/bin/date "+%d.%m.%Y %H:%M:%S")"
 	ban_cntinfo="${ban_setcnt} IPSets with overall ${ban_cnt} IPs/Prefixes"
-
-	if [ ${ban_backupboot} -eq 1 ]
-	then
-		mode="backup mode"
-	fi
 
 	> "${ban_rtfile}"
 	json_load_file "${ban_rtfile}" >/dev/null 2>&1
@@ -738,12 +776,12 @@ f_jsnup()
 	json_add_string "status" "${status}"
 	json_add_string "version" "${ban_ver}"
 	json_add_string "fetch_info" "${ban_fetchinfo:-"-"}"
-	json_add_string "ipset_info" "${ban_cntinfo:-"-"} (${mode})"
+	json_add_string "ipset_info" "${ban_cntinfo:-"-"}"
+	json_add_string "backup_dir" "${ban_backupdir}"
 	json_add_string "last_run" "${rundate:-"-"}"
 	json_add_string "system" "${ban_sysver}"
 	json_close_object
 	json_dump > "${ban_rtfile}"
-
 	f_log "debug" "f_jsnup ::: status: ${status}, setcnt: ${ban_setcnt}, cnt: ${ban_cnt}"
 }
 
@@ -762,13 +800,13 @@ fi
 #
 f_envload
 case "${ban_action}" in
-	stop)
+	"stop")
 		f_jsnup stopped
 		f_ipset destroy
 		f_rmbackup
 		f_rmtemp
 	;;
-	start|restart|reload|refresh)
+	"start"|"restart"|"reload"|"refresh")
 		f_envcheck
 		f_main
 	;;
