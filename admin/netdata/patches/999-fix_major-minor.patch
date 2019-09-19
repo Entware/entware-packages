@@ -1,5 +1,5 @@
---- a/collectors/proc.plugin/proc_diskstats.c	2018-11-02 16:56:21.173550550 +0300
-+++ b/collectors/proc.plugin/proc_diskstats.c	2018-11-12 12:55:24.544134011 +0300
+--- a/collectors/proc.plugin/proc_diskstats.c
++++ b/collectors/proc.plugin/proc_diskstats.c
 @@ -1,5 +1,6 @@
  // SPDX-License-Identifier: GPL-3.0-or-later
  
