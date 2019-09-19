@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=diffutils
 PKG_VERSION:=3.7
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/diffutils
@@ -30,6 +30,10 @@ define Package/diffutils
   DEPENDS:=+USE_GLIBC:librt
   TITLE:=diffutils
   URL:=http://www.gnu.org/software/diffutils/
+#  ALTERNATIVES:=\
+#    200:/usr/bin/cmp:/usr/bin/gnu-cmp \
+#    200:/usr/bin/diff:/usr/bin/gnu-diff \
+
 endef
 
 define Package/diffutils/description
@@ -43,7 +47,9 @@ CONFIGURE_VARS += \
 
 define Package/diffutils/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{sdiff,diff3,diff,cmp} $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{sdiff,diff3} $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/diff $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/cmp $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,diffutils))
