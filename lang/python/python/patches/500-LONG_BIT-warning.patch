@@ -1,6 +1,6 @@
 --- a/Include/pyport.h
 +++ b/Include/pyport.h
-@@ -892,7 +892,7 @@
+@@ -892,7 +892,7 @@ typedef struct fd_set {
   * rather than waiting for integer multiplication to trigger bogus
   * overflows.
   */

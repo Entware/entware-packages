@@ -1,6 +1,6 @@
 --- a/Lib/ctypes/util.py
 +++ b/Lib/ctypes/util.py
-@@ -172,7 +172,7 @@
+@@ -172,7 +172,7 @@ elif os.name == "posix":
              null = open(os.devnull, 'wb')
              try:
                  with null:
@@ -9,7 +9,7 @@
                                              stdout=subprocess.PIPE,
                                              stderr=null)
              except OSError:  # E.g. command not found
-@@ -258,7 +258,7 @@
+@@ -258,7 +258,7 @@ elif os.name == "posix":
              null = open(os.devnull, 'wb')
              try:
                  with null:

@@ -9,15 +9,18 @@ define Package/python-pip
 $(call Package/python/Default)
   TITLE:=Python $(PYTHON_VERSION) pip module
   VERSION:=$(PYTHON_PIP_VERSION)-$(PYTHON_PIP_PKG_RELEASE)
+  LICENSE:=MIT
+  LICENSE_FILES:=LICENSE.txt
+#  CPE_ID:=cpe:/a:python:pip # not currently handled this way by uscan
   DEPENDS:=+python +python-setuptools +python-pip-conf
 endef
 
 define PyPackage/python-pip/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib/python$(PYTHON_VERSION)/site-packages
-	$(CP) $(PKG_BUILD_DIR)/install-pip/bin/* $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/install-pip/opt/bin/* $(1)/opt/bin
 	$(CP) \
-		$(PKG_BUILD_DIR)/install-pip/lib/python$(PYTHON_VERSION)/site-packages/pip \
-		$(PKG_BUILD_DIR)/install-pip/lib/python$(PYTHON_VERSION)/site-packages/pip-$(PYTHON_PIP_VERSION).dist-info \
+		$(PKG_BUILD_DIR)/install-pip/opt/lib/python$(PYTHON_VERSION)/site-packages/pip \
+		$(PKG_BUILD_DIR)/install-pip/opt/lib/python$(PYTHON_VERSION)/site-packages/pip-$(PYTHON_PIP_VERSION).dist-info \
 		$(1)/opt/lib/python$(PYTHON_VERSION)/site-packages/
 endef
 

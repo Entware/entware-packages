@@ -9,17 +9,20 @@ define Package/python-setuptools
 $(call Package/python/Default)
   TITLE:=Python $(PYTHON_VERSION) setuptools module
   VERSION:=$(PYTHON_SETUPTOOLS_VERSION)-$(PYTHON_SETUPTOOLS_PKG_RELEASE)
+  LICENSE:=MIT
+  LICENSE_FILES:=LICENSE
+#  CPE_ID:=cpe:/a:python:setuptools # not currently handled this way by uscan
   DEPENDS:=+python
 endef
 
 define PyPackage/python-setuptools/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib/python$(PYTHON_VERSION)/site-packages
-	$(CP) $(PKG_BUILD_DIR)/install-setuptools/bin/* $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/install-setuptools/opt/bin/* $(1)/opt/bin
 	$(CP) \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON_VERSION)/site-packages/pkg_resources \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON_VERSION)/site-packages/setuptools \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON_VERSION)/site-packages/setuptools-$(PYTHON_SETUPTOOLS_VERSION).dist-info \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON_VERSION)/site-packages/easy_install.py \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON_VERSION)/site-packages/pkg_resources \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON_VERSION)/site-packages/setuptools \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON_VERSION)/site-packages/setuptools-$(PYTHON_SETUPTOOLS_VERSION).dist-info \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON_VERSION)/site-packages/easy_install.py \
 		$(1)/opt/lib/python$(PYTHON_VERSION)/site-packages
 endef
 

@@ -1,6 +1,6 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -456,6 +456,8 @@
+@@ -456,6 +456,8 @@ class PyBuildExt(build_ext):
      def detect_modules(self):
          if cross_compiling:
              self.add_gcc_paths()
