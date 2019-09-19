@@ -11,10 +11,10 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=shorewall-lite
 PKG_MAJOR_MINOR_VERSION:=5.2
 PKG_BUGFIX_MAJOR_VERSION:=3
-PKG_BUGFIX_MINOR_VERSION:=.3
+PKG_BUGFIX_MINOR_VERSION:=.4
 PKG_VERSION:=$(PKG_MAJOR_MINOR_VERSION).$(PKG_BUGFIX_MAJOR_VERSION)$(PKG_BUGFIX_MINOR_VERSION)
 PKG_DIRECTORY:=$(PKG_MAJOR_MINOR_VERSION).$(PKG_BUGFIX_MAJOR_VERSION)
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=http://www.shorewall.net/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/ \
 	http://www1.shorewall.net/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/ \
@@ -22,10 +22,10 @@ PKG_SOURCE_URL:=http://www.shorewall.net/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION
 	http://shorewall.de/pub/shorewall/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/ \
 	http://www.shorewall.com.au/$(PKG_MAJOR_MINOR_VERSION)/shorewall-$(PKG_DIRECTORY)/
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_HASH:=3ac7affab434a7bc39d229aeadbefc845d5568d7402ad3546e0c1e429acc2de9
+PKG_HASH:=cf48465402eb5fee0886b7dfc4b0a78ec9c0850e8a2046874dee22154c6ee107
 
 PKG_MAINTAINER:=Willem van den Akker <wvdakker@wilsoft.nl>
-PKG_LICENSE:=GPL-2.0+
+PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
