@@ -4,14 +4,14 @@
  extern "C" {
  #endif
  
-+/* fix old kernel */
-+#include <linux/version.h> 
-+/* fix old kernel */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
 +
  /*
   * This file complements the kernel file by providing prototype
   * information for the user library.
-@@ -80,12 +84,19 @@
+@@ -80,12 +84,19 @@ extern int     cap_clear(cap_t);
  extern int     cap_clear_flag(cap_t, cap_flag_t);
  
  /* libcap/cap_file.c */
