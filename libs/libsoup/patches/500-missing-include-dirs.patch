@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -341,7 +341,7 @@
+@@ -366,7 +366,7 @@ if test "$GCC" = "yes" -a "$set_more_war
  		-Werror=implicit-function-declaration \
  		-Werror=pointer-arith -Werror=init-self -Werror=format=2 \
  		-Wno-format-zero-length \
