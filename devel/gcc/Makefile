@@ -7,24 +7,68 @@
 # Entware specific: Our own patch set here.
 
 include $(TOPDIR)/rules.mk
+define Package/gcc/description
+	Build a native toolchain for compiling on target
+	device.
+endef
+
+
+define Package/gcc
+  SECTION:=devel
+  CATEGORY:=Development
+  TITLE:=gcc
+  MAINTAINER:=Noble Pepper <gccmaintain@noblepepper.com>
+  DEPENDS:= +binutils +libstdcpp @!arc
+  MENU:=1
+endef
 
 PKG_NAME:=gcc
-PKG_VERSION:=6.3.0
-PKG_RELEASE:=1b
+# PKG_VERSION=7.3.0
+PKG_VERSION=7.4.0
+PKG_RELEASE:=5
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
-PKG_HASH:=f06ae7f3f790fbf0f018f6d40e844451e6bc3b7bc96e128e63b09825c1f8b29f
-
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PATCH_DIR:=$(TOPDIR)/toolchain/gcc/patches/$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_FIXUP:=libtool
 PKG_BUILD_PARALLEL:=1
 
-include $(INCLUDE_DIR)/package.mk
+PKG_CPE_ID:=cpe:/a:gnu:gcc
 
+ifeq ($(PKG_VERSION),7.3.0)
+	PKG_HASH:=832ca6ae04636adbb430e865a1451adf6979ab44ca1c8374f61fba65645ce15c
+endif
+ifeq ($(PKG_VERSION),7.4.0)
+	PKG_HASH:=eddde28d04f334aec1604456e536416549e9b1aa137fc69204e65eb0c009fe51
+endif
+
+
+define Package/gcc/config
+  source "$(SOURCE)/Config.in"
+endef
+
+ifeq ($(CONFIG_INCLUDE_STATIC_LIBC),y)
+	COPY_STATIC_LIBC=cp -a $(TOOLCHAIN_DIR)/lib/libc.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+endif
+
+ifeq ($(CONFIG_INCLUDE_STATIC_LIBPTHREAD),y)
+	COPY_STATIC_LIBPTHREAD=cp -a $(TOOLCHAIN_DIR)/lib/libpthread.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+endif
+
+ifeq ($(CONFIG_INCLUDE_STATIC_LIBSTDC),y)
+	COPY_STATIC_LIBSTDC=cp -a $(TOOLCHAIN_DIR)/lib/libstdc++.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+endif
+
+ifeq ($(CONFIG_INCLUDE_STATIC_LINK_SPEC),y)
+	INSTALL_STATIC_SPEC=g++ -dumpspecs |sed s/--start-group}\ %G\ %L\ /--start-group}\ %G\ %L\ -lstdc++\ -lgcc_pic\ / >/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
+	REMOVE_STATIC_SPEC=rm /opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
+endif
+
+include $(INCLUDE_DIR)/package.mk
 TARGET_LANGUAGES:="c,c++"
 BUGURL=https://dev.openwrt.org/
 PKGVERSION=OpenWrt GCC $(PKG_VERSION)
+TARGET_CPPFLAGS += -D_GLIBCXX_INCLUDE_NEXT_C_HEADERS
 
 # not using sstrip here as this fucks up the .so's somehow
 STRIP:=$(TOOLCHAIN_DIR)/bin/$(TARGET_CROSS)strip
@@ -39,43 +83,30 @@ ifneq ($(CONFIG_SOFT_FLOAT),y)
 		ARM_FLOAT_OPTION:= --with-float=hard
 	endif
 endif
-
-define Package/gcc
-  SECTION:=devel
-  CATEGORY:=Development
-  TITLE:=gcc
-  MAINTAINER:=Noble Pepper <gccmaintain@noblepepper.com>
-  DEPENDS:= +binutils +libstdcpp
-endef
-
-define Package/gcc/description
-	build a native toolchain for compiling on target
-endef
-
-GMPSRC=gmp-4.3.2
+GMPSRC=gmp-6.1.0
 
 define Download/gmp
   URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
   FILE:=$(GMPSRC).tar.bz2
-  HASH:=936162c0312886c21581002b79932829aa048cfaf9937c6265aeaa14f1cd1775
+  HASH:=498449a994efeba527885c10405993427995d3f86b8768d8cdf8d9dd7c6b73e8
 endef
 $(eval $(call Download,gmp))
 
-MPCSRC=mpc-0.8.1
+MPCSRC=mpc-1.0.3
 
 define Download/mpc
   URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
   FILE:=$(MPCSRC).tar.gz
-  HASH:=e664603757251fd8a352848276497a4c79b7f8b21fd8aedd5cc0598a38fee3e4
+  HASH:=617decc6ea09889fb08ede330917a00b16809b8db88c29c31bfbb49cbf88ecc3
 endef
 $(eval $(call Download,mpc))
 
-MPFRSRC=mpfr-2.4.2
+MPFRSRC=mpfr-3.1.4
 
 define Download/mpfr
   URL:=ftp://gcc.gnu.org/pub/gcc/infrastructure/
   FILE:=$(MPFRSRC).tar.bz2
-  HASH:=c7e75a08a8d49d2082e4caee1591a05d11b9d5627514e678f02d66a124bcf2ba
+  HASH:=d3103a80cdad2407ed581f3618c4bed04e0c92d1cf771a65ead662cc397f7775
 endef
 $(eval $(call Download,mpfr))
 
@@ -90,18 +121,18 @@ define Build/Prepare
 	ln -sf $(PKG_BUILD_DIR)/$(MPFRSRC) $(PKG_BUILD_DIR)/mpfr
 	$(Build/Patch)
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/002-dont-choke-when-building-32bit-on-64bit.patch
-	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/003-mpfr-longlong-mips.patch
 #uclibc needs -lm to build libcc1
 ifdef CONFIG_USE_UCLIBC
 	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/004-libcc1_uclibc_lm.patch
 endif
-	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/005-ucontext.patch
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpfr/
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/gmp/
+	chmod u+w $(PKG_BUILD_DIR)/mpc/config.sub
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpc/
 endef
 
+CONFIGURE_ARGS +=  CXXFLAGS_FOR_TARGET="-g -O2 -D_GLIBCXX_INCLUDE_NEXT_C_HEADERS"
 
 define Build/Configure
 	(cd $(PKG_BUILD_DIR); rm -f config.cache; \
@@ -120,7 +151,6 @@ define Build/Configure
 			--with-default-libstdcxx-abi=gcc4-compatible \
 			--enable-target-optspace \
 			--with-gnu-ld \
-			--with-stage1-ldflags="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--with-specs="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--with-boot-ldflags="static-libstdc++ -static-libgcc -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--disable-nls \
@@ -128,6 +158,7 @@ define Build/Configure
 			--disable-libvtv \
 			--disable-libcilkrts \
 			--disable-libmudflap \
+			--disable-libmpx \
 			--disable-multilib \
 			--disable-libgomp \
 			--disable-libquadmath \
@@ -138,6 +169,7 @@ define Build/Configure
 			--prefix=/opt \
 			--libexecdir=/opt/lib \
 			--with-local-prefix=/opt \
+			--with-stage1-ldflags="-lstdc++ -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			$(ARM_FLOAT_OPTION) \
 			$(SOFT_FLOAT_CONFIG_OPTION) \
 			$(call qstrip,$(CONFIG_EXTRA_GCC_CONFIG_OPTIONS)) \
@@ -159,14 +191,7 @@ ifeq ($(CONFIG_SOFT_FLOAT),y)
 endif
 ENVCFLAGS+="
 
-ENVLDFLAGS:="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER) -L/opt/lib"
-
-define Package/gcc/postinst
-#!/bin/sh
-echo "There are no *-dev packages in Entware(with few exceptions)!"
-echo "Please install headers as described in the wiki:"
-echo "https://github.com/Entware/Entware/wiki"
-endef
+ENVLDFLAGS:="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER) -L/opt/lib, -lstdc++"
 
 define Package/gcc/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
@@ -183,12 +208,30 @@ define Package/gcc/install
 	cp -a $(TOOLCHAIN_DIR)/lib/*.{o,so*} $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 	cp -a $(TOOLCHAIN_DIR)/lib/*nonshared*.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 	cp -a $(TOOLCHAIN_DIR)/lib/libm.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	$(COPY_STATIC_LIBC)
+	$(COPY_STATIC_LIBPTHREAD)
+	$(COPY_STATIC_LIBSTDC)
 	rm -f $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/libgo*
 	rm -f $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/libcc1*
+	rm -f $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/libQt5* || true
 	echo '#!/bin/sh' > $(1)/opt/bin/gcc_env.sh
 	echo 'export LDFLAGS=$(ENVLDFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	echo 'export CFLAGS=$(ENVCFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	chmod +x $(1)/opt/bin/gcc_env.sh
+endef
+
+define Package/gcc/postinst
+#!/bin/sh
+$(INSTALL_STATIC_SPEC)
+echo "There are no *-dev packages in Entware(with few exceptions)!"
+echo "Please install headers as described in the wiki:"
+echo "https://github.com/Entware/Entware/wiki"
+endef
+
+define Package/gcc/postrm
+#!/bin/sh
+
+$(REMOVE_STATIC_SPEC)
 endef
 
 $(eval $(call BuildPackage,gcc))
