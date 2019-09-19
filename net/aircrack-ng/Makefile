@@ -12,6 +12,7 @@ PKG_VERSION:=1.5.2
 PKG_RELEASE:=$(PKG_SOURCE_VERSION)
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:aircrack-ng:aircrack-ng
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/aircrack-ng/aircrack-ng.git
@@ -48,7 +49,7 @@ define Package/aircrack-ng
   DEPENDS += +libnl-core +libnl-genl +zlib
   TITLE:=WLAN tools (without airmon-ng) for breaking 802.11 WEP/WPA keys
   URL:=https://www.aircrack-ng.org/
-  SUBMENU:=wireless
+  SUBMENU:=Wireless
 endef
 
 define Package/aircrack-ng/description
@@ -65,7 +66,7 @@ define Package/airmon-ng
   DEPENDS:=+ethtool +procps-ng +CONFIG_PCI_SUPPORT:pciutils +CONFIG_USB_SUPPORT:usbutils
   TITLE:=Bash script designed to turn wireless cards into monitor mode.
   URL:=http://www.aircrack-ng.org/
-  SUBMENU:=wireless
+  SUBMENU:=Wireless
 endef
 
 define Package/airmon-ng/description
