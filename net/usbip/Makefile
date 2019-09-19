@@ -32,6 +32,7 @@ Hooks/Prepare/Pre += prepare_source_directory
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
+PKG_ASLR_PIE:=0
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -69,11 +70,14 @@ endef
 CONFIGURE_PATH:=.
 MAKE_PATH:=.
 LIBTOOL_PATHS:=.
+
 # Entware specific CFLAGS -Wno-...
 MAKE_FLAGS+=CFLAGS='-Wno-format-truncation -Wno-format-overflow -Wno-implicit-fallthrough \
 	-Dudev_device_get_devpath\(x\)=udev_device_get_syspath\(x\)+strlen\(\"/sys\"\) \
 	-DSIGCLD=SIGCHLD'
-CONFIGURE_ARGS+= --disable-silent-rules
+CONFIGURE_ARGS += \
+	--disable-silent-rules \
+	--with-usbids-dir=/opt/share/hwdata
 
 define Build/Configure
 	(cd $(PKG_BUILD_DIR); ./autogen.sh );
@@ -81,23 +85,22 @@ define Build/Configure
 endef
 
 CONFIGURE_VARS+= $(if $(CONFIG_USE_GLIBC),LIBS='-lpthread')
-CONFIGURE_ARGS += "--with-usbids-dir=/opt/share/hwdata"
 CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include"
 
-USB_IDS_REV:=0a6be488b4c1485d30c9efee1cc895af5d4a1383
-USB_IDS_FILE:=usb.ids.$(USB_IDS_REV)
+USB_IDS_VER:=0.318
+USB_IDS_FILE:=usb.ids.$(USB_IDS_VER)
 define Download/usb.ids
   FILE:=$(USB_IDS_FILE)
   URL_FILE:=usb.ids
-  URL:=@GITHUB/gentoo/hwids/$(USB_IDS_REV)
-  HASH:=2d0403ffccc0ff7150e32c0bf8e2878816b76ba08d2c3bb1059f33627a3da30f
+  URL:=@GITHUB/vcrhonek/hwdata/v$(USB_IDS_VER)
+  HASH:=84bc5452e4e45c2250e01bc74e03528b2a53c4724b2c4a5feaea76a922f83915
 endef
 
 define Package/usbip/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libusbip.so.* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/share/hwdata
-	$(CP) $(DL_DIR)/usb.ids.$(USB_IDS_REV) $(1)/opt/share/hwdata/usb.ids
+	$(CP) $(DL_DIR)/usb.ids.$(USB_IDS_VER) $(1)/opt/share/hwdata/usb.ids
 endef
 
 define Package/usbip-client/install
