@@ -10,18 +10,19 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=strongswan
 ifeq ($(CONFIG_TARGET_armv7_2_6),y)
 PKG_VERSION:=5.6.2
-PKG_RELEASE:=1a
+PKG_RELEASE:=3
 PKG_HASH:=e0a60a30ebf3c534c223559e1686497a21ded709a5d605c5123c2f52bcc22e92
 else
-PKG_VERSION:=5.7.2
+PKG_VERSION:=5.8.1
 PKG_RELEASE:=1
-PKG_HASH:=308e3ba76e2ce2da070e48fcebbe1fa923a27cc71e43bf63917e6f2a889ecc70
+PKG_HASH:=d9af70acea5c054952ad1584916c1bf231b064eb6c8a9791dcb6ae90a769990c
 endif
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://download.strongswan.org/ http://download2.strongswan.org/
-PKG_LICENSE:=GPL-2.0+
+PKG_SOURCE_URL:=https://download.strongswan.org/ https://download2.strongswan.org/
+PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Stijn Tintel <stijn@linux-ipv6.be>
+PKG_CPE_ID:=cpe:/a:strongswan:strongswan
 
 PATCH_DIR=./patches/$(PKG_VERSION)
 
@@ -92,7 +93,6 @@ PKG_MOD_AVAILABLE:= \
 	stroke \
 	test-vectors \
 	unity \
-	uci \
 	updown \
 	vici \
 	whitelist \
@@ -210,7 +210,6 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-sshkey \
 	+strongswan-mod-stroke \
 	+strongswan-mod-test-vectors \
-	+strongswan-mod-uci \
 	+strongswan-mod-unity \
 	+strongswan-mod-updown \
 	+strongswan-mod-vici \
@@ -295,7 +294,6 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-sha1 \
 	+strongswan-mod-socket-default \
 	+strongswan-mod-stroke \
-	+strongswan-mod-uci \
 	+strongswan-mod-updown
 endef
 
@@ -439,6 +437,7 @@ CONFIGURE_ARGS+= \
 	$(if $(CONFIG_PACKAGE_strongswan-charon-cmd),--enable-cmd,--disable-cmd) \
 	$(if $(CONFIG_PACKAGE_strongswan-pki),--enable-pki,--disable-pki) \
 	$(if $(CONFIG_PACKAGE_strongswan-scepclient),--enable-scepclient,--disable-scepclient) \
+	--with-piddir=/opt/var/run \
 	--with-random-device=/dev/random \
 	--with-urandom-device=/dev/urandom \
 	--with-routing-table="$(call qstrip,$(CONFIG_STRONGSWAN_ROUTING_TABLE))" \
@@ -666,7 +665,7 @@ $(eval $(call BuildPlugin,sqlite,SQLite database interface,+strongswan-mod-sql +
 $(eval $(call BuildPlugin,sshkey,SSH key decoding,))
 $(eval $(call BuildPlugin,stroke,Stroke,+strongswan-charon +strongswan-ipsec))
 $(eval $(call BuildPlugin,test-vectors,crypto test vectors,))
-$(eval $(call BuildPlugin,uci,UCI config interface,+PACKAGE_strongswan-mod-uci:libuci))
+#$(eval $(call BuildPlugin,uci,UCI config interface,+PACKAGE_strongswan-mod-uci:libuci))
 $(eval $(call BuildPlugin,unity,Cisco Unity extension,))
 $(eval $(call BuildPlugin,updown,updown firewall,))
 $(eval $(call BuildPlugin,vici,Versatile IKE Configuration Interface,))
