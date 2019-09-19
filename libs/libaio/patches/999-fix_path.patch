@@ -1,0 +1,19 @@
+--- a/Makefile
++++ b/Makefile
+@@ -4,7 +4,7 @@ VERSION=$(shell awk '/Version:/ { print
+ TAG = $(NAME)-$(VERSION)
+ RPMBUILD=$(shell `which rpmbuild >&/dev/null` && echo "rpmbuild" || echo "rpm")
+ 
+-prefix=/usr
++prefix=/opt
+ includedir=$(prefix)/include
+ libdir=$(prefix)/lib
+ 
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -1,4 +1,4 @@
+-prefix=/usr
++prefix=/opt
+ includedir=$(prefix)/include
+ libdir=$(prefix)/lib
+ 
