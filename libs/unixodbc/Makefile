@@ -39,7 +39,7 @@ CONFIGURE_ARGS += \
 	--includedir=$(STAGING_DIR)/opt/include
 
 define Package/unixodbc/Default
-  SUBMENU:=database
+  SUBMENU:=Database
   TITLE:=unixODBC
   URL:=http://www.unixodbc.org
 endef
