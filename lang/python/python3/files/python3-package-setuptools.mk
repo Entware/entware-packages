@@ -9,23 +9,24 @@ define Package/python3-setuptools
 $(call Package/python3/Default)
   TITLE:=Python $(PYTHON3_VERSION) setuptools module
   VERSION:=$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)
+  LICENSE:=MIT
+  LICENSE_FILES:=LICENSE
+#  CPE_ID:=cpe:/a:python:setuptools # not currently handled this way by uscan
   DEPENDS:=+python3
 endef
 
 define Py3Package/python3-setuptools/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
-	$(CP) $(PKG_BUILD_DIR)/install-setuptools/bin/easy_install-* $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/install-setuptools/opt/bin/easy_install-* $(1)/opt/bin
 	$(LN) easy_install-$(PYTHON3_VERSION) $(1)/opt/bin/easy_install-3
 	$(CP) \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON3_VERSION)/site-packages/pkg_resources \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON3_VERSION)/site-packages/setuptools \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON3_VERSION)/site-packages/setuptools-$(PYTHON3_SETUPTOOLS_VERSION).dist-info \
-		$(PKG_BUILD_DIR)/install-setuptools/lib/python$(PYTHON3_VERSION)/site-packages/easy_install.py \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON3_VERSION)/site-packages/pkg_resources \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON3_VERSION)/site-packages/setuptools \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON3_VERSION)/site-packages/setuptools-$(PYTHON3_SETUPTOOLS_VERSION).dist-info \
+		$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON3_VERSION)/site-packages/easy_install.py \
 		$(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
-	for _ in \$(seq 1 10) ; do \
-		find $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages/ -name __pycache__ -exec rm -rf {} \; || continue ; \
-		break ; \
-	done
+	find $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages/ -path '*/__pycache__/*' -delete
+	find $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages/ -type d -name __pycache__ -delete
 endef
 
 $(eval $(call Py3BasePackage,python3-setuptools, \
