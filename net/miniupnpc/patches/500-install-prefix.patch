@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -144,7 +144,7 @@
+@@ -142,7 +142,7 @@ endif
  LIBDIR ?= lib
  # install directories
  ifeq ($(strip $(PREFIX)),)
