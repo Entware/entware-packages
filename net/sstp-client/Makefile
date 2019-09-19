@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sstp-client
 PKG_VERSION:=1.0.12
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/sstp-client/$(PKG_VERSION)
@@ -24,7 +24,7 @@ define Package/sstp-client
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=VPN
-  DEPENDS=+libevent2 +libopenssl +ppp
+  DEPENDS=+libevent2 +libopenssl +ppp +resolveip
   TITLE:=SSTP-Client is a SSTP client for Linux.
   URL:=http://sstp-client.sourceforge.net/
   MAINTAINER:=Federico Di Marco <fededim@gmail.com>
@@ -56,6 +56,8 @@ define Package/sstp-client/install
 
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(CP) files/etc $(1)/opt/
+#	$(INSTALL_DIR) $(1)/lib/netifd/proto
+#	$(INSTALL_BIN) ./files/lib/netifd/proto/sstp.sh $(1)/lib/netifd/proto
 endef
 
 $(eval $(call BuildPackage,sstp-client))
