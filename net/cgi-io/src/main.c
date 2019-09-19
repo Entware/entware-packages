@@ -16,6 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define _GNU_SOURCE /* splice(), SPLICE_F_MORE */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -26,6 +28,9 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/sendfile.h>
+#include <sys/ioctl.h>
+#include <linux/fs.h>
 
 #include <libubus.h>
 #include <libubox/blobmsg.h>
@@ -89,7 +94,7 @@ session_access_cb(struct ubus_request *req, int type, struct blob_attr *msg)
 }
 
 static bool
-session_access(const char *sid, const char *obj, const char *func)
+session_access(const char *sid, const char *scope, const char *obj, const char *func)
 {
 	uint32_t id;
 	bool allow = false;
@@ -103,7 +108,7 @@ session_access(const char *sid, const char *obj, const char *func)
 
 	blob_buf_init(&req, 0);
 	blobmsg_add_string(&req, "ubus_rpc_session", sid);
-	blobmsg_add_string(&req, "scope", "cgi-io");
+	blobmsg_add_string(&req, "scope", scope);
 	blobmsg_add_string(&req, "object", obj);
 	blobmsg_add_string(&req, "function", func);
 
@@ -263,6 +268,64 @@ postdecode(char **fields, int n_fields)
 	return (found >= n_fields);
 }
 
+static char *
+canonicalize_path(const char *path, size_t len)
+{
+	char *canonpath, *cp;
+	const char *p, *e;
+
+	if (path == NULL || *path == '\0')
+		return NULL;
+
+	canonpath = datadup(path, len);
+
+	if (canonpath == NULL)
+		return NULL;
+
+	/* normalize */
+	for (cp = canonpath, p = path, e = path + len; p < e; ) {
+		if (*p != '/')
+			goto next;
+
+		/* skip repeating / */
+		if ((p + 1 < e) && (p[1] == '/')) {
+			p++;
+			continue;
+		}
+
+		/* /./ or /../ */
+		if ((p + 1 < e) && (p[1] == '.')) {
+			/* skip /./ */
+			if ((p + 2 >= e) || (p[2] == '/')) {
+				p += 2;
+				continue;
+			}
+
+			/* collapse /x/../ */
+			if ((p + 2 < e) && (p[2] == '.') && ((p + 3 >= e) || (p[3] == '/'))) {
+				while ((cp > canonpath) && (*--cp != '/'))
+					;
+
+				p += 3;
+				continue;
+			}
+		}
+
+next:
+		*cp++ = *p++;
+	}
+
+	/* remove trailing slash if not root / */
+	if ((cp > canonpath + 1) && (cp[-1] == '/'))
+		cp--;
+	else if (cp == canonpath)
+		*cp++ = '/';
+
+	*cp = '\0';
+
+	return canonpath;
+}
+
 static int
 response(bool success, const char *message)
 {
@@ -308,14 +371,16 @@ response(bool success, const char *message)
 }
 
 static int
-failure(int e, const char *message)
+failure(int code, int e, const char *message)
 {
-	printf("Status: 500 Internal Server failure\r\n");
+	printf("Status: %d %s\r\n", code, message);
 	printf("Content-Type: text/plain\r\n\r\n");
 	printf("%s", message);
 
 	if (e)
 		printf(": %s", strerror(e));
+
+	printf("\n");
 
 	return -1;
 }
@@ -417,6 +482,9 @@ data_begin_cb(multipart_parser *p)
 		if (!st.filename)
 			return response(false, "File data without name");
 
+		if (!session_access(st.sessionid, "file", st.filename, "write"))
+			return response(false, "Access to path denied by ACL");
+
 		st.tempfd = mkstemp(tmpname);
 
 		if (st.tempfd < 0)
@@ -438,7 +506,7 @@ data_cb(multipart_parser *p, const char *data, size_t len)
 		break;
 
 	case PART_FILENAME:
-		st.filename = datadup(data, len);
+		st.filename = canonicalize_path(data, len);
 		break;
 
 	case PART_FILEMODE:
@@ -469,7 +537,7 @@ data_end_cb(multipart_parser *p)
 {
 	if (st.parttype == PART_SESSIONID)
 	{
-		if (!session_access(st.sessionid, "upload", "write"))
+		if (!session_access(st.sessionid, "cgi-io", "upload", "write"))
 		{
 			errno = EPERM;
 			return response(false, "Upload permission denied");
@@ -585,6 +653,84 @@ main_upload(int argc, char *argv[])
 }
 
 static int
+main_download(int argc, char **argv)
+{
+	char *fields[] = { "sessionid", NULL, "path", NULL, "filename", NULL, "mimetype", NULL };
+	unsigned long long size = 0;
+	char *p, buf[4096];
+	ssize_t len = 0;
+	struct stat s;
+	int rfd;
+
+	postdecode(fields, 4);
+
+	if (!fields[1] || !session_access(fields[1], "cgi-io", "download", "read"))
+		return failure(403, 0, "Download permission denied");
+
+	if (!fields[3] || !session_access(fields[1], "file", fields[3], "read"))
+		return failure(403, 0, "Access to path denied by ACL");
+
+	if (stat(fields[3], &s))
+		return failure(404, errno, "Failed to stat requested path");
+
+	if (!S_ISREG(s.st_mode) && !S_ISBLK(s.st_mode))
+		return failure(403, 0, "Requested path is not a regular file or block device");
+
+	for (p = fields[5]; p && *p; p++)
+		if (!isalnum(*p) && !strchr(" ()<>@,;:[]?.=%", *p))
+			return failure(400, 0, "Invalid characters in filename");
+
+	for (p = fields[7]; p && *p; p++)
+		if (!isalnum(*p) && !strchr(" .;=/-", *p))
+			return failure(400, 0, "Invalid characters in mimetype");
+
+	rfd = open(fields[3], O_RDONLY);
+
+	if (rfd < 0)
+		return failure(500, errno, "Failed to open requested path");
+
+	if (S_ISBLK(s.st_mode))
+		ioctl(rfd, BLKGETSIZE64, &size);
+	else
+		size = (unsigned long long)s.st_size;
+
+	printf("Status: 200 OK\r\n");
+	printf("Content-Type: %s\r\n", fields[7] ? fields[7] : "application/octet-stream");
+
+	if (fields[5])
+		printf("Content-Disposition: attachment; filename=\"%s\"\r\n", fields[5]);
+
+	printf("Content-Length: %llu\r\n\r\n", size);
+	fflush(stdout);
+
+	while (size > 0) {
+		len = sendfile(1, rfd, NULL, size);
+
+		if (len == -1) {
+			if (errno == ENOSYS || errno == EINVAL) {
+				while ((len = read(rfd, buf, sizeof(buf))) > 0)
+					fwrite(buf, len, 1, stdout);
+
+				fflush(stdout);
+				break;
+			}
+
+			if (errno == EINTR || errno == EAGAIN)
+				continue;
+		}
+
+		if (len <= 0)
+			break;
+
+		size -= len;
+	}
+
+	close(rfd);
+
+	return 0;
+}
+
+static int
 main_backup(int argc, char **argv)
 {
 	pid_t pid;
@@ -592,21 +738,20 @@ main_backup(int argc, char **argv)
 	int len;
 	int status;
 	int fds[2];
-	char buf[4096];
 	char datestr[16] = { 0 };
 	char hostname[64] = { 0 };
 	char *fields[] = { "sessionid", NULL };
 
-	if (!postdecode(fields, 1) || !session_access(fields[1], "backup", "read"))
-		return failure(0, "Backup permission denied");
+	if (!postdecode(fields, 1) || !session_access(fields[1], "cgi-io", "backup", "read"))
+		return failure(403, 0, "Backup permission denied");
 
 	if (pipe(fds))
-		return failure(errno, "Failed to spawn pipe");
+		return failure(500, errno, "Failed to spawn pipe");
 
 	switch ((pid = fork()))
 	{
 	case -1:
-		return failure(errno, "Failed to fork process");
+		return failure(500, errno, "Failed to fork process");
 
 	case 0:
 		dup2(fds[1], 1);
@@ -624,7 +769,6 @@ main_backup(int argc, char **argv)
 		return -1;
 
 	default:
-		fcntl(fds[0], F_SETFL, fcntl(fds[0], F_GETFL) | O_NONBLOCK);
 		now = time(NULL);
 		strftime(datestr, sizeof(datestr) - 1, "%Y-%m-%d", localtime(&now));
 
@@ -636,15 +780,13 @@ main_backup(int argc, char **argv)
 		printf("Content-Disposition: attachment; "
 		       "filename=\"backup-%s-%s.tar.gz\"\r\n\r\n", hostname, datestr);
 
+		fflush(stdout);
+
 		do {
-			waitpid(pid, &status, 0);
+			len = splice(fds[0], NULL, 1, NULL, 4096, SPLICE_F_MORE);
+		} while (len > 0);
 
-			while ((len = read(fds[0], buf, sizeof(buf))) > 0) {
-				fwrite(buf, len, 1, stdout);
-				fflush(stdout);
-			}
-
-		} while (!WIFEXITED(status));
+		waitpid(pid, &status, 0);
 
 		close(fds[0]);
 		close(fds[1]);
@@ -657,6 +799,8 @@ int main(int argc, char **argv)
 {
 	if (strstr(argv[0], "cgi-upload"))
 		return main_upload(argc, argv);
+	else if (strstr(argv[0], "cgi-download"))
+		return main_download(argc, argv);
 	else if (strstr(argv[0], "cgi-backup"))
 		return main_backup(argc, argv);
 
