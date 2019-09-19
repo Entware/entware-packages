@@ -18,10 +18,13 @@ PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENCE
+PKG_CPE_ID:=cpe:/a:pcre:pcre
 
 PKG_FIXUP:=autoreconf
 
 PKG_INSTALL:=1
+
+PKG_CONFIG_DEPENDS := CONFIG_PACKAGE_libpcrecpp
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -29,7 +32,6 @@ define Package/libpcre/default
   SECTION:=libs
   CATEGORY:=Libraries
   URL:=https://www.pcre.org/
-  DEPENDS:=+libstdcpp
 endef
 
 define Package/libpcre
@@ -45,7 +47,7 @@ endef
 define Package/libpcrecpp
   $(call Package/libpcre/default)
   TITLE:=C++ wrapper for Perl Compatible Regular Expression library
-  DEPENDS:=+libpcre
+  DEPENDS:=+libpcre +libstdcpp
 endef
 
 TARGET_CFLAGS += $(FPIC)
@@ -55,8 +57,7 @@ CONFIGURE_ARGS += \
 	--enable-unicode-properties \
 	--enable-pcre16 \
 	--with-match-limit-recursion=16000 \
-	--enable-cpp
-
+	$(if $(CONFIG_PACKAGE_libpcrecpp),--enable,--disable)-cpp
 
 MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS)"
