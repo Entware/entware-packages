@@ -39,7 +39,12 @@ define Py3Package
   define Package/$(1)-src
     $(call Package/$(1))
     DEPENDS:=
+    CONFLICTS:=
+    PROVIDES:=
+    EXTRA_DEPENDS:=
     TITLE+= (sources)
+    USERID:=
+    MENU:=
   endef
 
   define Package/$(1)-src/description
@@ -120,8 +125,8 @@ PYTHON3_PKG_SETUP_ARGS ?= --single-version-externally-managed
 PYTHON3_PKG_SETUP_VARS ?=
 
 define Py3Build/Compile/Default
-	$(foreach pkg,$(HOST_PYTHON3_PACKAGE_BUILD_DEPENDS),
-		$(call host_python3_pip_install_host,$(pkg))
+	$(if $(HOST_PYTHON3_PACKAGE_BUILD_DEPENDS),
+		$(call Build/Compile/HostPy3PipInstall,$(HOST_PYTHON3_PACKAGE_BUILD_DEPENDS))
 	)
 	$(call Build/Compile/Py3Mod, \
 		$(PYTHON3_PKG_SETUP_DIR), \
