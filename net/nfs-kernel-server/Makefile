@@ -7,9 +7,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nfs-kernel-server
-PKG_VERSION:=2.3.4
+PKG_VERSION:=2.4.1
 PKG_RELEASE:=1
-PKG_HASH:=8a6bafd5a33c4259e6e5093d126384cbe33acb10135578b5faa60c40f2f5e995
+PKG_HASH:=1a21bf8e8b8864d54d114aa7b0e87e48ec87a5d861de0c03c20e35f7e3c67721
 
 PKG_SOURCE_URL:=@SF/nfs
 PKG_SOURCE:=nfs-utils-$(PKG_VERSION).tar.xz
@@ -114,6 +114,7 @@ CONFIGURE_ARGS += \
 	--disable-nfsdcltrack \
 	--enable-shared \
 	--enable-static \
+	--with-rpcgen=internal \
 	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv4 \
 	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv41
 
@@ -142,7 +143,8 @@ HOST_CONFIGURE_ARGS += \
 	--disable-gss \
 	--disable-nfsv4 \
 	--disable-nfsv41 \
-	--without-tcp-wrappers
+	--without-tcp-wrappers \
+	--with-rpcgen=internal
 
 HOST_CONFIGURE_VARS += \
 	ac_cv_lib_event_event_dispatch=yes \
