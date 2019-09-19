@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=pagekitec
 PKG_REV:=0.91.171102
 PKG_VERSION:=$(PKG_REV)C
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=Apache-2.0
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -73,9 +73,9 @@ This package contains a basic backend useful for exposing http/ssh servers.
 Basic UCI support for configuring this backend is also included.
 endef
 
-define Package/pagekitec/conffiles
+#define Package/pagekitec/conffiles
 #/etc/config/pagekitec
-endef
+#endef
 
 define Build/Configure
 	(cd $(PKG_BUILD_DIR); ./autogen.sh );
@@ -92,7 +92,7 @@ endef
 
 define Package/libpagekite/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libpagekite.so* $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpagekite.so* $(1)/opt/lib
 endef
 
 define Package/pagekitec/install
