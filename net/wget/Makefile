@@ -9,13 +9,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wget
 PKG_VERSION:=1.20.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
 PKG_HASH:=31cccfc6630528db1c8e3a06f6decf2a370060b982841cfab2b8677400a5092e
 PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
-PKG_LICENSE:=GPL-3.0+
+PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
 PKG_CPE_ID:=cpe:/a:gnu:wget
@@ -31,6 +31,7 @@ define Package/wget/Default
   SUBMENU:=File Transfer
   TITLE:=Non-interactive network downloader
   URL:=https://www.gnu.org/software/wget/index.html
+  PROVIDES:=wget
 endef
 
 define Package/wget/Default/description
@@ -47,6 +48,7 @@ $(call Package/wget/Default)
   DEPENDS+= +libopenssl
   TITLE+= (with SSL support)
   VARIANT:=ssl
+  PROVIDES+=gnu-wget
 #  ALTERNATIVES:=300:/usr/bin/wget:/usr/bin/wget-ssl
 endef
 
@@ -59,6 +61,7 @@ define Package/wget-nossl
 $(call Package/wget/Default)
   TITLE+= (without SSL support)
   VARIANT:=nossl
+  PROVIDES+=gnu-wget
 #  ALTERNATIVES:=300:/usr/bin/wget:/usr/bin/wget-nossl
 endef
 
