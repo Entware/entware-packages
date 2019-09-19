@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2018 Michael Heimpold <mhei@heimpold.de>
+# Copyright (C) 2018-2019 Michael Heimpold <mhei@heimpold.de>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libgpiod
-PKG_VERSION:=1.3
+PKG_VERSION:=1.4.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/libs/libgpiod/
-PKG_HASH:=6ec837f23e8f2196e5976dec4ac81403170830075e7f33ede1394eaf67f2e962
+PKG_HASH:=21ae8fd1f8dafc2eb2ba50e652390cf533d21351419a7426255895cb52e21b1c
 
-PKG_LICENSE:=LGPL-2.1+
+PKG_LICENSE:=LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYING
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
@@ -34,7 +34,7 @@ define Package/libgpiod
   CATEGORY:=Libraries
   URL:=https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git
   TITLE:=Library for interacting with Linux's GPIO character device
-  DEPENDS:=@GPIO_SUPPORT @(LINUX_4_9||LINUX_4_14)
+  DEPENDS:=@GPIO_SUPPORT
 endef
 
 define Package/libgpiod/description
@@ -67,7 +67,7 @@ endef
 
 define Package/libgpiod/install
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgpiod.so* $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgpiod.so.* $(1)/usr/lib/
 endef
 
 define Package/gpiod-tools/install
