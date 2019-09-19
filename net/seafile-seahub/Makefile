@@ -9,36 +9,48 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
 PKG_VERSION:=6.3.4
-PKG_RELEASE:=3
-PKG_LICENSE:=Apache-2.0
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/haiwen/seahub/tar.gz/v$(PKG_VERSION)-server?
 PKG_HASH:=53a9efdb6791fd3a2a191e89cb0f133632056046ec08adbb2ad72088e6161430
-PKG_BUILD_DIR:=$(BUILD_DIR)/seahub-$(PKG_VERSION)-server
 
-PKG_BUILD_DEPENDS:=python-pytz/host
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
+PKG_LICENSE:=Apache-2.0
+PKG_LICENSE_FILES:=LICENSE.txt
+
+HOST_PYTHON_PACKAGE_BUILD_DEPENDS:="django>=1.11"
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/seahub-$(PKG_VERSION)-server
 
 include $(INCLUDE_DIR)/package.mk
 include ../../lang/python/python-package.mk
 
+SEAFILE_PYTHON_DEPENDS:= \
+	simplejson chardet dateutil mysqlclient pytz qrcode requests requests-oauthlib \
+	django django-constance django-appconf django-compressor django-formtools \
+	django-jsonfield django-picklefield django-postoffice django-restframework \
+	pillow django-simple-captcha django-statici18n django-webpack-loader
+
 define Package/seafile-seahub
-    SECTION:=net
-    CATEGORY:=Network
-    TITLE:=Seafile server - seahub component
-    URL:=https://seafile.com/
-    DEPENDS:=+python-simplejson +python +pillow +python-chardet +django +django-appconf \
-		+django-compressor +django-constance +django-formtools +django-jsonfield \
-		+django-picklefield +django-postoffice +django-restframework \
-		+django-simple-captcha +django-statici18n +django-webpack-loader \
-		+flup +gunicorn +openpyxl +python-dateutil +python-mysql \
-		+python-qrcode +python-requests +python-requests-oauthlib +python-pytz
+  SECTION:=net
+  CATEGORY:=Network
+  TITLE:=Seafile server - seahub component
+  URL:=https://seafile.com/
+  DEPENDS:=+python \
+	+python-flup +gunicorn +openpyxl \
+	$(foreach dep,$(SEAFILE_PYTHON_DEPENDS),+python-$(dep))
 endef
 
 define Build/Configure
 endef
 
+MAKE_VARS += \
+	PYTHON="$(HOST_PYTHON_BIN)" \
+	DJANGO_ADMIN_PY="$(STAGING_DIR_HOSTPKG)/bin/django-admin"
+
 define Build/Compile
+	$(call Build/Compile/HostPyPipInstall,$(HOST_PYTHON_PACKAGE_BUILD_DEPENDS))
 	$(call Build/Compile/Default,locale)
 endef
 
@@ -47,12 +59,6 @@ define Package/seafile-seahub/description
 
    NOTE: in order to have better performance, localization support is turned off by default.
    Please set 'USE_I18N = True' in seahub_settings.py if you intend to use languages other than English.
-endef
-
-define Build/Configure
-	$(call Build/Configure/Default,)
-	find $(PKG_BUILD_DIR)/ -name *.sh | xargs $(SED) 's|/bin/bash|/opt/bin/bash|'
-	find $(PKG_BUILD_DIR)/ -name *.sh | xargs $(SED) 's|SCRIPT=.*|SCRIPT=/opt/share/seafile/seafile-server/seahub/0.sh|'
 endef
 
 define Package/seafile-seahub/install
