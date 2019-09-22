@@ -209,6 +209,7 @@ define Build/Configure
 $(call Build/Configure/Default)
 endef
 
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include
 TARGET_LDFLAGS+= -ljpeg
 
 ifeq ($(CONFIG_MJPG_STREAMER_V4L2),y)
