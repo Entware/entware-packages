@@ -54,7 +54,7 @@ endef
 
 MAKE_FLAGS += \
 	BLADERF=no \
-	CFLAGS="$(TARGET_CFLAGS)" \
+	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	UNAME="Linux"
 
 TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
