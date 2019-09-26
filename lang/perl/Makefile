@@ -108,6 +108,7 @@ define Build/Configure
 	                                -Dowrt:threads=$(if $(CONFIG_PERL_THREADS),yes,no) \
 	                                -Dowrt:staging_dir='$(STAGING_DIR)' \
 	                                -Dowrt:host_perl_prefix='$(HOST_PERL_PREFIX)' \
+	                                -Dsysroot='$(TOOLCHAIN_DIR)' \
 	                                files/version.config \
 	                                files/base.config \
 	                                files/$(patsubst i386,i486,$(ARCH)).config \
