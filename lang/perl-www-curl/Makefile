@@ -33,8 +33,6 @@ define Package/perl-www-curl
   DEPENDS:=perl +libcurl +perlbase-essential +perlbase-xsloader
 endef
 
-MOD_CFLAGS_PERL += -D__CURL_MULTI_H
-
 define Build/Configure
 	$(call perlmod/Configure,$(STAGING_DIR)/opt/include,)
 endef
