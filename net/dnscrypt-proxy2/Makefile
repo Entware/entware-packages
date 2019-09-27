@@ -77,7 +77,7 @@ $(call Package/dnscrypt-proxy2/description)
   This package provides the source files for the client/bridge program.
 endef
 
-$(eval $(call GoBinPackage,dnscrypt-proxy2))
-$(eval $(call BuildPackage,dnscrypt-proxy2))
-$(eval $(call GoSrcPackage,golang-github-jedisct1-dnscrypt-proxy2-dev))
-$(eval $(call BuildPackage,golang-github-jedisct1-dnscrypt-proxy2-dev))
+#$(eval $(call GoBinPackage,dnscrypt-proxy2))
+#$(eval $(call BuildPackage,dnscrypt-proxy2))
+#$(eval $(call GoSrcPackage,golang-github-jedisct1-dnscrypt-proxy2-dev))
+#$(eval $(call BuildPackage,golang-github-jedisct1-dnscrypt-proxy2-dev))
