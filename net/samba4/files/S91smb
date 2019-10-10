@@ -13,7 +13,7 @@ start() {
     [ $? = 0 ] && echo "OK" || echo "FAIL"
 
     echo "Starting NMB services: "
-    nmbd -D
+    #nmbd -D
     [ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 
@@ -22,9 +22,9 @@ stop() {
     kill -9 `pidof smbd`
     [ $? = 0 ] && echo "OK" || echo "FAIL"
 
-    echo "Shutting down NMB services: "
-    kill -9 `pidof nmbd`
-    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    #echo "Shutting down NMB services: "
+    #kill -9 `pidof nmbd`
+    #[ $? = 0 ] && echo "OK" || echo "FAIL"
 }
 
 restart() {
