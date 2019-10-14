@@ -27,6 +27,17 @@
  			name_p);
  		run_sm_notify(out_port);
  	}
+--- a/utils/mount/Makefile.am
++++ b/utils/mount/Makefile.am
+@@ -2,7 +2,7 @@
+ 
+ # These binaries go in /sbin (not /usr/sbin), and that cannot be
+ # overridden at config time.
+-sbindir = /sbin
++sbindir = @sbindir@
+ 
+ man8_MANS	= mount.nfs.man umount.nfs.man
+ man5_MANS	= nfs.man
 --- a/utils/mount/Makefile.in
 +++ b/utils/mount/Makefile.in
 @@ -425,7 +425,7 @@ psdir = @psdir@
