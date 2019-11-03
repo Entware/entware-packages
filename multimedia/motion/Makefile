@@ -51,7 +51,7 @@ CONFIGURE_ARGS+= \
 	--without-webp \
 	CFLAGS='$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)'
 
-ifeq ($(CONFIG_TARGET_armv7_2_6),y)
+ifeq ($(CONFIG_TARGET_armv7_2_6)$(CONFIG_TARGET_x86_2_6),y)
 CONFIGURE_ARGS+= \
 	--without-v4l2
 endif
