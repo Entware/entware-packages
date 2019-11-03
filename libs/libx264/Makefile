@@ -32,7 +32,7 @@ MAKE_FLAGS:=$(filter-out LD=%,$(MAKE_FLAGS)) LD="$(TARGET_CC) -o"
 ifneq ($(findstring cortex-a,$(CPU_TYPE)),)
   CONFIGURE_ARGS += --enable-lto
   else
-  ifneq ($(CONFIG_TARGET_x64_3_2),)
+  ifneq ($(CONFIG_TARGET_x64_3_2)$(CONFIG_TARGET_x86_2_6),)
     CONFIGURE_ARGS += --enable-lto
     ifeq ($(CONFIG_NASM),y)
       CONFIGURE_VARS+= AS=nasm
