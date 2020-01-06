@@ -2,11 +2,11 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnunet
 
-PKG_VERSION:=0.11.6
+PKG_VERSION:=0.12.1
 PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/gnunet
-PKG_HASH:=f8a07063b1e0890a1386fed2313a967f58f5495c075a25725aba200469c857bf
+PKG_HASH:=5553014dfa8b9aefa96fe83c6a8b8a84a28b30655df0ce283fd3e44a5a1b1f7e
 
 PKG_LICENSE:=AGPL-3.0
 PKG_LICENSE_FILES:=COPYING
@@ -33,11 +33,15 @@ CONFIGURE_ARGS+= \
 	--enable-experimental \
 	--with-extractor=$(STAGING_DIR)/usr \
 	--with-gnutls=$(STAGING_DIR)/usr \
+	$(if $(CONFIG_PACKAGE_$(PKG_NAME)-transport-bluetooth),--with-libbluetooth="$(STAGING_DIR)/usr",--without-libbluetooth) \
 	--with-libgnurl=$(STAGING_DIR)/usr \
+	--with-libogg=$(STAGING_DIR)/usr \
+	--with-libopus=$(STAGING_DIR)/usr \
+	--with-libpulse=$(STAGING_DIR)/usr \
 	--with-libunistring-prefix=$(STAGING_DIR)/usr \
 	--with-microhttpd=$(STAGING_DIR)/usr
 
-# ToDo: request upstream to provide --with-pulseaudio=...
+# upstream now provides --with-pulseaudio but doesn't detect rpath
 TARGET_LDFLAGS+= -Wl,-rpath-link=$(STAGING_DIR)/usr/lib/pulseaudio
 
 define Package/gnunet/Default
@@ -222,10 +226,6 @@ PLUGIN_transport-udp:=transport_udp
 PLUGIN_transport-wlan:=transport_wlan
 LIBEXEC_transport-wlan:=helper-transport-wlan
 
-
-DEPENDS_experiments:=+libglpk
-PLUGIN_experiments:=ats_mlp ats_ril
-
 # BIN_dv:=dv
 LIB_dv:=dv
 PLUGIN_dv:=transport_dv
@@ -393,8 +393,7 @@ endef
 #$(eval $(call BuildComponent,curl,cURL wrapper component,))
 #$(eval $(call BuildComponent,datastore,data storage components,))
 #$(eval $(call BuildComponent,dht-cli,DHT command line clients,))
-# $(eval $(call BuildComponent,dv,distance-vector routing component,y))
-#$(eval $(call BuildComponent,experiments,experimental components,))
+## $(eval $(call BuildComponent,dv,distance-vector routing component,y))
 #$(eval $(call BuildComponent,fs,file-sharing components,))
 #$(eval $(call BuildComponent,gns,name resolution components,y))
 #$(eval $(call BuildComponent,gns-proxy,gns-proxy component,))
