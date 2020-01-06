@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=motion
-PKG_VERSION:=4.2.1
-PKG_RELEASE:=2a
+PKG_VERSION:=4.2.2
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Roger D <rogerdammit@gmail.com>
 PKG_LICENSE:=GPLv2
@@ -18,7 +18,7 @@ PKG_CPE_ID:=cpe:/a:lavrsen:motion
 
 PKG_SOURCE:=$(PKG_NAME)-release-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Motion-Project/motion/tar.gz/release-$(PKG_VERSION)?
-PKG_HASH:=d97ec6ae766adfd478b6f7f9cc0da5f2fe21faa9366d98664be255714c1cf81d
+PKG_HASH:=c8d40976b41da8eb9f9f7128599403a312fc26b7226bf3787d75f78cb5a6cc6e
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-release-$(PKG_VERSION)
 
 PKG_BUILD_PARALLEL:=1
@@ -59,10 +59,10 @@ endif
 define Package/motion/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/etc/motion
+	$(INSTALL_BIN) ./files/S99motion $(1)/opt/etc/init.d
 	$(CP) $(PKG_BUILD_DIR)/motion-dist.conf $(1)/opt/etc/motion/motion.conf
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/motion $(1)/opt/bin/
-	$(INSTALL_BIN) ./files/S99motion  $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,motion))
