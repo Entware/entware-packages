@@ -6,20 +6,22 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fish
 PKG_VERSION:=3.0.2
-PKG_RELEASE:=4
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/fish-shell/fish-shell/releases/download/$(PKG_VERSION)
 PKG_HASH:=14728ccc6b8e053d01526ebbd0822ca4eb0235e6487e832ec1d0d22f1395430e
+
 PKG_MAINTAINER:=Curtis Jiang <jqqqqqqqqqq@gmail.com>, Hao Dong <halbertdong@gmail.com>
-PKG_LICENSE:=GPL-2.0
+PKG_LICENSE:=GPL-2.0-only
+PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:fishshell:fish
 
-PKG_FIXUP:=autoreconf
-PKG_INSTALL:=1
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+CMAKE_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/fish
   SECTION:=utils
@@ -37,10 +39,7 @@ define Package/fish/description
   configuration required.
 endef
 
-CONFIGURE_VARS += ac_cv_file__proc_self_stat=yes
-TARGET_CXXFLAGS += -std=c++0x
-# Entware specific:
-MAKE_FLAGS += EXTRA_CXXFLAGS="-I$(STAGING_DIR)/opt/include"
+EXTRA_CFLAGS += -I$(STAGING_DIR)/opt/include
 
 define Package/fish/install
 	$(INSTALL_DIR) $(1)/opt/bin
@@ -60,10 +59,10 @@ endef
 #grep fish $${IPKG_INSTROOT}/etc/shells || \
 #    echo "/usr/bin/fish" >> $${IPKG_INSTROOT}/etc/shells
 
-    # Backwards compatibility
-#    if [[ -e /bin/fish ]] && ([[ ! -L /bin/fish ]] || [[ "$(readlink -fn $${IPKG_INSTROOT}/bin/fish)" != "../$(CONFIGURE_PREFIX)/bin/fish" ]]); then
-#        ln -fs "../$(CONFIGURE_PREFIX)/bin/fish" "$${IPKG_INSTROOT}/bin/fish"
-#    fi
+## Backwards compatibility
+#if [ -e /bin/fish ] && { [ ! -L /bin/fish ] || [ "$(readlink -fn $${IPKG_INSTROOT}/bin/fish)" != "../$(CONFIGURE_PREFIX)/bin/fish" ]; }; then
+#    ln -fs "../$(CONFIGURE_PREFIX)/bin/fish" "$${IPKG_INSTROOT}/bin/fish"
+#fi
 #endef
 
 #define Package/fish/postrm
