@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=18
+PKG_RELEASE:=19
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -19,14 +19,14 @@ PKG_LICENSE:=GPL-2.0-or-later GPL-3.0-or-later GPL-1.0-or-later Artistic-1.0-Per
 PKG_LICENSE_FILES:=LICENSE-GPL2 LICENSE-GPL3 COPYING
 PKG_FIXUP:=autoreconf
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_NUT_DRIVER_SNMP \
 	CONFIG_NUT_DRIVER_USB \
 	CONFIG_NUT_DRIVER_SERIAL \
-	CONFIG_NUT_SSL
+	CONFIG_NUT_SSL \
+	CONFIG_PACKAGE_nut-web-cgi
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -283,7 +283,7 @@ endef
 define Package/nut-web-cgi
 	$(call Package/nut/Default)
 	TITLE+= Web CGI interface
-	DEPENDS:=nut +nut-common +libgd
+	DEPENDS:=nut +nut-common +PACKAGE_nut-web-cgi:libgd
 endef
 
 define Package/nut-web-cgi/description
@@ -502,7 +502,7 @@ CONFIGURE_ARGS += \
 	--without-powerman \
 	--without-wrap \
 	--with-hotplug-dir=/opt/etc/hotplug \
-	--with-cgi \
+	--with$(if $(CONFIG_PACKAGE_nut-web-cgi),,out)-cgi \
 	--without-ipmi \
 	--without-freeipmi \
 	--$(if $(CONFIG_NUT_SSL),with,without)-ssl $(if $(CONFIG_NUT_SSL),--with-openssl) \
@@ -511,6 +511,8 @@ CONFIGURE_ARGS += \
 	--with-drvpath=/opt/lib/nut \
 	--with-user=root \
 	--with-group=root \
+	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-includes="-I$(STAGING_DIR)/opt/include") \
+	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lpng -ljpeg -lz") \
 	--with-pidpath=/opt/var/run
 
 define Build/InstallDev
