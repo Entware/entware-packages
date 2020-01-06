@@ -3,6 +3,9 @@
 prefix="/opt"
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 
+#export LD_LIBRARY_PATH=/opt/lib/mjpg-streamer
+MOD_DIR=/opt/lib/mjpg-streamer
+
 start() {
 	echo "starting mjpg_streamer..."
 	# Do not forget to load nececcery kernel modules,
@@ -12,7 +15,7 @@ start() {
 	#insmod v4l2-int-device
 	#insmod input-core
 	#insmod uvcvideo
-	yes | mjpg_streamer -b -i "input_uvc.so -r 320x240 -f 5" -o "output_http.so -p 3000 -w /opt/share/www/webcam"
+	mjpg_streamer -b -i "$MOD_DIR/input_uvc.so -r 320x240 -f 5" -o "$MOD_DIR/output_http.so -p 3000 -w /opt/share/www/webcam"
 	}
 
 stop() {
