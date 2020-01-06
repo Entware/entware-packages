@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosh
 PKG_VERSION:=1.3.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://mosh.org/
@@ -22,6 +22,7 @@ PKG_LICENSE_FILES:=COPYING
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
+PKG_BUILD_DEPENDS:=protobuf/host
 PKG_USE_MIPS16:=0
 
 include $(INCLUDE_DIR)/package.mk
