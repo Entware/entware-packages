@@ -42,6 +42,11 @@ TARGET_CFLAGS += $(FPIC)
 
 CONFIGURE_VARS += CC="$(TARGET_CC) $(TARGET_CFLAGS)"
 
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	$(SED) 's,@VERSION@,$(PKG_VERSION),g' $(PKG_BUILD_DIR)/id3tag.pc
+endef
+
 define Build/Configure
 	$(call Build/Configure/Default, \
 		--enable-shared \
@@ -56,6 +61,8 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/id3tag.h $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libid3tag.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_BUILD_DIR)/id3tag.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libid3tag/install
