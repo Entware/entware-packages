@@ -1,15 +1,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=docker-ce
-PKG_VERSION:=19.03.1
-PKG_RELEASE:=2
+PKG_VERSION:=19.03.5
+PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=components/cli/LICENSE components/engine/LICENSE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/docker/docker-ce/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=dad9123e203751ce9981bc34773721593655231c32412e310e748b18f10f0053
-PKG_SOURCE_VERSION:=74b1e89e8a
+PKG_HASH:=d7948256e32bb4c104285d78e652ba9ead898c2e4dcee05f05ede2eaba719919
+PKG_SOURCE_VERSION:=633a0ea838 # SHA1 used within the docker executables
 
 PKG_MAINTAINER:=Gerard Ryan <G.M0N3Y.2503@gmail.com>
 
@@ -22,9 +22,9 @@ define CheckExpectedSrcVer
 endef
 
 # values from respective '.installer' files at https://github.com/docker/docker-ce/blob/v$(PKG_VERSION)/components/engine/hack/dockerfile/install/
-$(eval $(call CheckExpectedSrcVer,../containerd/Makefile,894b81a4b802e4eb2a91d1ce216b8817763c29fb))
-$(eval $(call CheckExpectedSrcVer,../libnetwork/Makefile,fc5a7d91d54cc98f64fc28f9e288b46a0bee756c))
-$(eval $(call CheckExpectedSrcVer,../runc/Makefile,425e105d5a03fabd737a126ad93d62a9eeede87f))
+$(eval $(call CheckExpectedSrcVer,../containerd/Makefile,b34a5c8af56e510852c35414db4c1f4fa6172339))
+$(eval $(call CheckExpectedSrcVer,../libnetwork/Makefile,3eb39382bfa6a3c42f83674ab080ae13b0e34e5d))
+$(eval $(call CheckExpectedSrcVer,../runc/Makefile,3e425f80a8c931f88e6d94a8c831b9d5aa481657))
 $(eval $(call CheckExpectedSrcVer,../tini/Makefile,fec3683b971d9c3ef73f284f176672c44b448662))
 
 PKG_BUILD_DEPENDS:=golang/host
@@ -44,8 +44,8 @@ define Package/docker-ce
   CATEGORY:=Utilities
   TITLE:=Docker Community Edition
   URL:=https://www.docker.com/
-  DEPENDS:=$(GO_ARCH_DEPENDS) @TARGET_x86_64 +btrfs-progs +ca-certificates +cgroupfs-mount +containerd +libdevmapper +libnetwork +tini \
-           +DOCKER_SECCOMP:libseccomp +iptables-mod-extra +kmod-br-netfilter +kmod-ikconfig +kmod-nf-ipvs +kmod-veth
+  DEPENDS:=$(GO_ARCH_DEPENDS) @(aarch64||arm||x86_64) +btrfs-progs +ca-certificates +cgroupfs-mount +containerd +libdevmapper +libnetwork +tini \
+           +DOCKER_SECCOMP:libseccomp +iptables-mod-extra +kmod-br-netfilter +kmod-ikconfig +kmod-nf-conntrack-netlink +kmod-nf-ipvs +kmod-veth
   USERID:=docker:docker
   MENU:=1
 endef
