@@ -2,7 +2,7 @@
 
 PATH=/opt/bin:/opt/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 
-PIDFILE="/opt/var/run/mysqld.pid"
+PIDFILE="/opt/var/run/mysqld/mysqld.pid"
 MYSQLD="/opt/bin/mysqld"
 
 

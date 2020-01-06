@@ -33,15 +33,6 @@
  #define TO_UPPER_TABLE_SIZE   256
 --- a/mysys/my_default.c
 +++ b/mysys/my_default.c
-@@ -1186,7 +1186,7 @@ static const char **init_default_directo
-     {
-       errors += add_directory(alloc, fname_buffer, dirs);
- 
--      strncat(fname_buffer, "/data", sizeof(fname_buffer));
-+      strncat(fname_buffer, "/opt/data", sizeof(fname_buffer));
-       errors += add_directory(alloc, fname_buffer, dirs);
-     }
-   }
 @@ -1197,8 +1197,8 @@ static const char **init_default_directo
    if (DEFAULT_SYSCONFDIR[0])
      errors += add_directory(alloc, DEFAULT_SYSCONFDIR, dirs);
@@ -93,13 +84,13 @@
  SET(INSTALL_MYSQLDATADIR_STANDALONE     "data")
  
 -SET(INSTALL_UNIX_ADDRDIR_STANDALONE     "/tmp/mysql.sock")
-+SET(INSTALL_UNIX_ADDRDIR_STANDALONE     "/opt/var/run/mysqld.sock")
++SET(INSTALL_UNIX_ADDRDIR_STANDALONE     "/opt/var/run/mysqld/mysqld.sock")
  #
  # RPM layout
  #
 --- a/client/mysql_plugin.c
 +++ b/client/mysql_plugin.c
-@@ -580,8 +580,7 @@ static int search_paths(const char *base
+@@ -585,8 +585,7 @@ static int search_paths(const char *base
    int i= 0;
  
    static const char *paths[]= {
@@ -109,15 +100,15 @@
    };
    for (i = 0 ; i < (int)array_elements(paths); i++)
    {
-@@ -972,9 +971,8 @@ static int find_tool(const char *tool_na
+@@ -977,9 +976,8 @@ static int find_tool(const char *tool_na
    int i= 0;
  
    const char *paths[]= {
 -    opt_mysqld, opt_basedir, opt_my_print_defaults, "/usr",
 -    "/usr/local/mysql", "/usr/sbin", "/usr/share", "/extra", "/extra/debug",
 -    "/extra/release", "/bin", "/usr/bin", "/mysql/bin"
-+    opt_mysqld, opt_basedir, opt_my_print_defaults, "/opt/bin",
-+    "/opt/sbin", "/opt/usr/bin", "/opt/usr/sbin", "/opt/share"
++    opt_mysqld, opt_basedir, opt_my_print_defaults, "/opt",
++    "/opt/bin", "/opt/sbin", "/opt/usr/bin", "/opt/usr/sbin", "/opt/share"
    };
    for (i= 0; i < (int)array_elements(paths); i++)
    {
@@ -134,7 +125,7 @@
  /*
 --- a/scripts/CMakeLists.txt
 +++ b/scripts/CMakeLists.txt
-@@ -170,7 +170,7 @@ ENDIF(UNIX)
+@@ -171,7 +171,7 @@ ENDIF(UNIX)
  # the documentation, so better not change this.
  
  IF(INSTALL_LAYOUT MATCHES "STANDALONE")
@@ -143,3 +134,16 @@
    SET(bindir ${prefix}/${INSTALL_BINDIR})
    SET(sbindir ${prefix}/${INSTALL_SBINDIR})
    SET(scriptdir ${prefix}/${INSTALL_BINDIR})
+--- a/scripts/mysql_install_db.sh
++++ b/scripts/mysql_install_db.sh
+@@ -364,8 +364,8 @@ then
+   if test -z "$plugindir"
+   then
+     echo "Could not find plugin directory." >&2
+-    echo "Will continue with \"/usr/lib/mariadb/plugin\"." >&2
+-    plugindir=/usr/lib/mariadb/plugin
++    echo "Will continue with \"/opt/lib/mariadb/plugin\"." >&2
++    plugindir=/opt/lib/mariadb/plugin
+   fi
+   pamtooldir=$plugindir
+ # relative from where the script was run for a relocatable install
