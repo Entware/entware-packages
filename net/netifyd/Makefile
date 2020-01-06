@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netifyd
-PKG_RELEASE:=2
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Darryl Sokoloski <darryl@egloo.ca>
 PKG_LICENSE:=GPL-3.0-or-later
 
@@ -16,10 +16,10 @@ PKG_INSTALL:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://gitlab.com/netify.ai/public/netify-agent.git
-PKG_SOURCE_DATE:=2019-08-31
-PKG_SOURCE_VERSION:=v2.92
-#PKG_SOURCE_VERSION:=cbc5572cde53992b06e5560b6305cbc7d0a8b1c3
-PKG_MIRROR_HASH:=99db0e98c3f1529609dfc10fa366217991c79593d185b85e4607528efa723969
+PKG_SOURCE_DATE:=2019-12-07
+PKG_SOURCE_VERSION:=v2.98
+#PKG_SOURCE_VERSION:=a204805151bc5c35ad09e21913dac25deed13f95
+PKG_MIRROR_HASH:=d235df7f77380e188db75fb885491bf46b2a7a3454f7bf2c85269aeff8f92220
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -28,7 +28,7 @@ define Package/netifyd
   CATEGORY:=Network
   TITLE:=Netify Agent
   URL:=http://www.netify.ai/
-  DEPENDS:=+ca-bundle +libcurl +libmnl +libnetfilter-conntrack +libjson-c +libpcap +zlib +libpthread @!USE_UCLIBC
+  DEPENDS:=+ca-bundle +libcurl +libmnl +libnetfilter-conntrack +libpcap +zlib +libpthread @!USE_UCLIBC
   # Explicitly depend on libstdcpp rather than $(CXX_DEPENDS).  At the moment
   # std::unordered_map is only available via libstdcpp which is required for
   # performance reasons.
@@ -47,8 +47,8 @@ define Package/netifyd/conffiles
 /etc/netifyd.conf
 endef
 
-TARGET_CFLAGS+=-ffunction-sections -fdata-sections
-TARGET_CXXFLAGS+=-ffunction-sections -fdata-sections
+TARGET_CFLAGS+=-ffunction-sections -fdata-sections -Wno-psabi
+TARGET_CXXFLAGS+=-ffunction-sections -fdata-sections -Wno-psabi
 TARGET_LDFLAGS+=-Wl,--gc-sections
 
 CONFIGURE_ARGS+= \
