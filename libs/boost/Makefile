@@ -11,13 +11,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=boost
-PKG_VERSION:=1.71.0
-PKG_SOURCE_VERSION:=1_71_0
+PKG_VERSION:=1.72.0
+PKG_SOURCE_VERSION:=1_72_0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_SOURCE_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)/$(PKG_NAME)/$(PKG_VERSION) https://dl.bintray.com/boostorg/release/$(PKG_VERSION)/source/
-PKG_HASH:=d73a8da01e8bf8c7eda40b4c84915071a8c8a0df4a6734537ddde4a8580524ee
+PKG_HASH:=59c9b274bc451cf91a9ba1dd2c7fdcaf5d60b1b3aa83f2c9fa143417cc660722
 
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 PKG_LICENSE:=BSL-1.0
@@ -43,7 +43,7 @@ define Package/boost/Default
 endef
 
 define Package/boost/description
-This package provides the Boost v1.71.0 libraries.
+This package provides the Boost v1.72.0 libraries.
 Boost is a set of free, peer-reviewed, portable C++ source libraries.
 
 This package provides the following run-time libraries:
@@ -77,7 +77,7 @@ This package provides the following run-time libraries:
  - wave
 
 There are many more header-only libraries supported by Boost.
-See more at http://www.boost.org/doc/libs/1_71_0/
+See more at http://www.boost.org/doc/libs/1_72_0/
 endef
 
 PKG_BUILD_DEPENDS:=boost/host PACKAGE_python:python PACKAGE_python3:python3
@@ -120,7 +120,7 @@ define Package/boost/config
 	# Invisible config dependency
 	config boost-context-exclude
 		bool
-		default y if (mips64 || arc || arc700)
+		default y if (TARGET_arc770 || TARGET_archs38 || TARGET_octeon || TARGET_octeontx)
 		default n
 
 	config boost-coroutine-exclude
@@ -130,7 +130,7 @@ define Package/boost/config
 
 	config boost-fiber-exclude
 		bool
-		default y if (TARGET_brcm47xx_generic || TARGET_brcm47xx_legacy || mips32 || mips64 || boost-coroutine-exclude)
+		default y if boost-coroutine-exclude
 		default n
 
 	menu "Select Boost Options"
@@ -346,8 +346,8 @@ $(eval $(call DefineBoostLibrary,log,system chrono date_time thread filesystem r
 $(eval $(call DefineBoostLibrary,math))
 #$(eval $(call DefineBoostLibrary,mpi,,)) # OpenMPI does no exist in OpenWRT at this time.
 $(eval $(call DefineBoostLibrary,program_options))
-$(eval $(call DefineBoostLibrary,python,,+python-base))
-$(eval $(call DefineBoostLibrary,python3,,+python3-base))
+$(eval $(call DefineBoostLibrary,python,,,PACKAGE_python))
+$(eval $(call DefineBoostLibrary,python3,,,PACKAGE_python3))
 $(eval $(call DefineBoostLibrary,random,system))
 $(eval $(call DefineBoostLibrary,regex))
 $(eval $(call DefineBoostLibrary,serialization))
