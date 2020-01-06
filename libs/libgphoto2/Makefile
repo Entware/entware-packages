@@ -476,7 +476,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgphoto2{,_port}.{a,so*} $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libgphoto2.pc $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libgphoto2{,_port}.pc $(1)/opt/lib/pkgconfig/
 	$(SED) 's,-I$$$${prefix}/include/gphoto2,,g' $(1)/opt/bin/gphoto2{,-port}-config
 	$(SED) 's,-I$$$${prefix}/include,,g' $(1)/opt/bin/gphoto2{,-port}-config
 	# remove annoying recursive symlink
