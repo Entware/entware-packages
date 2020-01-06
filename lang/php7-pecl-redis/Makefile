@@ -8,9 +8,9 @@ include $(TOPDIR)/rules.mk
 PECL_NAME:=redis
 PECL_LONGNAME:=PHP extension for interfacing with Redis
 
-PKG_VERSION:=5.0.2
-PKG_RELEASE:=1
-PKG_HASH:=4e18d7ebe032a562c358d79f94efa5f187ea90db7a56ef648476e24f4fe0b72c
+PKG_VERSION:=5.1.1
+PKG_RELEASE:=2
+PKG_HASH:=621c9d2b4054c797b0e5d5bc5e0f1eeb49bedb37f20e46f838aa4d17d2fe8180
 
 PKG_NAME:=php7-pecl-redis
 PKG_SOURCE:=$(PECL_NAME)-$(PKG_VERSION).tgz
@@ -24,16 +24,16 @@ PKG_LICENSE_FILES:=COPYING
 PKG_BUILD_DIR:=$(BUILD_DIR)/pecl-php7/$(PECL_NAME)-$(PKG_VERSION)
 PKG_BUILD_PARALLEL:=1
 
-PKG_FIXUP:=autoreconf
-
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 include ../php7/pecl.mk
 
 CONFIGURE_ARGS+= \
 	--enable-redis \
+	--enable-redis-json \
 	--disable-redis-igbinary \
-	--disable-redis-lzf
+	--disable-redis-lzf \
+	--disable-redis-msgpack
 
-$(eval $(call PECLPackage,$(PECL_NAME),$(PECL_LONGNAME),+php7-mod-hash +php7-mod-session,25))
+$(eval $(call PECLPackage,$(PECL_NAME),$(PECL_LONGNAME),+php7-mod-json +php7-mod-session,25))
 $(eval $(call BuildPackage,$(PKG_NAME)))
