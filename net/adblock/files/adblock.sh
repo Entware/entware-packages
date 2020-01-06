@@ -13,7 +13,7 @@
 #
 LC_ALL=C
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
-adb_ver="3.8.6"
+adb_ver="3.8.14"
 adb_basever=""
 adb_enabled=0
 adb_debug=0
@@ -35,6 +35,7 @@ adb_dnsflush=0
 adb_blacklist="/etc/adblock/adblock.blacklist"
 adb_whitelist="/etc/adblock/adblock.whitelist"
 adb_rtfile="/tmp/adb_runtime.json"
+adb_sorttmpdir="/tmp"
 adb_portlist="53 853 5353"
 adb_report=0
 adb_repiface="br-lan"
@@ -43,6 +44,7 @@ adb_repdir="/tmp"
 adb_reputil="$(command -v tcpdump)"
 adb_repchunkcnt="5"
 adb_repchunksize="1"
+adb_logger="$(command -v logger)"
 adb_action="${1:-"start"}"
 adb_pidfile="/var/run/adblock.pid"
 adb_ubusservice="/etc/adblock/adblock.service"
@@ -105,6 +107,7 @@ f_load()
 	if [ -z "${adb_basever}" ] || [ "${adb_ver%.*}" != "${adb_basever}" ]
 	then
 		f_log "info" "your adblock config seems to be too old, please update your config with the '--force-maintainer' opkg option"
+		f_rmtemp
 		exit 0
 	fi
 
@@ -233,6 +236,13 @@ f_env()
 		f_log "err" "backup directory '${adb_backupdir}' does not exist/is not mounted yet, please create the directory or raise the 'adb_triggerdelay' to defer the adblock start"
 	fi
 
+	# check sort temp directory
+	#
+	if [ ! -d "${adb_sorttmpdir}" ]
+	then
+		f_log "err" "sort temp directory '${adb_sorttmpdir}' does not exist/is not mounted yet, please create the directory or raise the 'adb_triggerdelay' to defer the adblock start"
+	fi
+
 	# check fetch utility
 	#
 	case "${adb_fetchutil}" in
@@ -256,7 +266,7 @@ f_env()
 			adb_fetchparm="${adb_fetchparm:-"-O"}"
 		;;
 		"curl")
-			adb_fetchparm="${adb_fetchparm:-"--connect-timeout 10 --insecure -o"}"
+			adb_fetchparm="${adb_fetchparm:-"--connect-timeout 10 --silent --show-error --location --insecure -o"}"
 			ssl_lib="built-in"
 		;;
 		"aria2c")
@@ -281,13 +291,12 @@ f_temp()
 	if [ -d "/tmp" ] && [ -z "${adb_tmpdir}" ]
 	then
 		adb_tmpdir="$(mktemp -p /tmp -d)"
-		adb_tmpload="$(mktemp -p "${adb_tmpdir}" -tu)"
 		adb_tmpfile="$(mktemp -p "${adb_tmpdir}" -tu)"
 	elif [ ! -d "/tmp" ]
 	then
 		f_log "err" "the temp directory '/tmp' does not exist/is not mounted yet, please create the directory or raise the 'adb_triggerdelay' to defer the adblock start"
 	fi
-	if [ ! -s "${adb_pidfile}" ]
+	if [ ! -f "${adb_pidfile}" ] || [ ! -s "${adb_pidfile}" ]
 	then
 		printf "%s" "${$}" > "${adb_pidfile}"
 	fi
@@ -535,6 +544,7 @@ f_dnsup()
 		else
 			"/etc/init.d/${adb_dns}" restart >/dev/null 2>&1
 		fi
+		sleep 5
 
 		while [ "${cnt}" -le 10 ]
 		do
@@ -564,7 +574,6 @@ f_dnsup()
 					;;
 				esac
 				out_rc=0
-				sleep 1
 				break
 			fi
 			cnt=$((cnt+1))
@@ -595,7 +604,7 @@ f_list()
 				out_rc="${?}"
 				if [ "${out_rc}" -eq 0 ]
 				then
-					adb_whitelist_rset="/^([[:alnum:]_-]+\\.)+[[:alpha:]]+([[:space:]]|$)/{gsub(\"\\\\.\",\"\\\\.\",\$1);print tolower(\"^\"\$1\"\\\\|\\\\.\"\$1)}"
+					adb_whitelist_rset="/^([[:alnum:]_-]+\\.)+[[:alpha:]]+([[:space:]]|$)/{gsub(\"\\\\.\",\"\\\\.\",\$1);print tolower(\"^(|.*\\\\.)\"\$1\"$\")}"
 					awk "${adb_whitelist_rset}" "${adb_tmpdir}/tmp.raw.${mode}" > "${adb_tmpdir}/tmp.rem.${mode}"
 					out_rc="${?}"
 					if [ "${out_rc}" -eq 0 ] && [ -n "${adb_dnsallow}" ]
@@ -604,6 +613,7 @@ f_list()
 						out_rc="${?}"
 					fi
 				fi
+				rm -f "${adb_tmpdir}/tmp.raw.${mode}"
 			fi
 		;;
 		"backup")
@@ -661,7 +671,7 @@ f_list()
 			fi
 			if [ -s "${adb_tmpdir}/tmp.rem.whitelist" ]
 			then
-				grep -vf "${adb_tmpdir}/tmp.rem.whitelist" "${adb_tmpdir}/${adb_dnsfile}" | eval "${adb_dnsdeny}" >> "${adb_dnsdir}/${adb_dnsfile}"
+				egrep -vf "${adb_tmpdir}/tmp.rem.whitelist" "${adb_tmpdir}/${adb_dnsfile}" | eval "${adb_dnsdeny}" >> "${adb_dnsdir}/${adb_dnsfile}"
 			else
 				eval "${adb_dnsdeny}" "${adb_tmpdir}/${adb_dnsfile}" >> "${adb_dnsdir}/${adb_dnsfile}"
 			fi
@@ -691,7 +701,7 @@ f_tld()
 		awk 'BEGIN{FS="."}{for(f=NF;f>1;f--)printf "%s.",$f;print $1}' "${source}" > "${temp_tld}"
 		if [ "${?}" -eq 0 ]
 		then
-			sort -u "${temp_tld}" > "${source}"
+			sort -T "${adb_sorttmpdir}" -u "${temp_tld}" > "${source}"
 			if [ "${?}" -eq 0 ]
 			then
 				cnt_srt="$(wc -l 2>/dev/null < "${source}")"
@@ -709,7 +719,7 @@ f_tld()
 			fi
 		fi
 	else
-		sort -u "${source}" > "${temp_tld}"
+		sort -T "${adb_sorttmpdir}" -u "${source}" > "${temp_tld}"
 		if [ "${?}" -eq 0 ]
 		then
 			mv -f "${temp_tld}" "${source}"
@@ -916,13 +926,17 @@ f_log()
 
 	if [ -n "${log_msg}" ] && { [ "${class}" != "debug" ] || [ "${adb_debug}" -eq 1 ]; }
 	then
-		logger -p "${class}" -t "adblock-${adb_ver}[${$}]" "${log_msg}"
+		if [ -x "${adb_logger}" ]
+		then
+			"${adb_logger}" -p "${class}" -t "adblock-${adb_ver}[${$}]" "${log_msg}"
+		else
+			printf "%s %s %s\\n" "${class}" "adblock-${adb_ver}[${$}]" "${log_msg}"
+		fi
 		if [ "${class}" = "err" ]
 		then
 			f_rmdns
 			f_bgserv "stop"
 			f_jsnup "error"
-			logger -p "${class}" -t "adblock-${adb_ver}[${$}]" "Please also check 'https://github.com/openwrt/packages/blob/master/net/adblock/files/README.md'"
 			exit 1
 		fi
 	fi
@@ -934,11 +948,11 @@ f_bgserv()
 {
 	local bg_pid status="${1}"
 
-	bg_pid="$(pgrep -f "^/bin/sh ${adb_ubusservice}|^/bin/ubus -S -M r -m invoke monitor|^grep -qF \"method\":\"set\",\"data\":\\{\"name\":\"${adb_dns}\"" | awk '{ORS=" "; print $1}')"
+	bg_pid="$(pgrep -f "^/bin/sh ${adb_ubusservice}.*|^/bin/ubus -S -M r -m invoke monitor|^grep -qF \"method\":\"set\",\"data\":\\{\"name\":\"${adb_dns}\"" | awk '{ORS=" "; print $1}')"
 	if [ -z "${bg_pid}" ] && [ "${status}" = "start" ] \
 		&& [ -x "${adb_ubusservice}" ] && [ "${adb_dnsfilereset}" = "true" ]
 	then
-		( "${adb_ubusservice}" "${adb_ver}" &)
+		( "${adb_ubusservice}" "${adb_ver}" & )
 	elif [ -n "${bg_pid}" ] && [ "${status}" = "stop" ] 
 	then
 		kill -HUP "${bg_pid}" 2>/dev/null
@@ -955,7 +969,7 @@ f_main()
 	mem_total="$(awk '/^MemTotal/ {print int($2/1000)}' "/proc/meminfo" 2>/dev/null)"
 	mem_free="$(awk '/^MemFree/ {print int($2/1000)}' "/proc/meminfo" 2>/dev/null)"
 	f_log "debug" "f_main   ::: dns: ${adb_dns}, fetch_util: ${adb_fetchinfo}, force_dns: ${adb_forcedns}, mem_total: ${mem_total:-0}, mem_free: ${mem_free:-0}, max_queue: ${adb_maxqueue}"
-	
+
 	# main loop
 	#
 	f_list blacklist
@@ -966,8 +980,8 @@ f_main()
 		src_url="$(eval printf "%s" \"\$\{adb_src_${src_name}\}\")"
 		src_rset="$(eval printf "%s" \"\$\{adb_src_rset_${src_name}\}\")"
 		src_cat="$(eval printf "%s" \"\$\{adb_src_cat_${src_name}\}\")"
-		src_tmpload="${adb_tmpload}.${src_name}"
-		src_tmpfile="${adb_tmpfile}.${src_name}"
+		src_tmpload="${adb_tmpfile}.${src_name}.load"
+		src_tmpfile="${adb_tmpfile}.${src_name}.file"
 		src_rc=4
 
 		# basic pre-checks
@@ -1174,8 +1188,8 @@ f_report()
 			if [ -s "${adb_repdir}/adb_report.raw" ]
 			then
 				awk '{printf("%s\t%s\t%s\t%s\t%s\t%s\n", $4,$5,$1,$2,$3,$4)}' "${adb_repdir}/adb_report.raw" | \
-					sort -ur | uniq -uf2 | awk '{currA=($6+0);currB=$6;currC=substr($6,length($6),1);
-					if(reqA==currB){reqA=0;printf("%s\t%s\n",d,$2)}else if(currC=="+"){reqA=currA;d=$3"\t"$4"\t"$5"\t"$2}}' | sort -ur > "${adb_repdir}/adb_report"
+					sort -T "${adb_sorttmpdir}" -ur | uniq -uf2 | awk '{currA=($6+0);currB=$6;currC=substr($6,length($6),1);
+					if(reqA==currB){reqA=0;printf("%s\t%s\n",d,$2)}else if(currC=="+"){reqA=currA;d=$3"\t"$4"\t"$5"\t"$2}}' | sort -T "${adb_sorttmpdir}" -ur > "${adb_repdir}/adb_report"
 			fi
 
 			if [ -s "${adb_repdir}/adb_report" ]
@@ -1183,9 +1197,9 @@ f_report()
 				total="$(wc -l < "${adb_repdir}/adb_report")"
 				blocked="$(awk '{if($5=="NX")print $4}' "${adb_repdir}/adb_report" | wc -l)"
 				percent="$(awk -v t="${total}" -v b="${blocked}" 'BEGIN{printf("%.2f %s\n",b/t*100, "%")}')"
-				rep_clients="$(awk '{print $3}' "${adb_repdir}/adb_report" | sort | uniq -c | sort -r | awk '{ORS=" ";if(NR<=10) printf("%s_%s ",$1,$2)}')"
-				rep_domains="$(awk '{if($5!="NX")print $4}' "${adb_repdir}/adb_report" | sort | uniq -c | sort -r | awk '{ORS=" ";if(NR<=10)printf("%s_%s ",$1,$2)}')"
-				rep_blocked="$(awk '{if($5=="NX")print $4}' "${adb_repdir}/adb_report" | sort | uniq -c | sort -r | awk '{ORS=" ";if(NR<=10)printf("%s_%s ",$1,$2)}')"
+				rep_clients="$(awk '{print $3}' "${adb_repdir}/adb_report" | sort -T "${adb_sorttmpdir}" | uniq -c | sort -T "${adb_sorttmpdir}" -r | awk '{ORS=" ";if(NR<=10) printf("%s_%s ",$1,$2)}')"
+				rep_domains="$(awk '{if($5!="NX")print $4}' "${adb_repdir}/adb_report" | sort -T "${adb_sorttmpdir}" | uniq -c | sort -T "${adb_sorttmpdir}" -r | awk '{ORS=" ";if(NR<=10)printf("%s_%s ",$1,$2)}')"
+				rep_blocked="$(awk '{if($5=="NX")print $4}' "${adb_repdir}/adb_report" | sort -T "${adb_sorttmpdir}" | uniq -c | sort -T "${adb_sorttmpdir}" -r | awk '{ORS=" ";if(NR<=10)printf("%s_%s ",$1,$2)}')"
 
 				> "${adb_repdir}/adb_report.json"
 				json_load_file "${adb_repdir}/adb_report.json" >/dev/null 2>&1
