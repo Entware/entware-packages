@@ -18,7 +18,7 @@ PKG_LICENSE:=GPL-2.0
 PKG_VERSION:=$(shell  sed -n -e '/^AC_INIT/s/.*\[\([[:digit:]\.]*\)\].*/\1/gp' $(LINUX_DIR)/drivers/staging/usbip/userspace/configure.ac)
 PKG_SOURCE:=
 PKG_SOURCE_URL:=
-PKG_MD5SUM:=unknown
+PKG_HASH:=unknown
 
 PKG_MAINTAINER:=Nuno Goncalves <nunojpg@gmail.com>
 
