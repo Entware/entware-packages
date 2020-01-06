@@ -9,10 +9,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minidlna
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
-PKG_SOURCE_URL=git://minidlna.git.sourceforge.net/gitroot/minidlna/minidlna
 PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://git.code.sf.net/p/minidlna/git
 PKG_SOURCE_DATE:=2018-04-10
 PKG_SOURCE_VERSION:=799e6cf505ec470b2bf0ae4118143380aa16b837
 PKG_MIRROR_HASH:=67cc817e671de99e5a3f5ed237f89e22470f1de94819bcaba86c0ba821104af5
@@ -36,8 +36,10 @@ define Package/minidlna
   TITLE:=UPnP A/V & DLNA Media Server
   URL:=http://minidlna.sourceforge.net/
   DEPENDS:= +libpthread +libexif +libjpeg +libsqlite3 \
-  	+libid3tag +libflac +libvorbis +libuuid +libffmpegthumbnailer +libopusfile \
+  	+libid3tag +libflac +libvorbis +libuuid \
+	+libffmpegthumbnailer +libopusfile \
   	$(ICONV_DEPENDS) $(INTL_DEPENDS)
+  USERID:=minidlna:minidlna
 endef
 
 define Package/minidlna/description
@@ -57,27 +59,27 @@ TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/opt/include/vorbis \
 	-I$(ICONV_PREFIX)/include \
 	-I$(INTL_PREFIX)/include \
-	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 \
+	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 
 TARGET_LDFLAGS += \
 	-L$(ICONV_PREFIX)/lib \
 	-L$(INTL_PREFIX)/lib \
-	-Wl,-rpath-link=$(STAGING_DIR)/opt/lib \
+	-Wl,-rpath-link=$(STAGING_DIR)/opt/lib
 
-MAKE_FLAGS +=\
+MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
-	ICONV_LIBS="-liconv $(if $(INTL_FULL),-lintl)" \
+	ICONV_LIBS="-liconv $(if $(INTL_FULL),-lintl)"
 
-CONFIGURE_ARGS +=\
+CONFIGURE_ARGS += \
 	--with-libiconv-prefix="$(ICONV_PREFIX)" \
 	--with-libintl-prefix="$(INTL_PREFIX)" \
 	--with-os-name="OpenWrt Linux" \
 	--with-os-version="$(LINUX_VERSION)" \
 	--with-os-url="http://openwrt.org/" \
 	--with-db-path="/opt/var/minidlna" \
-	--with-log-path="/opt/var/minidlna" \
-	--enable-thumbnail \
+	--with-log-path="/opt/var/log" \
+	--enable-thumbnail
 
 define Package/minidlna/install
 	$(INSTALL_DIR) $(1)/opt/bin
