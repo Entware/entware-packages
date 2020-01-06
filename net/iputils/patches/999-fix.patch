@@ -1,0 +1,39 @@
+--- a/ping.c
++++ b/ping.c
+@@ -57,6 +57,10 @@
+ #include <ifaddrs.h>
+ #include <math.h>
+ 
++#ifndef IPV6_FLOWINFO_FLOWLABEL
++#define IPV6_FLOWINFO_FLOWLABEL	0x000fffff
++#endif
++
+ #ifndef ICMP_FILTER
+ #define ICMP_FILTER	1
+ struct icmp_filter {
+--- a/ping.h
++++ b/ping.h
+@@ -46,11 +46,11 @@
+ #endif
+ 
+ #include <ifaddrs.h>
+-#include <netinet/in.h>
++//#include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include <linux/types.h>
+ #include <linux/errqueue.h>
+-#include <linux/in6.h>
++//#include <linux/in6.h>
+ 
+ #ifndef SCOPE_DELIMITER
+ # define SCOPE_DELIMITER '%'
+--- a/ping6_common.c
++++ b/ping6_common.c
+@@ -58,6 +58,7 @@
+  *	with net_cap_raw enabled.
+  */
+ #include <stddef.h>
++#include <netinet/in.h>
+ #include "iputils_common.h"
+ #include "iputils_ni.h"
+ #include "ping.h"
