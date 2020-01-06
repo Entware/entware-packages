@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=librsocket-cpp
-PKG_SOURCE_DATE:=2019-09-12
-PKG_SOURCE_VERSION:=9226988e3da89eff8cd55952ccae61fcac0881fa
+PKG_SOURCE_DATE:=2019-10-07
+PKG_SOURCE_VERSION:=0a469f7a84d9e3c3ddcb6931df701a5dae536589
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_DATE).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/rsocket/rsocket-cpp/tar.gz/$(PKG_SOURCE_VERSION)?
-PKG_HASH:=3273012c1ffa149fddfac2b547315834e9a02ff0d8d1357196fec95391150ed6
+PKG_HASH:=c10e498039d676946a11f6a45201575cdb3f1f582752693d7b1901aa434f3146
 PKG_BUILD_DIR:=$(BUILD_DIR)/rsocket-cpp-$(PKG_SOURCE_VERSION)
 
 PKG_MAINTAINER:=Amol Bhave <ambhave@fb.com>
@@ -25,6 +25,7 @@ define Package/librsocket-cpp
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=C++ implementation of RSocket
+  URL:=https://rsocket.io/
   DEPENDS:=+libyarpl
 endef
 
@@ -32,6 +33,7 @@ define Package/libyarpl
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=yarpl: Yet Another Reactive Programming Library
+  URL:=https://rsocket.io/
   DEPENDS:=+libfolly
 endef
 
@@ -46,7 +48,22 @@ endef
 CMAKE_OPTIONS += \
 	-DBUILD_BENCHMARKS=OFF \
 	-DBUILD_EXAMPLES=OFF \
-	-DBUILD_TESTS=OFF
+	-DBUILD_SHARED_LIBS=ON \
+	-DBUILD_TESTS=OFF \
+	-DCMAKE_POSITION_INDEPENDENT_CODE=ON
+
+TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -flto
+TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
+
+define Package/librsocket-cpp/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libReactiveSocket.so* $(1)/usr/lib/
+endef
+
+define Package/libyarpl/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libyarpl*.so* $(1)/usr/lib/
+endef
 
 $(eval $(call BuildPackage,librsocket-cpp))
 $(eval $(call BuildPackage,libyarpl))
