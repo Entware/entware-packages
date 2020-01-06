@@ -8,18 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libusbmuxd
-PKG_SOURCE_DATE:=2019-03-23
-PKG_SOURCE_VERSION:=873252dc8b4e469c7dc692064ac616104fca5f65
+PKG_SOURCE_VERSION:=2.0.1
 PKG_RELEASE:=2
 
-PKG_MAINTAINER:=Lukasz Baj <l.baj@radytek.com>
-PKG_LICENSE:=LGPL-2.1-or-later
-PKG_LICENSE_FILES:=COPYING.LGPLv2.1
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/libimobiledevice/libusbmuxd
+PKG_MIRROR_HASH:=5078125cd4fe8c7294d4f195a8adfd1fc302101daf5d53e4cc242c3097eef8b6
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_DATE).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/libimobiledevice/libusbmuxd/tar.gz/$(PKG_SOURCE_VERSION)?
-PKG_HASH:=47e39ce87b05ca873c16efaa517247aa9db137625dd910d566fb3cd99b4a1d18
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_SOURCE_VERSION)
+PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
+PKG_CPE_ID:=cpe:/a:libimobiledevice:libusbmuxd
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -30,6 +27,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/libusbmuxd/Default
   TITLE:=USB multiplexing daemon
   URL:=https://www.libimobiledevice.org/
+  SUBMENU:=libimobiledevice
 endef
 
 define Package/libusbmuxd/Default/description
@@ -46,6 +44,8 @@ define Package/libusbmuxd
   CATEGORY:=Libraries
   TITLE+= library
   DEPENDS:=+libplist +libpthread +libxml2 +zlib
+  PKG_LICENSE:=LGPL-2.1-or-later
+  PKG_LICENSE_FILES:=COPYING
 endef
 
 define Package/libusbmuxd/description
@@ -59,6 +59,7 @@ define Package/libusbmuxd-utils
   CATEGORY:=Utilities
   TITLE+= utilies
   DEPENDS:=+libusbmuxd
+  LICENSE:=GPL-2.0-or-later
 endef
 
 define Package/libusbmuxd-utils/description
@@ -66,7 +67,7 @@ define Package/libusbmuxd-utils/description
   This package contains the libusbmuxd utilities.
 endef
 
-CONFIGURE_ARGS += --with-pic
+TARGET_CFLAGS += $(FPIC)
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/usr/include
@@ -84,7 +85,8 @@ endef
 
 define Package/libusbmuxd-utils/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/iproxy $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/iproxy $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/inetcat $(1)/usr/bin/
 endef
 
 $(eval $(call BuildPackage,libusbmuxd))
