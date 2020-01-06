@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: Our own patch set here.
 
 include $(TOPDIR)/rules.mk
 define Package/gcc/description
@@ -28,7 +27,6 @@ PKG_VERSION=7.4.0
 PKG_RELEASE:=5
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PATCH_DIR:=$(TOPDIR)/toolchain/gcc/patches/$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_FIXUP:=libtool
 PKG_BUILD_PARALLEL:=1
@@ -120,10 +118,9 @@ define Build/Prepare
 	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(MPFRSRC).tar.bz2
 	ln -sf $(PKG_BUILD_DIR)/$(MPFRSRC) $(PKG_BUILD_DIR)/mpfr
 	$(Build/Patch)
-	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/002-dont-choke-when-building-32bit-on-64bit.patch
 #uclibc needs -lm to build libcc1
 ifdef CONFIG_USE_UCLIBC
-	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches/004-libcc1_uclibc_lm.patch
+	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches-uClibc/004-libcc1_uclibc_lm.patch
 endif
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpfr/
@@ -181,7 +178,7 @@ define Build/Compile
 			DESTDIR="$(PKG_INSTALL_DIR)" $(MAKE_ARGS) all install
 endef
 
-ENVCFLAGS:="$(TARGET_OPTIMIZATION) $(call qstrip,$(CONFIG_EXTRA_OPTIMIZATION))
+ENVCFLAGS:="$(TARGET_OPTIMIZATION) $(EXTRA_OPTIMIZATION)
 ifeq ($(CONFIG_SOFT_FLOAT),y)
     ifeq ($(CONFIG_arm),y)
 	ENVCFLAGS+= -mfloat-abi=soft
