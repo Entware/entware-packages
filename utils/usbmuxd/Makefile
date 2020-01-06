@@ -8,19 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=usbmuxd
-PKG_SOURCE_DATE:=2019-03-04
-PKG_SOURCE_VERSION:=b1b0bf390363fa36aff1bc09443ff751943b9c34
+PKG_SOURCE_DATE:=2019-12-16
+PKG_SOURCE_VERSION:=ec5ff91cfabd30637f8af8f5c79baf4d7818ce57
 PKG_RELEASE:=1
 
-PKG_MAINTAINER:=
-PKG_LICENSE:=GPL-2.0
-PKG_LICENSE_FILES:=COPYING.GPLv2
-PKG_CPE_ID:=cpe:/a:nikias_bassen:usbmuxd
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL=https://github.com/libimobiledevice/usbmuxd
+PKG_MIRROR_HASH:=1d0f2fa3842fbcbebe4b7d323829703e29a3c1a078c62b4a783e4c99a8a2f576
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_DATE).tar.gz
-PKG_SOURCE_URL=https://codeload.github.com/libimobiledevice/usbmuxd/tar.gz/$(PKG_SOURCE_VERSION)?
-PKG_HASH:=ca4275dbc21e8d9c926e65943b605ea5a6112d30eb3f9e655d3983da87ac6798
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_SOURCE_VERSION)
+PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
+PKG_LICENSE:=GPL-2.0-or-later
+PKG_LICENSE_FILES:=COPYING.GPLv2
+PKG_CPE_ID:=cpe:/a:libimobiledevice:usbmuxd
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
@@ -31,8 +30,9 @@ include $(INCLUDE_DIR)/package.mk
 define Package/usbmuxd
   SECTION:=utils
   CATEGORY:=Utilities
+  SUBMENU:=libimobiledevice
   TITLE:=USB multiplexing daemon
-  URL:=http://www.libimobiledevice.org/
+  URL:=https://www.libimobiledevice.org/
   DEPENDS:=+librt +libusb-1.0 +libusbmuxd +libopenssl +libimobiledevice
 endef
 
@@ -44,11 +44,18 @@ define Package/usbmuxd/description
   uses a dedicated USB interface as a virtual network device.
 endef
 
+define Package/usbmuxd/conffiles
+/etc/lockdown
+/etc/lockdown/SystemConfiguration.plist
+endef
+
 CONFIGURE_ARGS += --without-systemd
 
 define Package/usbmuxd/install
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/usbmuxd.init $(1)/etc/init.d/usbmuxd
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/usbmuxd $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/usbmuxd $(1)/usr/sbin/
 endef
 
 $(eval $(call BuildPackage,usbmuxd))
