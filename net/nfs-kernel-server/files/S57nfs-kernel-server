@@ -12,7 +12,7 @@ start() {
 	echo 'Starting NFS server'
 	modprobe nfsd
 	#for module in sunrpc lockd exportfs nfsd; do
-	#       insmod /lib/modules/3.4.113/${module}.ko
+	#       insmod /lib/modules/$(uname -r)/${module}.ko
 	#done;
 	mkdir -p /opt/var/lib/nfs/sm
 	mkdir -p /opt/var/lib/nfs/sm.bak
