@@ -105,7 +105,7 @@
  #define VAR_MANPAGE_DIR			"manpage_directory"
  #ifndef DEF_MANPAGE_DIR
 -#define DEF_MANPAGE_DIR			"/usr/local/man"
-+#define DEF_MANPAGE_DIR			"/opt/local/man"
++#define DEF_MANPAGE_DIR			"/opt/share/man"
  #endif
  
  #define VAR_SAMPLE_DIR			"sample_directory"
