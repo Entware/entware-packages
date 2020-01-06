@@ -1,10 +1,9 @@
 This is patch was taken from https://trac.transmissionbt.com/attachment/ticket/5586/libtransmission-scriptadded-torrent-and-magnet.patch
 Thanks to @cfpp2p
 
-diff -Naur a/libtransmission/quark.c b/libtransmission/quark.c
---- a/libtransmission/quark.c	2018-01-23 22:17:43.015774375 +0300
-+++ b/libtransmission/quark.c	2018-01-30 21:26:13.214789838 +0300
-@@ -302,6 +302,8 @@
+--- a/libtransmission/quark.c
++++ b/libtransmission/quark.c
+@@ -302,6 +302,8 @@ static const struct tr_key_struct my_sta
    { "scrape", 6 },
    { "scrape-paused-torrents-enabled", 30 },
    { "scrapeState", 11 },
@@ -13,10 +12,9 @@ diff -Naur a/libtransmission/quark.c b/libtransmission/quark.c
    { "script-torrent-done-enabled", 27 },
    { "script-torrent-done-filename", 28 },
    { "seconds-active", 14 },
-diff -Naur a/libtransmission/quark.h b/libtransmission/quark.h
---- a/libtransmission/quark.h	2018-01-23 22:17:43.015774375 +0300
-+++ b/libtransmission/quark.h	2018-01-30 21:26:13.214789838 +0300
-@@ -304,6 +304,8 @@
+--- a/libtransmission/quark.h
++++ b/libtransmission/quark.h
+@@ -304,6 +304,8 @@ enum
    TR_KEY_scrape,
    TR_KEY_scrape_paused_torrents_enabled,
    TR_KEY_scrapeState,
@@ -25,10 +23,9 @@ diff -Naur a/libtransmission/quark.h b/libtransmission/quark.h
    TR_KEY_script_torrent_done_enabled,
    TR_KEY_script_torrent_done_filename,
    TR_KEY_seconds_active,
-diff -Naur a/libtransmission/rpcimpl.c b/libtransmission/rpcimpl.c
---- a/libtransmission/rpcimpl.c	2018-01-23 22:17:43.016774378 +0300
-+++ b/libtransmission/rpcimpl.c	2018-01-30 21:26:13.218789928 +0300
-@@ -1955,6 +1955,12 @@
+--- a/libtransmission/rpcimpl.c
++++ b/libtransmission/rpcimpl.c
+@@ -1955,6 +1955,12 @@ sessionSet (tr_session               * s
    if (tr_variantDictFindInt (args_in, TR_KEY_seed_queue_size, &i))
      tr_sessionSetQueueSize (session, TR_UP, i);
  
@@ -41,7 +38,7 @@ diff -Naur a/libtransmission/rpcimpl.c b/libtransmission/rpcimpl.c
    if (tr_variantDictFindStr (args_in, TR_KEY_script_torrent_done_filename, &str, NULL))
      tr_sessionSetTorrentDoneScript (session, str);
  
-@@ -2092,6 +2098,8 @@
+@@ -2092,6 +2098,8 @@ sessionGet (tr_session               * s
    tr_variantDictAddBool (d, TR_KEY_speed_limit_up_enabled, tr_sessionIsSpeedLimited (s, TR_UP));
    tr_variantDictAddInt  (d, TR_KEY_speed_limit_down, tr_sessionGetSpeedLimit_KBps (s, TR_DOWN));
    tr_variantDictAddBool (d, TR_KEY_speed_limit_down_enabled, tr_sessionIsSpeedLimited (s, TR_DOWN));
@@ -50,10 +47,9 @@ diff -Naur a/libtransmission/rpcimpl.c b/libtransmission/rpcimpl.c
    tr_variantDictAddStr  (d, TR_KEY_script_torrent_done_filename, tr_sessionGetTorrentDoneScript (s));
    tr_variantDictAddBool (d, TR_KEY_script_torrent_done_enabled, tr_sessionIsTorrentDoneScriptEnabled (s));
    tr_variantDictAddBool (d, TR_KEY_queue_stalled_enabled, tr_sessionGetQueueStalledEnabled (s));
-diff -Naur a/libtransmission/rpc-test.c b/libtransmission/rpc-test.c
---- a/libtransmission/rpc-test.c	2018-01-23 22:17:43.016774378 +0300
-+++ b/libtransmission/rpc-test.c	2018-01-30 21:26:13.214789838 +0300
-@@ -133,6 +133,8 @@
+--- a/libtransmission/rpc-test.c
++++ b/libtransmission/rpc-test.c
+@@ -133,6 +133,8 @@ test_session_get_and_set (void)
    check (tr_variantDictFind (args, TR_KEY_rename_partial_files) != NULL);
    check (tr_variantDictFind (args, TR_KEY_rpc_version) != NULL);
    check (tr_variantDictFind (args, TR_KEY_rpc_version_minimum) != NULL);
@@ -62,10 +58,9 @@ diff -Naur a/libtransmission/rpc-test.c b/libtransmission/rpc-test.c
    check (tr_variantDictFind (args, TR_KEY_script_torrent_done_enabled) != NULL);
    check (tr_variantDictFind (args, TR_KEY_script_torrent_done_filename) != NULL);
    check (tr_variantDictFind (args, TR_KEY_seed_queue_enabled) != NULL);
-diff -Naur a/libtransmission/session.c b/libtransmission/session.c
---- a/libtransmission/session.c	2018-01-23 22:17:43.017774381 +0300
-+++ b/libtransmission/session.c	2018-01-30 21:26:13.214789838 +0300
-@@ -364,6 +364,8 @@
+--- a/libtransmission/session.c
++++ b/libtransmission/session.c
+@@ -364,6 +364,8 @@ tr_sessionGetDefaultSettings (tr_variant
    tr_variantDictAddInt  (d, TR_KEY_rpc_port,                        atoi (TR_DEFAULT_RPC_PORT_STR));
    tr_variantDictAddStr  (d, TR_KEY_rpc_url,                         TR_DEFAULT_RPC_URL_STR);
    tr_variantDictAddBool (d, TR_KEY_scrape_paused_torrents_enabled,  true);
@@ -74,7 +69,7 @@ diff -Naur a/libtransmission/session.c b/libtransmission/session.c
    tr_variantDictAddStr  (d, TR_KEY_script_torrent_done_filename,    "");
    tr_variantDictAddBool (d, TR_KEY_script_torrent_done_enabled,     false);
    tr_variantDictAddInt  (d, TR_KEY_seed_queue_size,                 10);
-@@ -436,6 +438,8 @@
+@@ -436,6 +438,8 @@ tr_sessionGetSettings (tr_session * s, t
    tr_variantDictAddStr  (d, TR_KEY_rpc_whitelist,                tr_sessionGetRPCWhitelist (s));
    tr_variantDictAddBool (d, TR_KEY_rpc_whitelist_enabled,        tr_sessionGetRPCWhitelistEnabled (s));
    tr_variantDictAddBool (d, TR_KEY_scrape_paused_torrents_enabled, s->scrapePausedTorrents);
@@ -83,7 +78,7 @@ diff -Naur a/libtransmission/session.c b/libtransmission/session.c
    tr_variantDictAddBool (d, TR_KEY_script_torrent_done_enabled,  tr_sessionIsTorrentDoneScriptEnabled (s));
    tr_variantDictAddStr  (d, TR_KEY_script_torrent_done_filename, tr_sessionGetTorrentDoneScript (s));
    tr_variantDictAddInt  (d, TR_KEY_seed_queue_size,              tr_sessionGetQueueSize (s, TR_UP));
-@@ -932,6 +936,11 @@
+@@ -932,6 +936,11 @@ sessionSetImpl (void * vdata)
    ***  Scripts
    **/
  
@@ -95,7 +90,7 @@ diff -Naur a/libtransmission/session.c b/libtransmission/session.c
    if (tr_variantDictFindBool (settings, TR_KEY_script_torrent_done_enabled, &boolVal))
      tr_sessionSetTorrentDoneScriptEnabled (session, boolVal);
    if (tr_variantDictFindStr (settings, TR_KEY_script_torrent_done_filename, &str, NULL))
-@@ -1965,6 +1974,7 @@
+@@ -1965,6 +1974,7 @@ tr_sessionClose (tr_session * session)
        tr_free (session->metainfoLookup);
      }
    tr_device_info_free (session->downloadDir);
@@ -103,7 +98,7 @@ diff -Naur a/libtransmission/session.c b/libtransmission/session.c
    tr_free (session->torrentDoneScript);
    tr_free (session->configDir);
    tr_free (session->resumeDir);
-@@ -2730,6 +2740,43 @@
+@@ -2730,6 +2740,43 @@ tr_sessionGetRPCBindAddress (const tr_se
  ****/
  
  bool
@@ -147,10 +142,9 @@ diff -Naur a/libtransmission/session.c b/libtransmission/session.c
  tr_sessionIsTorrentDoneScriptEnabled (const tr_session * session)
  {
    assert (tr_isSession (session));
-diff -Naur a/libtransmission/session.h b/libtransmission/session.h
---- a/libtransmission/session.h	2018-01-23 22:17:43.017774381 +0300
-+++ b/libtransmission/session.h	2018-01-30 21:26:13.214789838 +0300
-@@ -105,6 +105,7 @@
+--- a/libtransmission/session.h
++++ b/libtransmission/session.h
+@@ -105,6 +105,7 @@ struct tr_session
      bool                         isLPDEnabled;
      bool                         isBlocklistEnabled;
      bool                         isPrefetchEnabled;
@@ -158,7 +152,7 @@ diff -Naur a/libtransmission/session.h b/libtransmission/session.h
      bool                         isTorrentDoneScriptEnabled;
      bool                         isClosing;
      bool                         isClosed;
-@@ -177,6 +178,7 @@
+@@ -177,6 +178,7 @@ struct tr_session
      int                          torrentCount;
      tr_torrent *                 torrentList;
  
@@ -166,10 +160,9 @@ diff -Naur a/libtransmission/session.h b/libtransmission/session.h
      char *                       torrentDoneScript;
  
      char *                       configDir;
-diff -Naur a/libtransmission/torrent.c b/libtransmission/torrent.c
---- a/libtransmission/torrent.c	2018-01-23 22:17:43.017774381 +0300
-+++ b/libtransmission/torrent.c	2018-01-30 21:26:13.218789928 +0300
-@@ -848,6 +848,128 @@
+--- a/libtransmission/torrent.c
++++ b/libtransmission/torrent.c
+@@ -848,6 +848,128 @@ setLocalErrorIfFilesDisappeared (tr_torr
    return disappeared;
  }
  
@@ -298,7 +291,7 @@ diff -Naur a/libtransmission/torrent.c b/libtransmission/torrent.c
  static void
  torrentInit (tr_torrent * tor, const tr_ctor * ctor)
  {
-@@ -963,10 +1085,13 @@
+@@ -963,10 +1085,13 @@ torrentInit (tr_torrent * tor, const tr_
  
    tor->tiers = tr_announcerAddTorrent (tor, onTrackerResponse, NULL);
  
@@ -313,7 +306,7 @@ diff -Naur a/libtransmission/torrent.c b/libtransmission/torrent.c
      }
    else if (doStart)
      {
-@@ -1879,6 +2004,8 @@
+@@ -1879,6 +2004,8 @@ stopTorrent (void * vtor)
        tr_logAddTorInfo (tor, "%s", "Magnet Verify");
        refreshCurrentDir (tor);
        tr_torrentVerify (tor, NULL, NULL);
@@ -322,7 +315,7 @@ diff -Naur a/libtransmission/torrent.c b/libtransmission/torrent.c
      }
  }
  
-@@ -2076,128 +2203,6 @@
+@@ -2076,128 +2203,6 @@ tr_torrentClearIdleLimitHitCallback (tr_
    tr_torrentSetIdleLimitHitCallback (torrent, NULL, NULL);
  }
  
@@ -451,10 +444,9 @@ diff -Naur a/libtransmission/torrent.c b/libtransmission/torrent.c
  void
  tr_torrentRecheckCompleteness (tr_torrent * tor)
  {
-diff -Naur a/libtransmission/transmission.h b/libtransmission/transmission.h
---- a/libtransmission/transmission.h	2018-01-23 22:17:43.019774386 +0300
-+++ b/libtransmission/transmission.h	2018-01-30 21:26:13.218789928 +0300
-@@ -752,6 +752,14 @@
+--- a/libtransmission/transmission.h
++++ b/libtransmission/transmission.h
+@@ -752,6 +752,14 @@ tr_torrent ** tr_sessionLoadTorrents (tr
  ***
  **/
  
