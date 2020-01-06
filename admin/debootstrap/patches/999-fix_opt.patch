@@ -1,5 +1,5 @@
---- a/debootstrap
-+++ b/debootstrap
+--- a/usr/sbin/debootstrap
++++ b/usr/sbin/debootstrap
 @@ -14,7 +14,7 @@ if [ -z "$DEBOOTSTRAP_DIR" ]; then
  	if [ -x /debootstrap/debootstrap ]; then
  		DEBOOTSTRAP_DIR=/debootstrap
@@ -9,8 +9,8 @@
  	fi
  fi
  
---- a/functions
-+++ b/functions
+--- a/usr/share/debootstrap/functions
++++ b/usr/share/debootstrap/functions
 @@ -1041,7 +1041,7 @@ extract () { (
  ); }
  

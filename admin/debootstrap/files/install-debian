@@ -5,12 +5,12 @@
 ARCH=@ARCH@
 
 ## debian codenames
-#DISTRO=oldoldstable - The previous old stable release (wheezy).
-#DISTRO=oldstable - The previous stable release (jessie).
-#DISTRO=stable - The current stable release (stretch).
-#DISTRO=testing - The next generation release (buster).
+#DISTRO=oldoldstable - The previous old stable release (jessie).
+#DISTRO=oldstable - The previous stable release (stretch).
+#DISTRO=stable - The current stable release (buster).
+#DISTRO=testing - The next generation release (bullseye).
 #DISTRO=unstable - The unstable development release (sid).
-DISTRO=jessie
+DISTRO=stable
 
 ## target installation folder
 TARGET=/opt/debian
@@ -26,7 +26,7 @@ VARIANT=
 ## unofficial mirror
 #MIRROR=http://mirror.yandex.ru/debian/
 ## official mirror
-MIRROR=http://ftp.debian.org/debian
+MIRROR=http://ftp.debian.org/debian/
 
 unset LD_LIBRARY_PATH
 unset LD_PRELOAD
