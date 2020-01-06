@@ -5,30 +5,53 @@ A simple DNSMASQ/Unbound-based AdBlocking service for OpenWrt/LEDE Project.
 ## Features
 
 - Super-fast due to the nature of supported block lists and parallel downloading/processing of the blacklists.
-- Supports both hosts files and domains lists for blocking (to keep it lean and fast).
+- Supports hosts files and domains lists for blocking.
 - Everything is configurable from Web UI.
 - Allows you to easily add your own domains to whitelist or blacklist.
-- Allows you to easily add URLs to your own blocked hosts or domains lists to block/whitelist (just put whitelisted domains one per line).
-- Requires no configuration for the download utility wherever you want to use wget/libopenssl or uclient-fetch/libustream-mbedtls.
-- Installs dependencies automatically.
-- Doesn't stay in memory -- creates the list of blocked domains and then uses DNSMASQ/Unbound and firewall rules to serve NXDOMAIN or 127.0.0.1 (depending on settings) reply for blocked domains.
+- Allows you to easily add URLs to your own blocked hosts or domains lists to block/whitelist (just put whitelisted domains one per line in the file you're linking).
+- Supports multiple modes of AdBlocking implementations with DNSMASQ and Unbound.
+- Doesn't stay in memory -- creates the list of blocked domains and then uses DNSMASQ/Unbound and firewall rules to serve NXDOMAIN or 127.0.0.1 reply or to reject access (depending on settings)  for blocked domains.
 - As some of the default lists are using https, reliably works with either wget/libopenssl,  uclient-fetch/libustream-mbedtls or curl.
 - Very lightweight and easily hackable, the whole script is just one ```/etc/init.d/simple-adblock``` file.
 - Retains the downloaded/sorted AdBlocking list on service stop and reuses it on service start (use ```dl``` command if you want to force re-download of the list).
+- Has an option to store a compressed copy of the AdBlocking list in persistent memory which survives reboots.
 - Blocks ads served over https (unlike PixelServ-derived solutions).
+- Blocks ads inside browsers with [DNS-over-HTTPS proxy](https://en.wikipedia.org/wiki/DNS_over_HTTPS) built-in, like [Mozilla Firefox](https://support.mozilla.org/en-US/kb/firefox-dns-over-https#w_about-dns-over-https) or [Google Chrome/Chromium](https://blog.chromium.org/2019/09/experimenting-with-same-provider-dns.html) -- with the ```dnsmasq.ipset``` option.
 - Proudly made in Canada, using locally-sourced electrons.
 
 If you want a more robust AdBlocking, supporting free memory detection and complex block lists, supporting IDN, check out [net/adblock](https://github.com/openwrt/packages/tree/master/net/adblock/files).
 
-## Screenshot (luci-app-simple-adblock)
+## Screenshots (luci-app-simple-adblock)
 
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/simple-adblock/screenshot07.png "screenshot")
+Service Status
+
+![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/simple-adblock/screenshot08-status.png "Service Status")
+
+Configuration - Basic Configuration
+
+![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/simple-adblock/screenshot08-config-basic.png "Configuration - Basic Configuration")
+
+Configuration - Advanced Configuration
+
+![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/simple-adblock/screenshot08-config-advanced.png "Configuration - Advanced Configuration")
+
+Whitelist and Blocklist Management
+
+![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/simple-adblock/screenshot08-lists.png "Whitelist and Blocklist Management")
 
 ## Requirements
 
 This service requires the following packages to be installed on your router: ```dnsmasq``` or ```dnsmasq-full``` or ```unbound``` and either ```ca-certificates```, ```wget``` and ```libopenssl``` (for OpenWrt 15.05.1) or ```uclient-fetch``` and ```libustream-mbedtls``` (for LEDE Project and OpenWrt 18.06.xx or newer). Additionally installation of ```coreutils-sort``` is highly recommended as it speeds up blocklist processing.
 
 To satisfy the requirements for connect to your router via ssh and run the following commands:
+
+### How to use DNSMASQ ipset
+
+The ```dnsmasq.ipset``` option requires you to install ```ipset``` and  ```dnsmasq-full``` instead of the ```dnsmasq```. To do that, connect to your router via ssh and run the following command:
+
+```sh
+opkg update; opkg remove dnsmasq; opkg install dnsmasq-full ipset;
+```
 
 ### OpenWrt 15.05.1 Requirements
 
@@ -70,7 +93,9 @@ If ```simple-adblock``` and ```luci-app-simple-adblock``` packages are not found
 
 ## Default Settings
 
-Default configuration has service disabled (use Web UI to enable/start service or run ```uci set simple-adblock.config.enabled=1; uci commit simple-adblock;```) and selected ad/malware lists suitable for routers with 64Mb RAM. The configuration file has lists in descending order starting with biggest ones, comment out or delete the lists you don't want or your router can't handle.
+Default configuration has service disabled (use Web UI to enable/start service or run ```uci set simple-adblock.config.enabled=1; uci commit simple-adblock;```) and selected ad/malware lists suitable for routers with 64Mb RAM.
+
+If your router has less then 64Mb RAM, edit the configuration file, located at ```/etc/config/simple-adblock```. The configuration file has lists in ascending order starting with smallest ones and each list has a preceding comment indicating its size, comment out or delete the lists you don't want or your router can't handle.
 
 ## How To Customize
 
@@ -88,7 +113,7 @@ If you want to use CLI to customize ```simple-adblock``` config, refer to the [C
 
 ## How To Use
 
-Once the service is enabled in the [config file](#default-settings), run ```/etc/init.d/simple-adblock start``` to start the service. Either ```/etc/init.d/simple-adblock restart``` or ```/etc/init.d/simple-adblock reload``` will only restart the service and/or re-donwload the lists if there were relevant changes in the config file since the last successful start. Had the previous start resulted in any error, either ```/etc/init.d/simple-adblock start```, ```/etc/init.d/simple-adblock restart``` or ```/etc/init.d/simple-adblock reload``` will attempt to re-download the lists.
+Once the service is enabled in the [config file](#default-settings), run ```/etc/init.d/simple-adblock start``` to start the service. Either ```/etc/init.d/simple-adblock restart``` or ```/etc/init.d/simple-adblock reload``` will only restart the service and/or re-download the lists if there were relevant changes in the config file since the last successful start. Had the previous start resulted in any error, either ```/etc/init.d/simple-adblock start```, ```/etc/init.d/simple-adblock restart``` or ```/etc/init.d/simple-adblock reload``` will attempt to re-download the lists.
 
 If you want to force simple-adblock to re-download the lists, run ```/etc/init.d/simple-adblock dl```.
 
@@ -126,6 +151,7 @@ Currently supported options are:
 | --- | --- |
 |```dnsmasq.addnhosts```|Creates the DNSMASQ additional hosts file ```/var/run/simple-adblock.addnhosts``` and modifies DNSMASQ settings, so that DNSMASQ resolves all blocked domains to "local machine": 127.0.0.1. This option doesn't allow block-list optimization (by removing secondary level domains if the top-level domain is also in the block-list), so it results in a much larger block-list file, but, unlike other DNSMASQ-based options, it has almost no effect on the DNS look up speed. This option also allows quick reloads of DNSMASQ on block-list updates.|
 |```dnsmasq.conf```|Creates the DNSMASQ config file ```/var/dnsmasq.d/simple-adblock``` so that DNSMASQ replies with NXDOMAIN: "domain not found". This option allows the block-list optimization (by removing secondary level domains if the top-level domain is also in the block-list), resulting in the smaller block-list file. This option will slow down DNS look up speed somewhat.|
+|```dnsmasq.ipset```|Creates the DNSMASQ ipset file ```/var/dnsmasq.d/simple-adblock.ipset``` and the firewall rule to reject the matching requests. This is the only option for AdBlocking if you're using a browser with [DNS-over-HTTPS proxy](https://en.wikipedia.org/wiki/DNS_over_HTTPS) built-in, like [Mozilla Firefox](https://support.mozilla.org/en-US/kb/firefox-dns-over-https#w_about-dns-over-https) or [Google Chrome/Chromium](https://blog.chromium.org/2019/09/experimenting-with-same-provider-dns.html). This option allows the block-list optimization (by removing secondary level domains if the top-level domain is also in the block-list), resulting in the smaller block-list file. This option requires you install ```dnsmasq-full``` and ```ipset``` [as described here](#how-to-use-dnsmasq-ipset).<br/>PLEASE NOTE, that unlike other options which are truly domain name based blocking, this is essentially an IP address based blocking, ie: if you try to block ```google-analytics.com``` with this option, it may also block/break things like YouTube, Hangouts and other Google services if they share IP address(es) with ```google-analytics.com```.|
 |```dnsmasq.servers```|Creates the DNSMASQ servers file ```/var/run/simple-adblock.servers``` and modifies DNSMASQ settings so that DNSMASQ replies with NXDOMAIN: "domain not found". This option allows the block-list optimization (by removing secondary level domains if the top-level domain is also in the block-list), resulting in the smaller block-list file. This option will slow down DNS look up speed somewhat. This is a default setting as it results in the smaller block-file and allows quick reloads of DNSMASQ.|
 |```unbound.adb_list```|Creates the Unbound config file ```/var/lib/unbound/adb_list.simple-adblock``` so that Unbound replies with NXDOMAIN: "domain not found". This option allows the block-list optimization (by removing secondary level domains if the top-level domain is also in the block-list), resulting in the smaller block-list file.|
 
@@ -137,10 +163,26 @@ If you specify ```google.com``` as a domain to be whitelisted, you will have acc
 
 In general, whatever domain is specified to be whitelisted; it, along with with its subdomains will be whitelisted, but not any fake domains containing it.
 
+## How It Does Not Work
+
+For most of the [DNS Resolution Options](#dns-resolution-option) to work, your local LAN clients need to be set to use your router's DNS (by default ```192.168.1.1```). The ```dnsmasq.addnhosts``` is the only option which can help you block ads if your local LAN clients are NOT using your router's DNS. There are multiple ways your local LAN clients can be set to NOT use your router's DNS:
+
+  1. Hardcoded on the device. Some Android Lollipop 5.0 phones, some media-centric tablets and some streaming devices for example are known to have hardcoded DNS servers and they ignore your router's DNS settings. You can fix this by either:
+      - Rooting your device and changing it from hardcoded DNS servers to obtaining DNS servers from DHCP.
+      - Enabling ```simple-adblock```'s ```force_dns``` setting to override the hardcoded DNS on your device.
+  2. Manually set on the device. Instead of setting your device to obtain the DNS settings via DHCP, you can set the DNS servers manually. There are some guides online which recommend manually changing the DNS servers on your computer to Google's (8.8.8.8) or Cloudflare's (1.1.1.1) or OpenDNS (208.67.222.222). You can fix this by either:
+      - Changing the on-device DNS settings from manual to obtaining DNS servers from DHCP and changing your [router's DNS settings](https://openwrt.org/docs/guide-user/base-system/dhcp#all_options) to use the DNS from Google, Cloudflare or OpenDNS respectively.
+      - Enabling ```simple-adblock```'s ```force_dns``` setting to override the hardcoded DNS on your device.
+  3. Sent to your device from router via [DHCP Options](https://openwrt.org/docs/guide-user/base-system/dhcp_configuration#dhcp_options). You can fix this by either:
+      - Removing [DHCP Options](https://openwrt.org/docs/guide-user/base-system/dhcp_configuration#dhcp_options) 5 and 6 from your router's ```/etc/config/dhcp``` file.
+      - Enabling ```simple-adblock```'s ```force_dns``` setting to override the hardcoded DNS on your device.
+  4. By using the DNS-over-TLS, DNS-over-HTTPS or DNSCrypt on your local device or (if supported) by browser on your local device. You can fix this only by:
+      - Stopping/removing/disabling DNS-over-TLS, DNS-over-HTTPS or DNSCrypt on your local device and using the secure DNS on your router instead. There are merits to all three of the options above, I can recommend the ```https_dns_proxy``` and ```luci-app-https_dns_proxy``` packages for enabling DNS-over-HTTPS on your router.
+
 ## Documentation / Discussion
 
 Please head to [OpenWrt Forum](https://forum.openwrt.org/t/simple-adblock-fast-lean-and-fully-uci-luci-configurable-adblocking/1327/) for discussion of this package.
 
 ## Thanks
 
-I'd like to thank everyone who helped create, test and troubleshoot this service. Special thanks to [@hnyman](https://github.com/hnyman) for general package/luci guidance, [@dibdot](https://github.com/dibdot) for general guidance and block-list optimization code, [@ckuethe](https://github.com/ckuethe) for the curl support, non-ASCII filtering and compressed cache code, [@EricLuehrsen](https://github.com/EricLuehrsen) for the Unbound support information and [@phasecat](https://forum.openwrt.org/u/phasecat/summary) for submitting bugs and testing.
+I'd like to thank everyone who helped create, test and troubleshoot this service. Special thanks to [@hnyman](https://github.com/hnyman) for general package/luci guidance, [@dibdot](https://github.com/dibdot) for general guidance and block-list optimization code, [@ckuethe](https://github.com/ckuethe) for the curl support, non-ASCII filtering and compressed cache code, [@EricLuehrsen](https://github.com/EricLuehrsen) for the Unbound support information, [@mushoz]( https://github.com/mushoz) for performance testing and [@phasecat](https://forum.openwrt.org/u/phasecat/summary) for submitting various bugs and testing.
