@@ -17,10 +17,10 @@ PKG_RELEASE:=1a
 PKG_SOURCE:=$(PKG_NAME)$(PKG_VERSION)-src.tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
 PKG_HASH:=032be57a607bdf252135b52fac9e3a7016e526242374ac7637b083ecc4c5d3c9
-
 PKG_LICENSE:=TCL
 PKG_LICENSE_FILES:=license.terms
 PKG_MAINTAINER:=Joe Mistachkin <joe@mistachkin.com>
+PKG_CPE_ID:=cpe:/a:tcl_tk:tcl_tk
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)$(PKG_VERSION)
 
@@ -35,7 +35,7 @@ define Package/tcl
   CATEGORY:=Languages
 #  DEPENDS:=+libpthread
   TITLE:=The Tcl language
-  URL:=http://www.tcl.tk/
+  URL:=https://www.tcl.tk/
 endef
 
 define Package/tcl/description
