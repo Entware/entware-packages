@@ -16,7 +16,7 @@ define PyPackage/python-dev/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/python*config $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/libpython$(PYTHON_VERSION).a $(1)/opt/lib
 	$(SED) "s|-L$(STAGING_DIR)/opt/lib|-L/opt/lib|g" $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/Makefile
-	$(SED) "s|-L$(STAGING_DIR)/lib|-L/opt/lib/gcc/$(REAL_GNU_TARGET_NAME)/6.3.0|g" $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/Makefile
+	$(SED) "s|-L$(STAGING_DIR)/lib|-L/opt/lib/gcc/$(REAL_GNU_TARGET_NAME)/7.4.0|g" $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/Makefile
 	$(SED) "s|-L$(TOOLCHAIN_DIR)/usr/lib||g" $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/Makefile
 	$(SED) "s|-L$(TOOLCHAIN_DIR)/lib||g" $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/Makefile
 	$(SED) "s|-L$(PKG_BUILD_DIR)||g" $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON_VERSION)/config/Makefile
