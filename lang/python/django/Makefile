@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2017 OpenWrt.org
+# Copyright (C) Alexandru Ardelean <ardeleanalex@gmail.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,24 +8,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=django
-PKG_VERSION:=1.11.24
+PKG_VERSION:=2.2.7
 PKG_RELEASE:=1
 
-PKG_SOURCE:=Django-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://files.pythonhosted.org/packages/source/D/Django
-PKG_HASH:=215c27453f775b6b1add83a185f76c2e2ab711d17786a6704bd62eabd93f89e3
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-django-$(PKG_VERSION)
+PYPI_NAME:=Django
+PKG_HASH:=16040e1288c6c9f68c6da2fe75ebde83c0a158f6f5d54f4c5177b0c1478c5b86
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE LICENSE.python
 PKG_CPE_ID:=cpe:/a:djangoproject:django
 
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-include ../python-package.mk
 include ../python3-package.mk
-
-PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
 define Package/django/Default
   SUBMENU:=Python
@@ -36,34 +32,26 @@ define Package/django/Default
   MENU:=1
 endef
 
-define Package/python-django
-$(call Package/django/Default)
-  DEPENDS:= \
-	+PACKAGE_python-django:python \
-	+PACKAGE_python-django:python-pytz
-  VARIANT:=python
-endef
-
-define Package/python-django/description
-    The web framework for perfectionists with deadlines.
-endef
-
 define Package/python3-django
 $(call Package/django/Default)
   DEPENDS:= \
 	+PACKAGE_python3-django:python3 \
-	+PACKAGE_python3-django:python3-pytz
+	+PACKAGE_python3-django:python3-pytz \
+	+PACKAGE_python3-django:python3-sqlparse
   VARIANT:=python3
 endef
 
 define Package/python3-django/description
-$(call Package/python-django/description)
-.
-(Variant for Python3)
+    The web framework for perfectionists with deadlines (LTS 2.2 series).
+    Python3 only.
 endef
 
-$(eval $(call PyPackage,python-django))
-$(eval $(call BuildPackage,python-django))
+define Py3Package/python3-django/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/django-admin.py \
+		$(1)/opt/bin/django-admin
+endef
 
 $(eval $(call Py3Package,python3-django))
 $(eval $(call BuildPackage,python3-django))
+$(eval $(call BuildPackage,python3-django-src))
