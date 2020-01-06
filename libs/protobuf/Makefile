@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=protobuf
 PKG_VERSION:=3.8.0
-PKG_RELEASE:=1
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-cpp-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/google/protobuf/releases/download/v$(PKG_VERSION)
@@ -18,13 +18,16 @@ PKG_HASH:=ddc96d83f3b7417da53bce2510b94ad2796465ef8763f7a4e82089157efe97aa
 PKG_MAINTAINER:=Ken Keys <kkeys@caida.org>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:google:protobuf
 
-PKG_BUILD_DEPENDS:=protobuf/host
+HOST_BUILD_PARALLEL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_INSTALL:=1
+CMAKE_INSTALL:=1
+CMAKE_SOURCE_SUBDIR:=cmake
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/protobuf/Default
   SECTION:=libs
@@ -64,20 +67,28 @@ This package provides the libprotobuf-lite library.
 
 endef
 
-CONFIGURE_ARGS += --with-protoc=$(STAGING_DIR_HOSTPKG)/bin/protoc
+CMAKE_HOST_OPTIONS += \
+	-Dprotobuf_BUILD_PROTOC_BINARIES=ON \
+	-Dprotobuf_BUILD_TESTS=OFF \
+	-DBUILD_SHARED_LIBS=ON \
+	-DCMAKE_SKIP_RPATH=OFF \
+	-DCMAKE_INSTALL_LIBDIR=lib \
+	-DCMAKE_INSTALL_RPATH="${STAGING_DIR_HOSTPKG}/lib"
+
+CMAKE_OPTIONS += \
+	-Dprotobuf_BUILD_PROTOC_BINARIES=ON \
+	-Dprotobuf_BUILD_TESTS=OFF \
+	-Dprotobuf_WITH_ZLIB=ON \
+	-DBUILD_SHARED_LIBS=ON
+
+TARGET_LDFLAGS += -latomic
 
 define Build/InstallDev
-	$(INSTALL_DIR) \
-		$(1)/opt/lib \
-		$(1)/opt/include
-
-	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/include/* \
-		$(1)/opt/include/
-
-	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/lib/* \
-		$(1)/opt/lib/
+	$(call Build/InstallDev/cmake,$(1))
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/protobuf.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/protobuf.pc
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/protobuf-lite.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/protobuf-lite.pc
 endef
 
 define Package/protobuf-lite/install
