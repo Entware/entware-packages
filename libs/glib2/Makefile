@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=glib2
 PKG_VERSION:=2.58.3
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=glib-$(PKG_VERSION).tar.xz
 PKG_BUILD_DIR:=$(BUILD_DIR)/glib-$(PKG_VERSION)
@@ -46,8 +46,6 @@ define Package/glib2/description
   The GLib library of C routines
 endef
 
-TARGET_CFLAGS += -Wno-error=implicit-function-declaration
-
 HOST_CONFIGURE_ARGS += \
 	--disable-libelf \
 	--disable-selinux \
@@ -64,6 +62,7 @@ CONFIGURE_ARGS += \
 	--disable-fam \
 	--disable-gtk-doc-html \
 	--disable-man \
+	--disable-compile-warnings \
 	--with-libiconv=gnu \
 	--with-pcre=internal
 
@@ -75,14 +74,11 @@ CONFIGURE_VARS += \
 	ac_cv_func_posix_getpwuid_r=yes \
 	ac_cv_func_posix_getgrgid_r=yes
 
-ifeq ($(findstring $(CONFIG_GCC_USE_VERSION),7),)
+ifeq ($(CONFIG_GCC_USE_VERSION_7),y)
 TARGET_CFLAGS += -Wno-error=missing-include-dirs
 endif
 
 define Build/InstallDev
-	$(FIND) $(PKG_INSTALL_DIR) -name '*.pc' | $(XARGS) $(SED) \
-		's,^bindir=.*,bindir=$(STAGING_DIR)/opt/bin,'
-
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/bin/* \
