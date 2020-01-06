@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libprotobuf-c
 PKG_VERSION:=1.3.2
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=protobuf-c-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/protobuf-c/protobuf-c/releases/download/v$(PKG_VERSION)
@@ -21,14 +21,16 @@ PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_BUILD_DEPENDS:=protobuf-c/host
 HOST_BUILD_DEPENDS:=protobuf/host
+PKG_BUILD_DEPENDS:=protobuf
 
-PKG_INSTALL:=1
+CMAKE_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
+CMAKE_SOURCE_SUBDIR:=build-cmake
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libprotobuf-c
   TITLE:=Protocol Buffers library
@@ -44,23 +46,17 @@ define Package/libprotobuf-c/description
   internal RPC protocols and file formats.
 endef
 
-CONFIGURE_ARGS += \
-	--enable-shared \
-	--enable-static \
-	--disable-protoc
+CMAKE_HOST_OPTIONS += \
+	-DBUILD_SHARED_LIBS=ON \
+	-DCMAKE_SKIP_RPATH=OFF \
+	-DCMAKE_INSTALL_RPATH="${STAGING_DIR_HOSTPKG}/lib"
 
-define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libprotobuf-c.{a,la,so*} $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
-endef
+CMAKE_OPTIONS += \
+	-DBUILD_SHARED_LIBS=ON
 
 define Package/libprotobuf-c/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libprotobuf-c.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libprotobuf-c.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libprotobuf-c))
