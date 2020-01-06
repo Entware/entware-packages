@@ -8,17 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sstp-client
-PKG_VERSION:=1.0.12
-PKG_RELEASE:=3
+PKG_VERSION:=1.0.13
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/sstp-client/$(PKG_VERSION)
-PKG_HASH:=487eb406579689803ce0397f6102b18641e4572ac7bc9b9e5f3027c84dcf67ff
-PKG_LICENSE=GPLv2
+PKG_HASH:=961258fca0795d8ad60b047942cf7cb53d025d353fd1e4ba08c2b75799f5321b
+
+PKG_MAINTAINER:=Federico Di Marco <fededim@gmail.com>
+PKG_LICENSE:=GPL-2.0-or-later
+PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
-
-TARGET_CPPFLAGS += -I$(PKG_BUILD_DIR)/include
 
 define Package/sstp-client
   SECTION:=net
@@ -27,7 +28,6 @@ define Package/sstp-client
   DEPENDS=+libevent2 +libopenssl +ppp +resolveip
   TITLE:=SSTP-Client is a SSTP client for Linux.
   URL:=http://sstp-client.sourceforge.net/
-  MAINTAINER:=Federico Di Marco <fededim@gmail.com>
 endef
 
 define Package/sstp-client/description
@@ -47,6 +47,8 @@ define Package/sstp-client/conffiles
 /opt/etc/ppp/peers/peer-sstp-example-nopty.txt
 /opt/etc/ppp/peers/peer-sstp-example.txt
 endef
+
+TARGET_CPPFLAGS += -I$(PKG_BUILD_DIR)/include
 
 define Package/sstp-client/install
 	$(INSTALL_DIR) $(1)/opt/{bin,lib}
