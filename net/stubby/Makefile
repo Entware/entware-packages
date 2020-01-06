@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stubby
 PKG_VERSION:=0.2.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
@@ -34,8 +34,8 @@ define Package/stubby
 	CATEGORY:=Network
 	SUBMENU:=IP Addresses and Names
 	TITLE+= - (daemon that uses getdns)
-#	USERID:=stubby=410:stubby=410
-	DEPENDS:= +libyaml +getdns +ca-certificates
+	USERID:=stubby=410:stubby=410
+	DEPENDS:= +libyaml +getdns +ca-certs
 endef
 
 define Package/stubby/description
