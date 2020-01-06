@@ -8,22 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-ipaddress
-PKG_VERSION:=1.0.22
+PKG_VERSION:=1.0.23
 PKG_RELEASE:=1
 
-PKG_SOURCE:=ipaddress-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://files.pythonhosted.org/packages/source/i/ipaddress
-PKG_HASH:=b146c751ea45cad6188dd6cf2d9b757f6f4f8d6ffb96a023e6f2e26eea02a72c
-
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(BUILD_VARIANT)-ipaddress-$(PKG_VERSION)
+PYPI_NAME:=ipaddress
+PKG_HASH:=b7f8e0369580bb4a24d5ba1d7cc29660a4a6987763faf1d8a8046830e020e7e2
 
 PKG_LICENSE:=Python-2.0
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 
+include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
 include ../python-package.mk
-
-PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
 
 define Package/python-ipaddress/Default
   SECTION:=lang
