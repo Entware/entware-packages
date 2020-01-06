@@ -1,0 +1,20 @@
+--- a/src/net/SocketDescriptor.cxx
++++ b/src/net/SocketDescriptor.cxx
+@@ -46,6 +46,17 @@
+ #include <errno.h>
+ #include <string.h>
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++/* SO_REUSEPORT since Linux 3.9 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0)
++#define SO_REUSEPORT SO_REUSEADDR
++/* or #define SO_REUSEPORT 0x0200 */
++/* Allow local address and port reuse. */
++#endif
++
+ int
+ SocketDescriptor::GetType() const noexcept
+ {
