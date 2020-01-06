@@ -1,6 +1,6 @@
 --- a/pathnames.h.in
 +++ b/pathnames.h.in
-@@ -59,7 +59,7 @@
+@@ -61,7 +61,7 @@
   * NOTE: _PATH_SUDO_CONF is usually overridden by the Makefile.
   */
  #ifndef _PATH_SUDO_CONF
