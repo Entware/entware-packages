@@ -1,0 +1,11 @@
+--- a/photosyst.c
++++ b/photosyst.c
+@@ -2208,7 +2208,7 @@ getperfevents(struct cpustat *cs)
+ void
+ do_perfevents(char *tagname, char *tagvalue)
+ {
+-	wcleanstop(1, "atop built with NOPERFEVENT, cannot use perfevents\n");
++	mcleanstop(1, "atop built with NOPERFEVENT, cannot use perfevents\n");
+ }
+ #endif
+ 
