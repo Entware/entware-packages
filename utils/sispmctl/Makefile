@@ -8,17 +8,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sispmctl
-PKG_VERSION:=4.1
+PKG_VERSION:=4.2
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
-PKG_HASH:=bf5177e085cb0168e18e4cfb69645c3095da149ed46f5659d6e757bde3548e40
+PKG_HASH:=300adc32ab35a4f9260705f8f57ccd83c3c6601fc493dbe7d259335938819aaf
+
 PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
+PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -49,14 +51,13 @@ define Package/sispmctl/description
  multiple SIS-PM devices, too.
 endef
 
-TARGET_CFLAGS += -D_GNU_SOURCE
 CONFIGURE_ARGS += \
 	--enable-webless \
 	--disable-dependency-tracking
 
 define Package/libsispmctl/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libsispmctl* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libsispmctl.so* $(1)/opt/lib/
 endef
 
 define Package/sispmctl/install
