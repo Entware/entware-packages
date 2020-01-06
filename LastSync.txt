@@ -1,8 +1,8 @@
-commit 5de554a04ff1bdb0793a37f1dd8b3bfd15399574
-Merge: 77239beed 64a02079d
-Author: Rosen Penev <rosenp@gmail.com>
-Date:   Wed Sep 18 23:48:26 2019 -0700
+commit 7fb36fb8d017328f28520efb7932dd0df022fd75
+Merge: 04a03a35b abdec8939
+Author: tripolar <tripolar@users.noreply.github.com>
+Date:   Tue Dec 31 14:17:01 2019 +0100
 
-    Merge pull request #10028 from neheb/dj
+    Merge pull request #10441 from neheb/glib
     
-    django: Update to 1.11.24
+    glib2: Disable Werror
