@@ -1,3 +1,49 @@
+--- a/lib/stdint.in.h
++++ b/lib/stdint.in.h
+@@ -85,12 +85,12 @@
+ 
+ /* Override WINT_MIN and WINT_MAX if gnulib's <wchar.h> or <wctype.h> overrides
+    wint_t.  */
+-#if @GNULIB_OVERRIDES_WINT_T@
++/* #if @GNULIB_OVERRIDES_WINT_T@
+ # undef WINT_MIN
+ # undef WINT_MAX
+ # define WINT_MIN 0x0U
+ # define WINT_MAX 0xffffffffU
+-#endif
++#endif */
+ 
+ #if ! @HAVE_C99_STDINT_H@
+ 
+--- a/lib/wchar.in.h
++++ b/lib/wchar.in.h
+@@ -107,7 +107,7 @@
+ 
+ 
+ /* Define wint_t and WEOF.  (Also done in wctype.in.h.)  */
+-#if !@HAVE_WINT_T@ && !defined wint_t
++/* #if !@HAVE_WINT_T@ && !defined wint_t
+ # define wint_t int
+ # ifndef WEOF
+ #  define WEOF -1
+@@ -116,7 +116,7 @@
+ /* mingw and MSVC define wint_t as 'unsigned short' in <crtdefs.h> or
+    <stddef.h>.  This is too small: ISO C 99 section 7.24.1.(2) says that
+    wint_t must be "unchanged by default argument promotions".  Override it.  */
+-# if @GNULIB_OVERRIDES_WINT_T@
++/* # if @GNULIB_OVERRIDES_WINT_T@
+ #  if !GNULIB_defined_wint_t
+ #   if @HAVE_CRTDEFS_H@
+ #    include <crtdefs.h>
+@@ -132,7 +132,7 @@ typedef unsigned int rpl_wint_t;
+ # ifndef WEOF
+ #  define WEOF ((wint_t) -1)
+ # endif
+-#endif
++#endif */
+ 
+ 
+ /* Override mbstate_t if it is too small.
 --- a/lib/wctype.in.h
 +++ b/lib/wctype.in.h
 @@ -101,16 +101,16 @@ _GL_INLINE_HEADER_BEGIN
@@ -29,49 +75,30 @@
  
  
  #if !GNULIB_defined_wctype_functions
---- a/lib/wchar.in.h
-+++ b/lib/wchar.in.h
-@@ -107,7 +107,7 @@
+@@ -477,7 +477,7 @@ _GL_FUNCDECL_SYS (iswblank, int, (wint_t
  
- 
- /* Define wint_t and WEOF.  (Also done in wctype.in.h.)  */
--#if !@HAVE_WINT_T@ && !defined wint_t
-+/* #if !@HAVE_WINT_T@ && !defined wint_t
- # define wint_t int
- # ifndef WEOF
- #  define WEOF -1
-@@ -116,7 +116,7 @@
- /* mingw and MSVC define wint_t as 'unsigned short' in <crtdefs.h> or
-    <stddef.h>.  This is too small: ISO C 99 section 7.24.1.(2) says that
-    wint_t must be "unchanged by default argument promotions".  Override it.  */
--# if @GNULIB_OVERRIDES_WINT_T@
-+/* # if @GNULIB_OVERRIDES_WINT_T@
- #  if !GNULIB_defined_wint_t
- #   if @HAVE_CRTDEFS_H@
- #    include <crtdefs.h>
-@@ -132,7 +132,7 @@ typedef unsigned int rpl_wint_t;
- # ifndef WEOF
- #  define WEOF ((wint_t) -1)
  # endif
--#endif
-+#endif */
  
+-# if defined __MINGW32__ && !@GNULIB_OVERRIDES_WINT_T@
++/* # if defined __MINGW32__ && !@GNULIB_OVERRIDES_WINT_T@ */
  
- /* Override mbstate_t if it is too small.
---- a/lib/stdint.in.h
-+++ b/lib/stdint.in.h
-@@ -85,12 +85,12 @@
+ /* On native Windows, wchar_t is uint16_t, and wint_t is uint32_t.
+    The functions towlower and towupper are implemented in the MSVCRT library
+@@ -491,7 +491,7 @@ _GL_FUNCDECL_SYS (iswblank, int, (wint_t
+       The upper 16 bits are random: whatever happened to be in that part of the
+       result register.  We need to fix this by adding a zero-extend from
+       wchar_t to wint_t after the call.  */
+-
++/*
+ _GL_WCTYPE_INLINE wint_t
+ rpl_towlower (wint_t wc)
+ {
+@@ -510,7 +510,7 @@ rpl_towupper (wint_t wc)
+ #   define towupper rpl_towupper
+ #  endif
  
- /* Override WINT_MIN and WINT_MAX if gnulib's <wchar.h> or <wctype.h> overrides
-    wint_t.  */
--#if @GNULIB_OVERRIDES_WINT_T@
-+/*#if @GNULIB_OVERRIDES_WINT_T@
- # undef WINT_MIN
- # undef WINT_MAX
- # define WINT_MIN 0x0U
- # define WINT_MAX 0xffffffffU
--#endif
-+#endif*/
+-# endif /* __MINGW32__ && !@GNULIB_OVERRIDES_WINT_T@ */
++# endif */ /* __MINGW32__ && !@GNULIB_OVERRIDES_WINT_T@ */
  
- #if ! @HAVE_C99_STDINT_H@
- 
+ # define GNULIB_defined_wctype_functions 1
+ #endif
