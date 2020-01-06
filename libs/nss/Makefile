@@ -7,14 +7,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nss
-PKG_VERSION:=3.46
-PKG_RELEASE:=1
+PKG_VERSION:=3.48
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
     https://download.cdn.mozilla.net/pub/security/$(PKG_NAME)/releases/NSS_$(subst .,_,$(PKG_VERSION))_RTM/src \
     https://archive.mozilla.org/pub/security/$(PKG_NAME)/releases/NSS_$(subst .,_,$(PKG_VERSION))_RTM/src
-PKG_HASH:=6b699649d285602ba258a4b0957cb841eafc94eff5735a9da8da0adbb9a10cef
+PKG_HASH:=3f9c822a86a4e3e1bfe63e2ed0f922d8b7c2e0b7cafe36774b1c627970d0f8ac
 
 PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
 PKG_LICENCE:=MPL-2.0
@@ -58,6 +58,11 @@ ifeq ($(LBITS),64)
     export USE_64=1
 endif
 
+ifeq ($(CONFIG_CPU_TYPE),"xscale")
+TARGET_CFLAGS+= -mfloat-abi=softfp
+endif
+
+TARGET_CFLAGS += -D_GNU_SOURCE
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 export CROSS_COMPILE=1
@@ -89,8 +94,6 @@ define Build/Prepare
 	$(call Build/Prepare/Default)
 	USE_NATIVE=1 OS_REL_CFLAGS="$(HOST_CFLAGS)" LDFLAGS="$(HOST_LDFLAGS)" CC="$(HOSTCC)" \
 	    $(MAKE) -C $(PKG_BUILD_DIR)/nss/coreconf/nsinstall
-#	$(if $(CONFIG_LIBC_USE_GLIBC),, \
-#		$(SED) '/-DHAVE_SYS_CDEFS_H/d' $(PKG_BUILD_DIR)/nss/lib/dbm/config/config.mk)
 endef
 
 define Package/libnss/conffiles
@@ -128,11 +131,12 @@ define Package/libnss/install
 
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libfreebl3.so $(1)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnss3.so $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnssckbi.so $(1)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnssutil3.so $(1)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libsmime3.so $(1)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libsoftokn3.so $(1)/usr/lib/
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libssl3.so $(1)/usr/lib/
-#	Pprovide databases with a blank certificate
+#	Provide databases with a blank certificate
 	$(CP)	./files/blank-cert9.db $(1)/etc/pki/nssdb/cert9.db
 	$(CP)	./files/blank-key4.db $(1)/etc/pki/nssdb/key4.db
 	$(CP)	./files/system-pkcs11.txt $(1)/etc/pki/nssdb/pkcs11.txt
