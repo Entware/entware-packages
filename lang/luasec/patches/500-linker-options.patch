@@ -1,6 +1,6 @@
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -51,7 +51,7 @@ luasocket:
+@@ -52,7 +52,7 @@ luasocket:
  	@cd luasocket && $(MAKE)
  
  $(CMOD): $(EXTRA) $(OBJS)
