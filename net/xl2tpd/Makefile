@@ -9,8 +9,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xl2tpd
-PKG_VERSION:=1.3.14
-PKG_RELEASE:=1
+PKG_VERSION:=1.3.15
+PKG_RELEASE:=3
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE
@@ -20,9 +20,7 @@ PKG_SOURCE_URL:=https://github.com/xelerance/xl2tpd.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=v$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_MIRROR_HASH:=4a35bb75bdd05964b1438771483a79a52eed2e30d0bc85e7481bf951d3bc0b96
-
-PKG_BUILD_DEPENDS:=libpcap
+PKG_MIRROR_HASH:=e12232fef216a1cb5b74f990616aff1dd851c62812ef54658a330629823c0996
 
 PKG_INSTALL:=1
 
@@ -85,8 +83,9 @@ define Package/xl2tpd/install
 	$(INSTALL_CONF) ./files/xl2tp-secrets $(1)/opt/etc/xl2tpd/
 
 	$(INSTALL_DIR) $(1)/opt/etc/ppp
-	$(INSTALL_CONF) ./files/chap-secrets $(1)/opt/etc/ppp/chap-secrets
 	$(INSTALL_DATA) ./files/options.xl2tpd $(1)/opt/etc/ppp/options.xl2tpd
+
+	$(INSTALL_CONF) ./files/chap-secrets $(1)/opt/etc/ppp/chap-secrets
 	$(INSTALL_BIN) ./files/ip-up.sh $(1)/opt/etc/ppp/
 	$(INSTALL_BIN) ./files/ip-down.sh $(1)/opt/etc/ppp/
 	$(INSTALL_DIR) $(1)/opt/var/run/xl2tpd
