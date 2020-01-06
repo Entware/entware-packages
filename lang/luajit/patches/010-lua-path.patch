@@ -6,7 +6,7 @@
  #endif
 -#define LUA_LROOT	"/usr/local"
 -#define LUA_LUADIR	"/lua/5.1/"
-+#define LUA_LROOT	"/usr"
++#define LUA_LROOT	"/opt"
 +#define LUA_LUADIR	"/lua/"
  #define LUA_LJDIR	"/luajit-2.1.0-beta3/"
  

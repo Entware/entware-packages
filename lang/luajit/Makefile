@@ -41,34 +41,34 @@ define Build/Compile
 	$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 		HOST_CC="$(HOSTCC) $(HOST_CFLAGS) $(HOST_BITS)" \
 		CROSS="$(TARGET_CROSS)" \
-		DPREFIX=$(PKG_INSTALL_DIR)/usr \
-		PREFIX=/usr \
+		DPREFIX=$(PKG_INSTALL_DIR)/opt \
+		PREFIX=/opt \
 		TARGET_SYS=Linux \
 		TARGET_CFLAGS="$(TARGET_CFLAGS)"
 	rm -rf $(PKG_INSTALL_DIR)
 	mkdir -p $(PKG_INSTALL_DIR)
 	$(MAKE) -C $(PKG_BUILD_DIR) \
-		DPREFIX=$(PKG_INSTALL_DIR)/usr \
-		PREFIX=/usr \
+		DPREFIX=$(PKG_INSTALL_DIR)/opt \
+		PREFIX=/opt \
 		TARGET_SYS=Linux \
 		install
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/luajit-2.1
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/luajit-2.1/*.{h,hpp} $(1)/usr/include/luajit-2.1
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.{a,so*} $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/luajit.pc $(1)/usr/lib/pkgconfig/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/luajit-$(PKG_VERSION) $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/opt/include/luajit-2.1
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/luajit-2.1/*.{h,hpp} $(1)/opt/include/luajit-2.1
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.{a,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/luajit.pc $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/luajit-$(PKG_VERSION) $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME)
 endef
 
 define Package/luajit/install
-	$(INSTALL_DIR) $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/luajit-$(PKG_VERSION) $(1)/usr/bin/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/luajit-$(PKG_VERSION) $(1)/opt/bin/$(PKG_NAME)
 endef
 
 define Host/Compile
