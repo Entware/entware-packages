@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: bumped to 1.1pre17 from 1.0.35
+# Entware specific: bumped to 1.1pre17 from 1.0.36
 
 include $(TOPDIR)/rules.mk
 
@@ -13,7 +13,7 @@ PKG_VERSION:=1.1pre17
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://www.tinc-vpn.org/packages
+PKG_SOURCE_URL:=https://www.tinc-vpn.org/packages
 PKG_HASH:=61b9c9f9f396768551f39216edcc41918c65909ffd9af071feb3b5f9f9ac1c27
 
 PKG_CPE_ID:=cpe:/a:tinc:tinc
