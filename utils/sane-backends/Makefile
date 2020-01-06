@@ -10,12 +10,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sane-backends
-PKG_VERSION:=1.0.27
-PKG_RELEASE:=4
+PKG_VERSION:=1.0.28
+PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://fossies.org/linux/misc \
-    https://alioth.debian.org/frs/download.php/file/4146/
-PKG_HASH:=293747bf37275c424ebb2c833f8588601a60b2f9653945d5a3194875355e36c9
+PKG_SOURCE_URL:=https://gitlab.com/sane-project/backends/uploads/9e718daff347826f4cfe21126c8d5091/
+PKG_HASH:=31260f3f72d82ac1661c62c5a4468410b89fb2b4a811dabbfcc0350c1346de03
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING LICENSE
@@ -73,19 +72,15 @@ $(call Package/sane-backends/Default/description)
 This package contains the SANE frontends.
 endef
 
-TARGET_LDFLAGS += \
-	-Wl,-rpath-link $(STAGING_DIR)/opt/lib \
-	-Wl,-rpath-link $(PKG_BUILD_DIR)/backend/.libs
-
 CONFIGURE_ARGS+= \
 	--enable-shared \
 	--enable-static \
-	--disable-translations \
-	--disable-latex \
-	--without-gphoto2 \
-	--disable-debug \
-	--without-snmp
+	--disable-preload \
+	--without-snmp \
+	--disable-avahi \
+	--disable-locking \
 
+# ./configure does not even try to detect mmap if crosscompiling
 CONFIGURE_VARS+= \
     ac_cv_func_mmap_fixed_mapped="yes" \
 
