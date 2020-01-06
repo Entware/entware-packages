@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libnetwork
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 
@@ -12,9 +12,9 @@ GO_PKG_BUILD_PKG:= \
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://$(GO_PKG)
-PKG_SOURCE_VERSION:=fc5a7d91d54cc98f64fc28f9e288b46a0bee756c
-PKG_SOURCE_DATE:=2019-08-03
-PKG_MIRROR_HASH:=a54fe7456ce448efc33d274ac8f2115d25196d7d58c44e5227bb0846b29b7fcd
+PKG_SOURCE_VERSION:=3eb39382bfa6a3c42f83674ab080ae13b0e34e5d
+PKG_SOURCE_DATE:=2019-10-22
+PKG_MIRROR_HASH:=0c2e3c83559b9ac27d2ef953911400957c8634847038c9da83a1fd8769a37a8d
 
 PKG_MAINTAINER:=Gerard Ryan <G.M0N3Y.2503@gmail.com>
 
@@ -29,7 +29,7 @@ define Package/libnetwork
   CATEGORY:=Utilities
   TITLE:=networking for containers
   URL:=https://github.com/docker/libnetwork
-  DEPENDS:=$(GO_ARCH_DEPENDS) @TARGET_x86_64
+  DEPENDS:=$(GO_ARCH_DEPENDS) @(aarch64||arm||x86_64)
 endef
 
 define Package/libnetwork/description
