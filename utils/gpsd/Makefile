@@ -9,18 +9,18 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
 PKG_VERSION:=3.19
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SAVANNAH/$(PKG_NAME)
 PKG_HASH:=27dd24d45b2ac69baab7933da2bf6ae5fb0be90130f67e753c110a3477155f39
 
-PKG_BUILD_DEPENDS:=scons/host
-
 PKG_MAINTAINER:=Pushpal Sidhu <psidhu.devel@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:berlios:gps_daemon
+
+PKG_BUILD_DEPENDS:=scons/host
 
 include $(INCLUDE_DIR)/package.mk
 include ../../devel/scons/scons.mk
@@ -113,12 +113,14 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgps*.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libgps*.pc \
-		$(1)/opt/lib/pkgconfig/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libgps.pc $(1)/opt/lib/pkgconfig
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libgps.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libgps.pc
 endef
 
 define Package/gpsd/install
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/gpsd.config $(1)/etc/config/gpsd
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S62gpsd $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/sbin
