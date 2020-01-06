@@ -8,29 +8,28 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libimobiledevice
-PKG_SOURCE_DATE:=2019-02-16
-PKG_SOURCE_VERSION:=0584aa90c93ff6ce46927b8d67887cb987ab9545
-PKG_RELEASE:=2
+PKG_SOURCE_DATE:=2019-12-16
+PKG_SOURCE_VERSION:=d04f8ff2e20c42f74161c9cd66502da17b8b0e70
+PKG_RELEASE:=1
 
-PKG_MAINTAINER:=
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/libimobiledevice/libimobiledevice
+PKG_MIRROR_HASH:=f3ea7b5cd9789dc23ddc464bd00f39813116239cfe4ea1f13f58ce5a8413c361
+
+PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 PKG_LICENSE:=LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYING.LESSER
-
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_SOURCE_DATE).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/libimobiledevice/libimobiledevice/tar.gz/$(PKG_SOURCE_VERSION)?
-PKG_HASH:=286e294aad60ef04a39ce70512a0e816415167c982f3e6c2988d9a6b8c5ee29b
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_SOURCE_VERSION)
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/nls.mk
 
 define Package/libimobiledevice/Default
   TITLE:=A library that talks to Apple devices.
   URL:=https://www.libimobiledevice.org/
+  SUBMENU:=libimobiledevice
 endef
 
 define Package/libimobiledevice/Default/description
@@ -42,7 +41,9 @@ define Package/libimobiledevice
   $(call Package/libimobiledevice/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=$(ICONV_DEPENDS) +libplist +libusbmuxd +libopenssl
+  DEPENDS:=+libplist +libusbmuxd +libopenssl
+  LICENSE:=LGPL-2.1-or-later
+  LICENSE_FILES:=COPYING.LESSER
 endef
 
 define Package/libimobiledevice/description
@@ -54,6 +55,8 @@ define Package/libimobiledevice-utils
   SECTION:=utils
   CATEGORY:=Utilities
   DEPENDS:=+libimobiledevice
+  LICENSE:=GPL-2.0-or-later
+  ICENSE_FILES:=COPYING
 endef
 
 define Package/libimobiledevice-utils/description
@@ -61,7 +64,6 @@ define Package/libimobiledevice-utils/description
   This package contains the libimobiledevice utilities.
 endef
 
-CONFIGURE_VARS += ac_cv_sys_file_offset_bits=64
 CONFIGURE_ARGS += --without-cython
 
 define Build/InstallDev
