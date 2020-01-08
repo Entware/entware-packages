@@ -43,6 +43,8 @@ CONFIGURE_VARS+= \
 	PECL_cv_HAVE_LIBCURL_mbedTLS=$(if $(CONFIG_LIBCURL_MBEDTLS),yes,no) \
 	PECL_cv_HAVE_LIBCURL_axTLS=no \
 	PECL_cv_LIBCURL_TLSAUTH_SRP=$(if $(CONFIG_LIBCURL_TLS_SRP),yes,no) \
+	PECL_cv_libevent_cppflags=-I$(STAGING_DIR)/opt/include/event2 \
+	PECL_cv_libevent_ldflags=-L$(STAGING_DIR)/opt/lib
 
 CONFIGURE_ARGS+= \
 	--with-http \
