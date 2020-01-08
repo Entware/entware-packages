@@ -68,8 +68,14 @@ define Package/squid-mod-cachemgr
   TITLE:=Web based proxy manager and reporting tool
 endef
 
-ifeq ($(CONFIG_GCC_USE_VERSION_7_4_0),y)
-TARGET_CFLAGS += -Werror=format-truncation=0
+ifeq ($(or $(CONFIG_GCC_USE_VERSION_7),$(CONFIG_GCC_USE_VERSION_9)),y)
+TARGET_CFLAGS += \
+	-Werror=format-truncation=0
+endif
+
+ifeq ($(CONFIG_GCC_USE_VERSION_9),y)
+TARGET_CFLAGS += \
+	-Wno-error=class-memaccess
 endif
 
 CONFIGURE_ARGS += \
