@@ -72,12 +72,10 @@ CONFIGURE_ARGS += \
 	--disable-libav \
 	--enable-bundle
 
-ifeq ($(CONFIG_GCC_USE_VERSION_6_3_0)$(CONFIG_GCC_USE_VERSION_7_4_0),y)
-TARGET_CFLAGS += -Wno-error=pointer-compare
-endif
-
-ifeq ($(CONFIG_GCC_USE_VERSION_7_4_0),y)
-TARGET_CFLAGS += -Wno-error=format-truncation
+ifeq ($(CONFIG_GCC_USE_VERSION_7),y)
+TARGET_CFLAGS += \
+	-Wno-error=pointer-compare \
+	-Wno-error=format-truncation
 endif
 
 define Build/Prepare
