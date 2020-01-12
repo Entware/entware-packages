@@ -31,10 +31,8 @@ include ../php7/pecl.mk
 
 CONFIGURE_ARGS+= \
 	--with-krb5=shared,"$(STAGING_DIR)/opt" \
-	--with-krb5config=$(STAGING_DIR)/opt/bin/krb5-config
-
-CONFIGURE_VARS+= \
-	CPPFLAGS=-I$(STAGING_DIR)/opt/include/krb
+	--with-krb5config=$(STAGING_DIR)/opt/bin/krb5-config \
+	CPPFLAGS="$(TARGET_CPPFLAGS) -I$(STAGING_DIR)/opt/include/krb"
 
 $(eval $(call PECLPackage,krb5,$(PECL_LONGNAME),+krb5-libs,30))
 $(eval $(call BuildPackage,$(PKG_NAME)))
