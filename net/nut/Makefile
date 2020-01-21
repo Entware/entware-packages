@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=19
+PKG_RELEASE:=19a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -283,7 +283,7 @@ endef
 define Package/nut-web-cgi
 	$(call Package/nut/Default)
 	TITLE+= Web CGI interface
-	DEPENDS:=nut +nut-common +PACKAGE_nut-web-cgi:libgd
+	DEPENDS:=nut +nut-common +PACKAGE_nut-web-cgi:libgd +PACKAGE_nut-web-cgi:libtiff
 endef
 
 define Package/nut-web-cgi/description
@@ -512,7 +512,7 @@ CONFIGURE_ARGS += \
 	--with-user=root \
 	--with-group=root \
 	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-includes="-I$(STAGING_DIR)/opt/include") \
-	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lpng -ljpeg -lz") \
+	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lgd -lfreetype -ljpeg -lpng16 -ltiff -lwebp -lz") \
 	--with-pidpath=/opt/var/run
 
 define Build/InstallDev
