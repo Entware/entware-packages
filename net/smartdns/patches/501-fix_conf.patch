@@ -1,0 +1,20 @@
+--- a/etc/smartdns/smartdns.conf
++++ b/etc/smartdns/smartdns.conf
+@@ -90,7 +90,7 @@ cache-size 512
+ # log-size: size of each log file, support k,m,g
+ # log-num: number of logs
+ log-level info
+-# log-file /var/log/smartdns.log
++# log-file /opt/var/log/smartdns.log
+ # log-size 128k
+ # log-num 2
+ 
+@@ -99,7 +99,7 @@ log-level info
+ # audit-enable yes
+ # audit-SOA [yes|no]: enable or disalbe log soa result.
+ # audit-size size of each audit file, support k,m,g
+-# audit-file /var/log/smartdns-audit.log
++# audit-file /opt/var/log/smartdns-audit.log
+ # audit-size 128k
+ # audit-num 2
+ 
