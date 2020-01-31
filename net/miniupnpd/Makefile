@@ -25,15 +25,15 @@ include $(INCLUDE_DIR)/version.mk
 define Package/miniupnpd
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+iptables +libip4tc +IPV6:libip6tc +IPV6:ip6tables +libuuid
+  DEPENDS:=+iptables +libuuid
   TITLE:=Lightweight UPnP IGD, NAT-PMP & PCP daemon
   SUBMENU:=Firewall
   URL:=https://miniupnp.tuxfamily.org/
 endef
 
-define Package/miniupnpd/conffiles
-/etc/config/upnpd
-endef
+#define Package/miniupnpd/conffiles
+#/etc/config/upnpd
+#endef
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -52,19 +52,19 @@ MAKE_FLAGS += \
 	-f Makefile.linux miniupnpd
 
 define Package/miniupnpd/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_DIR) $(1)/usr/share/miniupnpd
+	$(INSTALL_DIR) $(1)/opt/sbin
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
+#	$(INSTALL_DIR) $(1)/usr/share/miniupnpd
 
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/miniupnpd $(1)/usr/sbin/miniupnpd
-	$(INSTALL_BIN) ./files/miniupnpd.init $(1)/etc/init.d/miniupnpd
-	$(INSTALL_CONF) ./files/upnpd.config $(1)/etc/config/upnpd
-	$(INSTALL_DATA) ./files/miniupnpd.hotplug $(1)/etc/hotplug.d/iface/50-miniupnpd
-	$(INSTALL_BIN) ./files/miniupnpd.defaults $(1)/etc/uci-defaults/99-miniupnpd
-	$(INSTALL_DATA) ./files/firewall.include $(1)/usr/share/miniupnpd/firewall.include
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/miniupnpd $(1)/opt/sbin/miniupnpd
+#	$(INSTALL_BIN) ./files/miniupnpd.init $(1)/etc/init.d/miniupnpd
+#	$(INSTALL_CONF) ./files/upnpd.config $(1)/etc/config/upnpd
+#	$(INSTALL_DATA) ./files/miniupnpd.hotplug $(1)/etc/hotplug.d/iface/50-miniupnpd
+#	$(INSTALL_BIN) ./files/miniupnpd.defaults $(1)/etc/uci-defaults/99-miniupnpd
+#	$(INSTALL_DATA) ./files/firewall.include $(1)/usr/share/miniupnpd/firewall.include
 endef
 
-#$(eval $(call BuildPackage,miniupnpd))
+$(eval $(call BuildPackage,miniupnpd))
