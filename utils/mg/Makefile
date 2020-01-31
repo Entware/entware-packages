@@ -35,9 +35,11 @@ define Package/mg/description
  shouldn't be any reason to learn more editor types than emacs or vi.
 endef
 
+EXTRA_CFLAGS=$(TARGET_CPPFLAGS)
+
 define Package/mg/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mg $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mg $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,mg))
