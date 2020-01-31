@@ -66,19 +66,19 @@ MAKE_INSTALL_FLAGS += BUILD_PROGRAMS=0
 Build/Compile=$(call Build/Compile/Default,btrfs.box $(progs))
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/usr/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libbtrfs* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libbtrfs* $(1)/opt/lib/
 endef
 
 define Package/btrfs-progs/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libbtrfs.so* $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libbtrfsutil.so* $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/btrfs.box $(1)/usr/bin/btrfs
-	$(foreach prog,$(boxprogs),$(LN) btrfs $(1)/usr/bin/$(prog);)
-	$(foreach prog,$(progs),$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(prog) $(1)/usr/bin/;)
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libbtrfs.so* $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libbtrfsutil.so* $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/btrfs.box $(1)/opt/bin/btrfs
+	$(foreach prog,$(boxprogs),$(LN) btrfs $(1)/opt/bin/$(prog);)
+	$(foreach prog,$(progs),$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(prog) $(1)/opt/bin/;)
 	$(INSTALL_DIR) $(1)/lib/preinit
 	$(INSTALL_BIN) ./files/btrfs-scan.init $(1)/lib/preinit/85_btrfs_scan
 endef
