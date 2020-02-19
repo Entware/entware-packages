@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mariadb
 PKG_VERSION:=10.4.10
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL := \
@@ -498,7 +498,7 @@ define Package/mariadb-client-extra/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(foreach b,$(MARIADB_CLIENT_EXTRA),$(call Package/mariadb/install/bin,$(1),$(b));)
 	# Entware specific: fix exec path in scripts
-	$(FIND) $(1)/opt/bin -type f | $(XARGS) $(SED) 's,^#!.*,#!/opt/bin/perl,'
+	$(FIND) $(1)/opt/bin -type f | $(XARGS) $(SED) 's,^#!.*perl,#!/opt/bin/perl,'
 endef
 
 define Package/mariadb-server/install
@@ -525,6 +525,7 @@ define Package/mariadb-server-base/install
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)$(SHARE_DIR)/mysql_system_tables.sql $(1)$(SHARE_DIR)
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)$(SHARE_DIR)/mysql_system_tables_data.sql $(1)$(SHARE_DIR)
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)$(SHARE_DIR)/mysql_test_db.sql $(1)$(SHARE_DIR)
+	$(INSTALL_DIR) $(1)/opt/var/run/mysqld
 endef
 
 define Package/mariadb-server-extra/install
@@ -534,7 +535,7 @@ define Package/mariadb-server-extra/install
 	$(foreach b,$(MARIADB_SERVER_EXTRA),$(call Package/mariadb/install/bin,$(1),$(b));)
 	cd $(1)/opt/bin; $(LN) mariabackup mariadb-backup
 	# Entware specific: fix exec path in scripts
-	$(FIND) $(1)/opt/bin -type f | $(XARGS) $(SED) 's,^#!.*,#!/opt/bin/perl,'
+	$(FIND) $(1)/opt/bin -type f | $(XARGS) $(SED) 's,^#!.*perl,#!/opt/bin/perl,'
 endef
 
 define BuildPlugin
