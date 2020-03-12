@@ -51,7 +51,7 @@
 +int search_limit = -1;
 --- a/upnpglobalvars.h
 +++ b/upnpglobalvars.h
-@@ -247,5 +247,6 @@ extern struct album_art_name_s *album_ar
+@@ -248,5 +248,6 @@ extern struct album_art_name_s *album_ar
  extern volatile short int quitting;
  extern volatile uint32_t updateID;
  extern const char *force_sort_criteria;
@@ -60,7 +60,7 @@
  #endif
 --- a/upnpsoap.c
 +++ b/upnpsoap.c
-@@ -1914,6 +1914,15 @@ SearchContentDirectory(struct upnphttp *
+@@ -1926,6 +1926,15 @@ SearchContentDirectory(struct upnphttp *
  			goto search_error;
  		}
  	}

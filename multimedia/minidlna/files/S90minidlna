@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ENABLED=yes
-PROCS=minidlna
+PROCS=minidlnad
 ARGS="-f /opt/etc/minidlna.conf"
 PREARGS=""
 DESC=$PROCS

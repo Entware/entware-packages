@@ -9,22 +9,21 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minidlna
-PKG_RELEASE:=2
+PKG_RELEASE:=5
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://git.code.sf.net/p/minidlna/git
-PKG_SOURCE_DATE:=2018-04-10
-PKG_SOURCE_VERSION:=799e6cf505ec470b2bf0ae4118143380aa16b837
-PKG_MIRROR_HASH:=67cc817e671de99e5a3f5ed237f89e22470f1de94819bcaba86c0ba821104af5
+PKG_SOURCE_DATE:=2019-12-09
+PKG_SOURCE_VERSION:=0763719f2776f91114bc5564919896f28e078c77
+PKG_MIRROR_HASH:=93030a80eff44c0ec13f54daf3b2ba345b70ef8645e0343a34092f37d6f9e8dd
 
-PKG_LICENSE:=GPL-2.0 BSD-3-Clause
+PKG_MAINTAINER:=
+PKG_LICENSE:=GPL-2.0-or-later BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING LICENCE.miniupnpd
 
-PKG_MAINTAINER:=Knyazkov Dmitry <medavedik@gmail.com>
-
 PKG_FIXUP:=autoreconf
-
-PKG_BUILD_PARALLEL:=0
+PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=util-linux
 
 include $(INCLUDE_DIR)/package.mk
@@ -76,17 +75,20 @@ CONFIGURE_ARGS += \
 	--with-libintl-prefix="$(INTL_PREFIX)" \
 	--with-os-name="OpenWrt Linux" \
 	--with-os-version="$(LINUX_VERSION)" \
-	--with-os-url="http://openwrt.org/" \
+	--with-os-url="https://openwrt.org/" \
 	--with-db-path="/opt/var/minidlna" \
 	--with-log-path="/opt/var/log" \
 	--enable-thumbnail
 
 define Package/minidlna/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/minidlnad $(1)/opt/bin/minidlna
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/minidlnad $(1)/opt/sbin/minidlnad
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S90minidlna $(1)/opt/etc/init.d
+#	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/minidlna.conf $(1)/opt/etc
+#	$(INSTALL_DIR) $(1)/etc/sysctl.d
+#	$(INSTALL_CONF) ./files/minidlna.sysctl $(1)/etc/sysctl.d/30-minidlna.conf
 	$(INSTALL_DIR) $(1)/opt/var/minidlna
 endef
 

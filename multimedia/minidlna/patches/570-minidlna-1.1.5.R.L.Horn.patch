@@ -1262,9 +1262,9 @@
  			xasprintf(&m.mime, "video/x-flv");
 +		else if( strcmp(ctx->iformat->name, "ogg") == 0 )
 +			xasprintf(&m.mime, "video/ogg");
- 		if( m.mime )
- 			goto video_no_dlna;
- 
+ 		else if( strcmp(ctx->iformat->name, "rm") == 0 )
+ 			xasprintf(&m.mime, "video/x-pn-realvideo");
+ 		else if( strcmp(ctx->iformat->name, "rmvb") == 0 )
 --- a/minidlna.c
 +++ b/minidlna.c
 @@ -46,6 +46,8 @@
@@ -1835,7 +1835,7 @@
 +
  	if(length > (sizeof(strbuf) - 1))
  	{
- 		if( strncasecmp(comment, "LYRICS=", 7) != 0 )
+ 		if( strncasecmp(comment, "LYRICS=", 7) != 0 &&
 --- a/tagutils/tagutils-mp3.c
 +++ b/tagutils/tagutils-mp3.c
 @@ -79,7 +79,12 @@ _get_mp3tags(char *file, struct song_met
@@ -2153,7 +2153,7 @@
  			ret = sprintf(buf, "%x\r\n", size);
 --- a/utils.c
 +++ b/utils.c
-@@ -345,8 +345,15 @@ mime_to_ext(const char * mime)
+@@ -338,8 +338,15 @@ mime_to_ext(const char * mime)
  				return "pcm";
  			else if( strcmp(mime+6, "3gpp") == 0 )
  				return "3gp";
@@ -2171,24 +2171,24 @@
  			else if( strcmp(mime+6, "x-dsd") == 0 )
  				return "dsd";
  			break;
-@@ -377,6 +384,8 @@ mime_to_ext(const char * mime)
+@@ -370,6 +377,8 @@ mime_to_ext(const char * mime)
  				return "3gp";
  			else if( strncmp(mime+6, "x-tivo-mpeg", 11) == 0 )
  				return "TiVo";
-+			else if ( strcmp(mime+6, "ogg") == 0 )
++			else if( strcmp(mime+6, "ogg") == 0 )
 +				return "ogv";
+ 			else if( strcmp(mime+6, "x-pn-realvideo") == 0 )
+ 				return "rm";
  			break;
- 		case 'i':
- 			if( strcmp(mime+6, "jpeg") == 0 )
-@@ -401,6 +410,7 @@ is_video(const char * file)
- 		ends_with(file, ".m2t") || ends_with(file, ".mkv")   ||
+@@ -397,6 +406,7 @@ is_video(const char * file)
  		ends_with(file, ".vob") || ends_with(file, ".ts")    ||
  		ends_with(file, ".flv") || ends_with(file, ".xvid")  ||
+ 		ends_with(file, ".rm") || ends_with(file, ".rmvb")  ||
 +		ends_with(file, ".ogv") ||
  #ifdef TIVO_SUPPORT
  		ends_with(file, ".TiVo") ||
  #endif
-@@ -417,13 +427,18 @@ is_audio(const char * file)
+@@ -413,13 +423,18 @@ is_audio(const char * file)
  		ends_with(file, ".mp4") || ends_with(file, ".m4p")  ||
  		ends_with(file, ".wav") || ends_with(file, ".ogg")  ||
  		ends_with(file, ".pcm") || ends_with(file, ".3gp")  ||
