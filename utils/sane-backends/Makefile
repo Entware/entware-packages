@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2006-2016 OpenWrt.org
-# Copyright (C) 2017-2019 Luiz Angelo Daros de Luca <luizluca@gmail.com>
+# Copyright (C) 2017-2020 Luiz Angelo Daros de Luca <luizluca@gmail.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -10,11 +10,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sane-backends
-PKG_VERSION:=1.0.28
+PKG_VERSION:=1.0.29
 PKG_RELEASE:=1
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/sane-project/backends/uploads/9e718daff347826f4cfe21126c8d5091/
-PKG_HASH:=31260f3f72d82ac1661c62c5a4468410b89fb2b4a811dabbfcc0350c1346de03
+PKG_SOURCE_URL:=https://gitlab.com/sane-project/backends/uploads/54f858b20a364fc35d820df935a86478
+PKG_HASH:=aa027b4e5f59849cd41b8c26d54584cf31fffd986049019be6ad4140e11ea8ed
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING LICENSE
@@ -50,7 +50,7 @@ define Package/sane-libs
   $(call Package/sane-backends/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libjpeg +libtiff +libusb-1.0 +cups +libv4l +libpng
+  DEPENDS+=+libusb-1.0 +libjpeg +libtiff +libusb-1.0 +cups +libv4l +libpng
   TITLE+= (libraries)
 endef
 
@@ -79,6 +79,7 @@ CONFIGURE_ARGS+= \
 	--without-snmp \
 	--disable-avahi \
 	--disable-locking \
+	--without-usb-record-replay \
 
 # ./configure does not even try to detect mmap if crosscompiling
 CONFIGURE_VARS+= \
