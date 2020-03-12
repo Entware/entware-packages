@@ -1,0 +1,11 @@
+--- a/libwebcam/pkgconfig/libwebcam.pc_base	2014-11-29 13:11:28.000000000 +0300
++++ b/libwebcam/pkgconfig/libwebcam.pc_base	2020-03-02 01:34:07.194695921 +0300
+@@ -1,7 +1,7 @@
+ prefix=<--PREFIX--!>
+ exec_prefix=${prefix}
+ libdir=${exec_prefix}/lib
+-includedir=${exec_prefix}/include
++includedir=${prefix}/include
+  
+ Name: libwebcam
+ Description: The Webcam Library
