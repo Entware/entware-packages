@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.9.6
-PKG_RELEASE:=1
+PKG_VERSION:=1.10.0
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nlnetlabs.nl/downloads/unbound
-PKG_HASH:=1d98fc6ea99197a20b4a0e540e87022cf523085786e0fc26de6ebb2720f5aaf0
+PKG_HASH:=152f486578242fe5c36e89995d0440b78d64c05123990aae16246b7f776ce955
 
 PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -39,7 +39,7 @@ endef
 define Package/unbound-daemon
   $(call Package/unbound/Default)
   TITLE+= (daemon, light traffic)
-  DEPENDS+= +libunbound
+  DEPENDS+= +libunbound-light
   VARIANT:=light
 endef
 
@@ -52,7 +52,7 @@ define Package/unbound-daemon-heavy
   $(call Package/unbound/Default)
   TITLE+= (daemon, heavy traffic)
   URL:=https://nlnetlabs.nl/documentation/unbound/howto-optimise
-  DEPENDS+= +libunbound-heavy +libpthread +libevent2 +libevent2-pthreads
+  DEPENDS+= +libunbound-heavy +libpthread +libevent2 +libevent2-pthreads +libmnl
   VARIANT:=heavy
   PROVIDES:=unbound-daemon
 endef
@@ -60,21 +60,23 @@ endef
 define Package/unbound-daemon-heavy/description
   This package contains the Unbound daemon including 'libevent' and
   'libpthread' to better handle large networks with heavy query loads.
+  It also offers ipset support.
 endef
 
-define Package/libunbound
+define Package/libunbound-light
   $(call Package/unbound/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   SUBMENU:=Networking
   TITLE+= (library, light traffic)
   VARIANT:=light
+  PROVIDES:=libunbound
   DEFAULT_VARIANT:=1
 endef
 
-define Package/libunbound/description
+define Package/libunbound-light/description
   This package contains the Unbound shared library with basic includes
-  necessary to meet the needs of UCI/LuCI configuration optoins.
+  necessary to meet the needs of UCI/LuCI configuration options.
 endef
 
 define Package/libunbound-heavy
@@ -84,14 +86,15 @@ define Package/libunbound-heavy
   SUBMENU:=Networking
   TITLE+= (library, heavy traffic)
   URL:=https://nlnetlabs.nl/documentation/unbound/howto-optimise
-  DEPENDS+= +libpthread +libevent2 +libevent2-pthreads
+  DEPENDS+= +libpthread +libevent2 +libevent2-pthreads +libmnl
   VARIANT:=heavy
   PROVIDES:=libunbound
 endef
 
 define Package/libunbound-heavy/description
   This package contains the Unbound shared library including 'libevent' and
-  'libpthread' to better handle large networks with heavy query loads.
+  'libpthread' to better handle large networks with heavy query loads. It
+  also offers ipset support.
 endef
 
 define Package/unbound-anchor
@@ -160,8 +163,10 @@ CONFIGURE_ARGS += \
 
 ifeq ($(BUILD_VARIANT),heavy)
 	CONFIGURE_ARGS += \
+		--enable-ipset \
 		--with-pthreads \
 		--with-libevent="$(STAGING_DIR)/opt" \
+		--with-libmnl="$(STAGING_DIR)/opt" \
 		--enable-event-api
 else
     CONFIGURE_ARGS += \
@@ -207,12 +212,12 @@ endef
 
 Package/unbound-daemon-heavy/install = $(Package/unbound-daemon/install)
 
-define Package/libunbound/install
+define Package/libunbound-light/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libunbound.so.* $(1)/opt/lib/
 endef
 
-Package/libunbound-heavy/install = $(Package/libunbound/install)
+Package/libunbound-heavy/install = $(Package/libunbound-light/install)
 
 define Package/unbound-anchor/install
 	$(INSTALL_DIR) $(1)/opt/sbin
@@ -241,7 +246,7 @@ endef
 
 $(eval $(call BuildPackage,unbound-daemon))
 $(eval $(call BuildPackage,unbound-daemon-heavy))
-$(eval $(call BuildPackage,libunbound))
+$(eval $(call BuildPackage,libunbound-light))
 $(eval $(call BuildPackage,libunbound-heavy))
 $(eval $(call BuildPackage,unbound-anchor))
 $(eval $(call BuildPackage,unbound-checkconf))
