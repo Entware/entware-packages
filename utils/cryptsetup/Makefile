@@ -44,9 +44,13 @@ CONFIGURE_ARGS += \
 	--disable-rpath \
 	--disable-veritysetup \
 	--disable-udev \
-	--with-default-luks-format=LUKS2 \
+	--with-default-luks-format=LUKS2
+
+ifneq ($(CONFIG_LINUX_2_6_36),y)
+CONFIGURE_ARGS += \
 	--with-luks2-lock-path=/opt/var/run/cryptsetup \
 	--with-crypto_backend=kernel
+endif
 
 ifeq ($(CONFIG_LINUX_2_6_36),y)
 CONFIGURE_ARGS+= \
