@@ -9,18 +9,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=LVM2
-PKG_VERSION:=2.03.02
-PKG_RELEASE:=2
+PKG_VERSION:=2.03.08
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME).$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://sourceware.org/pub/lvm2
-PKG_HASH:=550ba750239fd75b7e52c9877565cabffef506bbf6d7f6f17b9700dee56c720f
+PKG_HASH:=6e0261dc9f6ab0ef1fc4a63d105a73e06eb536a273a9d6c2ccc414548c8e1ec8
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME).$(PKG_VERSION)
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0 LGPL-2.1
 PKG_LICENSE_FILES:=COPYING COPYING.lib
 PKG_CPE_ID:=cpe:/a:heinz_mauelshagen:lvm2
+
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -53,12 +55,12 @@ define Package/lvm2/description
 endef
 
 CONFIGURE_ARGS += \
-  --disable-o_direct \
-  --with-default-pid-dir=/opt/var/run \
-  --with-default-dm-run-dir=/opt/var/run \
-  --with-default-run-dir=/opt/var/run/lvm \
-  --with-default-locking-dir=/opt/var/lock/lvm \
-  --with-confdir=/opt/etc
+	--disable-o_direct \
+	--with-confdir=/opt/etc
+	--with-default-pid-dir=/opt/var/run \
+	--with-default-dm-run-dir=/opt/var/run \
+	--with-default-run-dir=/opt/var/run/lvm \
+	--with-default-locking-dir=/opt/var/lock/lvm
 
 # Entware specific: added -lblkid
 define Build/Compile
@@ -96,8 +98,8 @@ define Package/lvm2/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S06lvm2 $(1)/opt/etc/init.d
 	$(FIND) $(PKG_INSTALL_DIR)/opt/sbin/ -type l -exec $(CP) -a {} $(1)/opt/sbin/ \;
-	#fix /opt
-	$(SED) 's|/etc/lvm|/opt/etc/lvm|g' -e 's|/run/lock|/opt/run/lock|' $(1)/opt/etc/lvm/lvm.conf
+	# fix /opt
+	$(SED) 's|/etc/lvm|/opt/etc/lvm|g;s|/run/lock|/opt/run/lock|' $(1)/opt/etc/lvm/lvm.conf
 endef
 
 define Package/lvm2/conffiles
