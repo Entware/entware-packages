@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vim
 PKG_VERSION:=8.1
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 VIMVER:=81
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
@@ -22,7 +22,6 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)$(VIMVER)
 PKG_BUILD_PARALLEL:=1
 
 HOST_BUILD_DEPENDS:=libiconv/host
-
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)$(VIMVER)
 HOST_BUILD_PARALLEL:=1
 
@@ -232,7 +231,8 @@ define Package/vim-fuller/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_big $(1)/opt/bin/vim
 	$(INSTALL_DIR) $(1)/opt/share/vim
-	$(CP) -r $(PKG_INSTALL_DIR)/opt/share/vim/vim$(VIMVER) $(1)/opt/share/vim
+	$(LN) vim $(1)/opt/bin/vimdiff
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/vim/vim$(VIMVER) $(1)/opt/share/vim
 	$(INSTALL_CONF) ./files/vimrc.full $(1)/opt/share/vim/vimrc
 endef
 
@@ -245,6 +245,8 @@ endef
 
 define Package/vim-help/install
 	tar -C $(1) -xf $(PKG_BUILD_DIR)/docs.tar
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/share/vim/vim81/doc/vim2html.pl
 endef
 
 define Package/xxd/install
