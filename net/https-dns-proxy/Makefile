@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=https-dns-proxy
 PKG_VERSION:=2019-12-03
-PKG_RELEASE=2
+PKG_RELEASE=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/aarond10/https_dns_proxy
@@ -30,6 +30,7 @@ define Package/https-dns-proxy/install
 	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/init.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/https_dns_proxy $(1)/opt/sbin/https-dns-proxy
 	$(INSTALL_BIN) ./files/S09https-dns-proxy $(1)/opt/etc/init.d/
+#	$(INSTALL_CONF) ./files/https-dns-proxy.config $(1)/etc/config/https-dns-proxy
 endef
 
 $(eval $(call BuildPackage,https-dns-proxy))
