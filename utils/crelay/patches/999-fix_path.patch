@@ -1,0 +1,11 @@
+--- a/src/crelay.c	2018-08-20 17:10:15.000000000 +0300
++++ b/src/crelay.c	2020-02-29 09:45:17.831235423 +0300
+@@ -71,7 +71,7 @@
+ #define RELAY_TAG "pin"
+ #define STATE_TAG "status"
+ 
+-#define CONFIG_FILE "/etc/crelay.conf"
++#define CONFIG_FILE "/opt/etc/crelay.conf"
+ 
+ /* Global variables */
+ config_t config;
