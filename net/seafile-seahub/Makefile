@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
 PKG_VERSION:=6.3.4
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/haiwen/seahub/tar.gz/v$(PKG_VERSION)-server?
@@ -29,7 +29,7 @@ include ../../lang/python/python-package.mk
 SEAFILE_PYTHON_DEPENDS:= \
 	simplejson chardet dateutil mysqlclient pytz qrcode requests requests-oauthlib \
 	django1 django-constance django-appconf django-compressor django-formtools \
-	django-jsonfield django-picklefield django-postoffice django-restframework \
+	django-jsonfield django-picklefield django-postoffice django-restframework39 \
 	pillow django-simple-captcha django-statici18n django-webpack-loader
 
 define Package/seafile-seahub
@@ -69,6 +69,8 @@ define Package/seafile-seahub/install
 	$(CP) $(PKG_BUILD_DIR)/pylintrc* $(1)/opt/share/seafile/seafile-server/seahub/
 	find $(1) -name "*\.pyc" -o -name "*\.pyo" | xargs rm -f
 	$(SED) "s/\(SEAFILE_VERSION\s*=\s*\)'\([0-9]\.[0-9]\.[0-9]\)'/\1'$(PKG_VERSION)'/g" $(1)/opt/share/seafile/seafile-server/seahub/seahub/settings.py
+	# Entware specific: fix exec path in scripts
+	$(FIND) $(1)/opt/share/seafile/seafile-server/seahub -type f | $(XARGS) $(SED) 's,^#!.*python,#!/opt/bin/python,'
 endef
 
 $(eval $(call BuildPackage,seafile-seahub))
