@@ -18,7 +18,7 @@ diff --git a/libcap/cap_file.c b/libcap/cap_file.c
 index 40756ea..e27ca80 100644
 --- a/libcap/cap_file.c
 +++ b/libcap/cap_file.c
-@@ -25,7 +25,7 @@ extern int fremovexattr(int, const char *);
+@@ -27,7 +27,7 @@ extern int fremovexattr(int, const char
  
  #include "libcap.h"
  
