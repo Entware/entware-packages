@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mariadb
-PKG_VERSION:=10.4.10
-PKG_RELEASE:=1a
+PKG_VERSION:=10.4.12
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL := \
@@ -18,7 +18,7 @@ PKG_SOURCE_URL := \
 	https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/$(PKG_NAME)-$(PKG_VERSION)/source \
 	https://downloads.mariadb.org/interstitial/$(PKG_NAME)-$(PKG_VERSION)/source
 
-PKG_HASH:=cd50fddf86c2a47405737e342f78ebd40d5716f0fb32b976245de713bed01421
+PKG_HASH:=fef1e1d38aa253dd8a51006bd15aad184912fce31c446bb69434fcde735aa208
 PKG_MAINTAINER:=Sebastian Kemper <sebastian_ml@gmx.net>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING THIRDPARTY
@@ -569,7 +569,8 @@ endef
 #define Package/mariadb-server-plugin-auth-pam/postinst
 ##!/bin/sh
 #if [ -z "$${IPKG_INSTROOT}" ]; then
-#  chown mariadb /usr/lib/mariadb/plugin/auth_pam_tool_dir > /dev/null 2>&1
+#  chown root:mariadb /usr/lib/mariadb/plugin/auth_pam_tool_dir > /dev/null 2>&1
+#  chmod 0750 /usr/lib/mariadb/plugin/auth_pam_tool_dir > /dev/null 2>&1
 #fi
 #exit 0
 #endef
