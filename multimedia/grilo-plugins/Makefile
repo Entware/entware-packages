@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=grilo-plugins
-PKG_VERSION:=0.3.7
-PKG_RELEASE:=3
+PKG_VERSION:=0.3.11
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 PKG_LICENSE:=LGPLv2.1
@@ -15,14 +15,15 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNOME/grilo-plugins/0.3/
-PKG_HASH:=fc2f3bbc319136e53e1efb6659fa65b6af45db114b6621008f9abba64fad6820
+PKG_HASH:=dde2e605b1994341c6bf012493e056b406b08571834dea3b3c671d5b8b1dcd73
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
-PKG_FIXUP:=autoreconf
+PKG_BUILD_DEPENDS:=meson/host
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
+include ../../devel/meson/meson.mk
 
 define Package/grilo-plugins/Default
   SECTION:=multimedia
@@ -44,28 +45,23 @@ define Package/grilo/decription
   plugins to get information from a number of sources.
 endef
 
-CONFIGURE_ARGS += \
-        --enable-static \
-        --disable-compile-warnings \
-        --disable-goa \
-        --disable-filesystem \
-        --disable-optical-media \
-        --disable-youtube \
-        --disable-flickr \
-        --disable-podcasts \
-        --disable-bookmarks \
-        --disable-lua-factory \
-        --disable-metadata-store \
-        --disable-vimeo \
-        --disable-tracker \
-        --disable-local-metadata \
-        --disable-chromaprint \
-        --disable-thetvdb \
-        --disable-tmdb \
-        --disable-freebox
+MESON_ARGS += \
+	-Denable-filesystem=no \
+	-Denable-optical-media=no \
+	-Denable-youtube=no \
+	-Denable-flickr=no \
+	-Denable-podcasts=no \
+	-Denable-bookmarks=no \
+	-Denable-lua-factory=no \
+	-Denable-metadata-store=no \
+	-Denable-vimeo=no \
+	-Denable-tracker=no \
+	-Denable-local-metadata=no \
+	-Denable-chromaprint=no \
+	-Denable-thetvdb=no \
+	-Denable-tmdb=no \
+	-Denable-freebox=no \
 
-MAKE_FLAGS += \
-        GLIB_COMPILE_RESOURCES="$(STAGING_DIR_HOSTPKG)/bin/glib-compile-resources"
 define Package/grilo-plugins/install
 	$(INSTALL_DIR) $(1)/usr/lib/grilo-0.3
 endef
@@ -93,8 +89,7 @@ endef
 $(eval $(call BuildPackage,grilo-plugins))
 
 $(eval $(call BuildPlugin,dleyna,DLNA sharing,dleyna,,30))
-# This is currently disabled because it won't work with libdmapsharing-4.0.so
-#$(eval $(call BuildPlugin,dmap,DAAP and DPAP sharing,daap dpap,libdmapsharing,30))
+$(eval $(call BuildPlugin,dmap,DAAP and DPAP sharing,daap dpap,libdmapsharing,30))
 $(eval $(call BuildPlugin,gravatar,Gravatar provider,gravatar,,30))
 $(eval $(call BuildPlugin,jamendo,Jamendo sharing,jamendo,,30))
 $(eval $(call BuildPlugin,magnatune,Magnatune sharing,magnatune,,30))
