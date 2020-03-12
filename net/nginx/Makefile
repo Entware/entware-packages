@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.17.5
-PKG_RELEASE:=2
+PKG_VERSION:=1.17.8
+PKG_RELEASE:=1
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
-PKG_HASH:=63ee35e15a75af028ffa1f995e2b9c120b59ef5f1b61a23b8a4c33c262fc10c3
+PKG_HASH:=97d23ecf6d5150b30e284b40e8a6f7e3bb5be6b601e373a4d013768d5a25965b
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de> \
 				Ansuel Smith <ansuelsmth@gmail.com>
@@ -95,13 +95,15 @@ endef
 
 define Package/nginx
   $(Package/nginx/default)
+#  DEPENDS += +!NGINX_SSL:nginx-util +NGINX_SSL&&NGINX_PCRE:nginx-ssl-util \
+#	+NGINX_SSL&&NGINX_NOPCRE:nginx-ssl-util-nopcre
   VARIANT:=no-ssl
 endef
 
 define Package/nginx-ssl
   $(Package/nginx/default)
   TITLE += with SSL support
-  DEPENDS +=+libopenssl
+  DEPENDS += +libopenssl
   VARIANT:=ssl
   PROVIDES:=nginx
 endef
@@ -324,7 +326,7 @@ define Package/nginx-mod-luci/default
   SUBMENU:=Web Servers/Proxies
   TITLE:=Support file for Nginx
   URL:=http://nginx.org/
-  DEPENDS:=+uwsgi-cgi +uwsgi-cgi-luci-support
+  DEPENDS:=+uwsgi +uwsgi-luci-support
 endef
 
 define Package/nginx-mod-luci
@@ -357,6 +359,8 @@ ifeq ($(CONFIG_NGINX_LUA),y)
 					LUA_LIB=$(STAGING_DIR)/opt/lib
 endif
 
+CONFIGURE_VARS += CONFIG_BIG_ENDIAN=$(CONFIG_BIG_ENDIAN)
+
 CONFIGURE_ARGS += \
 			--crossbuild=Linux::$(ARCH) \
 			--prefix=/opt \
@@ -378,20 +382,13 @@ CONFIGURE_ARGS += \
 			--http-scgi-temp-path=/opt/var/lib/nginx/scgi
 
 define Package/nginx-mod-luci/install
-	$(INSTALL_DIR) $(1)/etc/nginx
-	$(INSTALL_BIN) ./files-luci-support/luci_uwsgi.conf $(1)/etc/nginx/luci_uwsgi.conf
-	$(INSTALL_BIN) ./files-luci-support/luci_nginx.conf $(1)/etc/nginx/luci_nginx.conf
+	$(INSTALL_DIR) $(1)/etc/nginx/conf.d
+	$(INSTALL_CONF) ./files-luci-support/luci.locations $(1)/etc/nginx/conf.d/
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files-luci-support/60_nginx-luci-support $(1)/etc/uci-defaults/60_nginx-luci-support
 endef
 
-define Package/nginx-mod-luci-ssl/install
-	$(Package/nginx-mod-luci/install)
-	$(INSTALL_DIR) $(1)/etc/nginx
-	$(INSTALL_BIN) ./files-luci-support/luci_nginx_ssl.conf $(1)/etc/nginx/luci_nginx_ssl.conf
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files-luci-support/70_nginx-luci-support-ssl $(1)/etc/uci-defaults/70_nginx-luci-support-ssl
-endef
+Package/nginx-mod-luci-ssl/install = $(Package/nginx-mod-luci/install)
 
 define Package/nginx/install
 	$(INSTALL_DIR) $(1)/opt/sbin
@@ -411,10 +408,45 @@ ifeq ($(CONFIG_NGINX_NAXSI),y)
 endif
 	$(if $(CONFIG_NGINX_NAXSI),$($(INSTALL_BIN) $(PKG_BUILD_DIR)/nginx-naxsi/naxsi_config/naxsi_core.rules $(1)/opt/etc/nginx))
 	$(if $(CONFIG_NGINX_NAXSI),$(chmod 0640 $(1)/opt/etc/nginx/naxsi_core.rules))
+#ifeq ($(CONFIG_NGINX_SSL),y)
+#	$(INSTALL_CONF) ./files/_redirect2ssl.conf $(1)/etc/nginx/conf.d/
+#endif
+#ifneq ($(CONFIG_IPV6),y)
+#	$(SED) '/listen\s*\[/d' $(1)/etc/nginx/conf.d/*.conf # without IPv6 [::]
+#endif
 endef
 
-Package/nginx-ssl/install = $(Package/nginx/install)
-Package/nginx-all-module/install = $(Package/nginx/install)
+define Package/nginx-ssl/install
+	$(call Package/nginx/install, $(1))
+#	$(INSTALL_CONF) ./files/_redirect2ssl.conf $(1)/etc/nginx/conf.d/
+#ifneq ($(CONFIG_IPV6),y)
+#	$(SED) '/listen\s*\[/d' $(1)/etc/nginx/conf.d/*.conf # without IPv6 [::]
+#endif
+endef
+
+Package/nginx-all-module/install = $(Package/nginx-ssl/install)
+
+#define Package/nginx-ssl/prerm
+##!/bin/sh
+#[ -z "$${IPKG_INSTROOT}" ] || exit 0
+#if [ "$${PKG_UPGRADE}" == "1" ]; then
+#	eval $$(/usr/bin/nginx-util get_env)
+#	TMP_CRT=$$(mktemp -p "$${CONF_DIR}" "$${LAN_NAME}.crt.tmp-XXXXXX")
+#	ln -f "$${CONF_DIR}$${LAN_NAME}.crt" "$${TMP_CRT}"
+#	TMP_KEY=$$(mktemp -p "$${CONF_DIR}" "$${LAN_NAME}.key.tmp-XXXXXX")
+#	ln -f "$${CONF_DIR}$${LAN_NAME}.key" "$${TMP_KEY}"
+#fi
+#/usr/bin/nginx-util del_ssl
+#[ -f "$${TMP_CRT}" ] && mv -f "$${TMP_CRT}" "$${CONF_DIR}$${LAN_NAME}.crt"
+#[ -f "$${TMP_KEY}" ] && mv -f "$${TMP_KEY}" "$${CONF_DIR}$${LAN_NAME}.key"
+#exit 0
+#endef
+
+#ifeq ($(CONFIG_NGINX_SSL),y)
+#Package/nginx/prerm = $(Package/nginx-ssl/prerm)
+#endif
+
+#Package/nginx-all-module/prerm = $(Package/nginx-ssl/prerm)
 
 define Build/Prepare
 	$(Build/Prepare/Default)
@@ -449,11 +481,11 @@ endif
 
 ifeq ($(CONFIG_NGINX_HTTP_BROTLI),y)
   define Download/nginx-brotli
-    VERSION:=dc37f658ccb5a51d090dc09d1a2aca2f24309869
+    VERSION:=e505dce68acc190cc5a1e780a3b0275e39f160ca
     SUBDIR:=nginx-brotli
     FILE:=ngx-brotli-module-$$(VERSION).tar.xz
-    URL:=https://github.com/eustas/ngx_brotli.git
-    MIRROR_HASH:=6bc0c40ff24f6e0ac616dfddc803bdc7fcf54764ba9dc4f9cecb3a68beedcdaf
+    URL:=https://github.com/google/ngx_brotli.git
+    MIRROR_HASH:=04847f11ef808fed50f44b2af0ef3abf59ff0ffc06dfc7394d9ab51d53fef31f
     PROTO:=git
   endef
   $(eval $(call Download,nginx-brotli))
@@ -558,11 +590,11 @@ endif
 
 ifeq ($(CONFIG_NGINX_UBUS),y)
   define Download/nginx-ubus-module
-    VERSION:=4547af00991357c9bc3bf4266b7c1547841bf204
+    VERSION:=f30b0167a2cdb40f23bd90928d601bdb0c1b8fad
     SUBDIR:=nginx-ubus-module
     FILE:=nginx-ubus-module-$$(VERSION).tar.xz
     URL:=https://github.com/Ansuel/nginx-ubus-module.git
-    MIRROR_HASH:=4e354934bd5fbd82b3d4c5ada19459c0f12162186a7a101a6426e2e1f30a8236
+    MIRROR_HASH:=02c7d4b0df7f4b69605e71b0fefdc99b5a9470c68cad7ccfb31ebefe4e7e0704
     PROTO:=git
   endef
   $(eval $(call Download,nginx-ubus-module))
