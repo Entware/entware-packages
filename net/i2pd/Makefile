@@ -9,13 +9,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=i2pd
-PKG_VERSION:=2.28.0
-PKG_RELEASE:=1
+PKG_VERSION:=2.29.0
+PKG_RELEASE:=2
 PKG_BUILD_PARALLEL:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/PurpleI2P/i2pd/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=181327edc7cf5b3c25ee51ecc518a4da90fa9e421eca2107996791038a514a21
+PKG_HASH:=fd0474c33b411593b9dc8197f3799d37d68455c11a9ee3994ec993a96388ec06
 
 PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -54,7 +54,7 @@ define Package/i2pd/install
 #	$(INSTALL_DIR) $(1)/usr/share/i2pd
 #	$(CP) $(PKG_BUILD_DIR)/contrib/certificates  $(1)/usr/share/i2pd
 #	$(INSTALL_DIR) $(1)/etc/config
-#	$(INSTALL_CONF) ./files/i2pd.config $(1)/etc/config/i2pd
+#	$(INSTALL_DATA) ./files/i2pd.config $(1)/etc/config/i2pd
 	$(INSTALL_DIR) $(1)/opt/etc/i2pd
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/contrib/i2pd.conf $(1)/opt/etc/i2pd
 	$(SED) ' \
