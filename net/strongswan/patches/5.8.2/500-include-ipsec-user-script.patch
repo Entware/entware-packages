@@ -13,5 +13,5 @@
 +
 +[ -e /opt/etc/ipsec.user ] && . /opt/etc/ipsec.user "$1"
  
- #      PLUTO_VERSION
- #              indicates  what  version of this interface is being
+ # Add your custom commands to the file "/etc/ipsec.user". Other packages could
+ # also install their scripts in the directory "/etc/hotplug.d/ipsec".
