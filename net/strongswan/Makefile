@@ -8,31 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=strongswan
-PKG_VERSION:=
-
-ifeq ($(CONFIG_TARGET_armv7_2_6),y)
-PKG_VERSION=5.6.2
-else
-PKG_VERSION=5.8.2
-endif
-
-ifeq ($(PKG_VERSION),5.6.2)
-PKG_RELEASE=3
-PKG_HASH=e0a60a30ebf3c534c223559e1686497a21ded709a5d605c5123c2f52bcc22e92
-endif
-
-ifeq ($(PKG_VERSION),5.8.2)
-PKG_RELEASE=1
-PKG_HASH=86900ddbe7337c923dadf2c8339ae8ed2b9158e3691745884d08ae534677430e
-endif
+PKG_VERSION:=5.8.2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.strongswan.org/ https://download2.strongswan.org/
+PKG_HASH=86900ddbe7337c923dadf2c8339ae8ed2b9158e3691745884d08ae534677430e
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Stijn Tintel <stijn@linux-ipv6.be>
 PKG_CPE_ID:=cpe:/a:strongswan:strongswan
-
-PATCH_DIR:=./patches/$(PKG_VERSION)
 
 PKG_MOD_AVAILABLE:= \
 	addrblock \
