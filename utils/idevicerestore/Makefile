@@ -6,13 +6,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=idevicerestore
-PKG_SOURCE_DATE:=2019-12-13
-PKG_SOURCE_VERSION:=a2a6ad16d2c3157153aae7e0835e478237b01507
+PKG_SOURCE_DATE:=2020-02-17
+PKG_SOURCE_VERSION:=513950377df9cb93747ac69dae4ab55dded3ac5c
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=https://github.com/libimobiledevice/idevicerestore
-PKG_MIRROR_HASH:=522bd35a0a4e8cc64ef9b29716e88efd84829e81c9c00ce9170fef285ac4b137
+PKG_MIRROR_HASH:=3b2c25cb47d79c02b225b83d8732ea1ab5b20f0e15f7d716cb4a26e99be4f53e
 
 PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -38,6 +38,8 @@ define Package/idevicerestore/description
   It is a full reimplementation of all granular steps which are performed
   during restore of a firmware to a device.
 endef
+
+TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lpthread)
 
 define Package/idevicerestore/install
 	$(INSTALL_DIR) $(1)/usr/bin
