@@ -46,6 +46,8 @@ $(call perlmod/InstallBaseTests,$(1),cpan/Archive-Tar/bin cpan/Archive-Tar/t)
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ptar $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ptardiff $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ptargrep $(1)/opt/bin/
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/*
 endef
 
 $(eval $(call BuildPackage,perlbase-archive))
@@ -797,6 +799,8 @@ define Package/perlbase-i18n/install
 $(call perlmod/Install,$(1),I18N auto/I18N,I18N/LangTags/List.pm)
 $(call perlmod/InstallBaseTests,$(1),dist/I18N-Collate/t dist/I18N-LangTags/t ext/I18N-Langinfo/t)
 $(call perlmod/Install/NoStrip,$(1),I18N/LangTags/List.pm)
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/lib/perl5/5.28/I18N/LangTags/List.pm
 endef
 
 $(eval $(call BuildPackage,perlbase-i18n))
@@ -1387,6 +1391,8 @@ $(call perlmod/Install/NoStrip,$(1),Test/Builder.pm Test/More.pm,)
 $(call perlmod/InstallBaseTests,$(1),cpan/Test-Harness/t cpan/Test-Simple/t cpan/Test/t)
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/prove $(1)/opt/bin
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/prove
 endef
 
 $(eval $(call BuildPackage,perlbase-test))

@@ -13,7 +13,7 @@ include perlver.mk
 
 PKG_NAME:=perl
 PKG_VERSION:=$(PERL_VERSION)
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE_URL:=\
 		https://cpan.metacpan.org/src/5.0 \
@@ -126,10 +126,12 @@ define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR)
 endef
 
+ifeq ($(CONFIG_arc),)
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/perl5/$(PERL_VERSION)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/perl5/$(PERL_VERSION) $(1)/opt/lib/perl5/
 endef
+endif
 
 define Package/perl/install
 	$(INSTALL_DIR) $(1)/opt/bin
