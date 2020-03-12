@@ -748,7 +748,9 @@ RUBY_FILES_EXCLUDED = $(strip $(call Package/ruby-$(1)/files-excluded))
 
 # 1: short name
 # 2: install dir
+# Entware specific: fix exec path in scripts
 define RubyBuildPackage/install
+	( \
 	( \
 	  cd $(PKG_INSTALL_DIR) && \
 	  $(TAR) -cf - \
@@ -756,6 +758,9 @@ define RubyBuildPackage/install
 	    --files-from <(ls -1d $(patsubst /%,%,$(RUBY_FILES))) \
 	) | ( \
 	  [ -n "$(2)" ] && cd $(2) && $(TAR) -xf - \
+	); \
+	$(FIND) $(2)/opt/lib/ruby -type f -exec $(SED) \
+		's,^\#!.*bash,\#!/opt/bin/bash,;s,^\#!.*ruby,\#!/opt/bin/ruby,' {} \; \
 	)
 endef
 
