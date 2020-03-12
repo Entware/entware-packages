@@ -30,15 +30,15 @@
  	openlog("bandwidthd", LOG_CONS, LOG_DAEMON);
  
 -	if (stat("/etc/bandwidthd.conf", &StatBuf))
-+	if (stat("/opt/etc/config/bandwidthd.conf", &StatBuf))
++	if (stat("/opt/etc/bandwidthd.conf", &StatBuf))
  		{
  		chdir(INSTALL_DIR);
  		if (stat("./etc/bandwidthd.conf", &StatBuf))
  			{
 -			printf("Cannot find /etc/bandwidthd.conf or %s/etc/bandwidthd.conf\n", INSTALL_DIR);
 -			syslog(LOG_ERR, "Cannot find /etc/bandwidthd.conf or %s/etc/bandwidthd.conf", INSTALL_DIR);
-+			printf("Cannot find /opt/etc/config/bandwidthd.conf\n", INSTALL_DIR);
-+			syslog(LOG_ERR, "Cannot find /opt/etc/config/bandwidthd.conf", INSTALL_DIR);
++			printf("Cannot find /opt/etc/bandwidthd.conf\n", INSTALL_DIR);
++			syslog(LOG_ERR, "Cannot find /opt/etc/bandwidthd.conf", INSTALL_DIR);
  			exit(1);
  			}
  		else
@@ -47,7 +47,7 @@
  	else
  	        {
 -			bdconfig_in = fopen("/etc/bandwidthd.conf", "rt");
-+			bdconfig_in = fopen("/opt/etc/config/bandwidthd.conf", "rt");
++			bdconfig_in = fopen("/opt/etc/bandwidthd.conf", "rt");
  		}
  		
  	if (!bdconfig_in)

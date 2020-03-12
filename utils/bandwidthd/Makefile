@@ -170,8 +170,8 @@ endef
 define Package/bandwidthd-sqlite/install
 	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/var/bandwidthd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bandwidthd $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/bandwidthd.conf $(1)/opt/etc/config/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/etc/bandwidthd.conf $(1)/opt/etc
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S99bandwidthd $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/share/www/bandwidthd
@@ -181,10 +181,10 @@ define Package/bandwidthd-sqlite/install
 	$(INSTALL_DATA) ./files/phphtdocs-sqlite/graph.php $(1)/opt/share/www/bandwidthd/
 	$(INSTALL_DATA) ./files/phphtdocs-sqlite/include.php $(1)/opt/share/www/bandwidthd/
 	$(INSTALL_DATA) ./files/phphtdocs-sqlite/index.php $(1)/opt/share/www/bandwidthd/
-#	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/opt/share/www/bandwidthd/logo.gif
+#	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/www/phphtdocs/logo.gif
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/config.conf.php $(1)/opt/share/www/bandwidthd/
-#	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/legend.gif $(1)/opt/share/www/
-#	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/opt/share/www/logo.gif
+#	$(INSTALL_DATA) $(PKG_BUILD_DIR)/phphtdocs/legend.gif $(1)/www/
+#	$(INSTALL_DATA) ./files/logo-openwrt.gif $(1)/www/logo.gif
 endef
 
 define Package/bandwidthd-php/install
@@ -212,7 +212,7 @@ define Package/bandwidthd-pgsql/conffiles
 endef
 
 define Package/bandwidthd-sqlite/conffiles
-/opt/etc/config
+/opt/etc/bandwidthd.conf
 endef
 
 define Package/bandwidthd-php/conffiles
