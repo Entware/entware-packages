@@ -11,7 +11,7 @@
  
 --- a/usr/share/debootstrap/functions
 +++ b/usr/share/debootstrap/functions
-@@ -1041,7 +1041,7 @@ extract () { (
+@@ -1056,7 +1056,7 @@ extract () { (
  ); }
  
  in_target_nofail () {
@@ -20,7 +20,7 @@
  		true
  	fi
  	return 0
-@@ -1053,7 +1053,7 @@ in_target_failmsg () {
+@@ -1068,7 +1068,7 @@ in_target_failmsg () {
  	msg="$2"
  	arg="$3"
  	shift; shift; shift
