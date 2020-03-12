@@ -33,9 +33,14 @@ define Package/temperusb/description
   the Internet. This package allows to operate them from user space.
 endef
 
+define Build/Compile
+	$(MAKE) -C "$(PKG_BUILD_DIR)" \
+	CC="$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(TARGET_LDFLAGS)"
+endef
+
 define Package/temperusb/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/temperusb $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/temperusb $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,temperusb))
