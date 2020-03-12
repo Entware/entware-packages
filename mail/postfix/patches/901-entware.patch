@@ -109,7 +109,7 @@
  #endif
  
  #define VAR_SAMPLE_DIR			"sample_directory"
-@@ -4110,7 +4110,7 @@ extern bool var_smtp_tls_conn_reuse;
+@@ -4117,7 +4117,7 @@ extern bool var_smtp_tls_conn_reuse;
    */
  #define VAR_SHLIB_DIR	"shlib_directory"
  #ifndef DEF_SHLIB_DIR
