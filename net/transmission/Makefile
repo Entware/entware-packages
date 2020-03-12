@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=transmission
 PKG_VERSION:=2.94
-PKG_RELEASE:=8
+PKG_RELEASE:=13
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GITHUB/transmission/transmission-releases/master
@@ -25,6 +25,7 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
+#include $(INCLUDE_DIR)/package-seccomp.mk
 
 define Package/transmission/template
   SUBMENU:=BitTorrent
@@ -151,6 +152,7 @@ define Package/transmission-daemon-openssl/install
 	$(INSTALL_CONF) files/settings.json $(1)/opt/etc/transmission
 	$(INSTALL_DIR) $(1)/opt/etc/sysctl.d/
 	$(INSTALL_CONF) files/transmission.sysctl $(1)/opt/etc/sysctl.d/20-transmission.conf
+#	$(call InstallSeccomp,$(1),./files/transmission-daemon.json)
 endef
 Package/transmission-daemon-mbedtls/install = $(Package/transmission-daemon-openssl/install)
 
