@@ -8,16 +8,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptsetup
-PKG_VERSION:=2.1.0
-PKG_RELEASE:=2
+PKG_VERSION:=2.3.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=@KERNEL/linux/utils/cryptsetup/v2.1
-PKG_HASH:=a3eeb2741f8f3376d16585191f3c60e067dd987e096c3c4b073fab7748b1c897
+PKG_SOURCE_URL:=@KERNEL/linux/utils/cryptsetup/v2.3
+PKG_HASH:=395690de99509428354d3cd15cf023bed01487e6f1565b2181e013dc847bbc85
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0-or-later LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYING COPYING.LGPL
+
+PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -41,7 +44,9 @@ CONFIGURE_ARGS += \
 	--disable-rpath \
 	--disable-veritysetup \
 	--disable-udev \
-	--with-default-luks-format=LUKS2
+	--with-default-luks-format=LUKS2 \
+	--with-luks2-lock-path=/opt/var/run/cryptsetup \
+	--with-crypto_backend=kernel
 
 ifeq ($(CONFIG_LINUX_2_6_36),y)
 CONFIGURE_ARGS+= \
@@ -50,9 +55,9 @@ endif
 
 define Package/cryptsetup/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_BUILD_DIR)/.libs/cryptsetup $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/cryptsetup $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_BUILD_DIR)/.libs/libcryptsetup.so* $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcryptsetup.so* $(1)/opt/lib
 endef
 
 $(eval $(call BuildPackage,cryptsetup))
