@@ -48,6 +48,10 @@ define Build/Configure
 		--with-distname=unknown \
 		--sysconfdir=/opt/etc/apcupsd \
 		--with-cgi-bin=/opt/etc/apcupsd \
+		--with-halpolicydir=/opt/share/hal/fdi/policy/20thirdparty \
+		--with-lock-dir=/opt/var/spool/locks \
+		--with-log-dir=/opt/var/log \
+		--with-pid-dir=/opt/var/run \
 		--datarootdir=/opt/share \
 		--enable-cgi \
 		--enable-usb \
@@ -58,6 +62,8 @@ endef
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
+		AR="$(TARGET_CROSS)ar" \
+		CC="$(TARGET_CXX)" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		LD="$(TARGET_CC)" \
 		all install
