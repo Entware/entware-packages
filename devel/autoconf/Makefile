@@ -66,7 +66,8 @@ define Package/autoconf/install
 	$(INSTALL_DIR) $(1)/opt/share/autoconf/m4sugar
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/autoconf/m4sugar/* \
 	$(1)/opt/share/autoconf/m4sugar/
-	find $(PKG_INSTALL_DIR)/opt/bin -type f | xargs $(SED) 's|/usr/bin/perl|/opt/bin/perl|'
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/*
 endef
 
 $(eval $(call BuildPackage,autoconf))
