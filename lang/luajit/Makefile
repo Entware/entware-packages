@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luajit
 PKG_VERSION:=2.1.0-beta3
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=LuaJIT-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://luajit.org/download
@@ -45,7 +45,8 @@ define Build/Compile
 		PREFIX=/opt \
 		TARGET_SYS=Linux \
 		TARGET_CFLAGS="$(TARGET_CFLAGS)" \
-		TARGET_LDFLAGS="$(TARGET_LDFLAGS)"
+		TARGET_LDFLAGS="$(TARGET_LDFLAGS)" \
+		BUILDMODE=dynamic
 	rm -rf $(PKG_INSTALL_DIR)
 	mkdir -p $(PKG_INSTALL_DIR)
 	$(MAKE) -C $(PKG_BUILD_DIR) \
@@ -59,7 +60,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/luajit-2.1
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/luajit-2.1/*.{h,hpp} $(1)/opt/include/luajit-2.1
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.{a,so*} $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/luajit.pc $(1)/opt/lib/pkgconfig/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/luajit-$(PKG_VERSION) $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME)
