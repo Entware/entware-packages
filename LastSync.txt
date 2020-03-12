@@ -1,8 +1,8 @@
-commit 7fb36fb8d017328f28520efb7932dd0df022fd75
-Merge: 04a03a35b abdec8939
-Author: tripolar <tripolar@users.noreply.github.com>
-Date:   Tue Dec 31 14:17:01 2019 +0100
+commit aa140fbf3df0ae945a5c5d89fbdc1798df1a5070 (HEAD -> master, origin/master, origin/HEAD)
+Merge: 5feeeb69c b8b4e7e26
+Author: Rosen Penev <rosenp@gmail.com>
+Date:   Tue Mar 10 20:29:20 2020 -0700
 
-    Merge pull request #10441 from neheb/glib
+    Merge pull request #11541 from neheb/jjjj
     
-    glib2: Disable Werror
+    softethervpn: disable PIC
