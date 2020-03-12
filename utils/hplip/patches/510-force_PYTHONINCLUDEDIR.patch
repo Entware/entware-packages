@@ -1,6 +1,6 @@
 --- a/configure.in
 +++ b/configure.in
-@@ -609,7 +609,7 @@ if test "$class_driver" = "no" && test "
+@@ -612,7 +612,7 @@ if test "$class_driver" = "no" && test "
     AC_ARG_VAR([PYTHON], [Python interpreter/compiler command])
     AM_PATH_PYTHON([2.2])
     AC_MSG_CHECKING([for path to Python.h])

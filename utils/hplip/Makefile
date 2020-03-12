@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
 PKG_VERSION:=3.19.12
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
@@ -188,15 +188,16 @@ define Package/hplip-full/install
 endef
 
 define Package/hplip-common/conffiles
-/opt/etc/hp/hplip.conf
+/etc/hp/hplip.conf
 endef
 
 define Package/hplip-sane/conffiles
-/opt/etc/sane.d/dll.d/hplib
+/etc/sane.d/dll.d/hplib
 endef
 
 define Package/hplip-full/conffiles
 /opt/etc/hp/hplip.conf
+/opt/etc/sane.d/dll.d/hplib
 endef
 
 $(eval $(call BuildPackage,hplip-full))
