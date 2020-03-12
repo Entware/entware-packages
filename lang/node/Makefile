@@ -4,31 +4,30 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: use shipped openssl and libuv to prevent do_page_fault()
-# runtime error on MIPS platforms.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v8.16.1
+PKG_VERSION:=v12.16.1
 PKG_RELEASE:=1
-PKG_SOURCE:=node-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://nodejs.org/dist/${PKG_VERSION}
-PKG_HASH:=d8c190acdf2d967faf49c22df883d31a8d4e249d67852dae3c2d8a0f756b0512
 
-HOST_BUILD_DEPENDS:=python/host
-PKG_BUILD_DEPENDS:=python/host
-
-PKG_INSTALL:=1
-PKG_USE_MIPS16:=0
-
-HOST_BUILD_PARALLEL:=1
-PKG_BUILD_PARALLEL:=1
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
+PKG_SOURCE_URL:=https://nodejs.org/dist/$(PKG_VERSION)
+PKG_HASH:=0a95845ba02c46102b5671d0c5732460073f2d397488337e18d1fc30146d412d
 
 PKG_MAINTAINER:=John Crispin <blogic@openwrt.org>, Adrian Panella <ianchi74@outlook.com>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:nodejs:node.js
+
+HOST_BUILD_DEPENDS:=python3/host
+HOST_BUILD_PARALLEL:=1
+
+PKG_BUILD_DEPENDS:=python3/host
+PKG_BUILD_PARALLEL:=1
+PKG_INSTALL:=1
+PKG_USE_MIPS16:=0
+PKG_ASLR_PIE:=0
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -39,15 +38,16 @@ define Package/node
   SUBMENU:=Node.js
   TITLE:=Node.js is a platform built on Chrome's JavaScript runtime
   URL:=https://nodejs.org/
-  DEPENDS:=@!arc @!armeb \
+  DEPENDS:=@!arc @!armeb @!powerpc \
 	   +libstdcpp +libopenssl +zlib +libnghttp2 +libuv +libhttp-parser \
-	   +NODEJS_ICU:icu
+	   +libcares +libatomic +NODEJS_ICU_SYSTEM:icu +NODEJS_ICU_SYSTEM:icu-full-data
 endef
 
 define Package/node/description
   Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses
   an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js'
    package ecosystem, npm, is the largest ecosystem of open source libraries in the world.
+  *** Requires GCC/G++ Multilib on host system to build 32-bit target ***
 endef
 
 define Package/node-npm
@@ -55,7 +55,7 @@ define Package/node-npm
   CATEGORY:=Languages
   SUBMENU:=Node.js
   TITLE:=NPM stands for Node Package Manager
-  URL:=https://npmjs.com/
+  URL:=https://www.npmjs.com/
   DEPENDS:=+node
 endef
 
@@ -65,35 +65,54 @@ endef
 
 define Package/node/config
 	if PACKAGE_node
+	choice
+		prompt "i18n features"
+		default NODEJS_ICU_NONE
+		help
+		 Select i18n features
 
-	config NODEJS_ICU
-		bool "enable i18n features"
-		default n
+		config NODEJS_ICU_NONE
+			bool "Disable"
 
+		config NODEJS_ICU_SMALL
+			depends on !BIG_ENDIAN
+			bool "small-icu"
+
+		config NODEJS_ICU_SYSTEM
+			depends on ARCH_64BIT&&!BIG_ENDIAN
+			bool "system-icu"
+	endchoice
 	endif
 endef
 
 NODEJS_CPU:=$(subst powerpc,ppc,$(subst aarch64,arm64,$(subst x86_64,x64,$(subst i386,ia32,$(ARCH)))))
 
+ifneq ($(CONFIG_ARCH_64BIT),y)
+FORCE_32BIT:=-m32
+endif
+
 MAKE_VARS+= \
-	DESTCPU=$(NODEJS_CPU)
+	DESTCPU=$(NODEJS_CPU) \
+	LD_LIBRARY_PATH=$(STAGING_DIR_HOSTPKG)/share/icu/65.1/lib
 
 CONFIGURE_VARS:= \
 	CC="$(TARGET_CC) $(TARGET_OPTIMIZATION)" \
 	CXX="$(TARGET_CXX) $(TARGET_OPTIMIZATION)" \
-	CC_host="$(HOSTCC)" \
-	CXX_host="$(HOSTCXX)"
+	CC_host="$(HOSTCC) $(FORCE_32BIT)" \
+	CXX_host="$(HOSTCXX) $(FORCE_32BIT)"
 
 CONFIGURE_ARGS:= \
 	--dest-cpu=$(NODEJS_CPU) \
 	--dest-os=linux \
-	--without-snapshot \
+	--cross-compiling \
 	--shared-zlib \
 	--shared-openssl \
 	--shared-nghttp2 \
 	--shared-libuv \
 	--shared-http-parser \
-	--with-intl=$(if $(CONFIG_NODEJS_ICU),system-icu,none) \
+	--shared-cares \
+	$(if $(CONFIG_NODEJS_ICU_SMALL),, \
+		--with-intl=$(if $(CONFIG_NODEJS_ICU_SYSTEM),system-icu,none)) \
 	$(if $(findstring mips,$(NODEJS_CPU)), \
 		$(if $(CONFIG_SOFT_FLOAT),--with-mips-float-abi=soft)) \
 	$(if $(findstring +neon,$(CONFIG_CPU_TYPE)),--with-arm-fpu=neon) \
@@ -106,10 +125,8 @@ HOST_CONFIGURE_VARS:=
 
 HOST_CONFIGURE_ARGS:= \
 	--dest-os=$(if $(findstring Darwin,$(HOST_OS)),mac,linux) \
-	--without-snapshot \
+	--with-intl=none \
 	--prefix=$(STAGING_DIR_HOSTPKG)
-
-HOST_CONFIGURE_CMD:=python ./configure
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -117,24 +134,19 @@ define Build/InstallDev
 endef
 
 define Package/node/install
-	mkdir -p $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/node $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/node $(1)/opt/bin/
 endef
 
 define Package/node-npm/install
-	mkdir -p $(1)/opt/bin $(1)/opt/lib/node_modules/npm/{bin,lib,node_modules}
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{npm,npx} $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/{package.json,LICENSE} $(1)/opt/lib/node_modules/npm
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/bin/npm-cli.js $(1)/opt/lib/node_modules/npm/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/bin/npx-cli.js $(1)/opt/lib/node_modules/npm/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/lib/* $(1)/opt/lib/node_modules/npm/lib/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/node_modules/* $(1)/opt/lib/node_modules/npm/node_modules/
+	$(INSTALL_DIR) $(1)/opt/lib/node_modules
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/* $(1)/opt/lib/node_modules/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(LN) ../lib/node_modules/npm/bin/npm-cli.js $(1)/opt/bin/npm
+	$(LN) ../lib/node_modules/npm/bin/npx-cli.js $(1)/opt/bin/npx
 	# Entware specific: fix exec path in scripts
-	$(FIND) $(1)/opt/lib/node_modules/npm -type f | $(XARGS) $(SED) \
-		's,^#!.*node,#!/opt/bin/node,;s,^#!.*python,#!/opt/bin/python,;s,^#!.*bash,#!/opt/bin/bash,'
-	$(SED) 's,^#!.*sh,#!/bin/sh,' \
-		$(1)/opt/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin/node-gyp \
-		$(1)/opt/lib/node_modules/npm/node_modules/ajv/scripts/prepare-tests
+	$(FIND) $(1)/opt/lib/node_modules -type f -exec $(SED) \
+		's,^#!.*node,#!/opt/bin/node,;s,^#!.*python,#!/opt/bin/python,;s,^#!.*bash,#!/opt/bin/bash,' {} +
 endef
 
 $(eval $(call HostBuild))
