@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2008-2016 OpenWrt.org
+# Copyright (C) 2008-2020 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=freeradius3
-PKG_VERSION:=release_3_0_19
+PKG_VERSION:=release_3_0_20
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/FreeRADIUS/freeradius-server/archive
-PKG_HASH:=34c50ac47a683b13eae1a02f2d0263c0bd51a83f01b99c02c5fe25df07a1ee77
+PKG_HASH:=8177fe550af6685a040884dbe3df28431bdc5a8d3a48a9f4f88bdb49f2d0e90c
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0
@@ -28,9 +28,13 @@ PKG_CONFIG_DEPENDS := \
   FREERADIUS3_OPENSSL \
   FREERADIUS3_NOSSL
 
+CFLAGS += $(FPIC)
+
 include $(INCLUDE_DIR)/package.mk
 # mysql again
 include $(INCLUDE_DIR)/nls.mk
+include $(TOPDIR)/feeds/packages/lang/python/python-package.mk
+include $(TOPDIR)/feeds/packages/lang/python/python3-package.mk
 
 define Package/freeradius3/config
   source "$(SOURCE)/Config.in"
@@ -341,6 +345,26 @@ define Package/freeradius3-mod-preprocess/conffiles
 /opt/etc/freeradius3/mods-enabled/preprocess
 endef
 
+define Package/freeradius3-mod-python
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3 +python
+  TITLE:=Python module
+endef
+
+define Package/freeradius3-mod-python/conffiles
+/opt/etc/freeradius3/mods-available/python
+endef
+
+define Package/freeradius3-mod-python3
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3 +python3
+  TITLE:=Python3 module
+endef
+
+define Package/freeradius3-mod-python3/conffiles
+/opt/etc/freeradius3/mods-available/python3
+endef
+
 define Package/freeradius3-mod-realm
   $(call Package/freeradius3/Default)
   DEPENDS:=freeradius3
@@ -348,7 +372,6 @@ define Package/freeradius3-mod-realm
 endef
 
 define Package/freeradius3-mod-realm/conffiles
-/opt/etc/freeradius3/proxy.conf
 /opt/etc/freeradius3/mods-available/realm
 /opt/etc/freeradius3/mods-enabled/realm
 endef
@@ -492,7 +515,6 @@ CONFIGURE_ARGS+= \
 	--without-rlm_opendirectory \
 	--without-rlm_pam \
 	--without-rlm_perl \
-	--without-rlm_python \
 	--without-rlm_redis \
 	--without-rlm_rediswho \
 	--without-rlm_rest \
@@ -558,6 +580,32 @@ else
   CONFIGURE_ARGS+= --without-rlm_eap_pwd
 endif
 
+ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-python),)
+  CFLAGS+= -fPIC
+  CONFIGURE_ARGS+= \
+		--with-rlm_python \
+		--with-rlm-python-include-dir="$(PYTHON_INC_DIR)" \
+		--with-rlm-python-lib-dir="$(PYTHON_LIB_DIR)"
+  CONFIGURE_VARS+= \
+		OPENWRTTARGET_PY_PREFIX="$(PYTHON_DIR)" \
+		OPENWRTTARGET_PY_SYS_VERSION="$(PYTHON_VERSION)"
+else
+  CONFIGURE_ARGS+= --without-rlm_python
+endif
+
+ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-python3),)
+  CFLAGS+= -fPIC
+  CONFIGURE_ARGS+= \
+		--with-modules="rlm_python3" \
+		--with-rlm-python3-include-dir="$(PYTHON3_INC_DIR)" \
+		--with-rlm-python3-lib-dir="$(PYTHON3_LIB_DIR)"
+  CONFIGURE_VARS+= \
+		OPENWRTTARGET_PY3_PREFIX="$(PYTHON3_DIR)" \
+		OPENWRTTARGET_PY3_SYS_VERSION="$(PYTHON3_VERSION)"
+else
+  CONFIGURE_ARGS+= --without-rlm_python3
+endif
+
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-sql),)
   CONFIGURE_ARGS+= --with-rlm_sql
 else
@@ -617,7 +665,7 @@ else
 endif
 
 #ifeq ($(CONFIG_USE_GLIBC),y)
-#  TARGET_CFLAGS+= -DLIBBSD_OVERLAY -I$(STAGING_DIR)/opt/include/bsd \
+#  TARGET_CFLAGS+= -DLIBBSD_OVERLAY -I$(STAGING_DIR)/usr/include/bsd \
 #	-D_RPC_NETDB_H
 #	#^^^^^^^^^^^^^ avoid inclusion of librpc's netdb.h
 #  CONFIGURE_LIBS+= -Wl,--push-state,--as-needed -lbsd -Wl,--pop-state
@@ -744,6 +792,10 @@ $(eval $(call BuildPlugin,freeradius3-mod-mschap,rlm_mschap,))
 $(eval $(call BuildPlugin,freeradius3-mod-pap,rlm_pap,))
 $(eval $(call BuildPlugin,freeradius3-mod-passwd,rlm_passwd,))
 $(eval $(call BuildPlugin,freeradius3-mod-preprocess,rlm_preprocess,))
+$(eval $(call PyPackage,freeradius3-mod-python))
+$(eval $(call BuildPlugin,freeradius3-mod-python,rlm_python,))
+$(eval $(call Py3Package,freeradius3-mod-python3))
+$(eval $(call BuildPlugin,freeradius3-mod-python3,rlm_python3,))
 $(eval $(call BuildPlugin,freeradius3-mod-radutmp,rlm_radutmp,))
 $(eval $(call BuildPlugin,freeradius3-mod-realm,rlm_realm,))
 $(eval $(call BuildPlugin,freeradius3-mod-sql,rlm_sql,))
