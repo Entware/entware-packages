@@ -1,8 +1,8 @@
 --- a/utils/keytable/keytable.c
 +++ b/utils/keytable/keytable.c
-@@ -55,6 +55,10 @@ struct input_keymap_entry_v2 {
- 	u_int8_t  scancode[32];
- };
+@@ -69,6 +69,10 @@ struct input_keymap_entry_v2 {
+ #define EVIOCSCLOCKID		_IOW('E', 0xa0, int)
+ #endif
  
 +#ifndef EVIOCSCLOCKID
 +#define EVIOCSCLOCKID		_IOW('E', 0xa0, int)
