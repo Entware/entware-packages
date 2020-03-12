@@ -17,7 +17,7 @@
  
 --- a/lib/wchar.in.h
 +++ b/lib/wchar.in.h
-@@ -107,7 +107,7 @@
+@@ -108,7 +108,7 @@
  
  
  /* Define wint_t and WEOF.  (Also done in wctype.in.h.)  */
@@ -26,7 +26,7 @@
  # define wint_t int
  # ifndef WEOF
  #  define WEOF -1
-@@ -116,7 +116,7 @@
+@@ -117,7 +117,7 @@
  /* mingw and MSVC define wint_t as 'unsigned short' in <crtdefs.h> or
     <stddef.h>.  This is too small: ISO C 99 section 7.24.1.(2) says that
     wint_t must be "unchanged by default argument promotions".  Override it.  */
@@ -35,7 +35,7 @@
  #  if !GNULIB_defined_wint_t
  #   if @HAVE_CRTDEFS_H@
  #    include <crtdefs.h>
-@@ -132,7 +132,7 @@ typedef unsigned int rpl_wint_t;
+@@ -133,7 +133,7 @@ typedef unsigned int rpl_wint_t;
  # ifndef WEOF
  #  define WEOF ((wint_t) -1)
  # endif
@@ -75,7 +75,7 @@
  
  
  #if !GNULIB_defined_wctype_functions
-@@ -477,7 +477,7 @@ _GL_FUNCDECL_SYS (iswblank, int, (wint_t
+@@ -503,7 +503,7 @@ _GL_FUNCDECL_RPL (iswxdigit, int, (wint_
  
  # endif
  
@@ -84,7 +84,7 @@
  
  /* On native Windows, wchar_t is uint16_t, and wint_t is uint32_t.
     The functions towlower and towupper are implemented in the MSVCRT library
-@@ -491,7 +491,7 @@ _GL_FUNCDECL_SYS (iswblank, int, (wint_t
+@@ -517,7 +517,7 @@ _GL_FUNCDECL_RPL (iswxdigit, int, (wint_
        The upper 16 bits are random: whatever happened to be in that part of the
        result register.  We need to fix this by adding a zero-extend from
        wchar_t to wint_t after the call.  */
@@ -93,7 +93,7 @@
  _GL_WCTYPE_INLINE wint_t
  rpl_towlower (wint_t wc)
  {
-@@ -510,7 +510,7 @@ rpl_towupper (wint_t wc)
+@@ -536,7 +536,7 @@ rpl_towupper (wint_t wc)
  #   define towupper rpl_towupper
  #  endif
  
