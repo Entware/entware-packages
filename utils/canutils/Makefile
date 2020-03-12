@@ -8,17 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=canutils
-PKG_VERSION:=2018.02.0
+PKG_VERSION:=2020.02.04
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/linux-can/can-utils/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=370ad4b19447c29099f7300548f1a3362d6e123c4a6a827dbbd3110bc2c26839
+PKG_HASH:=a766aad89955b9cfcca27f61ef988fa169565c3657d2789808c0f33a7afa23c8
 PKG_BUILD_DIR:=$(BUILD_DIR)/can-utils-$(PKG_VERSION)
 
 PKG_MAINTAINER:=Anton Glukhov <anton.a.glukhov@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
 
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
@@ -39,7 +40,6 @@ endef
 define GenPlugin
   define Package/$(addprefix canutils-,$(1))
     $(call Package/canutils/Default)
-    DEPENDS:=canutils
     TITLE:=Utility $(1) from the CAN utilities
   endef
 
@@ -48,23 +48,15 @@ define GenPlugin
    endef
 endef
 
-FILES:=canbusload can-calc-bit-timing candump \
-	cangen cangw canplayer cansniffer cansend \
-	canfdtest asc2log log2asc log2long bcmserver \
-	canlogserver isotpdump isotpperf isotprecv \
-	isotpsend isotpserver isotpsniffer isotptun \
-	jacd jspy jsr testj1939 \
-	slcan_attach slcand slcanpty
+FILES:= \
+	asc2log bcmserver canbusload can-calc-bit-timing \
+	candump canfdtest cangen cangw canlogserver canplayer \
+	cansend cansniffer isotpdump isotpperf isotprecv isotpsend \
+	isotpserver isotpsniffer isotptun jacd jcat jspy jsr \
+	log2asc log2long slcan_attach slcand slcanpty testj1939
 
 
 $(foreach a,$(FILES),$(eval $(call GenPlugin,$(a))))
-
-MAKE_FLAGS += \
-	PREFIX="$(CONFIGURE_PREFIX)"
-
-define Package/canutils/install
-	true
-endef
 
 define PartInstall
 define Package/canutils-$(1)/install
