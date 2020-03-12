@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zsh
-PKG_VERSION:=5.6.2
-PKG_RELEASE:=3
+PKG_VERSION:=5.7.1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/zsh
-PKG_HASH:=a50bd66c0557e8eca3b8fa24e85d0de533e775d7a22df042da90488623752e9e
+PKG_HASH:=7260292c2c1d483b2d50febfa5055176bd512b32a8833b116177bf5f01e77ee8
 
 PKG_MAINTAINER:=Vadim A. Misbakh-Soloviov <openwrt-zsh@mva.name>
 PKG_LICENSE:=ZSH
@@ -83,18 +83,21 @@ define Build/Configure
 	$(MAKE) -C $(PKG_BUILD_DIR) DESTDIR="$(PKG_INSTALL_DIR)" prep
 endef
 
-TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
-TARGET_LDFLAGS += -Wl,--gc-sections -flto -fPIC
+TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections -flto
+TARGET_LDFLAGS += $(FPIC) -Wl,--gc-sections -flto
 
 define Package/zsh/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)
 	$(INSTALL_DIR) $(1)/opt/share/zsh/$(PKG_VERSION)
+	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh
+	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/net
+	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/param
 
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/zsh $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/* $(1)/opt/lib/zsh/$(PKG_VERSION)/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/zsh/$(PKG_VERSION)/* $(1)/opt/share/zsh/$(PKG_VERSION)/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/net/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/net/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/param/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/param/
 endef
-
 
 $(eval $(call BuildPackage,zsh))
