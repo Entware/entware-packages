@@ -1,0 +1,11 @@
+--- a/Makefile.PL	2020-03-13 12:02:33.069613676 +0300
++++ b/Makefile.PL	2020-03-13 12:02:16.105906784 +0300
+@@ -127,7 +127,7 @@
+     close H;
+ 
+     for my $e (sort @syms) {
+-       if($e =~ /(OBSOLETE|^CURL_EXTERN|^CURL_STRICTER\z|_LAST\z|_LASTENTRY\z)/) {
++       if($e =~ /(OBSOLETE|^CURL_EXTERN|CURLOPT\z|^CURL_STRICTER\z|_LAST\z|_LASTENTRY\z|WIN32)/) {
+           next;
+        }
+        my ($group) = $e =~ m/^([^_]+_)/;
