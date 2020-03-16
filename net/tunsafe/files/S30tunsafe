@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ENABLED=yes
+PROCS=tunsafe
+ARGS="/opt/etc/tunsafe/main.conf"
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[ -z "$(which $PROCS)" ] && exit 0
+
+. /opt/etc/init.d/rc.func

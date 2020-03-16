@@ -1,0 +1,60 @@
+diff --git a/tunsafe_bsd.cpp b/tunsafe_bsd.cpp
+index 17f855c..eb158db 100644
+--- a/tunsafe_bsd.cpp
++++ b/tunsafe_bsd.cpp
+@@ -367,9 +367,9 @@ static void AddOrRemoveRoute(const RouteInfo &cd, bool remove) {
+   const char *cmd = remove ? "del" : "add";
+   const char *proto = (cd.family == AF_INET) ? NULL : "-6";
+   if (cd.dev.empty()) {
+-    RunCommand("/sbin/ip %s route %s %s via %s", proto, cmd, buf1, buf2);
++    RunCommand("ip %s route %s %s via %s", proto, cmd, buf1, buf2);
+   } else {
+-    RunCommand("/sbin/ip %s route %s %s dev %s", proto, cmd, buf1, cd.dev.c_str());
++    RunCommand("ip %s route %s %s dev %s", proto, cmd, buf1, cd.dev.c_str());
+   }
+ #elif defined(OS_MACOSX) || defined(OS_FREEBSD)
+   const char *cmd = remove ? "delete" : "add";
+@@ -436,10 +436,10 @@ bool TunsafeBackendBsd::Configure(const TunConfig &&config, TunConfigOut *out) o
+   addresses_to_remove_ = config.addresses;
+ 
+ #if defined(OS_LINUX)
+-  RunCommand("/sbin/ip address flush dev %s scope global", devname_);
++  RunCommand("ip address flush dev %s scope global", devname_);
+   for(const WgCidrAddr &a : config.addresses)
+-    RunCommand("/sbin/ip address add dev %s %s", devname_, print_ip_prefix(buf, a.size == 32 ? AF_INET : AF_INET6, a.addr, a.cidr));
+-  RunCommand("/sbin/ip link set dev %s mtu %d up", devname_, config.mtu);
++    RunCommand("ip address add dev %s %s", devname_, print_ip_prefix(buf, a.size == 32 ? AF_INET : AF_INET6, a.addr, a.cidr));
++  RunCommand("ip link set dev %s mtu %d up", devname_, config.mtu);
+ #else
+   for(const WgCidrAddr &a : config.addresses) {
+     if (a.size == 32) {
+@@ -515,7 +515,7 @@ void TunsafeBackendBsd::CleanupRoutes() {
+ 
+ #if defined(OS_LINUX)
+   for(const WgCidrAddr &a : addresses_to_remove_)
+-    RunCommand("/sbin/ip address del dev %s %s", devname_, print_ip_prefix(buf, a.size == 32 ? AF_INET : AF_INET6, a.addr, a.cidr));
++    RunCommand("ip address del dev %s %s", devname_, print_ip_prefix(buf, a.size == 32 ? AF_INET : AF_INET6, a.addr, a.cidr));
+ #else
+   for(const WgCidrAddr &a : addresses_to_remove_) {
+     if (a.size == 32) {
+diff --git a/util.cpp b/util.cpp
+index 11add66..5e0ff27 100644
+--- a/util.cpp
++++ b/util.cpp
+@@ -148,7 +148,6 @@ int RunCommand(const char *fmt, ...) {
+   std::string tmp;
+   char buf[32], c;
+   char *args[33];
+-  char *envp[1] = {NULL};
+   int nargs = 0;
+   bool didadd = false;
+   va_start(va, fmt);
+@@ -194,7 +193,7 @@ ZERO:
+ #if defined(OS_POSIX)
+   pid_t pid = fork();
+   if (pid == 0) {
+-    execve(args[0], args, envp);
++    execvp(args[0], args);
+     exit(127);
+   }
+   if (pid < 0) {

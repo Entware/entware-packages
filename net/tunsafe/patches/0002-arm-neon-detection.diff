@@ -1,0 +1,17 @@
+diff --git a/tunsafe_cpu.h b/tunsafe_cpu.h
+index c19f6b1..2347ce3 100644
+--- a/tunsafe_cpu.h
++++ b/tunsafe_cpu.h
+@@ -32,7 +32,11 @@ extern uint32 x86_pcap[3];
+ 
+ extern uint32 arm_pcap[1];
+ 
+-#define ARM_PCAP_NEON (arm_pcap[0] & (1 << 0))
++#if defined(__ARM_NEON__) || defined(__ARM_NEON)
++	#define ARM_PCAP_NEON (arm_pcap[0] & (1 << 0))
++#else
++	#define ARM_PCAP_NEON 0
++#endif
+ 
+ #endif  // defined(ARCH_CPU_ARM_FAMILY)
+ 

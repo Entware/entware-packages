@@ -1,0 +1,13 @@
+diff --git a/tunsafe_bsd.cpp b/tunsafe_bsd.cpp
+index 17f855c..2772d06 100644
+--- a/tunsafe_bsd.cpp
++++ b/tunsafe_bsd.cpp
+@@ -36,7 +36,7 @@
+ #include <net/if_tun.h>
+ #include <net/if_dl.h>
+ #elif defined(OS_LINUX)
+-#include <linux/if.h>
++// #include <linux/if.h>
+ #include <linux/if_tun.h>
+ #include <sys/prctl.h>
+ #include <linux/rtnetlink.h> 
