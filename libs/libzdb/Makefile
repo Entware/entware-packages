@@ -74,7 +74,7 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/zdb
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/zdb/* $(1)/opt/include/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/zdb/* $(1)/opt/include/zdb
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzdb* $(1)/opt/lib/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/zdb.pc $(1)/opt/lib/pkgconfig
 endef
