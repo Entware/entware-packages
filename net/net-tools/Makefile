@@ -5,6 +5,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: net-tools-route renamed to net-tools package
+# with all utilities compiled
 
 include $(TOPDIR)/rules.mk
 
@@ -20,6 +22,8 @@ PKG_MIRROR_HASH:=9d978b9f8ccae4af623a299155c62d9b3d31213182c785f925bf8704d48a04c
 PKG_MAINTAINER:=Stijn Segers <borromini.reg@protonmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
+
+PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -37,20 +41,17 @@ define Package/mii-tool/description
 	optimized for embedded systems and fully automated cross/-sysroot-builds
 endef
 
-define Package/net-tools-route
+define Package/net-tools
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=net-tools - route utility
+  TITLE:=net-tools utilities
   URL:=http://net-tools.sourceforge.net/
   PROVIDES:=route
 #  ALTERNATIVES:=300:/sbin/route:/usr/libexec/net-tools-route
 endef
 
 define Package/net-tools-route/description
-	Replace busybox version of the route command with the full net-tools
-	version. This is normally not needed as busybox is smaller and provides
-	sufficient functionality, but some users may want or need the full
-	functionality of the net-tools variant (e.g. AF_X25).
+	Linux base networking tools.
 endef
 
 define Build/Configure
@@ -64,10 +65,12 @@ define Package/mii-tool/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mii-tool $(1)/opt/sbin/
 endef
 
-define Package/net-tools-route/install
-	$(INSTALL_DIR) $(1)/opt/libexec
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/route $(1)/opt/libexec/net-tools-route
+define Package/net-tools/install
+	$(INSTALL_DIR) $(1)/opt
+	$(CP) $(PKG_INSTALL_DIR)/{bin,sbin} $(1)/opt
+	$(RM) $(1)/opt/sbin/mii-tool
+	mv $(1)/opt/bin/ifconfig $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,mii-tool))
-$(eval $(call BuildPackage,net-tools-route))
+$(eval $(call BuildPackage,net-tools))
