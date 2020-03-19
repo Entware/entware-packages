@@ -146,7 +146,10 @@ define Package/node-npm/install
 	$(LN) ../lib/node_modules/npm/bin/npx-cli.js $(1)/opt/bin/npx
 	# Entware specific: fix exec path in scripts
 	$(FIND) $(1)/opt/lib/node_modules -type f -exec $(SED) \
-		's,^#!.*node,#!/opt/bin/node,;s,^#!.*python,#!/opt/bin/python,;s,^#!.*bash,#!/opt/bin/bash,' {} +
+		's,^#!.*node,#!/opt/bin/node,; \
+		s,^#!.*python,#!/opt/bin/python,; \
+		s,^#!.*bash,#!/opt/bin/bash,; \
+		s,^#!.*env sh,#!/bin/sh,' {} +
 endef
 
 $(eval $(call HostBuild))
