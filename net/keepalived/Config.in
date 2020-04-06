@@ -103,14 +103,6 @@ config KEEPALIVED_SNMP_REPLY_V3_FOR_V2
 	help
 		Builds support for using SNMP v3 responses for VRRPv2 instances
 
-config KEEPALIVED_DBUS
-	depends on KEEPALIVED_VRRP
-	bool
-	default n
-	prompt "Enable DBus support"
-	help
-		Builds support for using DBus with VRRP
-
 config KEEPALIVED_JSON
 	depends on KEEPALIVED_VRRP
 	bool

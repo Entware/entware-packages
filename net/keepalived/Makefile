@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=keepalived
 PKG_VERSION:=2.0.20
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.keepalived.org/software
@@ -31,7 +31,6 @@ PKG_CONFIG_DEPENDS += \
 	KEEPALIVED_SNMP_RFC2 \
 	KEEPALIVED_SNMP_RFC3 \
 	KEEPALIVED_SNMP_REPLY_V3_FOR_V2 \
-	KEEPALIVED_DBUS \
 	KEEPALIVED_JSON \
 	KEEPALIVED_ROUTES \
 	IPV6
@@ -61,17 +60,13 @@ define Package/keepalived
   DEPENDS:= \
     +libnl-genl \
     +libmagic \
-    +KEEPALIVED_VRRP:kmod-macvlan \
     +KEEPALIVED_VRRP:libnl-route \
     +KEEPALIVED_VRRP:libnfnetlink \
     +KEEPALIVED_SHA1:libopenssl \
-    +KEEPALIVED_IPTABLES:libip4tc \
     $(KEEPALIVED_DEPENDS_LIBIP6TC) \
-    +KEEPALIVED_IPTABLES:libxtables \
     +KEEPALIVED_IPTABLES:libipset \
     +(KEEPALIVED_SNMP_VRRP||KEEPALIVED_SNMP_CHECKER||KEEPALIVED_SNMP_RFC2||KEEPALIVED_SNMP_RFC3):libnetsnmp \
-    +KEEPALIVED_JSON:libjson-c \
-    +KEEPALIVED_DBUS:glib2
+    +KEEPALIVED_JSON:libjson-c
 endef
 
 define Package/keepalived/description
@@ -79,16 +74,20 @@ define Package/keepalived/description
 endef
 
 define Package/keepalived/conffiles
-/etc/keepalived/keepalived.conf
-/etc/config/keepalived
-/etc/keepalived.user
+/opt/etc/keepalived/keepalived.conf
+/opt/etc/config/keepalived
+/opt/etc/keepalived.user
 endef
 
 CONFIGURE_ARGS+= \
 	--with-init=SYSV \
 	--disable-nftables \
 	--disable-track-process \
-	--with-run-dir="/var/run"
+	--with-run-dir="/var/run" \
+	--with-default_config_file="/opt/etc/keepalived/keepalived.conf"
+
+CONFIGURE_ARGS+= \
+	ac_cv_func_setns=yes
 
 ifeq ($(CONFIG_KEEPALIVED_VRRP),)
 CONFIGURE_ARGS += \
@@ -159,11 +158,6 @@ CONFIGURE_ARGS += \
 	--disable-checksum-compat
 endif
 
-ifeq ($(CONFIG_KEEPALIVED_DBUS),y)
-CONFIGURE_ARGS += \
-	--enable-dbus
-endif
-
 ifeq ($(CONFIG_KEEPALIVED_LINKBEAT),)
 CONFIGURE_ARGS += \
 	--disable-linkbeat
@@ -204,65 +198,41 @@ MAKE_FLAGS += STRIP="/bin/true"
 TARGET_CFLAGS += -I$(LINUX_DIR)
 
 define Package/keepalived/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/keepalived \
-		$(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/keepalived \
+		$(1)/opt/sbin/
 
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/genhash \
-		$(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/genhash \
+		$(1)/opt/bin/
 
-	$(INSTALL_DIR) $(1)/etc/keepalived
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/etc/keepalived/keepalived.conf \
-		$(1)/etc/keepalived/
+	$(INSTALL_DIR) $(1)/opt/etc/keepalived
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/keepalived/keepalived.conf \
+		$(1)/opt/etc/keepalived/
 
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/keepalived.init \
-		$(1)/etc/init.d/keepalived
-
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/keepalived.config \
-		$(1)/etc/config/keepalived
-
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/keepalived.user \
-		$(1)/etc/keepalived.user
-
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/keepalived
-	$(INSTALL_DATA) ./files/hotplug-user \
-		$(1)/etc/hotplug.d/keepalived/01-user
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S50keepalived.init \
+		$(1)/opt/etc/init.d/S50keepalived
 
 ifneq ($(CONFIG_KEEPALIVED_SNMP_VRRP)$(CONFIG_KEEPALIVED_SNMP_CHECKER)$(CONFIG_KEEPALIVED_SNMP_RFC2)$(CONFIG_KEEPALIVED_SNMP_RFC3),)
-	$(INSTALL_DIR) $(1)/usr/share/snmp/mibs
+	$(INSTALL_DIR) $(1)/opt/share/snmp/mibs
 endif
 
 ifneq ($(CONFIG_KEEPALIVED_SNMP_VRRP)$(CONFIG_KEEPALIVED_SNMP_CHECKER),)
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/snmp/mibs/KEEPALIVED-MIB.txt \
-		$(1)/usr/share/snmp/mibs/KEEPALIVED-MIB.txt
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/snmp/mibs/KEEPALIVED-MIB.txt \
+		$(1)/opt/share/snmp/mibs/KEEPALIVED-MIB.txt
 endif
 
 ifeq ($(CONFIG_KEEPALIVED_SNMP_RFC2),y)
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/snmp/mibs/VRRP-MIB.txt \
-		$(1)/usr/share/snmp/mibs/VRRP-MIB.txt
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/snmp/mibs/VRRP-MIB.txt \
+		$(1)/opt/share/snmp/mibs/VRRP-MIB.txt
 endif
 
 ifeq ($(CONFIG_KEEPALIVED_SNMP_RFC3),y)
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/snmp/mibs/VRRPv3-MIB.txt \
-		$(1)/usr/share/snmp/mibs/VRRPv3-MIB.txt
-endif
-
-ifeq ($(CONFIG_KEEPALIVED_DBUS),y)
-	$(INSTALL_DIR) $(1)/etc/dbus-1/system.d
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/dbus-1/system.d/org.keepalived.Vrrp1.conf \
-		$(1)/etc/dbus-1/system.d/org.keepalived.Vrrp1.conf
-
-	$(INSTALL_DIR) $(1)/usr/share/dbus-1/interfaces
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/dbus-1/interfaces/org.keepalived.Vrrp1.Instance.xml \
-		$(1)/usr/share/dbus-1/interfaces/org.keepalived.Vrrp1.Instance.xml
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/dbus-1/interfaces/org.keepalived.Vrrp1.Vrrp.xml \
-		$(1)/usr/share/dbus-1/interfaces/org.keepalived.Vrrp1.Vrrp.xml
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/snmp/mibs/VRRPv3-MIB.txt \
+		$(1)/opt/share/snmp/mibs/VRRPv3-MIB.txt
 endif
 
 endef
 
-#$(eval $(call BuildPackage,keepalived))
+$(eval $(call BuildPackage,keepalived))
