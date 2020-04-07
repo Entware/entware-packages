@@ -63,7 +63,6 @@ define Package/keepalived
     +KEEPALIVED_VRRP:libnl-route \
     +KEEPALIVED_VRRP:libnfnetlink \
     +KEEPALIVED_SHA1:libopenssl \
-    $(KEEPALIVED_DEPENDS_LIBIP6TC) \
     +KEEPALIVED_IPTABLES:libipset \
     +(KEEPALIVED_SNMP_VRRP||KEEPALIVED_SNMP_CHECKER||KEEPALIVED_SNMP_RFC2||KEEPALIVED_SNMP_RFC3):libnetsnmp \
     +KEEPALIVED_JSON:libjson-c
