@@ -74,8 +74,6 @@ endef
 
 define Package/keepalived/conffiles
 /opt/etc/keepalived/keepalived.conf
-/opt/etc/config/keepalived
-/opt/etc/keepalived.user
 endef
 
 CONFIGURE_ARGS+= \
