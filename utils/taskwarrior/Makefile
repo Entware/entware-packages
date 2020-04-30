@@ -39,8 +39,8 @@ define Package/taskwarrior/description
 endef
 
 define Package/taskwarrior/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/task $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/task $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,taskwarrior))
