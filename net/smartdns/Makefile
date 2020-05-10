@@ -45,7 +45,9 @@ endef
 
 define Package/smartdns/install
 	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/smartdns
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/smartdns $(1)/opt/sbin/smartdns
+	$(INSTALL_BIN) ./files/S38smartdns $(1)/opt/etc/init.d/
 #	$(INSTALL_BIN) $(PKG_BUILD_DIR)/package/openwrt/files/etc/init.d/smartdns $(1)/etc/init.d/smartdns
 #	$(INSTALL_CONF) $(PKG_BUILD_DIR)/package/openwrt/address.conf $(1)/etc/smartdns/address.conf
 #	$(INSTALL_CONF) $(PKG_BUILD_DIR)/package/openwrt/blacklist-ip.conf $(1)/etc/smartdns/blacklist-ip.conf
