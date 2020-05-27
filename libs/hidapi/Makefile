@@ -56,7 +56,8 @@ define Build/Compile
 	sed    's^@prefix@^/opt^; \
 		s^@exec_prefix@^/opt^; \
 		s^@libdir@^$$$${exec_prefix}/lib^; \
-		s^@includedir@^$$$${prefix}/include^' \
+		s^@includedir@^$$$${prefix}/include^; \
+		s^@VERSION@^$(PKG_VERSION)^' \
 		< $(PKG_BUILD_DIR)/pc/hidapi-libusb.pc.in \
 		> $(PKG_BUILD_DIR)/pc/hidapi-libusb.pc
 endef
