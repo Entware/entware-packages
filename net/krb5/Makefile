@@ -15,6 +15,7 @@ PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=NOTICE
+PKG_CPE_ID:=cpe:/a:mit:kerberos
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://web.mit.edu/kerberos/dist/krb5/1.17
@@ -82,7 +83,6 @@ CONFIGURE_VARS += \
 	ac_cv_lib_keyutils_add_key=no
 
 CONFIGURE_ARGS += \
-	--includedir='/opt/include/krb' \
 	--localstatedir=/opt/etc \
 	--with-system-ss \
 	--with-system-et \
