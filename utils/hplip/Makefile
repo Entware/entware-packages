@@ -23,7 +23,7 @@ PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING LICENSE
 
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:= python libcups
+PKG_BUILD_DEPENDS:= python3 libcups
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
@@ -66,7 +66,7 @@ endef
 define Package/hplip-full
 $(call Package/hplip/Default)
   TITLE+= (full files)
-  DEPENDS:=+libusb-compat +sane-libs +dbus +python +libcups
+  DEPENDS:=+libusb-compat +sane-libs +dbus +python3 +libcups
 endef
 
 define Package/hplip-full/description
@@ -97,7 +97,7 @@ ifeq ($(CONFIG_PACKAGE_hplip-full),m)
 PKG_INSTALL:=1
 
 TARGET_CFLAGS += \
-	-I$(STAGING_DIR)/opt/include/libusb-1.0 -I$(STAGING_DIR)/opt/include/python2.7/
+	-I$(STAGING_DIR)/opt/include/libusb-1.0 -I$(STAGING_DIR)/opt/include/python3.8/
 
   define Build/Configure
 	$(call Build/Configure/Default,\
@@ -109,7 +109,11 @@ TARGET_CFLAGS += \
 		--with-systraydir=/opt/var \
 		ac_cv_lib_cups_cupsDoFileRequest=yes \
 		LIBS="-lz -ljpeg -lusb -lcups -lpng -ltiff" \
-		PYTHONINCLUDEDIR="$(STAGING_DIR)/opt/include/python2.7/" \
+		PYTHON="$(STAGING_DIR_HOSTPKG)/bin/python3" \
+		PYTHON_PREFIX="$(STAGING_DIR_HOSTPKG)" \
+		PYTHON_EXEC_PREFIX="$(STAGING_DIR_HOSTPKG)" \
+		PYTHON_PLATFORM="linux" \
+		PYTHONINCLUDEDIR="$(STAGING_DIR)/opt/include/python3.8/" \
 	)
   endef
 endif
@@ -138,10 +142,12 @@ define Package/hplip-sane/install
 endef
 
 define Package/hplip-full/install
-	find $(PKG_INSTALL_DIR)/opt/share/hplip -name *.py | xargs $(SED) 's|/usr/bin/env python|/opt/bin/python|;s|/usr/bin/python|/opt/bin/python|'
-	find $(PKG_INSTALL_DIR)/opt -name *.py | xargs $(SED) 's|/usr/|/opt/|g'
-	$(SED) 's|/usr/|/opt/|g' $(PKG_INSTALL_DIR)/opt/lib/cups/filter/{pstotiff,hpps}
-	$(SED) 's|/bin/env python|/bin/python|' $(PKG_INSTALL_DIR)/opt/lib/cups/filter/pstotiff
+	$(FIND) $(PKG_INSTALL_DIR)/opt/share/hplip -name *.py | $(XARGS) $(SED) \
+		's,^#!.*python$$$$,#!/opt/bin/python3,'
+	$(FIND) $(PKG_INSTALL_DIR)/opt -name *.py | $(XARGS) $(SED) 's,/usr/,/opt/,g'
+#		's,\(/usr/\|/usr/local/\),/opt/,g'
+	$(SED) 's,^#!.*python$$$$,#!/opt/bin/python3,;s,/usr/,/opt/,g' \
+		$(PKG_INSTALL_DIR)/opt/lib/cups/filter/pstotiff
 
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
@@ -156,8 +162,8 @@ define Package/hplip-full/install
 	$(INSTALL_DIR) $(1)/opt/lib/sane
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/sane/libsane-hpaio.so* $(1)/opt/lib/sane
 
-	$(INSTALL_DIR) $(1)/opt/lib/python2.7/site-packages
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/python2.7/site-packages/{cups,hpmud,pcard,scan}ext.so $(1)/opt/lib/python2.7/site-packages
+	$(INSTALL_DIR) $(1)/opt/lib/python3.8/site-packages
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/python3.8/site-packages/{cups,hpmud,pcard,scan}ext.so $(1)/opt/lib/python3.8/site-packages
 
 	$(INSTALL_DIR) $(1)/opt/etc/hp
 	$(SED) 's|/usr/|/opt/|g' $(PKG_INSTALL_DIR)/opt/etc/hp/hplip.conf
