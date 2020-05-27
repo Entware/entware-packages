@@ -2,18 +2,18 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=uwsgi
 PKG_VERSION:=2.0.18
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
-PKG_SOURCE:=uwsgi-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL=https://files.pythonhosted.org/packages/source/u/uwsgi/
+PYPI_NAME:=$(PKG_NAME)
 PKG_HASH:=4972ac538800fb2d421027f49b4a1869b66048839507ccf0aa2fda792d99f583
-PKG_BUILD_DIR:=$(BUILD_DIR)/uwsgi-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=python3/host
+PYTHON3_PKG_BUILD:=0
 
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Ansuel Smith <ansuelsmth@gmail.com>
 
+include ../../lang/python/pypi.mk
 include $(INCLUDE_DIR)/package.mk
 include ../../lang/python/python3-package.mk
 #for LINUX_UNAME_VERSION:
@@ -108,8 +108,8 @@ define Build/Compile
 	$(call Build/Compile/Default,plugin.logfile PROFILE=openwrt)
 	$(call Build/Compile/Default,plugin.syslog PROFILE=openwrt)
 	$(call Build/Compile/Default,plugin.cgi PROFILE=openwrt)
-	$(call Build/Compile/HostPy3RunTarget, \
-		cd $(PKG_BUILD_DIR), \
+	$(call Python3/Run, \
+		$(PKG_BUILD_DIR), \
 		uwsgiconfig.py --plugin plugins/python openwrt, \
 		CPP="$(TARGET_CROSS)cpp" \
 		LINUX_UNAME_VERSION=$(LINUX_UNAME_VERSION) \
