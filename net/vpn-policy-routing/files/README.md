@@ -2,7 +2,7 @@
 
 ## Description
 
-This service allows you to define rules (policies) for routing traffic via WAN or your L2TP, Openconnect, OpenVPN, PPTP or Wireguard tunnels. Policies can be set based on any combination of local/remote ports, local/remote IPv4 or IPv6 addresses/subnets or domains. This service supersedes the [VPN Bypass](https://github.com/openwrt/packages/blob/master/net/vpnbypass/files/README.md) service, by supporting IPv6 and by allowing you to set explicit rules not just for WAN interface (bypassing OpenVPN tunnel), but for L2TP, Openconnect, OpenVPN, PPTP and Wireguard tunnels as well.
+This service allows you to define rules (policies) for routing traffic via WAN or your L2TP, Openconnect, OpenVPN, PPTP or Wireguard tunnels. Policies can be set based on any combination of local/remote ports, local/remote IPv4 or IPv6 addresses/subnets or domains. This service supersedes the ```VPN Bypass``` available on [GitHub](https://github.com/openwrt/packages/blob/master/net/vpnbypass/files/README.md)/[jsDelivr](https://cdn.jsdelivr.net/gh/openwrt/packages@master/net/vpnbypass/files/README.md) service, by supporting IPv6 and by allowing you to set explicit rules not just for WAN interface (bypassing OpenVPN tunnel), but for L2TP, Openconnect, OpenVPN, PPTP and Wireguard tunnels as well.
 
 ## Features
 
@@ -23,6 +23,14 @@ This service allows you to define rules (policies) for routing traffic via WAN o
 - Policies based on remote ports numbers. Same format/syntax and restrictions as local ports.
 - You can mix the IP addresses/subnets and device (or domain) names in one field separating them by space (like this: ```66.220.2.74 he.net tunnelbroker.net```).
 - See [Policy Options](#policy-options) section for more information.
+
+### Domain-Based Policies
+
+- Policies based on (remote) domain names can be processed in different ways, please review the [Policy Options](#policy-options) section and [Footnotes/Known Issues](#footnotesknown-issues) section, specifically [<sup>#5</sup>](#footnote5) and any other information in that section relevant to domain-based routing/DNS.
+
+### Physical Device Policies
+
+- Policies based on a local physical device (like a specially created wlan), please review the [Policy Options](#policy-options) section and [Footnotes/Known Issues](#footnotesknown-issues) section, specifically [<sup>#6</sup>](#footnote6) and any other information in that section relevant to handling physical device.
 
 ### DSCP Tag-Based Policies
 
@@ -56,25 +64,25 @@ Two example custom user-files are provided: ```/etc/vpn-policy-routing.aws.user`
 ## Screenshots (luci-app-vpn-policy-routing)
 
 Service Status
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-status.png "Service Status")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-status.png "Service Status")
 
 Configuration - Basic Configuration
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-config-basic.png "Basic Configuration")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-config-basic.png "Basic Configuration")
 
 Configuration - Advanced Configuration
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-config-advanced.png "Advanced Configuration")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-config-advanced.png "Advanced Configuration")
 
 Configuration - WebUI Configuration
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-config-webui.png "WebUI Configuration")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-config-webui.png "WebUI Configuration")
 
 Policies
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-policies.png "Policies")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-policies.png "Policies")
 
 DSCP Tagging
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-dscp.png "DSCP Tagging")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-dscp.png "DSCP Tagging")
 
 Custom User File Includes
-![screenshot](https://raw.githubusercontent.com/stangri/openwrt_packages/master/screenshots/vpn-policy-routing/screenshot04-userfiles.png "Custom User File Includes")
+![screenshot](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/screenshots/vpn-policy-routing/screenshot04-userfiles.png "Custom User File Includes")
 
 ## How It Works
 
@@ -105,7 +113,7 @@ opkg update
 opkg install vpn-policy-routing luci-app-vpn-policy-routing
 ```
 
-If these packages are not found in the official feed/repo for your version of OpenWrt/LEDE Project, you will need to [add a custom repo to your router](https://github.com/stangri/openwrt_packages/blob/master/README.md#on-your-router) first.
+If these packages are not found in the official feed/repo for your version of OpenWrt/LEDE Project, you will need to add a custom repo to your router following instructions on [GitHub](https://github.com/stangri/openwrt_packages/blob/master/README.md#on-your-router)/[jsDelivr](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/README.md#on-your-router) first.
 
 ### Requirements
 
@@ -144,7 +152,7 @@ As per screenshots above, in the Web UI the ```vpn-policy-routing``` configurati
 |Advanced|supported_interface|list/string||Allows to specify the space-separated list of interface names (in lower case) to be explicitly supported by the ```vpn-policy-routing``` service. Can be useful if your OpenVPN tunnels have dev option other than tun\* or tap\*.|
 |Advanced|ignored_interface|list/string||Allows to specify the space-separated list of interface names (in lower case) to be ignored by the ```vpn-policy-routing``` service. Can be useful if running both VPN server and VPN client on the router.|
 |Advanced|boot_timeout|number|30|Allows to specify the time (in seconds) for ```vpn-policy-routing``` service to wait for WAN gateway discovery on boot. Can be useful on devices with ADSL modem built in.|
-|Advanced|iptables_rule_option|append/insert|append|Allows to specify the iptables parameter for rules: ```-A``` for ```append``` and ```-I``` for ```insert```. Append is generally speaking more compatible with other packages/firewall rules. Recommended to change to ```insert``` only to improve compatibility with the ```mwan3``` package.|
+|Advanced|iptables_rule_option|append/insert|append|Allows to specify the iptables parameter for rules: ```-A``` for ```append``` and ```-I``` for ```insert```. Append is generally speaking more compatible with other packages/firewall rules. Recommended to change to ```insert``` only to enable compatibility with the ```mwan3``` package.|
 |Advanced|iprule_enabled|boolean|0|Add an ```ip rule```, not an ```iptables``` entry for policies with just the local address. Use with caution to manipulate policies priorities.|
 |Advanced|icmp_interface|string||Set the default ICMP protocol interface (interface name in lower case). Use with caution.|
 |Advanced|append_src_rules|string||Append local IP Tables rules. Can be used to exclude local IP addresses from destinations for policies with local address set.|
@@ -175,11 +183,11 @@ The ```src_addr```, ```src_port```, ```dest_addr``` and ```dest_port``` options 
 |**name**||Policy name, it **must** be set.|
 |enabled|1|Enable/disable policy. To display the ```Enable``` checkbox column for policies in the WebUI, make sure to select ```Enabled``` for ```Show Enable Column``` in the ```Web UI``` tab.|
 |**interface**||Policy interface, it **must** be set.|
-|src_addr||List of space-separated local/source IP addresses, CIDRs, hostnames or mac addresses (colon-separated). You can also specify a local interface (like a specially created wlan) prepended by an ```@``` symbol.|
+|src_addr||List of space-separated local/source IP addresses, CIDRs, hostnames or mac addresses (colon-separated). You can also specify a local physical device (like a specially created wlan) prepended by an ```@``` symbol.|
 |src_port||List of space-separated local/source ports or port-ranges.|
 |dest_addr||List of space-separated remote/target IP addresses, CIDRs or hostnames/domain names.|
 |dest_port||List of space-separated remote/target ports or port-ranges.|
-|proto|all|Policy protocol, can be any valid protocol from ```/etc/protocols``` for CLI/uci or can be selected from the values set in ```webui_supported_protocol```. To display the ```Protocol``` column for policies in the WebUI, make sure to select ```Enabled``` for ```Show Protocol Column``` in the ```Web UI``` tab.|
+|proto|auto|Policy protocol, can be any valid protocol from ```/etc/protocols``` for CLI/uci or can be selected from the values set in ```webui_supported_protocol```. To display the ```Protocol``` column for policies in the WebUI, make sure to select ```Enabled``` for ```Show Protocol Column``` in the ```Web UI``` tab.<br/>Special cases: ```auto``` will try to intelligently insert protocol-agnostic policy and fall back to TCP/UDP if the protocol must be selected for specific policy; ```all``` will always insert a protocol-agnostic policy (which may fail depending on the policy).|
 |chain|PREROUTING|Policy chain, can be either ```PREROUTING```, ```FORWARDING```, ```INPUT``` or ```OUTPUT```. This setting is case-sensitive. To display the ```Chain``` column for policies in the WebUI, make sure to select ```Enabled``` for ```Show Chain Column``` in the ```Web UI``` tab.|
 
 ### Custom User Files Include Options
@@ -482,7 +490,7 @@ config vpn-policy-routing 'config'
 config policy
   option name 'Wireguard Server'
   option interface 'wan'
-  option proto 'tcp'
+  option proto 'udp'
   option src_port '61820'
   option chain 'OUTPUT'
 ```
@@ -647,7 +655,7 @@ config rule
 
 #### Netflix Domains
 
-The following policy should route US Netflix traffic via WAN. For capturing international Netflix domain names, you can refer to [these getdomainnames.sh-specific instructions](https://github.com/Xentrk/netflix-vpn-bypass#ipset_netflix_domainssh) and don't forget to adjust them for OpenWrt. This may not work if Netflix changes things. For more reliable US Netflix routing you may want to consider using [custom user files](#custom-user-files).
+The following policy should route US Netflix traffic via WAN. For capturing international Netflix domain names, you can refer to the getdomainnames.sh-specific instructions on [GitHub](https://github.com/Xentrk/netflix-vpn-bypass/blob/master/README.md#ipset_netflix_domainssh)/[jsDelivr](https://cdn.jsdelivr.net/gh/Xentrk/openwrt_packages@master/netflix-vpn-bypass/README.md#ipset_netflix_domainssh) and don't forget to adjust them for OpenWrt. This may not work if Netflix changes things. For more reliable US Netflix routing you may want to consider using [custom user files](#custom-user-files).
 
 ```text
 config policy
@@ -738,6 +746,8 @@ config openvpn 'vpnc'
 
 5. <a name="footnote5"> </a> When using the ```dnsmasq.ipset``` option, please make sure to flush the DNS cache of the local devices, otherwise domain policies may not work until you do. If you're not sure how to flush the DNS cache (or if the device/OS doesn't offer an option to flush its DNS cache), reboot your local devices when starting to use the service and/or when connecting data-capable device to your WiFi.
 
+6. <a name="footnote6"> </a> When using the policies targeting physical devices, make sure you have the following packages installed: ```kmod-br-netfilter```, ```kmod-ipt-physdev``` and ```iptables-mod-physdev```.
+
 ### Multiple OpenVPN Clients
 
 If you use multiple OpenVPN clients on your router, the order in which their devices are named (tun0, tun1, etc) is not guaranteed by OpenWrt/LEDE Project. The following settings are recommended in this case.
@@ -780,8 +790,12 @@ config vpn-policy-routing 'config'
 
 ### A Word About Default Routing
 
-Service does not alter the default routing. Depending on your VPN tunnel settings (and settings of the VPN server you are connecting to), the default routing might be set to go via WAN or via VPN tunnel. This service affects only routing of the traffic matching the policies. If you want to override default routing, set the following:
-  
+Service does not alter the default routing. Depending on your VPN tunnel settings (and settings of the VPN server you are connecting to), the default routing might be set to go via WAN or via VPN tunnel. This service affects only routing of the traffic matching the policies. If you want to override default routing, follow the instructions below.
+
+#### OpenVPN tunnel configured via uci (/etc/config/openvpn)
+
+Set the following to the appropriate section of your ```/etc/config/openvpn```:
+
 - For OpenVPN 2.4 and newer client config:
 
     ```text
@@ -800,7 +814,31 @@ Service does not alter the default routing. Depending on your VPN tunnel setting
     option route_allowed_ips '0'
     ```
 
-- Routing Wireguard traffic requires setting `rp_filter = 2`. Please refer to [issue #41](https://github.com/stangri/openwrt_packages/issues/41) for more details.
+#### OpenVPN tunnel configured with .ovpn file
+
+Set the following to the appropriate section of your ```.ovpn``` file:
+
+- For OpenVPN 2.4 and newer client ```.ovpn``` file:
+
+    ```text
+    pull_filter 'ignore "redirect-gateway"'
+    ```
+
+- For OpenVPN 2.3 and older client ```.ovpn``` file:
+
+    ```text
+    route_nopull '1'
+    ```
+
+#### Wireguard tunnel
+
+- For your Wireguard (client) config:
+
+    ```text
+    option route_allowed_ips '0'
+    ```
+
+- Routing Wireguard traffic may require setting `net.ipv4.conf.wg0.rp_filter = 2` in `/etc/sysctl.conf`. Please refer to [issue #41](https://github.com/stangri/openwrt_packages/issues/41) for more details.
 
 ### A Word About HTTP/3 (QUICK)
 
@@ -810,9 +848,9 @@ If you want to target traffic using HTTP/3 protocol, you can use the ```AUTO``` 
 
 Some browsers, like [Mozilla Firefox](https://support.mozilla.org/en-US/kb/firefox-dns-over-https#w_about-dns-over-https) or [Google Chrome/Chromium](https://blog.chromium.org/2019/09/experimenting-with-same-provider-dns.html) have [DNS-over-HTTPS proxy](https://en.wikipedia.org/wiki/DNS_over_HTTPS) built-in. Their requests to web-sites cannot be affected if the ```dnsmasq.ipset``` is set for the ```dest_ipset``` option. To fix this, you can try either of the following:
 
-  1. Disable the DNS-over-HTTPS support in your browser and use the OpenWrt's [net/https-dns-proxy](https://github.com/openwrt/packages/tree/master/net/https-dns-proxy) package and set it up either [manually](https://openwrt.org/docs/guide-user/services/dns/doh_dnsmasq_https-dns-proxy?s[]=https&s[]=dns&s[]=proxy) or auto-magically with [https-dns-proxy luci app](https://github.com/openwrt/luci/tree/master/applications/luci-app-https_dns_proxy). You can then continue to use ```dnsmasq.ipset``` setting for the ```dest_ipset``` in VPN Policy Routing.
+  1. Disable the DNS-over-HTTPS support in your browser and use the OpenWrt's ```net/https-dns-proxy``` (README on [GitHub](https://github.com/openwrt/packages/tree/master/net/https-dns-proxy)/[jsDelivr](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/https-dns-proxy/files/README.md)) package with optional ```https-dns-proxy``` WebUI/luci app. You can then continue to use ```dnsmasq.ipset``` setting for the ```dest_ipset``` in VPN Policy Routing.
 
-  2. Continue using DNS-over-HTTPS in your browser (which, by the way, also limits your options for router-level AdBlocking as described [in ```dnsmasq.ipset``` option description here](https://github.com/openwrt/packages/tree/master/net/simple-adblock/files#dns-resolution-option)), you than would either have to disable the  ```dest_ipset``` or switch it to ```ipset```. Please note, you will lose all the benefits of [```dnsmasq.ipset```](#use-dnsmasq-ipset) option.
+  2. Continue using DNS-over-HTTPS in your browser (which, by the way, also limits your options for router-level AdBlocking as described in ```dnsmasq.ipset``` option description here of ```net/simple-adblock``` README on [GitHub](https://github.com/openwrt/packages/tree/master/net/simple-adblock/files#dns-resolution-option)/[jsDelivr](https://cdn.jsdelivr.net/gh/stangri/openwrt_packages@master/simple-adblock/files/README.md#dns-resolution-option)), you than would either have to disable the  ```dest_ipset``` or switch it to ```ipset```. Please note, you will lose all the benefits of [```dnsmasq.ipset```](#use-dnsmasq-ipset) option.
 
 ### A Word About Cloudflare's 1.1.1.1 App
 
@@ -843,4 +881,4 @@ WARNING: while paste.ee uploads are unlisted/not indexed at the web-site, they a
 
 ## Thanks
 
-I'd like to thank everyone who helped create, test and troubleshoot this service. Without contributions from [@hnyman](https://github.com/hnyman), [@dibdot](https://github.com/dibdot), [@danrl](https://github.com/danrl), [@tohojo](https://github.com/tohojo), [@cybrnook](https://github.com/cybrnook), [@nidstigator](https://github.com/nidstigator), [@AndreBL](https://github.com/AndreBL) and [@dz0ny](https://github.com/dz0ny) and rigorous testing/bugreporting by [@dziny](https://github.com/dziny), [@bluenote73](https://github.com/bluenote73), [@buckaroo](https://github.com/pgera), [@Alexander-r](https://github.com/Alexander-r), [n8v8R](https://github.com/n8v8R) and [psherman](https://forum.openwrt.org/u/psherman) it wouldn't have been possible. Wireguard/IPv6 support is courtesy of [Mullvad](https://www.mullvad.net), [IVPN](https://www.ivpn.net/) and [WireVPN](https://www.wirevpn.net).
+I'd like to thank everyone who helped create, test and troubleshoot this service. Without contributions from [@hnyman](https://github.com/hnyman), [@dibdot](https://github.com/dibdot), [@danrl](https://github.com/danrl), [@tohojo](https://github.com/tohojo), [@cybrnook](https://github.com/cybrnook), [@nidstigator](https://github.com/nidstigator), [@AndreBL](https://github.com/AndreBL), [@dz0ny](https://github.com/dz0ny), rigorous testing/bugreporting by [@dziny](https://github.com/dziny), [@bluenote73](https://github.com/bluenote73), [@buckaroo](https://github.com/pgera), [@Alexander-r](https://github.com/Alexander-r), [n8v8R](https://github.com/n8v8R), [psherman](https://forum.openwrt.org/u/psherman), [@Vale-max](https://github.com/Vale-max), multiple contributions from [dl12345](https://github.com/dl12345) and [trendy](https://forum.openwrt.org/u/trendy) and feedback from other OpenWrt users it wouldn't have been possible. Wireguard/IPv6 support is courtesy of [Mullvad](https://www.mullvad.net) and [IVPN](https://www.ivpn.net/).
