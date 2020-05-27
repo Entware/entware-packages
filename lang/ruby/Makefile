@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2006-2016 OpenWrt.org
-# Copyright (C) 2017-2018 Luiz Angelo Daros de Luca <luizluca@gmail.com>
+# Copyright (C) 2017-2020 Luiz Angelo Daros de Luca <luizluca@gmail.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -14,15 +14,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ruby
-PKG_VERSION:=2.6.5
-PKG_RELEASE:=3
+PKG_VERSION:=2.7.1
+PKG_RELEASE:=1
 
 # First two numbes
 PKG_ABI_VERSION:=$(subst $(space),.,$(wordlist 1, 2, $(subst .,$(space),$(PKG_VERSION))))
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://cache.ruby-lang.org/pub/ruby/$(PKG_ABI_VERSION)/
-PKG_HASH:=d5d6da717fd48524596f9b78ac5a2eeb9691753da5c06923a6c31190abe01a62
+PKG_HASH:=b224f9844646cc92765df8288a46838511c1cec5b550d8874bd4686a904fcee7
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=COPYING
@@ -190,7 +190,7 @@ endef
 define Package/ruby-dev
 $(call Package/ruby/Default)
   TITLE+= (dev files)
-  DEPENDS:=+libruby
+  DEPENDS:=+libruby ruby
 endef
 define Package/ruby-dev/description
   Header files for compiling extension modules for the Ruby $(PKG_ABI_VERSION)
@@ -221,9 +221,15 @@ define Package/ruby-stdlib/install
 	/bin/true
 endef
 
+define Package/ruby-benchmark/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/benchmark.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/benchmark/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/benchmark-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/benchmark-*.gemspec
+endef
+
 define Package/ruby-bigdecimal/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/bigdecimal.so
-/opt/lib/ruby/$(PKG_ABI_VERSION)/*/bigdecimal/
 /opt/lib/ruby/$(PKG_ABI_VERSION)/bigdecimal/
 /opt/lib/ruby/$(PKG_ABI_VERSION)/bigdecimal.rb
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/bigdecimal-*.gemspec
@@ -237,14 +243,11 @@ define Package/ruby-bundler/files
 endef
 
 define Package/ruby-cgi/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/cgi
 /opt/lib/ruby/$(PKG_ABI_VERSION)/cgi.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/cgi/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/cgi-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/cgi-*.gemspec
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/cgi/escape.so
-endef
-
-define Package/ruby-cmath/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/cmath.rb
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/cmath-*.gemspec
 endef
 
 define Package/ruby-csv/files
@@ -270,25 +273,22 @@ define Package/ruby-dbm/files
 endef
 
 define Package/ruby-debuglib/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/profile.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/profiler.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/debug.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/benchmark.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/objspace.so
 endef
 
-define Package/ruby-did-you-mean/files
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/did_you_mean-*.gemspec
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/
+define Package/ruby-delegate/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/delegate.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/delegate/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/delegate-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/delegate-*.gemspec
 endef
-define Package/ruby-did-you-mean/files-excluded
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/benchmark
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/doc
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/evaluation
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/test
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/*.md
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/*.txt
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/.travis.yml
+
+define Package/ruby-did-you-mean/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/did_you_mean.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/did_you_mean/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/did_you_mean-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/did_you_mean-*.gemspec
 endef
 
 define Package/ruby-digest/description
@@ -326,12 +326,6 @@ define Package/ruby-enc/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/enc/iso_8859_1.so
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/enc/utf_*.so
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/enc/euc_jp.so
-endef
-
-define Package/ruby-e2mmap/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/e2mmap.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/e2mmap/
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/e2mmap-*.gemspec
 endef
 
 define Package/ruby-enc-extra/files
@@ -373,7 +367,7 @@ endef
 
 define Package/ruby-fileutils/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/fileutils.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/fileutils/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/fileutils-*/
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/fileutils-*.gemspec
 endef
 
@@ -409,6 +403,12 @@ define Package/ruby-gems/install
 	$(call RubyBuildPackage/install,gems,$(1))
 endef
 
+define Package/ruby-getoptlong/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/getoptlong.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/getoptlong/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/getoptlong-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/getoptlong-*.gemspec
+endef
 
 define Package/ruby-io-console/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/io/console.so
@@ -445,6 +445,7 @@ endef
 
 define Package/ruby-logger/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/logger.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/logger/
 /opt/lib/ruby/$(PKG_ABI_VERSION)/syslog/logger.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/syslog.so
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/logger-*.gemspec
@@ -471,10 +472,7 @@ define Package/ruby-misc/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/abbrev.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/base64.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/coverage.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/delegate.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/expect.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/getoptlong.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/open3.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/securerandom.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/set.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/shellwords.rb
@@ -493,7 +491,7 @@ endef
 
 define Package/ruby-multithread/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/monitor.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/timeout.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/*/monitor.so
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/io/wait.so
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/io/nonblock.so
 endef
@@ -506,6 +504,26 @@ endef
 define Package/ruby-net/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/open-uri.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/net/*
+endef
+define Package/ruby-net/files-excluded
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/pop.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/pop/*
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/smtp.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/smtp/*
+endef
+
+define Package/ruby-net-pop/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/pop.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/pop/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/net-pop-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/net-pop-*.gemspec
+endef
+
+define Package/ruby-net-smtp/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/smtp.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/net/smtp/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/net-smtp-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/net-smtp-*.gemspec
 endef
 
 define Package/ruby-net-telnet/files
@@ -523,6 +541,20 @@ define Package/ruby-nkf/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/nkf.so
 endef
 
+define Package/ruby-observer/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/observer.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/observer/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/observer-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/observer-*.gemspec
+endef
+
+define Package/ruby-open3/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/open3.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/open3/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/open3-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/open3-*.gemspec
+endef
+
 define Package/ruby-openssl/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/openssl
 /opt/lib/ruby/$(PKG_ABI_VERSION)/openssl.rb
@@ -538,12 +570,8 @@ endef
 
 define Package/ruby-ostruct/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/ostruct.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/ostruct/
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/ostruct-*.gemspec
-endef
-
-define Package/ruby-patterns/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/observer.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/singleton.rb
 endef
 
 define Package/ruby-powerassert/files
@@ -567,6 +595,9 @@ endef
 
 define Package/ruby-pstore/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/pstore.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/pstore/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/pstore-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/pstore-*.gemspec
 endef
 
 define Package/ruby-psych/files
@@ -577,8 +608,18 @@ define Package/ruby-psych/files
 endef
 
 define Package/ruby-racc/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/racc.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/racc
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/racc/*.so
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/racc-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/racc-*.gemspec
+endef
+define Package/ruby-racc/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/racc $(1)/opt/bin/;
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/racc2y $(1)/opt/bin/;
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/y2racc $(1)/opt/bin/;
+	$(call RubyBuildPackage/install,racc,$(1))
 endef
 
 define Package/ruby-rake/files
@@ -606,11 +647,6 @@ define Package/ruby-rdoc/files
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/rdoc-*
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/rdoc-*.gemspec
 endef
-define Package/ruby-rdoc/files-excluded
-/opt/lib/ruby/$(PKG_ABI_VERSION)/rdoc/test_case.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/rdoc/markup/formatter_test_case.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/rdoc/markup/text_formatter_test_case.rb
-endef
 define Package/ruby-rdoc/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/rdoc $(1)/opt/bin/
@@ -619,7 +655,22 @@ define Package/ruby-rdoc/install
 endef
 
 define Package/ruby-readline/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/readline.rb
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/readline-0*
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/readline-0*.gemspec
+endef
+
+define Package/ruby-readline-ext/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/readline.so
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/readline-ext-*
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/readline-ext-*.gemspec
+endef
+
+define Package/ruby-reline/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/reline.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/reline
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/reline-*
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/reline-*.gemspec
 endef
 
 define Package/ruby-rexml/files
@@ -643,20 +694,16 @@ define Package/ruby-rss/files
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/rss-*.gemspec
 endef
 
-define Package/ruby-scanf/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/scanf.rb
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/scanf-*.gemspec
-endef
-
 define Package/ruby-sdbm/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/*/sdbm.so
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/sdbm-*.gemspec
 endef
 
-define Package/ruby-shell/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/shell.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/shell
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/shell-*.gemspec
+define Package/ruby-singleton/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/singleton.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/singleton/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/singleton-*
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/singleton-*.gemspec
 endef
 
 define Package/ruby-socket/files
@@ -676,11 +723,6 @@ define Package/ruby-strscan/files
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/strscan-*.gemspec
 endef
 
-define Package/ruby-sync/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/sync.rb
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/sync-*.gemspec
-endef
-
 define Package/ruby-testunit/files
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/test-unit-*.gemspec
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/test-unit-*
@@ -696,10 +738,11 @@ define Package/ruby-time/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/time.rb
 endef
 
-define Package/ruby-thwait/files
-/opt/lib/ruby/$(PKG_ABI_VERSION)/thwait.rb
-/opt/lib/ruby/$(PKG_ABI_VERSION)/thwait/
-/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/thwait-*.gemspec
+define Package/ruby-timeout/files
+/opt/lib/ruby/$(PKG_ABI_VERSION)/timeout.rb
+/opt/lib/ruby/$(PKG_ABI_VERSION)/timeout/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/timeout-*
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/timeout-*.gemspec
 endef
 
 define Package/ruby-tracer/files
@@ -715,6 +758,8 @@ endef
 define Package/ruby-uri/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/uri.rb
 /opt/lib/ruby/$(PKG_ABI_VERSION)/uri
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/uri-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/uri-*.gemspec
 endef
 
 define Package/ruby-webrick/files
@@ -736,6 +781,8 @@ endef
 define Package/ruby-yaml/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/yaml
 /opt/lib/ruby/$(PKG_ABI_VERSION)/yaml.rb
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/yaml-*/
+/opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/yaml-*.gemspec
 endef
 
 define Package/ruby-zlib/files
@@ -819,75 +866,79 @@ endef
 $(eval $(call BuildPackage,libruby))
 $(eval $(call BuildPackage,ruby))
 $(eval $(call BuildPackage,ruby-dev))
+$(eval $(call RubyBuildPackage,benchmark,Performance benchmarking library,))
 $(eval $(call RubyBuildPackage,bigdecimal,Arbitrary-precision decimal floating-point library,))
-$(eval $(call RubyBuildPackage,bundler,Manage dependencies,))
+$(eval $(call RubyBuildPackage,bundler,Manage dependencies,+ruby-irb +ruby-openssl +ruby-readline))
 $(eval $(call RubyBuildPackage,cgi,CGI support toolkit,+ruby-filelib +ruby-pstore +ruby-stringio))
-$(eval $(call RubyBuildPackage,cmath,Trigonometric and transcendental functions for complex numbers,))
 $(eval $(call RubyBuildPackage,csv,CSV Reading and Writing,+ruby-date +ruby-forwardable +ruby-misc +ruby-stringio +ruby-strscan))
 $(eval $(call RubyBuildPackage,date,Comparable module for handling dates,))
 $(eval $(call RubyBuildPackage,dbm,Wrapper for the UNIX-style Database Manager Library,+libdb47))
 $(eval $(call RubyBuildPackage,debuglib,debug library,+ruby-filelib +ruby-prettyprint +ruby-tracer))
+$(eval $(call RubyBuildPackage,delegate,lib to delegate method calls to an object,))
 $(eval $(call RubyBuildPackage,did-you-mean,did you mean? experience,+ruby-misc))
 $(eval $(call RubyBuildPackage,digest,Digest Library,+RUBY_DIGEST_USE_OPENSSL:libopenssl))
-$(eval $(call RubyBuildPackage,drb,distributed object system,+ruby-filelib +ruby-ipaddr +ruby-patterns))
-$(eval $(call RubyBuildPackage,e2mmap,custom exceptions with specific messages,))
+$(eval $(call RubyBuildPackage,drb,distributed object system,+ruby-filelib +ruby-ipaddr +ruby-observer +ruby-singleton))
 $(eval $(call RubyBuildPackage,enc,character re-coding library charset (small subset),))
 $(eval $(call RubyBuildPackage,enc-extra,character re-coding library charset (extra subset),+ruby-enc))
 $(eval $(call RubyBuildPackage,erb,(embedded interpreter),+ruby-cgi +ruby-strscan))
 $(eval $(call RubyBuildPackage,etc,Access info typically stored in /etc,))
 $(eval $(call RubyBuildPackage,fcntl,Loads constants defined in the OS fcntl.h C header file,))
 $(eval $(call RubyBuildPackage,fiddle,Libffi wrapper for Ruby,+libffi))
-$(eval $(call RubyBuildPackage,filelib,file utils library,+ruby-fileutils +ruby-misc))
-$(eval $(call RubyBuildPackage,fileutils,File utility methods for copying moving removing etc,+ruby-enc +ruby-etc +ruby-rbconfig))
+$(eval $(call RubyBuildPackage,filelib,file utils library,+ruby-fileutils))
+$(eval $(call RubyBuildPackage,fileutils,File utility methods for copying moving removing etc,+ruby-enc +ruby-etc +ruby-rbconfig +ruby-socket))
 $(eval $(call RubyBuildPackage,forwardable,delegation of methods to a object,))
 $(eval $(call RubyBuildPackage,gdbm,Ruby extension for GNU dbm,+libgdbm))
-$(eval $(call RubyBuildPackage,gems,gems packet management,))
+$(eval $(call RubyBuildPackage,gems,gems packet management,+ruby-net +ruby-open3 +ruby-rdoc))
+$(eval $(call RubyBuildPackage,getoptlong,implementation of getoptLong,))
 $(eval $(call RubyBuildPackage,io-console,Console interface,))
 $(eval $(call RubyBuildPackage,ipaddr,Set of methods to manipulate an IP address,+ruby-socket))
-$(eval $(call RubyBuildPackage,irb,(interactive shell),))
+$(eval $(call RubyBuildPackage,irb,(interactive shell),+ruby-gems +ruby-reline +ruby-tracer))
 $(eval $(call RubyBuildPackage,json,JSON Implementation for Ruby,+ruby-date +ruby-ostruct))
 $(eval $(call RubyBuildPackage,logger,logger and syslog library,+ruby-multithread))
-$(eval $(call RubyBuildPackage,matrix,implementation of Matrix and Vector classes,+ruby-e2mmap))
-$(eval $(call RubyBuildPackage,minitest,Gem minitest,+ruby-mutex_m))
-$(eval $(call RubyBuildPackage,misc,standard libraries subset (miscellaneous files),))
+$(eval $(call RubyBuildPackage,matrix,implementation of Matrix and Vector classes,))
+$(eval $(call RubyBuildPackage,minitest,Gem minitest,+ruby-gems +ruby-mutex_m))
+$(eval $(call RubyBuildPackage,misc,standard libraries subset (miscellaneous files),+ruby-delegate))
 $(eval $(call RubyBuildPackage,mkmf,makefile library,+ruby-filelib +ruby-optparse))
-$(eval $(call RubyBuildPackage,multithread,multithread library,+ruby-misc))
+$(eval $(call RubyBuildPackage,multithread,multithread library,))
 $(eval $(call RubyBuildPackage,mutex_m,extend objects to be handled like a Mutex,))
-$(eval $(call RubyBuildPackage,net,Network Protocols Library,+ruby-time +ruby-digest +ruby-filelib +ruby-socket +ruby-stringio +ruby-strscan +ruby-uri))
+$(eval $(call RubyBuildPackage,net,Network Protocols Library,+ruby-time +ruby-digest +ruby-filelib +ruby-stringio +ruby-strscan +ruby-uri))
+$(eval $(call RubyBuildPackage,net-pop,POP3 lib,+ruby-net +ruby-openssl))
+$(eval $(call RubyBuildPackage,net-smtp,SMTP lib,+ruby-net +ruby-openssl))
 $(eval $(call RubyBuildPackage,net-telnet,telnet client,+ruby-net))
 $(eval $(call RubyBuildPackage,nkf,Network Kanji Filter,+ruby-enc))
+$(eval $(call RubyBuildPackage,observer,Observer design pattern,))
+$(eval $(call RubyBuildPackage,open3,popen with stderr,))
 $(eval $(call RubyBuildPackage,openssl,SSL TLS and general purpose cryptography,+ruby-digest +ruby-enc +ruby-ipaddr +ruby-stringio +libopenssl))
 $(eval $(call RubyBuildPackage,ostruct,build custom data structures,))
 $(eval $(call RubyBuildPackage,optparse,command-line option analysis,+ruby-misc +ruby-time))
-$(eval $(call RubyBuildPackage,patterns,design patterns implementation,))
 $(eval $(call RubyBuildPackage,powerassert,Gem power_assert,+ruby-prettyprint +ruby-ripper))
 $(eval $(call RubyBuildPackage,prettyprint,PrettyPrint library,+ruby-etc))
-$(eval $(call RubyBuildPackage,prime,Prime numbers and factorization library,+ruby-forwardable +ruby-patterns))
+$(eval $(call RubyBuildPackage,prime,Prime numbers and factorization library,+ruby-forwardable +ruby-singleton))
 $(eval $(call RubyBuildPackage,pstore,file based persistence,+ruby-digest +ruby-enc))
 $(eval $(call RubyBuildPackage,psych,YAML parser and emitter,+ruby-bigdecimal +ruby-date +ruby-enc +ruby-stringio +ruby-strscan +libyaml))
-$(eval $(call RubyBuildPackage,racc,LALR parser generator,))
-$(eval $(call RubyBuildPackage,rake,Rake (make replacement),+ruby-fileutils +ruby-multithread +ruby-optparse +ruby-ostruct +ruby-patterns))
+$(eval $(call RubyBuildPackage,racc,LALR parser generator,+ruby-forwardable +ruby-optparse +ruby-rbconfig +ruby-stringio +ruby-strscan))
+$(eval $(call RubyBuildPackage,rake,Rake (make replacement),+ruby-fileutils +ruby-optparse +ruby-ostruct +ruby-singleton))
 $(eval $(call RubyBuildPackage,rbconfig,RbConfig,))
-$(eval $(call RubyBuildPackage,rdoc,RDoc produces HTML and command-line documentation for Ruby projects,+ruby-debuglib +ruby-did-you-mean +ruby-erb +ruby-json +ruby-racc +ruby-rake +ruby-ripper +ruby-yaml +ruby-zlib))
-$(eval $(call RubyBuildPackage,readline,support for readline,+libncurses +libreadline))
-$(eval $(call RubyBuildPackage,rexml,XML toolkit,+ruby-enc +ruby-forwardable +ruby-misc +ruby-stringio +ruby-strscan))
+$(eval $(call RubyBuildPackage,rdoc,RDoc produces HTML and command-line documentation for Ruby projects,+ruby-did-you-mean +ruby-erb +ruby-json +ruby-prettyprint +ruby-racc +ruby-rake +ruby-ripper +ruby-yaml +ruby-zlib))
+$(eval $(call RubyBuildPackage,readline,loads readline-ext(native) or reline(ruby),+ruby-reline))
+$(eval $(call RubyBuildPackage,readline-ext,support for native GNU readline,+libncurses +libreadline))
+$(eval $(call RubyBuildPackage,reline,alternative to readline-ext in pure ruby,+ruby-fiddle +ruby-filelib +ruby-forwardable +ruby-io-console))
+$(eval $(call RubyBuildPackage,rexml,XML toolkit,+ruby-enc +ruby-forwardable +ruby-misc +ruby-prettyprint +ruby-stringio +ruby-strscan))
 $(eval $(call RubyBuildPackage,rinda,Linda paradigm implementation,+ruby-drb +ruby-forwardable))
 $(eval $(call RubyBuildPackage,ripper,script parser,))
 $(eval $(call RubyBuildPackage,rss,RSS toolkit,+ruby-net +ruby-nkf +ruby-rexml))
-$(eval $(call RubyBuildPackage,scanf,Implementation of the C function scanf(3),))
 $(eval $(call RubyBuildPackage,sdbm,simple file-based key-value dbm implementation,))
-$(eval $(call RubyBuildPackage,shell,idiomatic Ruby interface,+ruby-e2mmap +ruby-forwardable +ruby-sync))
-$(eval $(call RubyBuildPackage,socket,socket support,+ruby-misc +ruby-multithread))
+$(eval $(call RubyBuildPackage,singleton,Singleton pattern,))
+$(eval $(call RubyBuildPackage,socket,socket support,+ruby-misc +ruby-multithread +ruby-timeout))
 $(eval $(call RubyBuildPackage,stringio,Pseudo `IO` class from/to `String`,))
 $(eval $(call RubyBuildPackage,strscan,Lexical scanning operations on a String,))
-$(eval $(call RubyBuildPackage,sync,two-phase lock with a counter,))
 $(eval $(call RubyBuildPackage,testunit,Gem test-unit,+ruby-csv +ruby-erb +ruby-optparse +ruby-powerassert +ruby-rexml +ruby-yaml))
 $(eval $(call RubyBuildPackage,time,Extends Time with additional methods for parsing and converting Times,+ruby-date))
-$(eval $(call RubyBuildPackage,thwait,Watches for termination of multiple threads,+ruby-e2mmap))
+$(eval $(call RubyBuildPackage,timeout,Auto-terminate potentially long-running operations,))
 $(eval $(call RubyBuildPackage,tracer,Outputs a source level execution trace of a Ruby program,))
 $(eval $(call RubyBuildPackage,unicodenormalize,String additions for Unicode normalization,+ruby-enc +ruby-enc-extra))
 $(eval $(call RubyBuildPackage,uri,library to handle URI,+ruby-enc))
-$(eval $(call RubyBuildPackage,webrick,HTTP server toolkit,+ruby-erb +ruby-net +ruby-patterns))
+$(eval $(call RubyBuildPackage,webrick,HTTP server toolkit,+ruby-erb +ruby-net +ruby-singleton))
 $(eval $(call RubyBuildPackage,xmlrpc,XML-RPC toolkit,+ruby-rexml +ruby-webrick))
 $(eval $(call RubyBuildPackage,yaml,YAML toolkit,+ruby-dbm +ruby-pstore +ruby-psych))
 $(eval $(call RubyBuildPackage,zlib,compression/decompression library interface,))
