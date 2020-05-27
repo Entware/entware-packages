@@ -143,7 +143,8 @@ MESON_ARGS += \
 	-Ddbus=disabled
 endif
 
-TARGET_LDFLAGS += -Wl,--gc-sections -liconv
+TARGET_LDFLAGS += -Wl,--gc-sections
+TARGET_LDFLAGS += $(if $(INTL_FULL),-liconv) $(if $(INTL_FULL),-lintl)
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
