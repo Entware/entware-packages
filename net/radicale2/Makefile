@@ -5,10 +5,9 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=radicale2
 PKG_VERSION:=2.1.11
-PKG_RELEASE:=1
-PKG_MAINTAINER:=Daniel Dickinson <cshored@thecshore.com>
+PKG_RELEASE:=3
 
-PKG_LICENSE:=GPL-3.0
+PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:radicale:radicale
 
@@ -23,9 +22,8 @@ define Package/radicale2/Default
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Web Servers/Proxies
-  URL:=http://radicale.org/
+  URL:=https://radicale.org/
   TITLE:=Radicale 2.x CalDAV/CardDAV server
-  MAINTAINER:=Daniel Dickinson <cshored@thecshore.com>
 endef
 
 define Package/radicale2
@@ -33,7 +31,6 @@ $(call Package/radicale2/Default)
   USERID:=radicale2=225:radicale2=225
   DEPENDS:=+python3 +python3-dateutil +python3-vobject +python3-setuptools
   CONFLICTS:=radicale
-  VARIANT:=python3
 endef
 
 define Package/radicale2-examples
@@ -73,25 +70,9 @@ define Package/radicale2/conffiles
 /etc/radicale2/logging
 endef
 
-define Package/radicale2/preinst
-	#!/bin/sh
-	[ -n "$${IPKG_INSTROOT}" ] && exit 0	# if run within buildroot exit
-
-	# stop service if PKG_UPGRADE
-	[ "$${PKG_UPGRADE}" = "1" ] && /etc/init.d/radicale2 stop >/dev/null 2>&1
-
-	exit 0	# suppress errors from stop command
-endef
-
-define Py3Package/radicale2/filespec
-  +|$(PYTHON3_PKG_DIR)
-  +|/usr/bin/radicale2|0755
-endef
-
 define Py3Package/radicale2/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/radicale $(PKG_INSTALL_DIR)/usr/bin/radicale2
-	$(SED) 's,^#!.*python.*,#!/usr/bin/python$(PYTHON3_VERSION),' $(PKG_INSTALL_DIR)/usr/bin/radicale2
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/radicale $(1)/usr/bin/radicale2
 	$(INSTALL_DIR) $(1)/etc/config $(1)/etc/init.d
 	$(INSTALL_CONF) ./files/radicale2.config $(1)/etc/config/radicale2
 	$(INSTALL_BIN) ./files/radicale2.init $(1)/etc/init.d/radicale2
