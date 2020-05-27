@@ -8,59 +8,36 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=django-jsonfield
-PKG_VERSION:=1.0.1
-PKG_RELEASE:=6
+PKG_VERSION:=2.1.1
+PKG_RELEASE:=2
 
-PYPI_NAME:=$(PKG_NAME)
-PKG_HASH:=6c0afd5554739365b55d86e285cf966cc3a45682fff963463364ea1f6511ca3e
+PYPI_NAME:=jsonfield
+PKG_HASH:=ed7c5e1829e9453e24a8bebef1e702ffe402e6def6b326f0e0b88764c59a6dc7
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
-PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
-include ../python-package.mk
 include ../python3-package.mk
 
-define Package/django-jsonfield/Default
+define Package/python3-django-jsonfield
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
-  TITLE:=JSONField for django models
-  URL:=https://github.com/adamchainz/django-jsonfield
-endef
-
-define Package/python-django-jsonfield
-$(call Package/django-jsonfield/Default)
+  TITLE:=A reusable Django field to store validated JSON in models
+  URL:=https://github.com/rpkilby/jsonfield
   DEPENDS:= \
-	+PACKAGE_python-django-jsonfield:python \
-	python-django1
-  VARIANT:=python
-  MDEPENDS:=python-django1
-endef
-
-define Package/python-django-jsonfield/description
-  JSONField for django models
-endef
-
-define Package/python3-django-jsonfield
-$(call Package/django-jsonfield/Default)
-  DEPENDS:= \
-	+PACKAGE_python3-django-jsonfield:python3 \
-	+PACKAGE_python3-django-jsonfield:python3-django1
-  VARIANT:=python3
+	+python3 \
+	+python3-django1 \
+	+python3-six
 endef
 
 define Package/python3-django-jsonfield/description
-$(call Package/python-django-jsonfield/description)
-.
-(Variant for Python3)
+  jsonfield is a reusable model field that allows you to store validated
+  JSON, automatically handling serialization to and from the database.
 endef
-
-$(eval $(call PyPackage,python-django-jsonfield))
-$(eval $(call BuildPackage,python-django-jsonfield))
-$(eval $(call BuildPackage,python-django-jsonfield-src))
 
 $(eval $(call Py3Package,python3-django-jsonfield))
 $(eval $(call BuildPackage,python3-django-jsonfield))
