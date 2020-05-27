@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=avahi
 PKG_VERSION:=0.8
-PKG_RELEASE:=1
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/lathiat/avahi/releases/download/v$(PKG_VERSION) \
@@ -20,10 +20,6 @@ PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=LGPL-2.1-or-later
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:avahi:avahi
-
-PKG_BUILD_DEPENDS:=intltool/host
-PKG_FIXUP:=autoreconf
-PKG_REMOVE_FILES:=autogen.sh
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -255,7 +251,7 @@ $(call Package/avahi/Default/description)
 endef
 
 TARGET_CFLAGS += $(FPIC) -DGETTEXT_PACKAGE
-TARGET_LDFLAGS += $(if $(CONFIG_SSP_SUPPORT),-lssp_nonshared)
+TARGET_LDFLAGS += $(if $(CONFIG_GCC_LIBSSP),-lssp_nonshared)
 
 CONFIGURE_ARGS += \
 	--enable-shared \
@@ -293,6 +289,7 @@ CONFIGURE_ARGS += \
 	--with-distro=none \
 	--with-avahi-user=nobody \
 	--with-avahi-group=nogroup \
+	--with-avahi-priv-access-group=nogroup \
 	--with-autoipd-user=nobody \
 	--with-autoipd-group=nogroup
 
@@ -324,13 +321,6 @@ endif
 endif
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
-	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/avahi-core.pc
-ifneq ($(CONFIG_PACKAGE_libavahi-compat-libdnssd),)
-ifeq ($(BUILD_VARIANT),dbus)
-	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/avahi-client.pc
-	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/avahi-compat-libdns_sd.pc
-endif
-endif
 endef
 
 define Package/libavahi/install
