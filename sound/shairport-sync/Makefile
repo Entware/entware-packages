@@ -7,20 +7,21 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shairport-sync
-PKG_VERSION:=3.3.5
-PKG_RELEASE:=1
+PKG_VERSION:=3.3.6
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/mikebrady/shairport-sync/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=9757dd7f19c0bc28cb06a6753305c3ed89da2d271d069b36d1b12173309c1459
+PKG_HASH:=a8382affd25c473fa38ead5690148c6c3902098f359f9c881eefe139e1f49f49
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>, \
 		Mike Brady <mikebrady@eircom.net>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING LICENSES shairport.c
 
-PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -74,7 +75,7 @@ define Package/shairport-sync-mini/description
   Minimal version uses mbed TLS and does not include libsoxr and avahi support.
 endef
 
-CONFIGURE_ARGS+= \
+CONFIGURE_ARGS += \
 	--with-alsa \
 	--with-metadata
 
@@ -103,9 +104,9 @@ Package/shairport-sync-mini/conffiles = $(Package/shairport-sync/default/conffil
 
 define Package/shairport-sync/default/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/shairport-sync $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/shairport-sync $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/scripts/shairport-sync.conf $(1)/opt/etc/shairport-sync.conf
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/shairport-sync.conf $(1)/opt/etc/shairport-sync.conf
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S50shairport-sync $(1)/opt/etc/init.d
 	$(INSTALL_CONF) ./files/asound.conf $(1)/opt/etc/
