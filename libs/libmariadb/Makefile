@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libmariadb
-PKG_VERSION:=3.1.7
+PKG_VERSION:=3.1.8
 PKG_RELEASE:=1
 
 PKG_SOURCE:=mariadb-connector-c-$(PKG_VERSION)-src.tar.gz
@@ -18,7 +18,7 @@ PKG_SOURCE_URL := \
 	https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/connector-c-$(PKG_VERSION) \
 	https://downloads.mariadb.org/interstitial/connector-c-$(PKG_VERSION)
 
-PKG_HASH:=64f7bc8f5df3200ba6e3080f68ee4942382a33e8371baea8ca4b9242746df59a
+PKG_HASH:=431434d3926f4bcce2e5c97240609983f60d7ff50df5a72083934759bb863f7b
 PKG_MAINTAINER:=Sebastian Kemper <sebastian_ml@gmx.net>
 PKG_LICENSE:=LGPL-2.1
 PKG_LICENSE_FILES:=COPYING.LIB
@@ -160,7 +160,7 @@ define Package/$(PKG_NAME)/install
 		$(PKG_INSTALL_DIR)$(MARIADB_PLUGIN_DIR)/sha256_password.so \
 		$(1)$(MARIADB_PLUGIN_DIR)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libmariadb.so.$(ABI_VERSION) $(1)/opt/lib
-	$(INSTALL_CONF) conf/50-client.cnf $(1)$(MARIADB_CONF_DIR)/conf.d
+	$(INSTALL_DATA) conf/50-client.cnf $(1)$(MARIADB_CONF_DIR)/conf.d
 endef
 
 define BuildPlugin
