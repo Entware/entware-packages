@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=2.25.1
+PKG_VERSION:=2.26.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
-PKG_HASH:=222796cc6e3bf2f9fd765f8f097daa3c3999bb7865ac88a8c974d98182e29f26
+PKG_HASH:=6d65132471df9e531807cb2746f8be317e22a343b9385bbe11c9ce7f0d2fc848
 
 PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
@@ -152,9 +152,11 @@ define Package/git-http/install
 endef
 
 define Package/git-gitweb/install
-	$(INSTALL_DIR) $(1)/opt/share/www/cgi-bin $(1)//opt/share/www/gitweb
+	$(INSTALL_DIR) $(1)/opt/share/www/cgi-bin $(1)/opt/share/www/gitweb
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/gitweb.cgi $(1)/opt/share/www/cgi-bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/www/cgi-bin/static/* $(1)/opt/share/www/gitweb/
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/share/www/cgi-bin/*
 endef
 
 $(eval $(call BuildPackage,git))
