@@ -33,7 +33,7 @@
  #define TO_UPPER_TABLE_SIZE   256
 --- a/mysys/my_default.c
 +++ b/mysys/my_default.c
-@@ -1197,8 +1197,8 @@ static const char **init_default_directo
+@@ -1207,8 +1207,8 @@ static const char **init_default_directo
    if (DEFAULT_SYSCONFDIR[0])
      errors += add_directory(alloc, DEFAULT_SYSCONFDIR, dirs);
  #else
@@ -85,8 +85,8 @@
  
 -SET(INSTALL_UNIX_ADDRDIR_STANDALONE     "/tmp/mysql.sock")
 +SET(INSTALL_UNIX_ADDRDIR_STANDALONE     "/opt/var/run/mysqld/mysqld.sock")
- #
- # RPM layout
+ SET(INSTALL_PAMDIR_STANDALONE           "share")
+ SET(INSTALL_PAMDATADIR_STANDALONE       "share")
  #
 --- a/client/mysql_plugin.c
 +++ b/client/mysql_plugin.c
