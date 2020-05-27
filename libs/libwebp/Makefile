@@ -1,21 +1,22 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libwebp
-PKG_VERSION:=1.0.3
+PKG_VERSION:=1.1.0
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://storage.googleapis.com/downloads.webmproject.org/releases/webp
-PKG_HASH:=e20a07865c8697bba00aebccc6f54912d6bc333bb4d604e6b07491c1a226b34f
+PKG_HASH:=98a052268cc4d5ece27f76572a7f50293f439c17a98e67c4ea0c7ed6f50ef043
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 
-PKG_INSTALL:=1
+CMAKE_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libwebp
   SECTION:=libs
@@ -28,33 +29,25 @@ define Package/libwebp/description
   The libwebp package contains a library for the WebP format.
 endef
 
-CONFIGURE_ARGS += \
-	--enable-shared \
-	--disable-static \
-	--disable-neon-rtcd \
-	--disable-gl \
-	--disable-sdl \
-	--disable-gif \
-	--disable-jpeg \
-	--disable-png \
-	--disable-tiff \
-	--disable-wic \
-	--disable-libwebpmux \
-	--disable-libwebpdemux \
-	--disable-libwebpdecoder \
-	--disable-libwebpextras \
-	--without-pic
+CMAKE_OPTIONS += \
+	-DBUILD_SHARED_LIBS=ON \
+	-DWEBP_BUILD_ANIM_UTILS=OFF \
+	-DWEBP_BUILD_CWEBP=OFF \
+	-DWEBP_BUILD_DWEBP=OFF \
+	-DWEBP_BUILD_GIF2WEBP=OFF \
+	-DWEBP_BUILD_IMG2WEBP=OFF \
+	-DWEBP_BUILD_VWEBP=OFF \
+	-DWEBP_BUILD_WEBPINFO=OFF \
+	-DWEBP_BUILD_WEBPMUX=OFF \
+	-DWEBP_BUILD_EXTRAS=OFF
 
-TARGET_CFLAGS += $(FPIC) -flto
+ifneq ($(findstring arm,$(CONFIG_ARCH)),)
+ifeq ($(findstring neon,$(CONFIG_CPU_TYPE)),)
+CMAKE_OPTIONS += -DWEBP_ENABLE_SIMD=OFF
+endif
+endif
 
-define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/webp
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/webp/* $(1)/opt/include/webp/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libwebp* $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libwebp.pc $(1)/opt/lib/pkgconfig/
-endef
+TARGET_CFLAGS += -flto
 
 define Package/libwebp/install
 	$(INSTALL_DIR) $(1)/opt/lib
