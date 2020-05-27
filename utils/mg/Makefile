@@ -35,7 +35,7 @@ define Package/mg/description
  shouldn't be any reason to learn more editor types than emacs or vi.
 endef
 
-EXTRA_CFLAGS=$(TARGET_CPPFLAGS)
+EXTRA_CFLAGS += $(TARGET_CPPFLAGS)
 
 define Package/mg/install
 	$(INSTALL_DIR) $(1)/opt/bin
