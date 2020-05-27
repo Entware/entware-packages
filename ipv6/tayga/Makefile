@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tayga
 PKG_VERSION:=0.9.2
-PKG_RELEASE:=2a
+PKG_RELEASE:=2b
 
 PKG_SOURCE:=tayga-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.litech.org/tayga/
@@ -19,6 +19,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/tayga
   SECTION:=net
   CATEGORY:=Network
+  DEPENDS:=+ip @IPV6
   TITLE:=Out-of-kernel stateless NAT64 implementation for Linux
   URL:=http://www.litech.org/tayga/
   MAINTAINER:=Ondrej Caletka <ondrej@caletka.cz>
