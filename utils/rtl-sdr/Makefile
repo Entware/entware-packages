@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtl-sdr
 PKG_VERSION:=0.6.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://git.osmocom.org/rtl-sdr/snapshot
@@ -73,6 +73,10 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/librtlsdr.pc $(1)/opt/lib/pkgconfig/
 endef
+
+#define Package/rtl-sdr/conffiles
+#/etc/config/rtl_tcp
+#endef
 
 define Package/rtl-sdr/install
 	$(INSTALL_DIR) $(1)/opt/bin
