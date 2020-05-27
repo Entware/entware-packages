@@ -71,8 +71,8 @@ define Package/xxd
 endef
 
 define Package/vim-full/conffiles
-/usr/share/vim/vimrc
-/root/.vimrc
+/opt/share/vim/vimrc
+/opt/root/.vimrc
 endef
 
 define Package/vim/conffiles
