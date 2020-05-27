@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=less
 PKG_VERSION:=530
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.greenwoodsoftware.com/less
@@ -30,6 +30,7 @@ define Package/less/Default
   CATEGORY:=Utilities
   TITLE:=Pager program similar to more
   URL:=http://www.greenwoodsoftware.com/less/
+#  ALTERNATIVES:=200:/bin/less:/usr/bin/less
 endef
 
 define Package/less/Default/description
@@ -74,6 +75,8 @@ define Package/less/install
 endef
 
 Package/less-wide/install = $(Package/less/install)
+#Package/less-wide/postinst = $(Package/less/postinst)
+#Package/less-wide/postrm = $(Package/less/postrm)
 
 $(eval $(call BuildPackage,less))
 $(eval $(call BuildPackage,less-wide))
