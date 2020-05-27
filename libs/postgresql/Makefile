@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postgresql
 PKG_VERSION:=12.1
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=PostgreSQL
 PKG_CPE_ID:=cpe:/a:postgresql:postgresql
@@ -156,6 +156,7 @@ CONFIGURE_ARGS += \
 			--enable-depend \
 			$(if $(CONFIG_arc),--disable-spinlocks)
 
+HOST_CFLAGS += -std=gnu99
 EXTRA_CFLAGS:= -I$(PKG_BUILD_DIR)/src/include/
 
 # Need a native zic and pg_config for build
@@ -197,6 +198,10 @@ define Package/pgsql-cli-extra/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(foreach bin,$(PGSQL_CLI_EXTRA_BIN),$(PKG_INSTALL_DIR)/opt/bin/$(bin)) $(1)/opt/bin/
 endef
+
+#define Package/pgsql-server/conffiles
+#/etc/config/postgresql
+#endef
 
 define Package/pgsql-server/install
 	$(INSTALL_DIR) $(1)/opt/bin
