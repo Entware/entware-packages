@@ -13,7 +13,7 @@ include perlver.mk
 
 PKG_NAME:=perl
 PKG_VERSION:=$(PERL_VERSION)
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE_URL:=\
 		https://cpan.metacpan.org/src/5.0 \
@@ -102,7 +102,7 @@ define Build/Configure
 	                                -Dowrt:target_cross='$(TARGET_CROSS)' \
 	                                -Dowrt:cflags='$(TARGET_CFLAGS_PERL) $(TARGET_CPPFLAGS_PERL)' \
 	                                -Dowrt:ccdlflags='-Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)' \
-	                                -Dowrt:ldflags='-L$(STAGING_DIR)/opt/lib' \
+	                                -Dowrt:ldflags='$(TARGET_LDFLAGS) $(if $(CONFIG_GCC_LIBSSP),-lssp)' \
 	                                -Dowrt:libc=$(subst uClibc,uclibc,$(CONFIG_LIBC)) \
 	                                -Dowrt:ipv6=$(if $($(CONFIG_IPV6)),define,undef) \
 	                                -Dowrt:threads=$(if $(CONFIG_PERL_THREADS),yes,no) \
