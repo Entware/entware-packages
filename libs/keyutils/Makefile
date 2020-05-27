@@ -45,7 +45,7 @@ endef
 MAKE_FLAGS += \
 	BINDIR=/opt/bin \
 	LIBDIR=/opt/lib \
-	SBINDIR=opt/sbin \
+	SBINDIR=/opt/sbin \
 	CFLAGS="$(TARGET_CFLAGS) $(FPIC)"
 
 define Build/InstallDev
