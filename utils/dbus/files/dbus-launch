@@ -6,7 +6,7 @@
 # the dbus-lauch without x.
 
 if [ -f /opt/bin/dbus-launch-x ]; then
-	exec /opt/bin/dbus-launch-x $@
+	exec /opt/bin/dbus-launch-x "$@"
 else
-	exec /opt/bin/dbus-launch.real $@
+	exec /opt/bin/dbus-launch.real "$@"
 fi
