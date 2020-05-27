@@ -15,12 +15,16 @@ define Py3Package/python3-dev/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/python$(PYTHON3_VERSION)-config $(1)/opt/bin
 	$(LN) python$(PYTHON3_VERSION)-config $(1)/opt/bin/python3-config
-	$(LN) python$(PYTHON_VERSION)/config-$(PYTHON_VERSION)/libpython$(PYTHON3_VERSION).a $(1)/opt/lib/
+	$(LN) python$(PYTHON3_VERSION)-config $(1)/opt/bin/python-config
+	$(LN) python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION)/libpython$(PYTHON3_VERSION).a $(1)/opt/lib/
+  # This depends on being called before filespec is processed
+	$(SED) 's|$(TARGET_AR)|ar|g;s|$(TARGET_CROSS)readelf|readelf|g;s|$(TARGET_CC)|gcc|g;s|$(TARGET_CXX)|g++|g' \
+		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION)/Makefile
 endef
 
 $(eval $(call Py3BasePackage,python3-dev, \
-    /opt/lib/python$(PYTHON_VERSION)/config-$(PYTHON_VERSION) \
-    /opt/include/python$(PYTHON_VERSION) \
+    /opt/lib/python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION) \
+    /opt/include/python$(PYTHON3_VERSION) \
     /opt/lib/pkgconfig \
 	, \
 	DO_NOT_ADD_TO_PACKAGE_DEPENDS \
