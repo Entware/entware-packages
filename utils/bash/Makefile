@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bash
 PKG_VERSION:=5.0
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/bash
@@ -38,6 +38,11 @@ define Package/bash/description
   commands read from the standard input or from a file. Bash also
   incorporates useful features from the Korn and C shells (ksh and csh).
 endef
+
+#define Package/bash/conffiles
+#/etc/bash.bashrc
+#/etc/bash.bash_logout
+#endef
 
 # Bash detects and enables certain features by runtest simple piece of code
 # which is not viable when doing cross compilation and default to no in many
