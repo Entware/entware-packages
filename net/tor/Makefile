@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tor
-PKG_VERSION:=0.4.2.6
-PKG_RELEASE:=3
+PKG_VERSION:=0.4.2.7
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://dist.torproject.org/ \
 	https://archive.torproject.org/tor-package-archive
-PKG_HASH:=0500102433849bbe3231c590973d126c2d2d6b3943b4b9f9962bdb108436e6c4
+PKG_HASH:=06a1d835ddf382f6bca40a62e8fb40b71b2f73d56f0d53523c8bd5caf9b3026d
 PKG_MAINTAINER:=Hauke Mehrtens <hauke@hauke-m.de> \
 		Peter Wagner <tripolar@gmx.at>
 PKG_LICENSE_FILES:=LICENSE
@@ -116,12 +116,13 @@ CONFIGURE_VARS += \
 	CROSS_COMPILE="yes"
 
 define Package/tor/install
-	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/var/lib/tor
+	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tor $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S35tor $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/etc/tor
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/tor/torrc.sample $(1)/opt/etc/tor/torrc
+	$(INSTALL_DIR) $(1)/opt/var/lib/tor
 endef
 
 define Package/tor-gencert/install
