@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpd
-PKG_VERSION:=0.21.20
-PKG_RELEASE:=1
+PKG_VERSION:=0.21.23
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.musicpd.org/download/mpd/0.21/
-PKG_HASH:=422ef0a996d961f3ebc6856395f3a855b45fa0059910e878fb98281007e510e1
+PKG_HASH:=439f522ca9800f375e4fb459ec31e61b3d824fc5c0580ff06dac48b5d21207a3
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -33,7 +33,7 @@ define Package/mpd/Default
   TITLE:=Music Player Daemon
   URL:=https://www.musicpd.org/
   DEPENDS:= +zlib +libcurl +libpthread +libmpdclient +libstdcpp $(ICONV_DEPENDS) \
-	    +AUDIO_SUPPORT:alsa-lib +boost +libexpat +libflac +USE_UCLIBC:icu
+	    +AUDIO_SUPPORT:alsa-lib +boost +libexpat +libflac +libid3tag +libfaad2 +USE_UCLIBC:icu
 endef
 
 define Package/mpd/Default/description
@@ -46,7 +46,7 @@ endef
 define Package/mpd-full
 $(call Package/mpd/Default)
   TITLE+= (full)
-  DEPENDS+= +libffmpeg +libid3tag +libvorbis +libmms +libupnp +libshout +pulseaudio-daemon +yajl
+  DEPENDS+= +libffmpeg +libvorbis +libmms +libupnp +libshout +pulseaudio-daemon +yajl
   PROVIDES:=mpd
   VARIANT:=full
 endef
@@ -73,7 +73,7 @@ define Package/mpd-mini/description
 $(call Package/mpd/Default/description)
  .
  This package contains a minimal Music Player Daemon, with support for
- only Flac, MP3 & OGG media types & only file: & http: protocols.
+ only FLAC, AAC, MP3 & OGG media types & only file: & http: protocols.
 endef
 
 define Package/mpd-mini/conffiles
@@ -96,6 +96,9 @@ endef
 define Package/mpd-avahi-service/conffiles
 /opt/etc/avahi/services/mpd.service
 endef
+
+# XXX
+MESON_VARS+=BOOST_ROOT=$(STAGING_DIR)/opt
 
 TARGET_LDFLAGS += \
 	$(if $(ICONV_FULL),-liconv,-Wl,--whole-archive -liconv -Wl,--no-whole-archive) \
@@ -128,10 +131,11 @@ MESON_ARGS += \
 	-Dbzip2=disabled \
 	-Diso9660=disabled \
 	-Dzzip=disabled \
+	-Did3tag=enabled \
 	-Dchromaprint=disabled \
 	-Dadplug=disabled \
 	-Daudiofile=disabled \
-	-Dfaad=disabled \
+	-Dfaad=enabled \
 	-Dflac=enabled \
 	-Dfluidsynth=disabled \
 	-Dgme=disabled \
@@ -175,7 +179,6 @@ ifeq ($(BUILD_VARIANT),full)
 	-Dupnp=enabled \
 	-Dmms=enabled \
 	-Dsoundcloud=enabled \
-	-Did3tag=enabled \
 	-Dffmpeg=enabled \
 	-Dmad=disabled \
 	-Dtremor=disabled \
@@ -195,7 +198,6 @@ ifeq ($(BUILD_VARIANT),mini)
 	-Dupnp=disabled \
 	-Dmms=disabled \
 	-Dsoundcloud=disabled \
-	-Did3tag=disabled \
 	-Dffmpeg=disabled \
 	-Dmad=enabled \
 	-Dtremor=enabled \
