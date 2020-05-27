@@ -2,41 +2,40 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zstd
 PKG_VERSION:=1.4.4
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/facebook/zstd/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=a364f5162c7d1a455cc915e8e3cf5f4bd8b75d09bc0f53965b0c9ca1383c52c8
 
-PKG_MAINTAINER:=Amol Bhave <ambhave@fb.com>
+PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_PARALLEL:=1
-HOST_BUILD_PARALLEL:=1
-CMAKE_SOURCE_SUBDIR:=build/cmake
-CMAKE_INSTALL:=1
+PKG_BUILD_DEPENDS:=meson/host
+PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/host-build.mk
-include $(INCLUDE_DIR)/cmake.mk
+include ../../devel/meson/meson.mk
+
+MESON_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)/build/meson/openwrt-build
 
 define Package/zstd/Default
-	SUBMENU:=Compression
-	URL:=https://github.com/facebook/zstd
+  SUBMENU:=Compression
+  URL:=https://github.com/facebook/zstd
 endef
 
 define Package/libzstd
 $(call Package/zstd/Default)
-	SECTION:=libs
-	CATEGORY:=Libraries
-	TITLE:=zstd library.
-	MENU:=1
+  SECTION:=libs
+  CATEGORY:=Libraries
+  TITLE:=zstd library.
+  MENU:=1
 endef
 
 define Package/libzstd/description
-	Zstandard - Fast real-time compression algorithm.
-	This package provides libzstd library.
+  Zstandard - Fast real-time compression algorithm.
+  This package provides libzstd library.
 endef
 
 define Package/libzstd/config
@@ -50,40 +49,52 @@ endef
 
 define Package/zstd
 $(call Package/zstd/Default)
-	SECTION:=utils
-	CATEGORY:=Utilities
-	DEPENDS:=+libzstd
-	TITLE:=Fast real-time compression algorithm.
+  SECTION:=utils
+  CATEGORY:=Utilities
+  DEPENDS:=+libzstd
+  TITLE:=Fast real-time compression algorithm.
 endef
 
 define Package/zstd/description
-	Zstandard - Fast real-time compression algorithm.
-	This package provides the zstd binaries.
+  Zstandard - Fast real-time compression algorithm.
+  This package provides the zstd binaries.
 endef
 
 ifeq ($(CONFIG_ZSTD_OPTIMIZE_O3),y)
 TARGET_CFLAGS:= $(filter-out -O%,$(TARGET_CFLAGS)) -O3
 endif
 
-TARGET_CFLAGS += -flto
-TARGET_LDFLAGS += -Wl,--as-needed
+MESON_ARGS += \
+	-Dlegacy_level=1 \
+	-Ddebug_level=0 \
+	-Dbacktrace=false \
+	-Dstatic_runtime=false \
+	-Dbin_programs=true \
+	-Dbin_tests=false \
+	-Dbin_control=false \
+	-Dzlib=disabled \
+	-Dlzma=disabled \
+	-Dlz4=disabled \
+	-Db_lto=true
 
 define Build/InstallDev
-	$(call Build/InstallDev/cmake,$(1))
-	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libzstd.pc
-	$(SED) 's,/opt/lib,$$$${prefix}/lib,g' $(1)/opt/lib/pkgconfig/libzstd.pc
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzstd.so* $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libzstd.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libzstd/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzstd.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzstd.so* $(1)/opt/lib
 endef
 
 define Package/zstd/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{unzstd,zstd,zstdcat,zstdmt} $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{unzstd,zstd,zstdcat,zstdgrep,zstdless,zstdmt} $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,libzstd))
 $(eval $(call BuildPackage,zstd))
-$(eval $(call HostBuild))
