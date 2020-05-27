@@ -9,13 +9,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
-PKG_VERSION:=5.10.0
-PKG_RELEASE:=3
+PKG_VERSION:=5.11.0
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
 	https://github.com/collectd/collectd/releases/download/collectd-$(PKG_VERSION)
-PKG_HASH:=a03359f563023e744c2dc743008a00a848f4cd506e072621d86b6d8313c0375b
+PKG_HASH:=37b10a806e34aa8570c1cafa6006c604796fae13cc2e1b3e630d33dcba9e5db2
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libltdl/aclocal.m4
@@ -32,14 +32,18 @@ COLLECTD_PLUGINS_DISABLED:= \
 	apple_sensors \
 	aquaero \
 	barometer \
+	buddyinfo \
+	capabilities \
 	ceph \
 	cgroups \
 	cpusleep \
 	curl_json \
 	curl_xml \
 	dbi \
+	dcpmm \
 	dpdkevents \
 	dpdkstat \
+	dpdk_telemetry \
 	drbd \
 	fhcount \
 	genericjmx \
@@ -53,10 +57,12 @@ COLLECTD_PLUGINS_DISABLED:= \
 	intel_rdt \
 	ipc \
 	ipmi \
+	ipstats \
 	iptables \
 	ipvs \
 	iwinfo \
 	java \
+	logparser \
 	log_logstash \
 	lvm \
 	lpar \
@@ -74,6 +80,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	notify_email \
 	notify_nagios \
 	numa \
+	onewire \
 	openldap \
 	openvz \
 	oracle \
@@ -85,11 +92,13 @@ COLLECTD_PLUGINS_DISABLED:= \
 	pinba \
 	procevent \
 	python \
+	redfish \
 	redis \
 	routeros \
 	rrdcached \
 	serial \
 	sigrok \
+	slurm \
 	smart \
 	snmp_agent \
 	statsd \
@@ -98,10 +107,12 @@ COLLECTD_PLUGINS_DISABLED:= \
 	tape \
 	tokyotyrant \
 	turbostat \
+	ubi \
 	uuid \
 	varnish \
 	virt \
 	vserver \
+	write_influxdb_udp \
 	write_kafka \
 	write_log \
 	write_mongodb \
@@ -161,7 +172,6 @@ COLLECTD_PLUGINS_SELECTED:= \
 	ntpd \
 	nut \
 	olsrd \
-	onewire \
 	openvpn \
 	ping \
 	postgresql \
@@ -297,11 +307,6 @@ ifneq ($(CONFIG_PACKAGE_collectd-mod-modbus),)
   CONFIGURE_ARGS+= --with-libmodbus="$(STAGING_DIR)/opt"
 endif
 
-# exception: mod-onewire needs libow-capi
-ifneq ($(CONFIG_PACKAGE_collectd-mod-onewire),)
-  CONFIGURE_ARGS+= --with-libowcapi="$(STAGING_DIR)/opt"
-endif
-
 # exception: mod-rrdtool needs rrdtool-1.0.x
 ifneq ($(CONFIG_PACKAGE_collectd-mod-rrdtool),)
   CONFIGURE_ARGS+= --with-librrd="$(STAGING_DIR)/opt/lib/rrdtool-1.0"
@@ -358,6 +363,32 @@ define BuildPlugin
 
 endef
 
+#define BuildScriptPlugin
+#  PKG_CONFIG_DEPENDS+= CONFIG_PACKAGE_collectd-mod-$(1)
+#
+#  define Package/collectd-mod-$(1)
+#  $$(call Package/collectd/Default)
+#    TITLE:=$(2) plugin
+#    DEPENDS:= $(4)
+#  endef
+#
+#  define Package/collectd-mod-$(1)/install
+#	$(INSTALL_DIR) $$(1)/usr/libexec/collectd
+#	for m in $(3); do \
+#		${INSTALL_BIN} \
+#			./files/exec-scripts/$$$$$$$${m}.sh $$(1)/usr/libexec/collectd/ ; \
+#	done
+#	if [ -f ./files/usr/share/collectd/plugin/$(1).json ]; then \
+#		$(INSTALL_DIR) $$(1)/usr/share/collectd/plugin ; \
+#		$(INSTALL_DATA) ./files/usr/share/collectd/plugin/$(1).json \
+#			$$(1)/usr/share/collectd/plugin/$(1).json ; \
+#	fi
+#  endef
+#
+#  $$(eval $$(call BuildPackage,collectd-mod-$(1)))
+#
+#endef
+
 $(eval $(call BuildPackage,collectd))
 
 #$(eval $(call BuildPlugin,NAME,DESCRIPTION,FILES,DEPENDENCIES))
@@ -384,7 +415,7 @@ $(eval $(call BuildPlugin,exec,process exec input,exec,))
 $(eval $(call BuildPlugin,filecount,file count input,filecount,))
 $(eval $(call BuildPlugin,fscache,file-system based caching framework input,fscache,))
 $(eval $(call BuildPlugin,interface,network interfaces input,interface,))
-#$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables +libiptc))
+#$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables +libip4tc +libip6tc))
 $(eval $(call BuildPlugin,irq,interrupt usage input,irq,))
 #$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
 $(eval $(call BuildPlugin,load,system load input,load,))
@@ -406,7 +437,6 @@ $(eval $(call BuildPlugin,nginx,nginx status input,nginx,+PACKAGE_collectd-mod-n
 $(eval $(call BuildPlugin,ntpd,NTP daemon status input,ntpd,))
 $(eval $(call BuildPlugin,nut,UPS monitoring input,nut,+PACKAGE_collectd-mod-nut:nut-common))
 $(eval $(call BuildPlugin,olsrd,OLSRd status input,olsrd,))
-$(eval $(call BuildPlugin,onewire,onewire sensor input,onewire,+PACKAGE_collectd-mod-onewire:libow-capi @BROKEN))
 $(eval $(call BuildPlugin,openvpn,OpenVPN traffic/compression input,openvpn,))
 $(eval $(call BuildPlugin,ping,ping status input,ping,+PACKAGE_collectd-mod-ping:liboping))
 $(eval $(call BuildPlugin,postgresql,PostgreSQL status input,postgresql,+PACKAGE_collectd-mod-postgresql:libpq))
@@ -435,3 +465,5 @@ $(eval $(call BuildPlugin,wireless,wireless status input,wireless,))
 $(eval $(call BuildPlugin,write-graphite,Carbon/Graphite output,write_graphite,+PACKAGE_collectd-mod-write-graphite:libpthread))
 $(eval $(call BuildPlugin,write-http,HTTP POST output,write_http,+PACKAGE_collectd-mod-write-http:libcurl))
 $(eval $(call BuildPlugin,write-log,Log output,write_log,))
+
+#$(eval $(call BuildScriptPlugin,sqm,SQM/qdisc collection,sqm_collectd,+PACKAGE_collectd-mod-sqm:collectd-mod-exec))
