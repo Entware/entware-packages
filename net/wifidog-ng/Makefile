@@ -8,16 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wifidog-ng
-PKG_VERSION:=2.0.1
-PKG_RELEASE:=1
-
-PKG_BUILD_DIR=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)
+PKG_VERSION:=2.0.2
+PKG_RELEASE:=2
 
 PKG_LICENSE:=LGPL-2.1
 PKG_LICENSE_FILES:=LICENSE
 
-PKG_MAINTAINER:=Jianhui Zhao <jianhuizhao329@gmail.com>
+PKG_MAINTAINER:=Jianhui Zhao <zhaojh329@gmail.com>
 
+include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/wifidog-ng/default
@@ -72,12 +71,20 @@ define Package/wifidog-ng/default/install
 	$(CP) ./files/wifidog-ng $(1)/usr/lib/lua
 endef
 
+define Package/wifidog-ng/default/conffiles
+/etc/config/wifidog-ng
+/etc/wifidog-ng
+endef
+
+Package/wifidog-ng-nossl/conffiles = $(Package/wifidog-ng/default/conffiles)
+Package/wifidog-ng-openssl/conffiles = $(Package/wifidog-ng/default/conffiles)
+Package/wifidog-ng-wolfssl/conffiles = $(Package/wifidog-ng/default/conffiles)
+Package/wifidog-ng-mbedtls/conffiles = $(Package/wifidog-ng/default/conffiles)
+
 Package/wifidog-ng-nossl/install = $(Package/wifidog-ng/default/install)
 Package/wifidog-ng-openssl/install = $(Package/wifidog-ng/default/install)
 Package/wifidog-ng-wolfssl/install = $(Package/wifidog-ng/default/install)
 Package/wifidog-ng-mbedtls/install = $(Package/wifidog-ng/default/install)
-
-include $(INCLUDE_DIR)/kernel.mk
 
 define KernelPackage/wifidog-ng
   SUBMENU:=Other modules
