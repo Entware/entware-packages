@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ifstat
 PKG_VERSION:=1.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://gael.roualland.free.fr/ifstat/
@@ -21,14 +21,12 @@ PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
 
-CONFIGURE_ARGS += \
-	--without-snmp
-
 define Package/ifstat
   SECTION:=net
   CATEGORY:=Network
   TITLE:=InterFace STATistics Monitoring
   URL:=http://gael.roualland.free.fr/ifstat/
+  DEPENDS:=+IFSTAT_SNMP:libnetsnmp
 endef
 
 define Package/ifstat/description
@@ -37,6 +35,12 @@ define Package/ifstat/description
 	interfaces by polling the kernel counters, or remote hosts
 	interfaces using SNMP.
 endef
+
+define Package/ifstat/config
+	source "$(SOURCE)/Config.in"
+endef
+
+CONFIGURE_ARGS += --with$(if $(CONFIG_IFSTAT_SNMP),,out)-snmp
 
 define Package/ifstat/install
 	$(INSTALL_DIR) $(1)/opt/bin
