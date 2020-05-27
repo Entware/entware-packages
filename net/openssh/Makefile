@@ -8,14 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
-PKG_VERSION:=8.1p1
-PKG_RELEASE:=1
+PKG_VERSION:=8.2p1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
-		https://ftp.spline.de/pub/OpenBSD/OpenSSH/portable/ \
-		https://anorien.csc.warwick.ac.uk/pub/OpenBSD/OpenSSH/portable/
-PKG_HASH:=02f5dbef3835d0753556f973cd57b4c19b6b1f6cd24c03445e23ac77ca1b93ff
+		https://ftp.spline.de/pub/OpenBSD/OpenSSH/portable/
+PKG_HASH:=43925151e6cf6cee1450190c0e9af4dc36b41c12737619edff8bcebdff64e671
 
 PKG_LICENSE:=BSD ISC
 PKG_LICENSE_FILES:=LICENCE
@@ -225,7 +224,7 @@ define Package/openssh-server/install
 	$(INSTALL_DIR) $(1)/opt/etc/ssh
 	chmod 0700 $(1)/opt/etc/ssh
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/ssh/sshd_config $(1)/opt/etc/ssh/
-	sed -r -i 's,^#(HostKey /opt/etc/ssh/ssh_host_(rsa|ecdsa|ed25519)_key)$$$$,\1,' $(1)/opt/etc/ssh/sshd_config
+	sed -r -i 's,^#(HostKey /opt/etc/ssh/ssh_host_(rsa|ed25519)_key)$$$$,\1,' $(1)/opt/etc/ssh/sshd_config
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S40sshd $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/sbin
