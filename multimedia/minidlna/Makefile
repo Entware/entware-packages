@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minidlna
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://git.code.sf.net/p/minidlna/git
@@ -79,6 +79,8 @@ CONFIGURE_ARGS += \
 	--with-db-path="/opt/var/minidlna" \
 	--with-log-path="/opt/var/log" \
 	--enable-thumbnail
+
+TARGET_CFLAGS += -DHAVE_CLOCK_GETTIME
 
 define Package/minidlna/install
 	$(INSTALL_DIR) $(1)/opt/sbin
