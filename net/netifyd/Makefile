@@ -16,10 +16,10 @@ PKG_INSTALL:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://gitlab.com/netify.ai/public/netify-agent.git
-PKG_SOURCE_DATE:=2020-01-28
-PKG_SOURCE_VERSION:=v2.99
-#PKG_SOURCE_VERSION:=39e4fa272d8a4c83391e1b7d34cd8e071caef317
-PKG_MIRROR_HASH:=86106fc526ffcb3631ee306504874491646e7b2baa273b8e7ea8c411f83ac99d
+PKG_SOURCE_DATE:=2020-04-29
+PKG_SOURCE_VERSION:=v3.00
+#PKG_SOURCE_VERSION:=6f739939e19d8713edc99c2c601df3d5ba7a0d2e
+PKG_MIRROR_HASH:=c9a3da698e5014eeff8e6b4089d09c2a98a2e2e4dce15b7d4e3df6dd0379fcb4
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -45,6 +45,10 @@ endef
 
 define Package/netifyd/conffiles
 /etc/netifyd.conf
+/etc/config/netifyd
+/etc/netify.d/agent.uuid
+/etc/netify.d/serial.uuid
+/etc/netify.d/site.uuid
 endef
 
 TARGET_CFLAGS+=-ffunction-sections -fdata-sections -Wno-psabi
@@ -85,6 +89,8 @@ endef
 define Package/netifyd/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/deploy/netifyd.conf $(1)/etc
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/netifyd.config $(1)/etc/config/netifyd
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/netifyd.init $(1)/etc/init.d/netifyd
 	$(INSTALL_DIR) $(1)/usr/sbin
