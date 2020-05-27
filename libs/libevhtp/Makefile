@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libevhtp
 PKG_VERSION:=1.2.18
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 # This package is building a static library, used by seafile-server
 # Every time the built library changes (metadata changes are exempt),
 # seafile-server needs a release bump to ensure the update is used.
@@ -21,15 +21,14 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/criticalstack/libevhtp/tar.gz/$(PKG_VERSION)?
 PKG_HASH:=316ede0d672be3ae6fe489d4ac1c8c53a1db7d4fe05edaff3c7c853933e02795
 
-PKG_MAINTAINER:=Eneas U de Queiroz <cote2004-github@yahoo.com>
+PKG_MAINTAINER:=Eneas U de Queiroz <cotequeiroz@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
 
-TARGET_CFLAGS += $(TARGET_CPPFLAGS)
+PKG_BUILD_DEPENDS:=libevent2 oniguruma
 CMAKE_INSTALL:=1
-CMAKE_OPTIONS += \
-	-DLIB_INSTALL_DIR="$(STAGING_DIR)/opt/lib" \
-	-DINCLUDE_INSTALL_DIR="$(STAGING_DIR)/opt/include"
+
+PKG_CONFIG_DEPENDS:=LIBEVHTP_BUILD_DEPENDS
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -39,7 +38,6 @@ define Package/libevhtp
     CATEGORY:=Libraries
     TITLE:=A more flexible replacement for libevent's httpd API
     URL:=https://github.com/criticalstack/libevhtp
-    DEPENDS:=+libevent2 +libevent2-openssl +libevent2-pthreads +oniguruma
 endef
 
 define Package/libevhtp/description
@@ -48,10 +46,21 @@ define Package/libevhtp/description
    meaning the developer never thought of it being used for creating a full-fledged HTTP service.
 endef
 
-define Package/InstallDev
-	$(INSTALL_DIR) $(1)/opt/{lib,include}
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/. $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/. $(1)/opt/lib/
+define Package/libevhtp/config
+config LIBEVHTP_BUILD_DEPENDS
+	bool
+	default PACKAGE_libevhtp
+
+config LIBEVHTP_BUILD_SELECT
+	tristate
+	default m if LIBEVHTP_BUILD_DEPENDS
+	select PACKAGE_libevent2-openssl
+	select PACKAGE_libevent2-pthreads
+endef
+
+define Build/InstallDev
+	$(call Build/InstallDev/cmake,$(1))
+	$(SED) 's,^\(include\|lib\)dir=,\0$(STAGING_DIR)/opt/\1,' "$(1)/opt/lib/pkgconfig/evhtp.pc"
 endef
 
 $(eval $(call BuildPackage,libevhtp))
