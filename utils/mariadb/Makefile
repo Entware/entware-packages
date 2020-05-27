@@ -183,7 +183,7 @@ MARIADB_COMMON_DEPENDS := \
 
 # Pass CPPFLAGS in the CFLAGS as otherwise the build system will
 # ignore them.
-TARGET_CFLAGS+=$(TARGET_CPPFLAGS) -I$(STAGING_DIR)/opt/include/krb
+TARGET_CFLAGS+=$(TARGET_CPPFLAGS)
 
 # XXX   mysqld.cc:(.text+0x779c): warning: fesetround is not implemented 
 #	mysqld.cc:(.text+0x7794): warning: fedisableexcept is not implemented
