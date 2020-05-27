@@ -1,8 +1,8 @@
-commit aa140fbf3df0ae945a5c5d89fbdc1798df1a5070 (HEAD -> master, origin/master, origin/HEAD)
-Merge: 5feeeb69c b8b4e7e26
+commit dfd6bf328d6f841a1d52def9d6b0e3f8ab21b6e0 (HEAD -> master, origin/master, origin/HEAD)
+Merge: a0caea584 918983044
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Tue Mar 10 20:29:20 2020 -0700
+Date:   Tue May 26 14:07:56 2020 -0700
 
-    Merge pull request #11541 from neheb/jjjj
+    Merge pull request #12331 from dl12345/avahi
     
-    softethervpn: disable PIC
+    avahi: fix reliance on config symbol SSP_SUPPORT
