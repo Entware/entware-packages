@@ -3,7 +3,7 @@
 @@ -1,16 +1,16 @@
  
 -#user  nobody;
-+user  nobody;
++user nobody;
  worker_processes  1;
  
 -#error_log  logs/error.log;

@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
-PKG_VERSION:=1.17.8
-PKG_RELEASE:=1
+PKG_VERSION:=1.17.10
+PKG_RELEASE:=4
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
-PKG_HASH:=97d23ecf6d5150b30e284b40e8a6f7e3bb5be6b601e373a4d013768d5a25965b
+PKG_HASH:=a9aa73f19c352a6b166d78e2a664bb3ef1295bbe6d3cc5aa7404bd4664ab4b83
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de> \
 				Ansuel Smith <ansuelsmth@gmail.com>
@@ -316,7 +316,7 @@ else
 	--with-stream --with-stream_ssl_module --with-stream_ssl_preread_module \
 	--add-module=$(PKG_BUILD_DIR)/nginx-brotli --add-module=$(PKG_BUILD_DIR)/nginx-rtmp \
 	--add-module=$(PKG_BUILD_DIR)/nginx-ts --add-module=$(PKG_BUILD_DIR)/nginx-ubus-module
-  config_files += koi-utf koi-win win-utf fastcgi_params 
+  config_files += koi-utf koi-win win-utf fastcgi_params uwsgi_params
 endif
 
 define Package/nginx-mod-luci/default
@@ -393,7 +393,7 @@ Package/nginx-mod-luci-ssl/install = $(Package/nginx-mod-luci/install)
 define Package/nginx/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/nginx $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc/nginx
+	$(INSTALL_DIR) $(1)/opt/etc/nginx/conf.d
 	$(INSTALL_DATA) $(addprefix $(PKG_INSTALL_DIR)/opt/etc/nginx/,$(config_files)) $(1)/opt/etc/nginx/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S80nginx $(1)/opt/etc/init.d/
@@ -429,7 +429,7 @@ Package/nginx-all-module/install = $(Package/nginx-ssl/install)
 #define Package/nginx-ssl/prerm
 ##!/bin/sh
 #[ -z "$${IPKG_INSTROOT}" ] || exit 0
-#if [ "$${PKG_UPGRADE}" == "1" ]; then
+#if [ "$${PKG_UPGRADE}" = "1" ]; then
 #	eval $$(/usr/bin/nginx-util get_env)
 #	TMP_CRT=$$(mktemp -p "$${CONF_DIR}" "$${LAN_NAME}.crt.tmp-XXXXXX")
 #	ln -f "$${CONF_DIR}$${LAN_NAME}.crt" "$${TMP_CRT}"
@@ -437,8 +437,12 @@ Package/nginx-all-module/install = $(Package/nginx-ssl/install)
 #	ln -f "$${CONF_DIR}$${LAN_NAME}.key" "$${TMP_KEY}"
 #fi
 #/usr/bin/nginx-util del_ssl
-#[ -f "$${TMP_CRT}" ] && mv -f "$${TMP_CRT}" "$${CONF_DIR}$${LAN_NAME}.crt"
-#[ -f "$${TMP_KEY}" ] && mv -f "$${TMP_KEY}" "$${CONF_DIR}$${LAN_NAME}.key"
+#[ -f "$${TMP_CRT}" ] &&
+#rm -f "$${CONF_DIR}$${LAN_NAME}.crt" &&
+#mv -f "$${TMP_CRT}" "$${CONF_DIR}$${LAN_NAME}.crt"
+#[ -f "$${TMP_KEY}" ] &&
+#rm -f "$${CONF_DIR}$${LAN_NAME}.key" &&
+#mv -f "$${TMP_KEY}" "$${CONF_DIR}$${LAN_NAME}.key"
 #exit 0
 #endef
 
