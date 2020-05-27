@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clamav
-PKG_VERSION:=0.101.4
+PKG_VERSION:=0.102.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.clamav.net/downloads/production/
-PKG_HASH:=0bf094f0919d158a578421d66bc2569c8c8181233ba162bb51722f98c802bccd
+PKG_HASH:=ed3050c4569989ee7ab54c7b87246b41ed808259632849be0706467442dc0693
 
 PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr> \
 		Lucian Cristian <lucian.cristian@gmail.com>
@@ -56,9 +56,6 @@ define Package/freshclam/description
  Database updater for ClamAV
 endef
 
-define Package/clamav/conffiles
-endef
-
 CONFIGURE_ARGS += \
 	--sysconfdir=/opt/etc/clamav/ \
 	--enable-milter \
@@ -90,6 +87,10 @@ TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti -flto
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed $(if $(CONFIG_USE_MUSL),-lfts)
 TARGET_LDFLAGS += -lcurl
 
+#define Package/clamav/conffiles
+#/etc/config/clamav
+#endef
+
 define Package/clamav/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/clamd $(1)/opt/sbin/
@@ -98,6 +99,7 @@ define Package/clamav/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamconf $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamdscan $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamscan $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamonacc $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sigtool $(1)/opt/sbin/
 
 	$(INSTALL_DIR) $(1)/opt/lib
@@ -112,6 +114,10 @@ define Package/clamav/install
 	$(INSTALL_DIR) $(1)/opt/share/clamav
 	$(CP) ./files/bytecode.cvd $(1)/opt/share/clamav/
 endef
+
+#define Package/freshclam/conffiles
+#/etc/config/freshclam
+#endef
 
 define Package/freshclam/install
 	$(INSTALL_DIR) $(1)/opt/sbin
