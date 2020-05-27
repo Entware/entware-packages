@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017-2019 Yousong Zhou <yszhou4tech@gmail.com>
+# Copyright (C) 2017-2020 Yousong Zhou <yszhou4tech@gmail.com>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -14,7 +14,7 @@ include $(TOPDIR)/rules.mk
 #
 PKG_NAME:=shadowsocks-libev
 PKG_VERSION:=3.3.4
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
@@ -42,6 +42,10 @@ define Package/shadowsocks-libev-config
   URL:=https://github.com/shadowsocks/shadowsocks-libev
 endef
 
+define Package/shadowsocks-libev-config/conffiles
+/opt/etc/shadowsocks.json
+endef
+
 define Package/shadowsocks-libev-config/install
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/debian/config.json $(1)/opt/etc/shadowsocks.json
@@ -49,9 +53,6 @@ define Package/shadowsocks-libev-config/install
 	$(INSTALL_BIN) ./files/S22shadowsocks $(1)/opt/etc/init.d
 endef
 
-define Package/shadowsocks-libev-config/conffiles
-/opt/etc/shadowsocks.json
-endef
 
 define Package/shadowsocks-libev/Default
   define Package/shadowsocks-libev-$(1)
