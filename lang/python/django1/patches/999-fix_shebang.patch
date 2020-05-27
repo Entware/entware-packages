@@ -1,8 +1,0 @@
---- a/django/conf/project_template/manage.py-tpl	2020-03-04 11:46:39.000000000 +0300
-+++ b/django/conf/project_template/manage.py-tpl	2020-03-17 09:27:06.572945090 +0300
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/opt/bin/python
- import os
- import sys
- 
