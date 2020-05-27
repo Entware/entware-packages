@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nlbwmon
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/jow-/nlbwmon.git
-PKG_SOURCE_DATE:=2019-06-13
-PKG_SOURCE_VERSION:=e921ca0af9957d3cb05797acfb8bde4d7d2278e5
-PKG_MIRROR_HASH:=1f6ed5086e978beeba4c22c255b4ed893d598119c3f2c03061501464910ea421
+PKG_SOURCE_DATE:=2020-04-11.1
+PKG_SOURCE_VERSION:=34a188769750927d839ad27fbfc90c973fe7bb06
+PKG_MIRROR_HASH:=75cd4e2eccb91256a91a3d48440cb347a696db64db2e71c050d284d20f98a77c
 
 CMAKE_INSTALL:=1
 
@@ -41,6 +41,7 @@ define Package/nlbwmon/install
 endef
 
 define Package/nlbwmon/conffiles
+/etc/config/nlbwmon
 /usr/share/nlbwmon/protocols
 endef
 
