@@ -8,69 +8,89 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
-PKG_VERSION:=6.3.4
-PKG_RELEASE:=8
+PKG_VERSION:=7.1.4
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/haiwen/seahub/tar.gz/v$(PKG_VERSION)-server?
-PKG_HASH:=53a9efdb6791fd3a2a191e89cb0f133632056046ec08adbb2ad72088e6161430
+PKG_HASH:=921ef4373311c06c1192975a294d7d38c12ac34381a7df19542391fc1d810baf
 
-PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE.txt
 
-HOST_PYTHON_PACKAGE_BUILD_DEPENDS:="django>=1.11"
-
 PKG_BUILD_DIR:=$(BUILD_DIR)/seahub-$(PKG_VERSION)-server
 
-include $(INCLUDE_DIR)/package.mk
-include ../../lang/python/python-package.mk
+HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:="Django~=1.11"
 
-SEAFILE_PYTHON_DEPENDS:= \
-	simplejson chardet dateutil mysqlclient pytz qrcode requests requests-oauthlib \
-	django1 django-constance django-appconf django-compressor django-formtools \
-	django-jsonfield django-picklefield django-postoffice django-restframework39 \
-	pillow django-simple-captcha django-statici18n django-webpack-loader
+PKG_BUILD_PARALLEL:=1
+PYTHON3_PKG_BUILD:=0
+
+include $(INCLUDE_DIR)/package.mk
+include ../../lang/python/python3-package.mk
 
 define Package/seafile-seahub
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Seafile server - seahub component
   URL:=https://seafile.com/
-  DEPENDS:=+python \
-	+python-flup +gunicorn +openpyxl \
-	$(foreach dep,$(SEAFILE_PYTHON_DEPENDS),+python-$(dep))
+  DEPENDS:= \
+    +gunicorn3 \
+    +python3 \
+    +python3-chardet \
+    +python3-cryptodome \
+    +python3-dateutil \
+    +python3-django1 \
+    +python3-django-formtools \
+    +python3-django-picklefield \
+    +python3-django-postoffice \
+    +python3-django-restframework39 \
+    +python3-django-simple-captcha \
+    +python3-django-statici18n \
+    +python3-django-webpack-loader \
+    +python3-openpyxl \
+    +python3-pillow \
+    +python3-pyjwt \
+    +python3-pymysql \
+    +python3-pytz \
+    +python3-qrcode \
+    +python3-requests \
+    +python3-requests-oauthlib \
+    +python3-seafile-ccnet \
+    +python3-searpc
+endef
+
+define Package/seafile-seahub/description
+  The web end of seafile server.
+
+  Note: Localization support is turned off by default for performance
+  reasons. Set 'USE_I18N = True' in /etc/seafile/conf/seahub_settings.py
+  to use languages other than English.
 endef
 
 define Build/Configure
 endef
 
 MAKE_VARS += \
-	PYTHON="$(HOST_PYTHON_BIN)" \
+	PYTHON="$(HOST_PYTHON3_BIN)" \
 	DJANGO_ADMIN_PY="$(STAGING_DIR_HOSTPKG)/bin/django-admin"
 
 define Build/Compile
-	$(call Build/Compile/HostPyPipInstall,$(HOST_PYTHON_PACKAGE_BUILD_DEPENDS))
+	$(call HostPython3/PipInstall,$(HOST_PYTHON3_PACKAGE_BUILD_DEPENDS))
 	$(call Build/Compile/Default,locale)
 endef
 
-define Package/seafile-seahub/description
-   The web end of seafile server.
-
-   NOTE: in order to have better performance, localization support is turned off by default.
-   Please set 'USE_I18N = True' in seahub_settings.py if you intend to use languages other than English.
-endef
-
-define Package/seafile-seahub/install
-	$(INSTALL_DIR) $(1)/opt/share/seafile/seafile-server/seahub
-	$(CP) $(PKG_BUILD_DIR)/{locale,media,fabfile,seahub,sql,static,tests,thirdpart,tools} $(1)/opt/share/seafile/seafile-server/seahub/
-	$(CP) $(PKG_BUILD_DIR)/*.{sh,template,py,txt} $(1)/opt/share/seafile/seafile-server/seahub/
-	$(CP) $(PKG_BUILD_DIR)/{CONTRIBUTORS,HACKING,README.markdown} $(1)/opt/share/seafile/seafile-server/seahub/
-	$(CP) $(PKG_BUILD_DIR)/pylintrc* $(1)/opt/share/seafile/seafile-server/seahub/
-	find $(1) -name "*\.pyc" -o -name "*\.pyo" | xargs rm -f
+define Py3Package/seafile-seahub/install
+	$(INSTALL_DIR) $(1)/opt/share/seafile/seafile-server/seahub/tools
+	$(CP) $(PKG_BUILD_DIR)/{frontend,locale,media,seahub,sql,static,thirdpart} $(1)/opt/share/seafile/seafile-server/seahub/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/manage.py $(1)/opt/share/seafile/seafile-server/seahub/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/tools/secret_key_generator.py $(1)/opt/share/seafile/seafile-server/seahub/tools/
 	$(SED) "s/\(SEAFILE_VERSION\s*=\s*\)'\([0-9]\.[0-9]\.[0-9]\)'/\1'$(PKG_VERSION)'/g" $(1)/opt/share/seafile/seafile-server/seahub/seahub/settings.py
-	# Entware specific: fix exec path in scripts
-	$(FIND) $(1)/opt/share/seafile/seafile-server/seahub -type f | $(XARGS) $(SED) 's,^#!.*python,#!/opt/bin/python,'
+	mv $(1)/opt/share/seafile/seafile-server/seahub/media/avatars $(1)/opt/share/seafile/seafile-server/seahub/media/avatars_default
 endef
 
+Py3Package/seafile-seahub/filespec:=
+
+$(eval $(call Py3Package,seafile-seahub))
 $(eval $(call BuildPackage,seafile-seahub))
+$(eval $(call BuildPackage,seafile-seahub-src))
