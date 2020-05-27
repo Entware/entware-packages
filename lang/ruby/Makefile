@@ -33,6 +33,10 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 
+# XXX	{standard input}: Assembler messages:
+#	{standard input}:2859: Error: branch to a symbol in another ISA mode...
+PKG_USE_MIPS16:=0
+
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
