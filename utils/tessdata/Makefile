@@ -48,8 +48,8 @@ define generate-tesseract-data-package
   endef
 
   define Package/tesseract-data-$(1)/install
-	$(INSTALL_DIR) $$(1)/usr/share/tessdata
-	$(TAR) --strip=1 -C $$(1)/usr/share/tessdata/ -xvf $(DL_DIR)/$(PKG_NAME)-$(PKG_VERSION).tar.gz $(PKG_NAME)-$(PKG_VERSION)/$(1).traineddata
+	$(INSTALL_DIR) $$(1)/opt/share/tessdata
+	$(TAR) --strip=1 -C $$(1)/opt/share/tessdata/ -xvf $(DL_DIR)/$(PKG_NAME)-$(PKG_VERSION).tar.gz $(PKG_NAME)-$(PKG_VERSION)/$(1).traineddata
   endef
 
 endef
