@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=strongswan
-PKG_VERSION:=5.8.2
+PKG_VERSION:=5.8.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.strongswan.org/ https://download2.strongswan.org/
-PKG_HASH:=86900ddbe7337c923dadf2c8339ae8ed2b9158e3691745884d08ae534677430e
+PKG_HASH:=2d9a57e33813b62d58cba07531c4d5a35c6b823dfe9b8ff7c623b6571f02553c
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Stijn Tintel <stijn@linux-ipv6.be>
 PKG_CPE_ID:=cpe:/a:strongswan:strongswan
@@ -442,17 +442,12 @@ CONFIGURE_ARGS+= \
 EXTRA_LDFLAGS+= -Wl,-rpath-link,$(STAGING_DIR)/opt/lib
 
 define Package/strongswan/conffiles
-/opt/etc/ipsec.d/
-/opt/etc/ipsec.conf
-/opt/etc/ipsec.secrets
-/opt/etc/ipsec.user
 /opt/etc/strongswan.conf
 /opt/etc/strongswan.d/
 endef
 
 define Package/strongswan/install
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/ipsec.conf $(1)/opt/etc/
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/strongswan.conf $(1)/opt/etc/
 	$(INSTALL_DIR) $(1)/opt/lib/ipsec
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ipsec/libstrongswan.so.* $(1)/opt/lib/ipsec/
@@ -492,8 +487,16 @@ define Package/strongswan-charon-cmd/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/charon-cmd $(1)/opt/sbin/
 endef
 
+define Package/strongswan-ipsec/conffiles
+/opt/etc/ipsec.d/
+/opt/etc/ipsec.conf
+/opt/etc/ipsec.secrets
+/opt/etc/ipsec.user
+endef
+
 define Package/strongswan-ipsec/install
-	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/etc/ $(1)/opt/sbin
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/ipsec.conf $(1)/opt/etc/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/ipsec $(1)/opt/sbin/
 endef
 
@@ -509,6 +512,10 @@ define Package/strongswan-scepclient/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/strongswan.d/scepclient.conf $(1)/opt/etc/strongswan.d/
 	$(INSTALL_DIR) $(1)/opt/lib/ipsec
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/ipsec/scepclient $(1)/opt/lib/ipsec/
+endef
+
+define Package/strongswan-swanctl/conffiles
+/opt/etc/swanctl/
 endef
 
 define Package/strongswan-swanctl/install
