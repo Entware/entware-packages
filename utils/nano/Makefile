@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
-PKG_VERSION:=4.8
+PKG_VERSION:=4.9.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/nano
-PKG_HASH:=c348f61c68ab1d573b308398212a09cd68c60fbee20f01a5bd4b50071a258e63
+PKG_HASH:=6e3438f033a0ed07d3d74c30d0803cbda3d2366ba1601b7bbf9b16ac371f51b4
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
@@ -45,7 +45,7 @@ CONFIGURE_ARGS += \
 	--enable-utf8 \
 	--enable-wrapping \
 	--enable-wrapping-as-root \
-	--without-slang \
+	--without-slang
 
 define Package/nano/conffiles
 /opt/etc/nanorc
