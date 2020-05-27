@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apache
-PKG_VERSION:=2.4.41
-PKG_RELEASE:=6
+PKG_VERSION:=2.4.43
+PKG_RELEASE:=2
 PKG_SOURCE_NAME:=httpd
 
 PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/httpd/
-PKG_HASH:=133d48298fe5315ae9366a0ec66282fa4040efa5d566174481077ade7d18ea40
+PKG_HASH:=a497652ab3fc81318cdc2a203090a999150d86461acff97c1065dc910fe10f43
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_NAME)-$(PKG_VERSION)
 
@@ -247,12 +247,9 @@ endif
 ifneq ($(CONFIG_PACKAGE_apache-mod-suexec)$(CONFIG_PACKAGE_apache-suexec),)
 CONFIGURE_ARGS+= \
 	--enable-suexec \
-	--with-suexec-bin=/opt/sbin/suexec \
+	--with-suexec-bin=/opt/lib/apache2/suexec_dir/suexec \
 	--with-suexec-caller=apache \
-	--with-suexec-docroot=/opt/var/www \
-	--with-suexec-logfile=/opt/var/log/apache2/suexec.log \
-	--with-suexec-uidmin=99 \
-	--with-suexec-gidmin=99
+	--with-suexec-logfile=/opt/var/log/apache2/suexec.log
 else
 CONFIGURE_ARGS+= \
 	--disable-suexec
@@ -272,11 +269,6 @@ CONFIGURE_VARS += \
 	ac_cv_gettid=yes \
 	ap_cv_void_ptr_lt_long=no
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-	$(INSTALL_DATA) ./files/openwrt.layout $(PKG_BUILD_DIR)/config.layout
-endef
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/apxs $(1)/opt/bin
@@ -287,8 +279,6 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/share/apache2/build
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/apache2/build/* \
 				$(1)/opt/share/apache2/build
-	$(SED) 's%/opt/share/apache2/build%$(STAGING_DIR)/opt/share/apache2/build%' \
-		$(1)/opt/bin/apxs
 	$(SED) 's%^prefix =.*%prefix = $(STAGING_DIR)/opt%' \
 		$(1)/opt/share/apache2/build/config_vars.mk
 endef
@@ -340,8 +330,9 @@ define Package/apache-icons/install
 endef
 
 define Package/apache-suexec/install
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/suexec $(1)/opt/sbin
+	$(INSTALL_DIR) -m0750 $(1)/opt/lib/apache2/suexec_dir
+	$(INSTALL_SUID) $(PKG_INSTALL_DIR)/opt/sbin/suexec \
+			$(1)/opt/lib/apache2/suexec_dir
 endef
 
 define Package/apache-utils/install
@@ -350,6 +341,22 @@ define Package/apache-utils/install
 		$(PKG_INSTALL_DIR)/opt/sbin/{checkgid,envvars*,htcacheclean,rotatelogs} \
 									$(1)/opt/sbin
 endef
+
+# Directory "suexec_dir" is installed with '-m0750' above and contains
+# SUID binary "suexec". Below post-install script changes the group of
+# "suexec_dir" to apache, so user apache can access the folder (and the
+# SUID binary). The script only changes the group if the directory is
+# currently owned by "root:root".
+#define Package/apache-suexec/postinst
+##!/bin/sh
+#if [ -z "$${IPKG_INSTROOT}" ]; then
+#  dir="/usr/lib/apache2/suexec_dir"
+#  if ! [ -L "$$dir" ] && [ -d "$$dir" ] && [ -O "$$dir" ] && [ -G "$$dir" ]; then
+#    chown :apache "$$dir"
+#  fi
+#fi
+#exit 0
+#endef
 
 define Package/apache/Module
 define Package/apache-mod-$(1)
