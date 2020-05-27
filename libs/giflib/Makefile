@@ -23,7 +23,6 @@ PKG_CPE_ID:=cpe:/a:giflib_project:giflib
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
-include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/giflib
@@ -75,6 +74,5 @@ define Package/giflib-utils/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
 endef
 
-$(eval $(call HostBuild))
 $(eval $(call BuildPackage,giflib))
 $(eval $(call BuildPackage,giflib-utils))
