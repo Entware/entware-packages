@@ -41,7 +41,7 @@ CONFIGURE_VARS += ac_cv_path_A2X=no
 
 # Entware specific:
 MAKE_FLAGS += \
-	LIBS="-lresolv -lnsl $(TARGET_LDFLAGS)" \
+	LIBS="-lresolv -l:libnsl.so.1 $(TARGET_LDFLAGS)" \
 
 define Package/tinyproxy/install
 	$(INSTALL_DIR) $(1)/opt/bin
