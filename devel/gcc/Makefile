@@ -118,10 +118,6 @@ define Build/Prepare
 	tar -C $(PKG_BUILD_DIR) -xvjf $(DL_DIR)/$(MPFRSRC).tar.bz2
 	ln -sf $(PKG_BUILD_DIR)/$(MPFRSRC) $(PKG_BUILD_DIR)/mpfr
 	$(Build/Patch)
-#uclibc needs -lm to build libcc1
-ifdef CONFIG_USE_UCLIBC
-	patch -p1 -d "$(PKG_BUILD_DIR)" < ./patches-uClibc/004-libcc1_uclibc_lm.patch
-endif
 #	poor man's fix for `none-openwrt-linux' not recognized when building with musl
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/mpfr/
 	cp $(PKG_BUILD_DIR)/config.sub $(PKG_BUILD_DIR)/gmp/
