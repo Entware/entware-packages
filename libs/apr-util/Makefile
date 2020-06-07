@@ -111,9 +111,11 @@ CONFIGURE_VARS += \
 	apu_cv_weak_symbols=yes \
 	APR_BUILD_DIR="$(STAGING_DIR)/opt/share/build-1"
 
-ifeq ($(CONFIG_USE_GLIBC)$(CONFIG_USE_MUSL),y)
+# Entware specific
+
+ifeq ($(CONFIG_LINUX_2_6_36),)
 CONFIGURE_VARS += \
-	apu_cv_explicit_bzero=yes
+  apu_cv_explicit_bzero=yes
 endif
 
 define Package/libaprutil/install/driver
