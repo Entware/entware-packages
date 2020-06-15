@@ -5,8 +5,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postgresql
-PKG_VERSION:=12.1
-PKG_RELEASE:=4
+PKG_VERSION:=12.3
+PKG_RELEASE:=4.3
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=PostgreSQL
 PKG_CPE_ID:=cpe:/a:postgresql:postgresql
@@ -17,7 +17,7 @@ PKG_SOURCE_URL:=\
 	http://ftp.postgresql.org/pub/source/v$(PKG_VERSION) \
 	ftp://ftp.postgresql.org/pub/source/v$(PKG_VERSION)
 
-PKG_HASH:=a09bf3abbaf6763980d0f8acbb943b7629a8b20073de18d867aecdb7988483ed
+PKG_HASH:=94ed64a6179048190695c86ec707cc25d016056ce10fc9d229267d9a8f1dcf41
 
 PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
@@ -39,6 +39,19 @@ endef
 
 define Package/libpq/description
 PostgreSQL client library.
+endef
+
+define Package/libpq-dev
+  SECTION:=libs
+  CATEGORY:=Libraries
+  DEPENDS:=+zlib-dev +libpq +libreadline
+  TITLE:=PostgreSQL development library
+  URL:=http://www.postgresql.org/
+  SUBMENU:=Database
+endef
+
+define Package/libpq-dev/description
+PostgreSQL development library.
 endef
 
 define Package/pgsql-cli
@@ -96,6 +109,9 @@ PGSQL_SERVER_BIN := \
 	pg_upgrade \
 	postgres \
 	initdb
+
+PGSQL_PG_CONFIG_BIN := \
+	pg_config 
 
 PGSQL_CLI_EXTRA_BIN := \
 	clusterdb	\
@@ -185,17 +201,47 @@ TARGET_CFLAGS += -fPIC -lpthread
 unexport PROFILE
 
 define Package/libpq/install
-	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpq.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpq.a $(1)/opt/lib/
+endef
+
+define Package/libpq-dev/install
+	$(INSTALL_DIR) $(1)/opt/bin/
+	$(INSTALL_BIN) $(foreach bin,$(PGSQL_PG_CONFIG_BIN),$(PKG_INSTALL_DIR)/opt/bin/$(bin)) $(1)/opt/bin/
+
+	$(INSTALL_DIR) $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* \
+		$(1)/opt/include/
+
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/internal/c.h $(1)/opt/include/internal/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/internal/libpq-int.h $(1)/opt/include/internal
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/internal/libpq/pqcomm.h $(1)/opt/include/internal/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/internal/port.h $(1)/opt/include/internal/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/internal/postgres_fe.h $(1)/opt/include/internal/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/internal/pqexpbuffer.h $(1)/opt/include/internal/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/libpq-fe.h $(1)/opt/include/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/libpq-events.h $(1)/opt/include/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/pg_config.h $(1)/opt/include/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/pg_config_ext.h $(1)/opt/include/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/pg_config_manual.h $(1)/opt/include/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/pg_config_os.h $(1)/opt/include/
+#	$(CP) $(PKG_INSTALL_DIR)/opt/include/postgres_ext.h $(1)/opt/include/
+
+#	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libpq.pc $(1)/opt/lib/pkgconfig/
+
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/pgsql-cli/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/psql $(1)/opt/bin/
 endef
 
 define Package/pgsql-cli-extra/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/bin/
 	$(INSTALL_BIN) $(foreach bin,$(PGSQL_CLI_EXTRA_BIN),$(PKG_INSTALL_DIR)/opt/bin/$(bin)) $(1)/opt/bin/
 endef
 
@@ -204,7 +250,7 @@ endef
 #endef
 
 define Package/pgsql-server/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/bin/
 	$(INSTALL_BIN) $(foreach bin,$(PGSQL_SERVER_BIN),$(PKG_INSTALL_DIR)/opt/bin/$(bin)) $(1)/opt/bin/
 
 	ln -sf postgres $(1)/opt/bin/postmaster
@@ -213,22 +259,22 @@ define Package/pgsql-server/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/postgresql/* \
 		$(1)/opt/share/postgresql
 
-	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/postgresql \
 		$(1)/opt/lib/
 
-#	$(INSTALL_DIR) $(1)/lib/functions
+#	$(INSTALL_DIR) $(1)/lib/functions/
 #	$(INSTALL_BIN) ./files/postgresql.sh $(1)/lib/functions/
 
-#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DIR) $(1)/etc/config/
 #	$(INSTALL_DATA) ./files/postgresql.config $(1)/etc/config/postgresql
 
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) ./files/S98postgresql $(1)/opt/etc/init.d/
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/bin/
 	$(CP) $(STAGING_DIR_HOSTPKG)/lib/pg_config $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/host/bin/
 	$(LN) $(STAGING_DIR)/opt/bin/pg_config $(1)/host/bin
@@ -240,14 +286,15 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/postgres_ext.h $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/pg_config_ext.h $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/postgresql $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpq.{a,so*} $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libpq.pc $(1)/opt/lib/pkgconfig/
 endef
 
 $(eval $(call HostBuild))
 $(eval $(call BuildPackage,libpq))
+$(eval $(call BuildPackage,libpq-dev))
 $(eval $(call BuildPackage,pgsql-cli))
 $(eval $(call BuildPackage,pgsql-cli-extra))
 $(eval $(call BuildPackage,pgsql-server))
