@@ -1,0 +1,11 @@
+--- a/configure
++++ b/configure
+@@ -2910,7 +2910,7 @@
+ 
+   if test "x$netsnmpconfig" != "xno"; then
+     CPPFLAGS="$CPPFLAGS `$netsnmpconfig --base-cflags 2>/dev/null`"
+-    LDFLAGS="$LDFLAGS `$netsnmpconfig --libs 2>/dev/null`"
++    LDFLAGS="$LDFLAGS -lnetsnmp"
+     echo $ac_n "checking whether net-snmp-config hints compiles and links fine""... $ac_c" 1>&6
+ echo "configure:2916: checking whether net-snmp-config hints compiles and links fine" >&5
+     cat > conftest.$ac_ext <<EOF
