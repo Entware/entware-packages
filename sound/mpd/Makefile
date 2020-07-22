@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpd
 PKG_VERSION:=0.21.23
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.musicpd.org/download/mpd/0.21/
@@ -110,7 +110,7 @@ MESON_ARGS += \
 	-Dtest=false \
 	-Dsyslog=enabled \
 	-Dinotify=true \
-	-Ddaemon=false \
+	-Ddaemon=true \
 	-Dsystemd=disabled \
 	-Dtcp=true \
 	-Dipv6=$(if $(CONFIG_IPV6),enabled,disabled) \
