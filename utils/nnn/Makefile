@@ -21,7 +21,7 @@ define Package/nnn
   CATEGORY:=Utilities
   TITLE:=Full-featured terminal file manager
   URL:=https://github.com/jarun/nnn
-  DEPENDS:=+libncurses +libreadline
+  DEPENDS:=+libncursesw +libreadline
 endef
 
 define Package/nnn/description
@@ -31,8 +31,8 @@ define Package/nnn/description
 endef
 
 define Package/nnn/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nnn $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nnn $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,nnn))
