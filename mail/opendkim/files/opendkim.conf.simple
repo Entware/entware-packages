@@ -1,5 +1,5 @@
 # The default location of the OpenDKIM configuration file is
-# /etc/opendkim.conf
+# /opt/etc/opendkim.conf
 
 # Enable to obtain very detailed logging about the logic behind
 # the filter's decision to either sign a message or verify it
@@ -20,14 +20,14 @@ Domain			example.com
 
 # Defines the name of the selector to be used when signing messages
 Selector		default
-KeyFile			/etc/openkim/example.com.private
+KeyFile			/opt/etc/openkim/example.com.private
 
 UserID			opendkim:opendkim
 Socket                  inet:8891@localhost
 
-# if using a UNIX socket, make sure that /var/run/opendkim is writable
+# if using a UNIX socket, make sure that /opt/var/run/opendkim is writable
 # to the opendkim user
-#Socket                  local:/var/run/opendkim/opendkim
+#Socket                  local:/opt/var/run/opendkim/opendkim
 
 ReportAddress           postmaster@example.com
 SendReports             yes
@@ -42,4 +42,4 @@ SendReports             yes
 #
 # PeerList		X.X.X.X
 
-PidFile			/var/run/opendkim.pid
+PidFile			/opt/var/run/opendkim.pid

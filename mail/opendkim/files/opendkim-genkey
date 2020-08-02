@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -x /usr/bin/perl ]; then
-  /usr/sbin/opendkim-genkey.pl
+if [ -x /opt/bin/perl ]; then
+  /opt/sbin/opendkim-genkey.pl
 else
   echo ""
   echo "Perl is required for running this script. Install Perl or run"

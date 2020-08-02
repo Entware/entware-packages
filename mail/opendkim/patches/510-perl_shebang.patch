@@ -1,0 +1,8 @@
+--- a/opendkim/opendkim-genkey.in
++++ b/opendkim/opendkim-genkey.in
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/opt/bin/perl
+ ##
+ ## Copyright (c) 2005-2008 Sendmail, Inc. and its suppliers.
+ ## All rights reserved.

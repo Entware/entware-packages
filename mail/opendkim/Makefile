@@ -3,6 +3,7 @@
 #
 # This is free software, licensed under the GNU General Public License v3.
 #
+# Entware specific: use bundled strl* from https://github.com/trusteddomainproject/OpenDKIM/pull/54/files
 
 include $(TOPDIR)/rules.mk
 
@@ -30,7 +31,7 @@ define Package/opendkim
   DEPENDS:=+libopendkim
   TITLE:=Open source milter for providing DKIM service
   URL:=http://opendkim.org/
-  USERID:=opendkim:opendkim
+#  USERID:=opendkim:opendkim
 endef
 
 define Package/opendkim/description
@@ -68,37 +69,38 @@ CONFIGURE_ARGS += \
 	--without-gcov \
 	--without-gprof \
 	--without-lcov \
-	--with-milter=$(STAGING_DIR)/usr
+	--with-milter=$(STAGING_DIR)/opt \
+	--enable-bundled-strl
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/lib $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/opendkim $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/opendkim-{genkey,genzone,testkey,testmsg} $(1)/usr/sbin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libopendkim.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/opendkim $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/opendkim-{genkey,genzone,testkey,testmsg} $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libopendkim.so* $(1)/opt/lib/
 endef
 
 define Package/opendkim/conffiles
-/etc/opendkim.conf
-/etc/opendkim/
+/opt/etc/opendkim.conf
+/opt/etc/opendkim/
 endef
 
 define Package/opendkim/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/opendkim $(1)/etc/init.d
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/opendkim $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/opendkim-genkey $(1)/usr/sbin/opendkim-genkey.pl
-	$(INSTALL_BIN) ./files/opendkim-genkey $(1)/usr/sbin/
-	$(INSTALL_DATA) ./files/opendkim.conf.simple $(1)/etc/opendkim/
-	$(INSTALL_BIN) ./files/opendkim.init $(1)/etc/init.d/opendkim
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/opendkim $(1)/opt/etc/init.d
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/opendkim $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/opendkim-genkey $(1)/opt/sbin/opendkim-genkey.pl
+	$(INSTALL_BIN) ./files/opendkim-genkey $(1)/opt/sbin/
+	$(INSTALL_DATA) ./files/opendkim.conf.simple $(1)/opt/etc/opendkim/
+	$(INSTALL_BIN) ./files/S68opendkim $(1)/opt/etc/init.d/
 endef
 
 define Package/libopendkim/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libopendkim.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libopendkim.so* $(1)/opt/lib/
 endef
 
 define Package/opendkim-tools/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/opendkim-{genzone,testkey,testmsg} $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/opendkim-{genzone,testkey,testmsg} $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,opendkim))
