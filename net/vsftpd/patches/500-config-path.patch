@@ -1,0 +1,51 @@
+--- a/defs.h
++++ b/defs.h
+@@ -1,7 +1,7 @@
+ #ifndef VSF_DEFS_H
+ #define VSF_DEFS_H
+ 
+-#define VSFTP_DEFAULT_CONFIG    "/etc/vsftpd.conf"
++#define VSFTP_DEFAULT_CONFIG    "/opt/etc/vsftpd/vsftpd.conf"
+ 
+ #define VSFTP_COMMAND_FD        0
+ 
+--- a/tunables.c
++++ b/tunables.c
+@@ -254,19 +254,19 @@
+   /* -rw------- */
+   tunable_chown_upload_mode = 0600;
+ 
+-  install_str_setting("/var/run/vsftpd", &tunable_secure_chroot_dir);
++  install_str_setting("/opt/share/empty", &tunable_secure_chroot_dir);
+   install_str_setting("ftp", &tunable_ftp_username);
+   install_str_setting("root", &tunable_chown_username);
+-  install_str_setting("/var/log/xferlog", &tunable_xferlog_file);
+-  install_str_setting("/var/log/vsftpd.log", &tunable_vsftpd_log_file);
++  install_str_setting("/opt/var/log/xferlog", &tunable_xferlog_file);
++  install_str_setting("/opt/var/log/vsftpd.log", &tunable_vsftpd_log_file);
+   install_str_setting(".message", &tunable_message_file);
+   install_str_setting("nobody", &tunable_nopriv_user);
+   install_str_setting(0, &tunable_ftpd_banner);
+-  install_str_setting("/etc/vsftpd.banned_emails", &tunable_banned_email_file);
+-  install_str_setting("/etc/vsftpd.chroot_list", &tunable_chroot_list_file);
++  install_str_setting("/opt/etc/vsftpd/vsftpd.banned_emails", &tunable_banned_email_file);
++  install_str_setting("/opt/etc/vsftpd/vsftpd.chroot_list", &tunable_chroot_list_file);
+   install_str_setting("ftp", &tunable_pam_service_name);
+   install_str_setting("ftp", &tunable_guest_username);
+-  install_str_setting("/etc/vsftpd.user_list", &tunable_userlist_file);
++  install_str_setting("/opt/etc/vsftpd/vsftpd.user_list", &tunable_userlist_file);
+   install_str_setting(0, &tunable_anon_root);
+   install_str_setting(0, &tunable_local_root);
+   install_str_setting(0, &tunable_banner_file);
+@@ -279,9 +279,9 @@
+   install_str_setting(0, &tunable_hide_file);
+   install_str_setting(0, &tunable_deny_file);
+   install_str_setting(0, &tunable_user_sub_token);
+-  install_str_setting("/etc/vsftpd.email_passwords",
++  install_str_setting("/opt/etc/vsftpd/vsftpd.email_passwords",
+                       &tunable_email_password_file);
+-  install_str_setting("/usr/share/ssl/certs/vsftpd.pem",
++  install_str_setting("/opt/etc/vsftpd/vsftpd.pem",
+                       &tunable_rsa_cert_file);
+   install_str_setting(0, &tunable_dsa_cert_file);
+   install_str_setting("ECDHE-RSA-AES256-GCM-SHA384", &tunable_ssl_ciphers);

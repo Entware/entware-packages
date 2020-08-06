@@ -27,6 +27,7 @@ define Package/vsftpd/Default
   CATEGORY:=Network
   TITLE:=Fast and secure FTP server
   URL:=https://security.appspot.com/vsftpd.html
+  CONFLICTS:=vsftpd-ext
 endef
 
 
@@ -44,8 +45,8 @@ $(call Package/vsftpd/Default)
 endef
 
 define Package/vsftpd/conffiles
-/etc/vsftpd.conf
-/etc/vsftpd
+/opt/etc/vsftpd/vsftpd.conf
+/opt/etc/vsftpd
 endef
 
 Package/vsftpd-tls/conffiles=$(Package/vsftpd/conffiles)
@@ -59,6 +60,10 @@ else
 endif
 
 TARGET_CFLAGS += -D_GNU_SOURCE -include fcntl.h
+
+ifeq ($(or $(CONFIG_GCC_USE_VERSION_8),$(CONFIG_GCC_USE_VERSION_9)),y)
+TARGET_CFLAGS += -Wno-error=stringop-truncation
+endif
 
 ifeq ($(BUILD_VARIANT),notls)
  define Build/Compile
@@ -85,13 +90,13 @@ ifeq ($(BUILD_VARIANT),tls)
 endif
 
 define Package/vsftpd/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(PKG_NAME) $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/$(PKG_NAME).conf $(1)/etc/$(PKG_NAME).conf
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/$(PKG_NAME).init $(1)/etc/init.d/$(PKG_NAME)
-	$(INSTALL_DIR) $(1)/etc/vsftpd
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vsftpd $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/etc/vsftpd
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/vsftpd.conf $(1)/opt/etc/vsftpd
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S49vsftpd $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/share/empty
 endef
 
 Package/vsftpd-tls/install=$(Package/vsftpd/install)
