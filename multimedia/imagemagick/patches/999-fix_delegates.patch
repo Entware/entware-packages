@@ -1,0 +1,196 @@
+--- a/config/delegates.xml.in
++++ b/config/delegates.xml.in
+@@ -58,35 +58,35 @@
+   will it read any output image.
+ -->
+ <delegatemap>
+-  <delegate decode="bpg" command="&quot;@BPGDecodeDelegate@&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.png&quot; &quot;%o&quot;"/>
++  <delegate decode="bpg" command="&quot;@BPGDecodeDelegate@&quot; -b 16 -o &quot;%o.png&quot; &quot;%i&quot;; /opt/bin/mv &quot;%o.png&quot; &quot;%o&quot;"/>
+   <delegate decode="png" encode="bpg" command="&quot;@BPGEncodeDelegate@&quot; -b 12 -q &quot;%~&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+   <delegate decode="blender" command="&quot;@BlenderDecodeDelegate@&quot; -b &quot;%i&quot; -F PNG -o &quot;%o&quot;&quot;\n&quot;@ConvertDelegate@&quot; convert -concatenate &quot;%o*.png&quot; &quot;%o&quot;"/>
+-  <delegate decode="browse" stealth="True" spawn="True" command="&quot;@BrowseDelegate@&quot; https://imagemagick.org/; @RMDelegate@ &quot;%i&quot;"/>
+-  <delegate decode="cdr" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; @MVDelegate@ &quot;%o.svg&quot; &quot;%o&quot;"/>
+-  <delegate decode="cgm" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; @MVDelegate@ &quot;%o.svg&quot; &quot;%o&quot;"/>
++  <delegate decode="browse" stealth="True" spawn="True" command="&quot;@BrowseDelegate@&quot; https://imagemagick.org/; /opt/bin/rm &quot;%i&quot;"/>
++  <delegate decode="cdr" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; /opt/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
++  <delegate decode="cgm" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; /opt/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+   <delegate decode="https:decode" command="&quot;@WWWDecodeDelegate@&quot; -s -k -L -o &quot;%u.dat&quot; &quot;https:%M&quot;"/>
+-  <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
+-  <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="doc" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="docx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+   <delegate decode="dng:decode" command="&quot;@DNGDecodeDelegate@&quot; --silent --create-id=also --out-type=png --out-depth=16 &quot;--output=%u.png&quot; &quot;%i&quot;"/>
+   <delegate decode="dot" command="&quot;@GVCDecodeDelegate@&quot; -Tsvg &quot;%i&quot; -o &quot;%o&quot;" />
+   <delegate decode="dvi" command="&quot;@DVIDecodeDelegate@&quot; -sstdout=%%stderr -o &quot;%o&quot; &quot;%i&quot;"/>
+-  <delegate decode="dxf" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; @MVDelegate@ &quot;%o.svg&quot; &quot;%o&quot;"/>
++  <delegate decode="dxf" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; /opt/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
+   <delegate decode="edit" stealth="True" command="&quot;@EditorDelegate@&quot; -title &quot;Edit Image Comment&quot; -e vi &quot;%o&quot;"/>
+   <delegate decode="eps" encode="pdf" mode="bi" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 &quot;-sDEVICE=@GSPDFDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+   <delegate decode="eps" encode="ps" mode="bi" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSPSDevice@&quot; &quot;-sOutputFile=%o&quot; &quot;-f%i&quot;"/>
+-  <delegate decode="fig" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; @MVDelegate@ &quot;%o.svg&quot; &quot;%o&quot;"/>
+-  <delegate decode="hpg" command="&quot;@HPGLDecodeDelegate@&quot; -sstdout=%%stderr -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     @MVDelegate@ -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
+-  <delegate decode="hpgl" command="&quot;@HPGLDecodeDelegate@&quot; -sstdout=%%stderr -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     @MVDelegate@ -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
++  <delegate decode="fig" command="&quot;@UniconvertorDelegate@&quot; &quot;%i&quot; &quot;%o.svg&quot;; /opt/bin/mv &quot;%o.svg&quot; &quot;%o&quot;"/>
++  <delegate decode="hpg" command="&quot;@HPGLDecodeDelegate@&quot; -sstdout=%%stderr -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     /opt/bin/mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
++  <delegate decode="hpgl" command="&quot;@HPGLDecodeDelegate@&quot; -sstdout=%%stderr -m eps -f `basename &quot;%o&quot;` &quot;%i&quot;;     /opt/bin/mv -f `basename &quot;%o&quot;` &quot;%o&quot;"/>
+   <delegate decode="htm" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
+   <delegate decode="html" command="&quot;@HTMLDecodeDelegate@&quot; -U -o &quot;%o&quot; &quot;%i&quot;"/>
+   <delegate decode="ilbm" command="&quot;@ILBMDecodeDelegate@&quot; &quot;%i&quot; &gt; &quot;%o&quot;"/>
+   <delegate decode="jpg" encode="lep" mode="encode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
+-  <delegate decode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.pnm&quot; &quot;%o&quot;"/>
++  <delegate decode="jxr" command="/opt/bin/mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.pnm&quot;; /opt/bin/mv &quot;%i.jxr&quot; &quot;%i&quot;; /opt/bin/mv &quot;%o.pnm&quot; &quot;%o&quot;"/>
+   <delegate decode="lep" mode="decode" command="&quot;@LEPDelegate@&quot; &quot;%i&quot; &quot;%o&quot;"/>
+   <delegate decode="miff" encode="show" spawn="True" command="&quot;@DisplayDelegate@&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
+   <delegate decode="miff" encode="win" stealth="True" spawn="True" command="&quot;@DisplayDelegate@&quot; display -immutable -delay 0 -title &quot;%M&quot; &quot;%i&quot;"/>
+   <delegate decode="mpeg:decode" command="&quot;@MPEGDecodeDelegate@&quot; -nostdin -v -1 -i &quot;%i&quot; -vframes %S -vcodec pam -an -f rawvideo -y &quot;%u.pam&quot; 2&gt; &quot;%u&quot;"/>
+-  <delegate decode="odt" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="odt" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+   <delegate decode="pcl:cmyk" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+   <delegate decode="pcl:color" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+   <delegate decode="pcl:mono" stealth="True" command="&quot;@PCLDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@PCLMonoDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+@@ -95,10 +95,10 @@
+   <delegate decode="pnm" encode="trace" command="&quot;@TraceEncodeDelegate@&quot; --svg --output &quot;%o&quot; &quot;%i&quot;"/>
+   <delegate decode="png" encode="webp" command="&quot;@WebPEncodeDelegate@&quot; -quiet %Q &quot;%i&quot; -o &quot;%o&quot;"/>
+   <delegate decode="pnm" encode="ilbm" mode="encode" command="&quot;@ILBMEncodeDelegate@&quot; -24if &quot;%i&quot; &gt; &quot;%o&quot;"/>
+-  <delegate decode="bmp" encode="jxr" command="@MVDelegate@ &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.bmp&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
+-  <delegate decode="bmp" encode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; @MVDelegate@ &quot;%i.bmp&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.jxr&quot; &quot;%o&quot;"/>
+-  <delegate decode="ppt" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
+-  <delegate decode="pptx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="bmp" encode="jxr" command="/opt/bin/mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; /opt/bin/mv &quot;%i.bmp&quot; &quot;%i&quot;; /opt/bin/mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
++  <delegate decode="bmp" encode="wdp" command="/opt/bin/mv &quot;%i&quot; &quot;%i.bmp&quot;; &quot;@JXREncodeDelegate@&quot; -i &quot;%i.bmp&quot; -o &quot;%o.jxr&quot;; /opt/bin/mv &quot;%i.bmp&quot; &quot;%i&quot;; /opt/bin/mv &quot;%o.jxr&quot; &quot;%o&quot;"/>
++  <delegate decode="ppt" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="pptx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+   <delegate decode="ps" encode="prt" command="&quot;@LPRDelegate@&quot; &quot;%i&quot;"/>
+   <delegate decode="ps:alpha" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSAlphaDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+   <delegate decode="ps:cmyk" stealth="True" command="&quot;@PSDelegate@&quot; -sstdout=%%stderr -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@GSCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;-f%s&quot; &quot;-f%s&quot;"/>
+@@ -112,10 +112,10 @@
+   <delegate decode="svg" command="&quot;@RSVGDecodeDelegate@&quot; -o &quot;%o&quot; &quot;%i&quot;"/>
+   <delegate decode="svg:decode" stealth="True" command="&quot;@SVGDecodeDelegate@&quot; &quot;%s&quot; --export-png=&quot;%s&quot; --export-dpi=&quot;%s&quot; --export-background=&quot;%s&quot; --export-background-opacity=&quot;%s&quot; &gt; &quot;%s&quot; 2&gt;&amp;1"/>
+   <delegate decode="tiff" encode="launch" mode="encode" command="&quot;@LaunchDelegate@&quot; &quot;%i&quot;"/>
+-  <delegate decode="wdp" command="@MVDelegate@ &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; @MVDelegate@ &quot;%i.jxr&quot; &quot;%i&quot;; @MVDelegate@ &quot;%o.bmp&quot; &quot;%o&quot;"/>
++  <delegate decode="wdp" command="/opt/bin/mv &quot;%i&quot; &quot;%i.jxr&quot;; &quot;@JXRDecodeDelegate@&quot; -i &quot;%i.jxr&quot; -o &quot;%o.bmp&quot;; /opt/bin/mv &quot;%i.jxr&quot; &quot;%i&quot;; /opt/bin/mv &quot;%o.bmp&quot; &quot;%o&quot;"/>
+   <delegate decode="webp" command="&quot;@WebPDecodeDelegate@&quot; -pam &quot;%i&quot; -o &quot;%o&quot;"/>
+-  <delegate decode="xls" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
+-  <delegate decode="xlsx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; @MVDelegate@ &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="xls" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
++  <delegate decode="xlsx" command="&quot;@DOCDecodeDelegate@&quot; --convert-to pdf -outdir `dirname &quot;%i&quot;` &quot;%i&quot; 2&gt; &quot;%u&quot;; /opt/bin/mv &quot;%i.pdf&quot; &quot;%o&quot;"/>
+   <delegate decode="xps:cmyk" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSCMYKDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+   <delegate decode="xps:color" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSColorDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+   <delegate decode="xps:mono" stealth="True" command="&quot;@XPSDelegate@&quot; -dQUIET -dSAFER -dBATCH -dNOPAUSE -dNOPROMPT -dMaxBitmap=500000000 -dAlignToPixels=0 -dGridFitTT=2 &quot;-sDEVICE=@XPSMonoDevice@&quot; -dTextAlphaBits=%u -dGraphicsAlphaBits=%u &quot;-r%s&quot; %s &quot;-sOutputFile=%s&quot; &quot;%s&quot;"/>
+--- a/config/mime.xml
++++ b/config/mime.xml
+@@ -213,16 +213,8 @@
+   <mime type="application/x-arj" description="ARJ archive" data-type="short" endian="LSB" offset="0" magic="0xea60" priority="50" />
+   <mime type="application/x-arj" acronym="ARJ" description="ARJ archive" priority="100" pattern="*.arj" />
+   <mime type="application/x-asp" acronym="ASP" description="Active Server Page" priority="100" pattern="*.asp" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/bin/gawk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#! /bin/gawk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/usr/bin/gawk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#! /usr/bin/gawk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/usr/local/bin/gawk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#! /usr/local/bin/gawk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/bin/awk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#! /bin/awk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/usr/bin/awk" priority="50" />
+-  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#! /usr/bin/awk" priority="50" />
++  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/opt/bin/gawk" priority="50" />
++  <mime type="application/x-awk" description="AWK script" data-type="string" offset="0" magic="#!/opt/bin/awk" priority="50" />
+   <mime type="application/x-bcpio" acronym="BCPIO" description="BCPIO document" priority="100" pattern="*.bcpio" />
+   <mime type="application/x-bittorrent" description="BitTorrent seed file" data-type="string" offset="0" magic="d8:announce" priority="50" />
+   <mime type="application/x-bittorrent" description="BitTorrent seed file" priority="100" pattern="*.torrent" />
+@@ -264,10 +256,10 @@
+   <mime type="application/x-cpio" description="CPIO archive" data-type="short" offset="0" magic="0143561" priority="50" />
+   <mime type="application/x-cpio" description="CPIO archive" priority="100" pattern="*.cpio" />
+   <mime type="application/x-cpio-compressed" description="CPIO archive (gzip-compressed)" priority="100" pattern="*.cpio.gz" />
+-  <mime type="application/x-csh" description="C shell script" data-type="string" offset="1:16" magic="/bin/tcsh" />
+-  <mime type="application/x-csh" description="C shell script" data-type="string" offset="1:16" magic="/bin/csh" />
+-  <mime type="application/x-csh" description="C shell script" data-type="string" offset="0" magic="#!/usr/bin/env csh" />
+-  <mime type="application/x-csh" description="C shell script" data-type="string" offset="0" magic="#!/usr/bin/env tcsh" />
++  <mime type="application/x-csh" description="C shell script" data-type="string" offset="1:16" magic="/opt/bin/tcsh" />
++  <mime type="application/x-csh" description="C shell script" data-type="string" offset="1:16" magic="/opt/bin/csh" />
++  <mime type="application/x-csh" description="C shell script" data-type="string" offset="0" magic="#!/opt/bin/csh" />
++  <mime type="application/x-csh" description="C shell script" data-type="string" offset="0" magic="#!/opt/bin/tcsh" />
+   <mime type="application/x-csh" description="C shell script" priority="100" pattern="*.csh" />
+   <mime type="application/x-dbf" description="Xbase document" priority="100" pattern="*.dbf" />
+   <mime type="application/ecmascript" description="ECMAScript program" priority="100" pattern="*.es" />
+@@ -494,9 +486,8 @@
+   <mime type="application/x-par2" description="PAR2 Parity File" priority="100" pattern="*.PAR2" />
+   <mime type="application/x-par2" description="PAR2 Parity File" priority="100" pattern="*.par2" />
+   <mime type="application/x-pef-executable" description="PEF executable" data-type="string" offset="0" magic="Joy!" priority="50" />
+-  <mime type="application/x-perl" description="Perl script" data-type="string" offset="0" magic="eval \&quot;exec /usr/local/bin/perl" priority="50" />
+-  <mime type="application/x-perl" description="Perl script" data-type="string" offset="1:16" magic="/bin/perl" priority="50" />
+-  <mime type="application/x-perl" description="Perl script" data-type="string" offset="1:16" magic="/bin/env perl" priority="50" />
++  <mime type="application/x-perl" description="Perl script" data-type="string" offset="0" magic="eval \&quot;exec /opt/bin/perl" priority="50" />
++  <mime type="application/x-perl" description="Perl script" data-type="string" offset="1:16" magic="/opt/bin/perl" priority="50" />
+   <mime type="application/x-perl" description="Perl script" priority="100" pattern="*.pl" />
+   <mime type="application/x-perl" description="Perl script" priority="100" pattern="*.pm" />
+   <mime type="application/x-perl" description="Perl script" priority="100" pattern="*.al" />
+@@ -529,8 +520,7 @@
+   <mime type="application/x-reject" description="rejected patch" priority="100" pattern="*.rej" />
+   <mime type="application/x-rpm" description="RPM package" data-type="string" offset="0" magic="\xed\xab\xee\xdb" priority="50" />
+   <mime type="application/x-rpm" description="RPM package" priority="100" pattern="*.rpm" />
+-  <mime type="application/x-ruby" description="Ruby script" data-type="string" offset="1:16" magic="/bin/env ruby" />
+-  <mime type="application/x-ruby" description="Ruby script" data-type="string" offset="1:16" magic="/bin/ruby" />
++  <mime type="application/x-ruby" description="Ruby script" data-type="string" offset="1:16" magic="/opt/bin/ruby" />
+   <mime type="application/x-ruby" description="Ruby script" priority="100" pattern="*.rb" />
+   <mime type="application/x-markaby" description="Markaby script" priority="100" pattern="*.mab" />
+   <mime type="application/x-sc" description="SC/Xspread spreadsheet" data-type="string" offset="38" magic="Spreadsheet" priority="50" />
+@@ -542,15 +532,15 @@
+   <mime type="application/x-sharedlib" description="shared library" data-type="string" offset="0" mask="0xffffffff000000000000000000000000ff" magic="\177ELF \003" priority="50" />
+   <mime type="application/x-sharedlib" description="shared library" priority="100" pattern="*.so" />
+   <mime type="application/x-shellscript" description="shell script" data-type="string" offset="10" magic="# This is a shell archive" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/bin/bash" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/bin/nawk" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/bin/zsh" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/bin/sh" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/bin/ksh" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/usr/bin/env sh" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/usr/bin/env bash" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/usr/bin/env zsh" priority="50" />
+-  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/usr/bin/env ksh" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/opt/bin/bash" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/opt/bin/nawk" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/opt/bin/zsh" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/opt/bin/sh" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="1:16" magic="/opt/bin/ksh" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/opt/bin/sh" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/opt/bin/bash" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/opt/bin/zsh" priority="50" />
++  <mime type="application/x-shellscript" description="shell script" data-type="string" offset="0" magic="#!/opt/bin/ksh" priority="50" />
+   <mime type="application/x-shellscript" description="shell script" priority="100" pattern="*.sh" />
+   <mime type="application/x-shockwave-flash" description="Shockwave Flash file" data-type="string" offset="0" magic="FWS" priority="50" />
+   <mime type="application/x-shockwave-flash" description="Shockwave Flash file" data-type="string" offset="0" magic="CWS" priority="50" />
+@@ -1005,8 +995,7 @@
+   <mime type="text/x-ldif" acronym="LDIF" description="LDAP Data Interchange Format" priority="100" pattern="*.ldif" />
+   <mime type="text/x-literate-haskell" description="Literate Haskell source code" priority="100" pattern="*.lhs" />
+   <mime type="text/x-log" description="application log" priority="100" pattern="*.log" />
+-  <mime type="text/x-makefile" description="Makefile" data-type="string" offset="0" magic="#!/usr/bin/make" priority="50" />
+-  <mime type="text/x-makefile" description="Makefile" data-type="string" offset="0" magic="#! /usr/bin/make" priority="50" />
++  <mime type="text/x-makefile" description="Makefile" data-type="string" offset="0" magic="#!/opt/bin/make" priority="50" />
+   <mime type="text/x-makefile" description="Makefile" priority="100" pattern="[Mm]akefile" />
+   <mime type="text/x-makefile" description="Makefile" priority="100" pattern="GNUmakefile" />
+   <mime type="text/x-moc" acronym="Qt MOC" description="Qt Meta Object Compiler" priority="100" pattern="*.moc" />
+@@ -1033,19 +1022,11 @@
+   <mime type="text/x-patch" description="differences between files" data-type="string" offset="0" magic="Index:" priority="50" />
+   <mime type="text/x-patch" description="differences between files" priority="100" pattern="*.diff" />
+   <mime type="text/x-patch" description="differences between files" priority="100" pattern="*.patch" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#!/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#! /bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="eval \&quot;exec /bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#!/usr/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#! /usr/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="eval \&quot;exec /usr/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#!/usr/local/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#! /usr/local/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="eval \&quot;exec /usr/local/bin/python" priority="50" />
+-  <mime type="text/x-python" description="Python script" data-type="string" offset="1:16" magic="/bin/env python" priority="50" />
++  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="#!/opt/bin/python" priority="50" />
++  <mime type="text/x-python" description="Python script" data-type="string" offset="0" magic="eval \&quot;exec /opt/bin/python" priority="50" />
++  <mime type="text/x-python" description="Python script" data-type="string" offset="1:16" magic="/opt/bin/python" priority="50" />
+   <mime type="text/x-python" description="Python script" priority="100" pattern="*.py" />
+-  <mime type="text/x-lua" description="Lua script" data-type="string" offset="0" magic="/bin/lua" priority="50" />
+-  <mime type="text/x-lua" description="Lua script" data-type="string" offset="0" magic="/bin/env lua" priority="50" />
++  <mime type="text/x-lua" description="Lua script" data-type="string" offset="0" magic="/opt/bin/lua" priority="50" />
+   <mime type="text/x-lua" description="Lua script" priority="100" pattern="*.lua" />
+   <mime type="text/x-readme" description="README document" priority="100" pattern="README*" />
+   <mime type="text/x-readme" description="README document" priority="100" pattern="*.nfo" />
