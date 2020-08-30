@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: coreutils-date, findutils, xz deps, sysstat{,.ioconf} configs
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sysstat
 PKG_VERSION:=12.2.1
-PKG_RELEASE:=2a
+PKG_RELEASE:=2b
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://pagesperso-orange.fr/sebastien.godard/
@@ -31,7 +32,7 @@ define Package/sysstat
   CATEGORY:=Utilities
   TITLE:=Sysstat performance monitoring tools
   URL:=http://pagesperso-orange.fr/sebastien.godard/index.html
-  DEPENDS:=+coreutils-date +coreutils-find +xz $(INTL_DEPENDS)
+  DEPENDS:=+coreutils-date +findutils +xz $(INTL_DEPENDS)
 endef
 
 define Package/sysstat/description
