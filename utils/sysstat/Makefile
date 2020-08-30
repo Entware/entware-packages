@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sysstat
 PKG_VERSION:=12.2.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://pagesperso-orange.fr/sebastien.godard/
@@ -31,7 +31,7 @@ define Package/sysstat
   CATEGORY:=Utilities
   TITLE:=Sysstat performance monitoring tools
   URL:=http://pagesperso-orange.fr/sebastien.godard/index.html
-  DEPENDS:=$(INTL_DEPENDS)
+  DEPENDS:=+coreutils-date +coreutils-find +xz $(INTL_DEPENDS)
 endef
 
 define Package/sysstat/description
@@ -61,7 +61,7 @@ define Package/sysstat/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{sar,sadf,iostat,mpstat,pidstat} $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/sysstat
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/sysstat/sysstat.ioconf $(1)/opt/etc/sysstat/
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/sysstat/sysstat{,.ioconf} $(1)/opt/etc/sysstat/
 	$(INSTALL_DIR) $(1)/opt/var/log/sysstat
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S99sysstat $(1)/opt/etc/init.d/
