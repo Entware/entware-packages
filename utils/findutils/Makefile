@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=findutils
 PKG_VERSION:=4.7.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
@@ -58,7 +58,9 @@ $(call Package/findutils/description/Default)
 This package contains the locate and related updatedb utility
 endef
 
-CONFIGURE_ARGS += --localstatedir=/opt/var
+CONFIGURE_ARGS += \
+	--localstatedir=/opt/var \
+	--without-selinux
 CONFIGURE_VARS += ac_cv_path_SORT=sort
 
 define Package/findutils/install
