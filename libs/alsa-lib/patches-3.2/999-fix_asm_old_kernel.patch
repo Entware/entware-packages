@@ -1,6 +1,6 @@
---- a/include/sound/uapi/asound.h	2020-04-19 22:13:19.874372174 +0300
-+++ b/include/sound/uapi/asound.h	2020-04-19 22:13:03.774564648 +0300
-@@ -876,13 +876,13 @@
+--- a/include/sound/uapi/asound.h
++++ b/include/sound/uapi/asound.h
+@@ -876,13 +876,13 @@ struct snd_timer_status {
  #define SNDRV_TIMER_IOCTL_PAUSE		_IO('T', 0xa3)
  #define SNDRV_TIMER_IOCTL_TREAD64	_IOW('T', 0xa4, int)
  
