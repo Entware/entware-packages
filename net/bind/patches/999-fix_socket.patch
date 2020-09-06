@@ -2,7 +2,7 @@
 +++ b/lib/isc/unix/socket.c
 @@ -106,6 +106,17 @@ typedef struct {
  #define USE_SELECT
- #endif	/* HAVE_KQUEUE */
+ #endif /* HAVE_KQUEUE */
  
 +#ifndef LINUX_VERSION_CODE
 +#include <linux/version.h>

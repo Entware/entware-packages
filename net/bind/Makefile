@@ -5,12 +5,11 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: bind-nslookup package added
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.16.3
+PKG_VERSION:=9.16.6
 PKG_RELEASE:=1
 USERID:=bind=57:bind=57
 
@@ -23,7 +22,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:= \
 	https://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
 	https://ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_HASH:=27ac6513de5f8d0db34b9f241da53baa15a14b2ad21338d0cde0826eaf564f7e
+PKG_HASH:=b567b0f3b47dd03b345a4848af7f2acdd3f5cea2bd804edd85d9ef50743571cb
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
@@ -84,6 +83,7 @@ define Package/bind-tools
 	DEPENDS:= \
 	+bind-check \
 	+bind-dig \
+	+bind-nslookup \
 	+bind-dnssec \
 	+bind-host \
 	+bind-rndc
@@ -116,7 +116,9 @@ endef
 
 define Package/bind-nslookup
   $(call Package/bind/Default)
-  TITLE+= DNS querying tool
+  TITLE+= nslookup utility
+#  ALTERNATIVES:= \
+#	  200:/usr/bin/nslookup:/usr/libexec/nslookup-bind
 endef
 
 export BUILD_CC="$(TARGET_CC)"

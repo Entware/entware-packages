@@ -1,5 +1,5 @@
---- a/lib/isc/netmgr/udp.c	2020-03-11 19:46:53.000000000 +0300
-+++ b/lib/isc/netmgr/udp.c	2020-04-10 08:37:01.991926849 +0300
+--- a/lib/isc/netmgr/udp.c
++++ b/lib/isc/netmgr/udp.c
 @@ -29,6 +29,17 @@
  #include "netmgr-int.h"
  #include "uv-compat.h"
