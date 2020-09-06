@@ -21,7 +21,7 @@ define Package/nnn
   CATEGORY:=Utilities
   TITLE:=Full-featured terminal file manager
   URL:=https://github.com/jarun/nnn
-  DEPENDS:=+libncursesw +libreadline
+  DEPENDS:=+libncurses +libreadline
 endef
 
 define Package/nnn/description
