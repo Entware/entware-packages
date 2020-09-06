@@ -7,7 +7,6 @@
 
 include $(TOPDIR)/rules.mk
 
-# Make sure to also update the dbus-x package
 PKG_NAME:=dbus
 PKG_VERSION:=1.13.12
 PKG_RELEASE:=1
@@ -23,7 +22,6 @@ PKG_CPE_ID:=cpe:/a:freedesktop:dbus
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
 
-include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
 
 define Package/dbus/Default
@@ -75,6 +73,11 @@ $(call Package/dbus/Default/description)
  This package contains D-Bus utilities.
 endef
 
+define Package/dbus/conffiles
+/opt/share/dbus-1/session.conf
+/opt/share/dbus-1/system.conf
+endef
+
 CONFIGURE_ARGS += \
 	--disable-maintainer-mode \
 	--disable-developer \
@@ -102,32 +105,6 @@ CONFIGURE_ARGS += \
 	--with-dbus-user=root \
 	--without-x
 
-HOST_CONFIGURE_ARGS+= \
-	--disable-maintainer-mode \
-	--disable-developer \
-	--enable-debug=no \
-	--enable-shared \
-	--disable-static \
-	--disable-verbose-mode \
-	--disable-asserts \
-	--disable-xml-docs \
-	--disable-doxygen-docs \
-	--disable-ducktype-docs \
-	--disable-selinux \
-	--disable-apparmor \
-	--disable-libaudit \
-	--enable-inotify \
-	--disable-kqueue \
-	--disable-console-owner-file \
-	--disable-systemd \
-	--disable-tests \
-	--disable-code-coverage \
-	--disable-x11-autolaunch \
-	--with-system-socket="$(STAGING_DIR_HOSTPKG)/var/run/dbus/system_bus_socket" \
-	--with-system-pid-file="$(STAGING_DIR_HOSTPKG)/var/run/dbus.pid" \
-	--with-dbus-daemondir="$(STAGING_DIR_HOSTPKG)/bin" \
-	--without-x
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/dbus-1.0 $(1)/opt/include/
@@ -142,11 +119,6 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/dbus-1.pc \
 		$(1)/opt/lib/pkgconfig/
-endef
-
-define Package/dbus/conffiles
-/opt/share/dbus-1/session.conf
-/opt/share/dbus-1/system.conf
 endef
 
 define Package/libdbus/install
@@ -174,7 +146,6 @@ define Package/dbus-utils/install
 	$(INSTALL_BIN) 	$(PKG_INSTALL_DIR)/opt/bin/dbus-{monitor,send,update-activation-environment} $(1)/opt/bin/
 endef
 
-$(eval $(call HostBuild))
 $(eval $(call BuildPackage,libdbus))
 $(eval $(call BuildPackage,dbus))
 $(eval $(call BuildPackage,dbus-utils))
