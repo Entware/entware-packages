@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=LVM2
-PKG_VERSION:=2.03.08
+PKG_VERSION:=2.03.09
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME).$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://sourceware.org/pub/lvm2
-PKG_HASH:=6e0261dc9f6ab0ef1fc4a63d105a73e06eb536a273a9d6c2ccc414548c8e1ec8
+PKG_HASH:=c03a8b8d5c03ba8ac54ebddf670ae0d086edac54a6577e8c50721a8e174eb975
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME).$(PKG_VERSION)
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
@@ -62,12 +62,17 @@ CONFIGURE_ARGS += \
 	--with-default-run-dir=/opt/var/run/lvm \
 	--with-default-locking-dir=/opt/var/lock/lvm
 
+ifneq ($(shell /bin/sh -c "echo -n 'X'"),X)
+MAKE_SHELL = SHELL=/bin/bash
+endif
+
 # Entware specific: added -lblkid
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
 		CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(TARGET_LDFLAGS) $(FPIC)" \
 		LIBS="-L$(STAGING_DIR)/opt/lib -luuid -lm -lblkid" \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
+		$(MAKE_SHELL) \
 		install
 endef
 
