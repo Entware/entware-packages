@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=syslog-ng
 PKG_VERSION:=3.27.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Josef Schlehofer <josef.schlehofer@nic.cz>
 PKG_LICENSE:=LGPL-2.1-or-later GPL-2.0-or-later
@@ -92,6 +92,9 @@ define Package/syslog-ng/install
 
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) ./files/logread $(1)/opt/sbin
+
+	$(INSTALL_DIR) $(1)/opt/share/syslog-ng/include/
+	$(CP) -r ./files/scl $(1)/opt/share/syslog-ng/include/
 
 	$(SED) 's,^#!.*python,#!/opt/bin/python,' \
 		$(1)/opt/share/syslog-ng/tools/merge-grammar.py
