@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=isc-dhcp
 UPSTREAM_NAME:=dhcp
 PKG_VERSION:=4.4.1
-PKG_RELEASE:=6
+PKG_RELEASE:=8
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
@@ -174,6 +174,8 @@ ifeq ($(BUILD_VARIANT),ipv6)
   CONFIGURE_ARGS += --enable-dhcpv6
 endif
 
+TARGET_CFLAGS += -fcommon
+
 # Entware specific: help Bind find the correct headers
 define Build/Prepare
 	$(Build/Prepare/Default)
@@ -204,6 +206,10 @@ endef
 define Package/isc-dhcp-relay-$(BUILD_VARIANT)/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dhcrelay $(1)/opt/sbin
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DATA) ./files/dhcrelay.conf $(1)/etc/config/dhcrelay
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/dhcrelay4.init $(1)/etc/init.d/dhcrelay4
 endef
 
 define Package/isc-dhcp-server-$(BUILD_VARIANT)/install
@@ -211,6 +217,7 @@ define Package/isc-dhcp-server-$(BUILD_VARIANT)/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/dhcpd $(1)/opt/sbin
 	$(INSTALL_BIN) ./files/dhcpd.conf $(1)/opt/etc
 ifeq ($(BUILD_VARIANT),ipv6)
+#	$(INSTALL_BIN) ./files/dhcpd6.init $(1)/etc/init.d/dhcpd6
 	$(INSTALL_BIN) ./files/dhcpd6.conf $(1)/opt/etc
 endif
 endef
