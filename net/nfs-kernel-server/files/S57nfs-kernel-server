@@ -3,8 +3,8 @@
 prefix="/opt"
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 
-if [ -z "`pidof portmap`" ] ; then
-	echo 'Error: portmap not started'
+if [ -z "`pidof rpcbind`" ] ; then
+	echo 'Error: rpcbind not started'
 	exit 1
 fi
 
