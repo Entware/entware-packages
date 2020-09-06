@@ -9,18 +9,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sysstat
-PKG_VERSION:=12.2.1
-PKG_RELEASE:=2b
+PKG_VERSION:=12.4.0
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://pagesperso-orange.fr/sebastien.godard/
-PKG_HASH:=8edb0e19b514ac560a098a02933a4735b881296d61014db89bf80f05dd7a4732
+PKG_HASH:=78556c339795ecd07eb10ee09e3f5d52901d3a29f874ae92b45efd0de7b62d16
 
 PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:sysstat_project:sysstat
 
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
@@ -45,16 +46,21 @@ define Package/sysstat/conffiles
 /opt/etc/sysstat/sysstat
 endef
 
-CONFIGURE_VARS+= \
+# XXX 
+TARGET_CFLAGS += $(TARGET_LDFLAGS)
+TARGET_LDFLAGS += $(if $(INTL_FULL),-lintl)
+
+CONFIGURE_ARGS += \
+	--disable-documentation \
+	--disable-sensors \
+	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
+	LDFLAGS="$(TARGET_LDFLAGS)"
+
+CONFIGURE_VARS += \
+	rcdir="/opt/etc" \
 	sa_lib_dir="/opt/lib/sysstat" \
 	sa_dir="/opt/var/log/sysstat" \
 	conf_dir="/opt/etc/sysstat"
-
-CONFIGURE_ARGS+= \
-	--disable-documentation \
-	--disable-sensors
-
-TARGET_CFLAGS += $(TARGET_LDFLAGS)
 
 define Package/sysstat/install
 	$(INSTALL_DIR) $(1)/opt/lib/sysstat
