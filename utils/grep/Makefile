@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=grep
 PKG_VERSION:=3.4
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/grep
@@ -31,6 +31,10 @@ define Package/grep
   TITLE:=grep search utility - full version
   DEPENDS:=+libpcre
   URL:=https://www.gnu.org/software/grep/
+#  ALTERNATIVES:=\
+#    300:/bin/egrep:/usr/libexec/egrep-gnu \
+#    300:/bin/fgrep:/usr/libexec/fgrep-gnu \
+#    300:/bin/grep:/usr/libexec/grep-gnu
 endef
 
 define Package/grep/description
