@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2009-2015 OpenWrt.org
+# Copyright (C) 2009-2020 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=erlang
-PKG_VERSION:=21.0
-PKG_RELEASE:=3a
+PKG_VERSION:=23.0
+PKG_RELEASE:=3
 
 PKG_SOURCE:=otp_src_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= http://www.erlang.org/download/
-PKG_HASH:=c7d247c0cad2d2e718eaca2e2dff051136a1347a92097abf19ebf65ea2870131
+PKG_HASH:=42dcf3c721f4de59fe74ae7b65950c2174c46dc8d1dd4e27c0594d86f606a635
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE.txt
@@ -346,8 +346,12 @@ CONFIGURE_VARS += \
 	erl_xcomp_sysroot="$(STAGING_DIR)/opt" \
 	erl_xcomp_isysroot="$(STAGING_DIR)/opt/include"
 
-EXTRA_CFLAGS+=-D_GNU_SOURCE
-EXTRA_LDFLAGS+=-lz
+EXTRA_CFLAGS += -D_GNU_SOURCE
+EXTRA_LDFLAGS += -lz
+
+ifeq ($(or $(CONFIG_GCC_USE_VERSION_8),$(CONFIG_GCC_USE_VERSION_9)),y)
+EXTRA_CFLAGS += -Wno-error=implicit-function-declaration
+endif
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \

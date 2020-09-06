@@ -1,5 +1,5 @@
---- a/lib/snmp/bin/snmpc	2018-06-19 10:14:07.000000000 +0300
-+++ b/lib/snmp/bin/snmpc	2020-03-02 22:09:45.430790773 +0300
+--- a/lib/snmp/bin/snmpc
++++ b/lib/snmp/bin/snmpc
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env escript
 +#!/opt/bin/escript
