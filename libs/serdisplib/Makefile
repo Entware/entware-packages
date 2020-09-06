@@ -53,27 +53,28 @@ endef
 
 CONFIGURE_ARGS += \
 	--enable-dynloading \
-	--disable-statictools
+	--disable-statictools \
+	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)"
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/serdisplib
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/serdisplib/*.h $(1)/usr/include/serdisplib
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libserdisp.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/include/serdisplib
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/serdisplib/*.h $(1)/opt/include/serdisplib
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libserdisp.{a,so*} $(1)/opt/lib/
 endef
 
 define Package/serdisplib/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libserdisp.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libserdisp.so* $(1)/opt/lib/
 endef
 
 define Package/serdisplib-tools/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/l4m132c_tool $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/l4m320t_tool $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/multidisplay $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/sdcmegtron_tool $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/touchscreen_tool $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/l4m132c_tool $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/l4m320t_tool $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/multidisplay $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sdcmegtron_tool $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/touchscreen_tool $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,serdisplib))

@@ -1,0 +1,31 @@
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -194,7 +194,7 @@ $(LIB_DIR)/$(LIB_SHARED): $(LIB_OBJECTS)
+ 	cd $(DESTDIR)$(LIB_DIR) && $(LN_S) -f lib$(LIB_NAME).so.$(VERSION_MAJOR) lib$(LIB_NAME).so
+ 
+ testserdisp: $(LIB_DIR)/$(LIB_STATIC) $(OBJECTS)
+-	$(CC) -o testserdisp $(OBJECTS) $(LIB_SERDISP) $(EXTRA_LIBS_STATIC)
++	$(CC) $(LDFLAGS) -o testserdisp $(OBJECTS) $(LIB_SERDISP) $(EXTRA_LIBS_STATIC)
+ 
+ clean:
+ 	/bin/rm -f $(OBJECTS) $(LIB_OBJECTS) $(LIB_DIR)/*.a $(LIB_DIR)/*.so*
+--- a/tools/Makefile.in
++++ b/tools/Makefile.in
+@@ -70,7 +70,7 @@ endif
+ ifeq "@has_libgd_headers@" "true"
+   ifeq "@has_libgd_lib@" "true"
+     PROGRAMS += multidisplay
+-    EXTRA_LIBS += -lgd
++    EXTRA_LIBS += $(LDFLAGS) -lgd
+     OBJ_MULTIDISPLAY = image.o multidisplay.o
+     OBJECTS += $(OBJ_MULTIDISPLAY)
+   endif
+@@ -92,7 +92,7 @@ ifeq "@WITH_DRIVER_DDUSBT@" "true"
+   PROGRAMS += l4m320t_tool
+   ifeq "@has_libgd_headers@" "true"
+     ifeq "@has_libgd_lib@" "true"
+-      EXTRA_LIBS_STATIC += -lgd
++      EXTRA_LIBS_STATIC += $(LDFLAGS) -lgd
+     endif
+   endif
+   OBJ_L4M320T_TOOL = l4m320t_tool.o common.o
