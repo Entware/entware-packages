@@ -119,26 +119,27 @@ TARGET_CFLAGS += \
 endif
 
 define Package/hplip-common/install
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_BUILD_DIR)/.libs/libhpip.so* $(1)/opt/lib/
-	$(CP) $(PKG_BUILD_DIR)/.libs/libhpmud.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_BUILD_DIR)/.libs/libhpip.so* $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/.libs/libhpmud.so* $(1)/usr/lib/
 
-	$(INSTALL_DIR) $(1)/opt/etc/hp
-	$(CP) $(PKG_BUILD_DIR)/hplip.conf $(1)/opt/etc/hp/hplip.conf
+	$(INSTALL_DIR) $(1)/etc/hp
+	$(CP) $(PKG_BUILD_DIR)/hplip.conf $(1)/etc/hp/hplip.conf
 
-	$(INSTALL_DIR) $(1)/opt/share/hplip/data/models/
-	$(CP) $(PKG_BUILD_DIR)/data/models/models.dat $(1)/opt/share/hplip/data/models/
-
-	$(INSTALL_DIR) $(1)/opt/etc/hotplug.d/usb/
-	$(INSTALL_BIN) ./files/20-hplip $(1)/opt/etc/hotplug.d/usb/
+	$(INSTALL_DIR) $(1)/usr/share/hplip/data/models/
+	$(CP) $(PKG_BUILD_DIR)/data/models/models.dat $(1)/usr/share/hplip/data/models/
 endef
 
 define Package/hplip-sane/install
-	$(INSTALL_DIR) $(1)/opt/lib/sane
-	$(CP) $(PKG_BUILD_DIR)/.libs/libsane-hpaio.so* $(1)/opt/lib/sane
+	$(INSTALL_DIR) $(1)/usr/lib/sane
+	$(CP) $(PKG_BUILD_DIR)/.libs/libsane-hpaio.so* $(1)/usr/lib/sane
 
-	$(INSTALL_DIR) $(1)/opt/etc/sane.d/dll.d/
-	$(INSTALL_DATA) ./files/hplib.conf $(1)/opt/etc/sane.d/dll.d/hplib
+	$(INSTALL_DIR) $(1)/etc/sane.d/dll.d/
+	$(INSTALL_DATA) ./files/hplib.conf $(1)/etc/sane.d/dll.d/hplib
+
+	$(INSTALL_DIR) $(1)/usr/share/sane
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/sane/03f0-hplip.usbid \
+		$(1)/usr/share/sane/03f0-hplip.usbid
 endef
 
 define Package/hplip-full/install
