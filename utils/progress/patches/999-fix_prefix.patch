@@ -1,0 +1,11 @@
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@ OBJ = progress
+ CFLAGS ?= -g
+ override CFLAGS += -Wall -D_FILE_OFFSET_BITS=64
+ override LDFLAGS += -lm -lncursesw
+-PREFIX ?= /usr/local
++PREFIX ?= /opt
+ BINDIR = $(PREFIX)/bin
+ MANDIR = $(PREFIX)/share/man/man1
+ 
