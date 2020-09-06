@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=oniguruma
 PKG_VERSION:=6.9.5_rev1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=onig-v$(subst _,-,$(PKG_VERSION)).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/kkos/oniguruma/tar.gz/v$(PKG_VERSION)?
@@ -21,10 +21,8 @@ PKG_INSTALL:=1
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/cmake.mk
 
-CMAKE_INSTALL:=1
-CMAKE_OPTIONS += -DENABLE_POSIX_API:BOOL=ON
+CONFIGURE_ARGS += --enable-posix-api
 
 define Package/oniguruma
     SECTION:=libs
@@ -45,6 +43,13 @@ endef
 define Package/oniguruma/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libonig.so.$(ABI_VERSION) $(1)/opt/lib/
+endef
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/{include,lib}
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
+	$(SED) 's,/opt,$(STAGING_DIR)/opt,g' $(1)/opt/lib/pkgconfig/oniguruma.pc
 endef
 
 $(eval $(call BuildPackage,oniguruma))
