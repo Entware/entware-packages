@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tcp_wrappers
 PKG_VERSION:=7.6
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=ftp://ftp.porcupine.org/pub/security
@@ -32,7 +32,7 @@ endef
 
 TARGET_CFLAGS += $(FPIC) -Wall
 
-ifeq ($(findstring $(GCC_USE_VERSION),7_),)
+ifeq ($(CONFIG_GCC_USE_VERSION_7),y)
 TARGET_LDFLAGS += -L$(TOOLCHAIN_DIR)/lib
 endif
 
