@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zabbix
-PKG_VERSION:=4.0.16
-PKG_RELEASE:=3
+PKG_VERSION:=5.0.1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=@SF/zabbix
-PKG_HASH:=a8d7e18230e62a7bd3fd9af5830a2b1b22818468b5da3deb673865ce40dc4d42
+PKG_SOURCE_URL:=https://cdn.zabbix.com/zabbix/sources/stable/5.0/
+PKG_HASH:=20a19e5cf2354ffcbbe24521b04becfc9875e57289c00da71999de60c4a853b6
 
 PKG_MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
 PKG_LICENSE:=GPL-2.0
@@ -74,7 +74,7 @@ define Package/zabbix/Default
   TITLE:=Zabbix
   URL:=https://www.zabbix.com/
   USERID:=zabbix=53:zabbix=53
-  DEPENDS += $(ICONV_DEPENDS) +libpcre +zlib +ZABBIX_GNUTLS:libgnutls +ZABBIX_OPENSSL:libopenssl
+  DEPENDS += $(ICONV_DEPENDS) +libpcre +zlib +ZABBIX_GNUTLS:libgnutls +ZABBIX_OPENSSL:libopenssl @!USE_UCLIBC
 endef
 
 define Package/zabbix-agentd
@@ -299,7 +299,7 @@ endef
 
 define Package/zabbix-server-frontend/install
 	$(INSTALL_DIR) $(1)/opt/share/www/zabbix
-	$(CP) $(PKG_BUILD_DIR)/frontends/php/* $(1)/opt/share/www/zabbix
+	$(CP) $(PKG_BUILD_DIR)/ui/* $(1)/opt/share/www/zabbix
 endef
 
 define Package/zabbix-proxy/install
