@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gzip
 PKG_VERSION:=1.10
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/gzip
@@ -29,6 +29,10 @@ define Package/gzip
   TITLE:=gzip (GNU zip) is a compression utility.
   URL:=https://www.gnu.org/software/gzip/
   MAINTAINER:=Christian Beier <dontmind@freeshell.org>
+#  ALTERNATIVES:=\
+#    300:/bin/gunzip:/usr/libexec/gunzip-gnu \
+#    300:/bin/gzip:/usr/libexec/gzip-gnu \
+#    300:/bin/zcat:/usr/libexec/zcat-gnu
 endef
 
 define Package/gzip/description
@@ -47,4 +51,3 @@ define Package/gzip/install
 endef
 
 $(eval $(call BuildPackage,gzip))
-
