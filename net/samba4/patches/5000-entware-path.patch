@@ -22,7 +22,7 @@
  
 --- a/source3/client/smbspool_krb5_wrapper.c
 +++ b/source3/client/smbspool_krb5_wrapper.c
-@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
+@@ -309,7 +309,7 @@ int main(int argc, char *argv[])
  	}
  
  	/* Fallback to a FILE ccache */
@@ -49,7 +49,7 @@
  		if (!fname) {
 --- a/source3/smbd/process.c
 +++ b/source3/smbd/process.c
-@@ -1420,7 +1420,7 @@ static void smb_dump(const char *name, i
+@@ -1419,7 +1419,7 @@ static void smb_dump(const char *name, i
  	len = smb_len_tcp(data)+4;
  	for (i=1;i<100;i++) {
  		fname = talloc_asprintf(talloc_tos(),
@@ -60,7 +60,7 @@
  				type ? "req" : "resp");
 --- a/source3/winbindd/winbindd_pam.c
 +++ b/source3/winbindd/winbindd_pam.c
-@@ -568,11 +568,11 @@ static const char *generate_krb5_ccache(
+@@ -572,11 +572,11 @@ static const char *generate_krb5_ccache(
  	if (uid != -1) {
  		if (strequal(type, "FILE")) {
  			gen_cc = talloc_asprintf(
