@@ -1,6 +1,6 @@
 --- a/evaluator.h
 +++ b/evaluator.h
-@@ -43,7 +43,7 @@
+@@ -43,7 +43,7 @@ typedef struct {
  /* strndup() may be not available on several platforms */
  #ifndef HAVE_STRNDUP
  #include <string.h>
