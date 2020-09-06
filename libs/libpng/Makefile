@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libpng
 PKG_VERSION:=1.6.37
-PKG_RELEASE:=4
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/libpng
@@ -20,12 +20,10 @@ PKG_LICENSE:=Libpng GPL-2.0-or-later BSD-3-Clause
 PKC_LICENSE_FILES:=LICENSE contrib/gregbook/COPYING contrib/gregbook/LICENSE
 PKG_CPE_ID:=cpe:/a:libpng:libpng
 
-PKG_FIXUP:=autoreconf
-PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
-include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libpng
   SECTION:=libs
@@ -35,28 +33,27 @@ define Package/libpng
   URL:=http://www.libpng.org/pub/png/libpng.html
 endef
 
-TARGET_CFLAGS += $(FPIC)
+CMAKE_OPTIONS += \
+	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+	-DPNG_BUILD_ZLIB=ON \
+	-DPNG_SHARED=ON \
+	-DPNG_STATIC=ON \
+	-DPNG_TESTS=OFF \
+	-DPNG_FRAMEWORK=OFF \
+	-DPNG_DEBUG=OFF \
+	-DPNG_HARDWARE_OPTIMIZATIONS=O$(if $(findstring powerpc,$(CONFIG_ARCH))$(findstring mipsel,$(CONFIG_ARCH)),FF,N) \
+	-Dld-version-script=OFF
 
-CONFIGURE_ARGS += \
-	--enable-shared \
-	--enable-static \
-	$(if $(findstring neon,$(CONFIG_CPU_TYPE))$(findstring aarch64,$(CONFIG_ARCH)), \
-		--enable-hardware-optimizations=yes --enable-arm-neon=yes)
+TARGET_CFLAGS += $(TARGET_CPPFLAGS)
+TARGET_LDFLAGS += -lz
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/libpng{,16}-config $(1)/opt/bin/
+	$(call Build/InstallDev/cmake,$(1))
 	$(SED) \
 		's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' \
 		$(1)/opt/bin/libpng{,16}-config
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/png{,conf,libconf}.h $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/libpng16 $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpng16.{a,la,so*} $(1)/opt/lib/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpng.{a,la,so} $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libpng{,16}.pc $(1)/opt/lib/pkgconfig/
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libpng16.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libpng16.pc
 	$(INSTALL_DIR) $(2)/bin
 	for f in libpng{,16}-config; do \
 		$(LN) ../../opt/bin/$$$$f $(2)/bin/ ; \
@@ -69,5 +66,4 @@ define Package/libpng/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpng.so $(1)/opt/lib/
 endef
 
-$(eval $(call HostBuild))
 $(eval $(call BuildPackage,libpng))
