@@ -17,7 +17,7 @@
  
 --- a/lib/wchar.in.h
 +++ b/lib/wchar.in.h
-@@ -108,7 +108,7 @@
+@@ -110,7 +110,7 @@
  
  
  /* Define wint_t and WEOF.  (Also done in wctype.in.h.)  */
@@ -26,7 +26,7 @@
  # define wint_t int
  # ifndef WEOF
  #  define WEOF -1
-@@ -117,7 +117,7 @@
+@@ -119,7 +119,7 @@
  /* mingw and MSVC define wint_t as 'unsigned short' in <crtdefs.h> or
     <stddef.h>.  This is too small: ISO C 99 section 7.24.1.(2) says that
     wint_t must be "unchanged by default argument promotions".  Override it.  */
@@ -35,7 +35,7 @@
  #  if !GNULIB_defined_wint_t
  #   if @HAVE_CRTDEFS_H@
  #    include <crtdefs.h>
-@@ -133,7 +133,7 @@ typedef unsigned int rpl_wint_t;
+@@ -135,7 +135,7 @@ typedef unsigned int rpl_wint_t;
  # ifndef WEOF
  #  define WEOF ((wint_t) -1)
  # endif
