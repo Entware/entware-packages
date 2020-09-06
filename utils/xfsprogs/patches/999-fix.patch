@@ -1,0 +1,29 @@
+--- a/include/xfs_inode.h
++++ b/include/xfs_inode.h
+@@ -23,7 +23,15 @@ struct xfs_dir_ops;
+ #define I_DIRTY_TIME		0
+ #define I_DIRTY_TIME_EXPIRED	0
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(3,4,113)
++#ifdef IS_I_VERSION
++#undef IS_I_VERSION
++#endif
++#endif
+ #define IS_I_VERSION(inode)			(0)
+ #define inode_maybe_inc_iversion(inode,flags)	(0)
+ 
+ /*
+--- a/include/builddefs.in
++++ b/include/builddefs.in
+@@ -13,7 +13,7 @@ OPTIMIZER = @opt_build@
+ MALLOCLIB = @malloc_lib@
+ LOADERFLAGS = @LDFLAGS@
+ LTLDFLAGS = @LDFLAGS@
+-CFLAGS = @CFLAGS@ -D_FILE_OFFSET_BITS=64 -Wno-address-of-packed-member
++CFLAGS = @CFLAGS@ -D_FILE_OFFSET_BITS=64
+ BUILD_CFLAGS = @BUILD_CFLAGS@ -D_FILE_OFFSET_BITS=64
+ 
+ LIBRT = @librt@
