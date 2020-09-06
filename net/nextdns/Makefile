@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nextdns
-PKG_VERSION:=1.6.3
-PKG_RELEASE:=2
+PKG_VERSION:=1.7.1
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=v$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/nextdns/nextdns.git
-PKG_MIRROR_HASH:=104ec2ffe21f1f1770bce7686e4f117019dfc64f3f6bfd8f8f06cfc1ff44da6d
+PKG_MIRROR_HASH:=79ae12b494e1c9c7e309a8763975f2457771f26221113ed51dc0884299ae25b4
 
 PKG_MAINTAINER:=Olivier Poitrey <rs@nextdns.io>
 PKG_LICENSE:=MIT
@@ -49,11 +49,22 @@ define Package/nextdns/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/nextdns $(1)/usr/sbin/
 
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/nextdns.init $(1)/etc/init.d/nextdns
-
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/nextdns.config $(1)/etc/config/nextdns
+endef
+
+define Package/nextdns/postinst
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+  nextdns install
+fi
+endef
+
+define Package/nextdns/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+  nextdns uninstall
+fi
 endef
 
 define Package/nextdns/description
