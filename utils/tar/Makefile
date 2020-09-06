@@ -9,10 +9,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tar
 PKG_VERSION:=1.32
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
+PKG_SOURCE_URL:=@GNU/tar
 PKG_HASH:=d0d3ae07f103323be809bc3eac0dcc386d52c5262499fe05511ac4788af1fdd8
 
 PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
@@ -33,6 +33,7 @@ define Package/tar
   TITLE:=GNU tar
   URL:=https://www.gnu.org/software/tar/
   MENU:=1
+#  ALTERNATIVES:=300:/bin/tar:/usr/libexec/tar-gnu
 endef
 
 define Package/tar/config
@@ -93,7 +94,7 @@ MAKE_FLAGS += \
 
 define Package/tar/install
 	$(INSTALL_DIR) $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME) $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tar $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,tar))
