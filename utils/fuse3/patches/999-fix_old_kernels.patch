@@ -1,0 +1,17 @@
+--- a/util/mount.fuse.c
++++ b/util/mount.fuse.c
+@@ -42,6 +42,14 @@
+ #if !defined(SECBIT_NOROOT_LOCKED) && defined(SECURE_NOROOT_LOCKED)
+ #define SECBIT_NOROOT_LOCKED (issecure_mask(SECURE_NOROOT_LOCKED))
+ #endif
++/* kernels <3.5 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++/* PR_SET_NO_NEW_PRIVS since Linux 3.5 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,5,0)
++#define PR_SET_NO_NEW_PRIVS	38
++#endif /* kernels <3.5 */
+ #endif
+ 
+ #include "fuse.h"
