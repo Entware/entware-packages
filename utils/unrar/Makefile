@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unrar
-PKG_VERSION:=5.9.1
+PKG_VERSION:=5.9.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=unrarsrc-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.rarlab.com/rar
-PKG_HASH:=0eb1d1b8e02102fccae775a6d6b79336b69e2cf90e2045de92594dcfb58de100
+PKG_HASH:=3d010d14223e0c7a385ed740e8f046edcbe885e5c22c5ad5733d009596865300
 
 PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>, \
 		Ted Hess <thess@kitschensync.net>
@@ -78,7 +78,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/unrar
 	$(CP) $(PKG_BUILD_DIR)/*.hpp $(1)/opt/include/unrar/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/lib/libunrar.so $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libunrar.so $(1)/opt/lib/
 endef
 else
 define Build/Compile
@@ -92,12 +92,12 @@ endif
 
 define Package/unrar/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/bin/unrar $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/unrar $(1)/opt/bin/
 endef
 
 define Package/libunrar/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/lib/libunrar.so $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libunrar.so $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,unrar))

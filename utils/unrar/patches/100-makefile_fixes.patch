@@ -1,6 +1,6 @@
 --- a/makefile
 +++ b/makefile
-@@ -2,14 +2,14 @@
+@@ -2,14 +2,15 @@
  # Makefile for UNIX - unrar
  
  # Linux using GCC
@@ -18,16 +18,28 @@
 +STRIP?=strip
 +AR?=ar
 +LDFLAGS?=-lpthread
-+DESTDIR?=/opt
++PREFIX ?= /opt
++DESTDIR ?=
  
  # Linux using LCC
  #CXX=lcc
-@@ -166,7 +166,7 @@ uninstall-unrar:
- 			rm -f $(DESTDIR)/bin/unrar
+@@ -161,14 +162,14 @@ lib:	clean $(OBJECTS) $(LIB_OBJ)
+ 	$(AR) rcs libunrar.a $(OBJECTS) $(LIB_OBJ)
+ 
+ install-unrar:
+-			install -D unrar $(DESTDIR)/bin/unrar
++			install -D unrar $(DESTDIR)$(PREFIX)/bin/unrar
+ 
+ uninstall-unrar:
+-			rm -f $(DESTDIR)/bin/unrar
++			rm -f $(DESTDIR)$(PREFIX)/bin/unrar
  
  install-lib:
 -		install libunrar.so $(DESTDIR)/lib
-+		install -D libunrar.so $(DESTDIR)/lib/libunrar.so
- 		install libunrar.a $(DESTDIR)/lib
+-		install libunrar.a $(DESTDIR)/lib
++		install -D libunrar.so $(DESTDIR)$(PREFIX)/lib/libunrar.so
++		install -D libunrar.a $(DESTDIR)$(PREFIX)/lib/libunrar.a
  
  uninstall-lib:
+-		rm -f $(DESTDIR)/lib/libunrar.so
++		rm -f $(DESTDIR)$(PREFIX)/lib/libunrar.so
