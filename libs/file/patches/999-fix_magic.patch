@@ -169,7 +169,50 @@
  0	string/wt	#!\ /bin/bash	Bourne-Again shell script text executable
  !:mime	text/x-shellscript
  0	string/wb	#!\ /bin/bash	Bourne-Again shell script executable (binary data)
-@@ -93,6 +122,9 @@
+@@ -108,6 +137,42 @@
+ 
+ 
+ 
++# Fish shell magic
++# From: Benjamin Lowry <ben@ben.gmbh>
++0	string/wt	#!\ /opt/bin/fish		fish shell script text executable
++!:mime	text/x-shellscript
++0	string/wt	#!\ /usr/local/bin/fish		fish shell script text executable
++!:mime	text/x-shellscript
++0	string/wt	#!\ /usr/bin/fish		fish shell script text executable
++!:mime	text/x-shellscript
++0	string/wt	#!\ /opt/bin/env\ fish		fish shell script text executable
++!:mime	text/x-shellscript
++0	string/wt	#!\ /usr/bin/env\ fish		fish shell script text executable
++!:mime	text/x-shellscript
++
++
++0	search/1/wt	#!\ /opt/bin/tclsh	Tcl/Tk script text executable
++!:mime  text/x-tcl
++0	search/1/wt	#!\ /usr/bin/tclsh	Tcl/Tk script text executable
++!:mime  text/x-tcl
++
++0	search/1/wt	#!\ /opt/bin/texlua	LuaTex script text executable
++!:mime	text/x-luatex
++0	search/1/wt	#!\ /usr/bin/texlua	LuaTex script text executable
++!:mime	text/x-luatex
++
++0	search/1/wt	#!\ /opt/bin/luatex	LuaTex script text executable
++!:mime	text/x-luatex
++0	search/1/wt	#!\ /usr/bin/luatex	LuaTex script text executable
++!:mime	text/x-luatex
++
++0	search/1/wt	#!\ /opt/bin/stap	Systemtap script text executable
++!:mime  text/x-systemtap
++0	search/1/wt	#!\ /usr/bin/stap	Systemtap script text executable
++!:mime  text/x-systemtap
++
++
++
+ # PHP scripts
+ # Ulf Harnhammar <ulfh@update.uu.se>
+ 0	search/1/c	=<?php			PHP script text
+@@ -117,6 +182,9 @@
  !:mime	text/x-php
  0	search/1	=<?\r			PHP script text
  !:mime	text/x-php
@@ -179,7 +222,7 @@
  0	search/1/w	#!\ /usr/local/bin/php	PHP script text executable
  !:strength + 10
  !:mime	text/x-php
-@@ -114,6 +146,7 @@
+@@ -138,6 +206,7 @@
  # Type: Pdmenu
  # URL:  https://packages.debian.org/pdmenu
  # From: Edward Betts <edward@debian.org>
@@ -291,28 +334,22 @@
  # Hermes by Facebook https://hermesengine.dev/
 --- a/magic/Magdir/python
 +++ b/magic/Magdir/python
-@@ -43,15 +43,24 @@
- 0	belong		0x420d0d0a	python 3.7 byte-compiled
+@@ -216,12 +216,18 @@
+ 0	belong		0x610d0d0a	python 3.9 byte-compiled
+ !:mime text/x-bytecode.python
  
- 
-+0	search/1/w	#!/opt/bin/python	Python script text executable
++0	search/1/w	#!\040/opt/bin/python	Python script text executable
 +!:strength + 15
-+!:mime text/x-python
- 0	search/1/w	#!\ /usr/bin/python	Python script text executable
++!:mime text/x-script.python
+ 0	search/1/w	#!\040/usr/bin/python	Python script text executable
  !:strength + 15
- !:mime text/x-python
- 0	search/1/w	#!\ /usr/local/bin/python	Python script text executable
+ !:mime text/x-script.python
+ 0	search/1/w	#!\040/usr/local/bin/python	Python script text executable
  !:strength + 15
- !:mime text/x-python
-+0	search/1	#!/opt/bin/python	Python script text executable
+ !:mime text/x-script.python
++0	search/10/w	#!\040/opt/bin/env\040python	Python script text executable
 +!:strength + 15
-+!:mime text/x-python
- 0	search/1	#!/usr/bin/env\ python	Python script text executable
++!:mime text/x-script.python
+ 0	search/10/w	#!\040/usr/bin/env\040python	Python script text executable
  !:strength + 15
- !:mime text/x-python
-+0	search/10	#!/opt/bin/python	Python script text executable
-+!:strength + 15
-+!:mime text/x-python
- 0	search/10	#!\ /usr/bin/env\ python	Python script text executable
- !:strength + 15
- !:mime text/x-python
+ !:mime text/x-script.python
