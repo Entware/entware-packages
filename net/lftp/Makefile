@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lftp
-PKG_VERSION:=4.9.1
+PKG_VERSION:=4.9.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://lftp.tech/ftp/ \
 		https://mirror.csclub.uwaterloo.ca/gentoo-distfiles/distfiles/
-PKG_HASH:=5969fcaefd102955dd882f3bcd8962198bc537224749ed92f206f415207a024b
+PKG_HASH:=c517c4f4f9c39bd415d7313088a2b1e313b2d386867fe40b7692b83a20f0670d
 
 PKG_MAINTAINER:=Federico Di Marco <fededim@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -56,7 +56,7 @@ CONFIGURE_ARGS += \
 	--with-expat="$(STAGING_DIR)/opt" \
 	--disable-static
 
-TARGET_CXXFLAGS+= -std=c++11
+TARGET_CXXFLAGS += -std=c++11
 
 define Package/lftp/install
 	$(INSTALL_DIR) $(1)/opt/bin
