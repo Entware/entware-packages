@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libtirpc
 PKG_VERSION:=1.2.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=@SF/libtirpc
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
@@ -46,7 +46,6 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtirpc.{a,so*} $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include
-	$(SED) 's,/opt,${STAGING_DIR}/opt,g' $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libtirpc.pc
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libtirpc.pc $(1)/opt/lib/pkgconfig/libtirpc.pc
 endef
 
