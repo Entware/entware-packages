@@ -8,22 +8,21 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=modemmanager
-PKG_VERSION:=1.12.10
-PKG_RELEASE:=2
+PKG_VERSION:=1.14.2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=ModemManager-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.freedesktop.org/software/ModemManager
-PKG_HASH:=b2b3058bbb72adf98b24707fdbebe58e590644a38145e30d574f685f154bf8aa
+PKG_HASH:=5fb5553aecd6eb9d6d8ecd130a24f3461e5f93c5f91a0e4ae0508b5228e8b0be
 PKG_BUILD_DIR:=$(BUILD_DIR)/ModemManager-$(PKG_VERSION)
 
 PKG_MAINTAINER:=Nicholas Smith <nicholas.smith@telcoantennas.com.au>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
-PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=glib2/host libxslt/host
+PKG_BUILD_DEPENDS:=libxslt/host
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -76,10 +75,6 @@ define Build/Prepare
 	( cd "$(PKG_BUILD_DIR)"; \
 		printf "all:\ninstall:\n" >po/Makefile.in.in; \
 	)
-	$(SED) 's|^\(GLIB_MKENUMS\)=.*|\1=$(STAGING_DIR_HOSTPKG)/bin/glib-mkenums|' \
-		$(PKG_BUILD_DIR)/configure.ac
-	$(SED) 's|^\(GDBUS_CODEGEN\)=.*|\1=$(STAGING_DIR_HOSTPKG)/bin/gdbus-codegen|' \
-		$(PKG_BUILD_DIR)/configure.ac
 endef
 
 define Build/InstallDev
