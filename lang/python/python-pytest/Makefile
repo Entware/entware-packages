@@ -8,11 +8,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pytest
-PKG_VERSION:=5.4.1
+PKG_VERSION:=6.0.1
 PKG_RELEASE:=2
 
 PYPI_NAME:=pytest
-PKG_HASH:=84dde37075b8805f3d1f392cc47e38a0e59518fb46a431cfdaf7cf1ce805f970
+PKG_HASH:=85228d75db9f45e06e57ef9bf4429267f81ac7c0d742cc9ed63d09886a9fe6f4
 
 PKG_MAINTAINER:=Jan Pavlinec <jan.pavlinec@nic.cz>
 PKG_LICENSE:=MIT
@@ -31,16 +31,14 @@ define Package/python3-pytest
   TITLE:=Python testing framework
   URL:=https://docs.pytest.org/en/latest/
   DEPENDS:= \
-	+python3-light \
+	+python3 \
 	+python3-more-itertools \
 	+python3-py \
 	+python3-attrs \
 	+python3-pluggy \
 	+python3-packaging \
-	+python3-wcwidth \
-	+python3-decimal \
-	+python3-logging \
-	+python3-urllib
+	+python3-toml \
+	+python3-iniconfig
 endef
 
 define Package/python3-pytest/description
