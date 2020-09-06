@@ -8,27 +8,26 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pcre2
-PKG_VERSION:=10.34
-PKG_RELEASE:=1
+PKG_VERSION:=10.35
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/pcre/$(PKG_NAME)/$(PKG_VERSION)
-PKG_HASH:=74c473ffaba9e13db6951fd146e0143fe9887852ce73406a03277af1d9b798ca
+PKG_HASH:=9ccba8e02b0ce78046cdfb52e5c177f0f445e421059e43becca4359c669d4613
 
 PKG_MAINTAINER:=Shane Peelar <lookatyouhacker@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENCE
 PKG_CPE_ID:=cpe:/a:pcre:pcre
 
-PKG_FIXUP:=autoreconf
-
 PKG_BUILD_PARALLEL:=1
-PKG_INSTALL:=1
-
 PKG_CONFIG_DEPENDS:=\
+	CONFIG_PACKAGE_libpcre2-16 \
+	CONFIG_PACKAGE_libpcre2-32 \
 	CONFIG_PCRE2_JIT_ENABLED
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libpcre2/default
   SECTION:=libs
@@ -50,37 +49,28 @@ define Package/libpcre2-16
   TITLE:=A Perl Compatible Regular Expression library (16bit support)
 endef
 
-
 define Package/libpcre2-32
   $(call Package/libpcre2/default)
   TITLE:=A Perl Compatible Regular Expression library (32bit support)
 endef
 
-TARGET_CFLAGS += $(FPIC)
-
-CONFIGURE_ARGS += \
-	--enable-pcre2-16 \
-	--enable-pcre2-32 \
-	$(if $(CONFIG_PCRE2_JIT_ENABLED),--enable-jit,--disable-jit)
-
-MAKE_FLAGS += \
-	CFLAGS="$(TARGET_CFLAGS)"
+CMAKE_OPTIONS += \
+	-DBUILD_SHARED_LIBS=ON \
+	-DPCRE2_BUILD_PCRE2_8=ON \
+	-DPCRE2_BUILD_PCRE2_16=O$(if $(CONFIG_PACKAGE_libpcre2-16),N,FF) \
+	-DPCRE2_BUILD_PCRE2_32=O$(if $(CONFIG_PACKAGE_libpcre2-32),N,FF) \
+	-DPCRE2_DEBUG=OFF \
+	-DPCRE2_DISABLE_PERCENT_ZT=ON \
+	-DPCRE2_SUPPORT_JIT=O$(if $(CONFIG_PCRE2_JIT_ENABLED),N,FF) \
+	-DPCRE2_SHOW_REPORT=OFF \
+	-DPCRE2_BUILD_PCRE2GREP=OFF \
+	-DPCRE2_BUILD_TESTS=OFF
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/pcre2-config $(1)/opt/bin/
-
-	$(INSTALL_DIR) $(2)/bin
-	$(LN) $(STAGING_DIR)/opt/bin/pcre2-config $(2)/bin
-
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/pcre*.h $(1)/opt/include/
-
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpcre*.{a,so*} $(1)/opt/lib/
-
-	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libpcre*.pc $(1)/opt/lib/pkgconfig/
+	$(call Build/InstallDev/cmake,$(1))
+	$(SED) \
+		's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' \
+		$(1)/opt/bin/pcre2-config
 endef
 
 define Package/libpcre2/install
@@ -97,8 +87,6 @@ define Package/libpcre2-32/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpcre2-32.so* $(1)/opt/lib/
 endef
-
-
 
 $(eval $(call BuildPackage,libpcre2))
 $(eval $(call BuildPackage,libpcre2-16))
