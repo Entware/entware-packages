@@ -30,18 +30,18 @@ define Package/pps-tools/description
   Userland tools for GPS and DCF-77 Clock synchronization. PPS support in Kernel must be enabled.
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
+TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/sys
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/timepps.h $(1)/usr/include/sys/
+	$(INSTALL_DIR) $(1)/opt/include/sys
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/timepps.h $(1)/opt/include/sys/
 endef
 
 define Package/pps-tools/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ppsctl $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ppstest $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ppswatch $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ppsctl $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ppstest $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ppswatch $(1)/opt/sbin/
 endef
 
 $(eval $(call BuildPackage,pps-tools))
