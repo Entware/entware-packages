@@ -4,13 +4,12 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: additional script-torrent-added feature
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=transmission
 PKG_VERSION:=3.00
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GITHUB/transmission/transmission-releases/master
