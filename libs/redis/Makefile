@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=redis
-PKG_VERSION:=6.0.1
+PKG_VERSION:=6.0.6
 PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=http://download.redis.io/releases/
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=b8756e430479edc162ba9c44dc89ac394316cd482f2dc6b91bcd5fe12593f273
+PKG_HASH:=12ad49b163af5ef39466e8d2f7d212a58172116e5b441eebecb4e6ca22363d94
 
 PKG_MAINTAINER:=Jan Pavlinec <jan.pavlinec@nic.cz>
 PKG_LICENSE:=BSD-3-Clause
@@ -80,7 +80,7 @@ define Package/redis-server/install
 	$(INSTALL_BIN) ./files/S70redis $(1)/opt/etc/init.d
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/redis.conf $(1)/opt/etc/
-#	$(SED) "s|^dir .*|dir /var/lib/redis|" $(1)/etc/redis.conf
+	$(SED) "s|^dir .*|dir /opt/var/lib/redis|" $(1)/opt/etc/redis.conf
 endef
 
 define Package/redis-cli/install
