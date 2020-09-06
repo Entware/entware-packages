@@ -111,8 +111,8 @@ endif
 
 define Build/InstallDev
 	$(call Build/InstallDev/cmake,$(1))
-	$(SED) 's,/opt/lib,$(STAGING_DIR)/usr/lib,g' $(1)/opt/lib/pkgconfig/gdlib.pc
-	$(SED) 's,/opt/include,$(STAGING_DIR)/include,g' $(1)/opt/lib/pkgconfig/gdlib.pc
+	$(SED) 's,/opt/lib,$(STAGING_DIR)/opt/lib,g' $(1)/opt/lib/pkgconfig/gdlib.pc
+	$(SED) 's,/opt/include,$(STAGING_DIR)/opt/include,g' $(1)/opt/lib/pkgconfig/gdlib.pc
 endef
 
 define Package/libgd/install
