@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.20.0
+PKG_VERSION:=1.23.2
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
@@ -18,7 +18,7 @@ PKG_CPE_ID:=cpe:/a:my-netdata:netdata
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/netdata/netdata/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=c739e0fa8d6d7f433c0c7c8016b763e8f70519d67f0b5e7eca9ee5318f210d90
+PKG_HASH:=b6dd13292e0b1fb4137b1f7c0dc3d7c5e8a1bf408b82c2b8394f3751800e0eb5
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -64,7 +64,8 @@ CONFIGURE_ARGS += \
 	--disable-plugin-cups \
 	--disable-plugin-xenstat \
 	--disable-backend-prometheus-remote-write \
-	--enable-jsonc
+	--disable-unit-tests \
+	--disable-cloud
 
 define Package/netdata/conffiles
 /opt/etc/netdata/
@@ -79,9 +80,6 @@ define Package/netdata/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/netdata $(1)/opt/lib
 	$(CP) $(1)/opt/lib/netdata/conf.d/fping.conf $(1)/opt/etc
 	$(CP) $(1)/opt/lib/netdata/conf.d/health_alarm_notify.conf $(1)/opt/etc
-	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml2
-	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/pyyaml3
-	rm -rf $(1)/opt/lib/netdata/python.d/python_modules/urllib3
 	$(CP) $(1)/opt/lib/netdata/plugins.d/tc-qos-helper.sh $(1)/opt/etc
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/netdata $(1)/opt/sbin
@@ -94,14 +92,14 @@ define Package/netdata/install
 	rm $(1)/opt/share/netdata/web/images/*.png
 	rm $(1)/opt/share/netdata/web/images/*.gif
 	rm $(1)/opt/share/netdata/web/images/*.ico
+	rm -rf $(1)/opt/share/netdata/web/old
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S60netdata $(1)/opt/etc/init.d
 	# Entware specific: fix exec path in scripts
 	$(SED) 's,^#!.*bash,#!/opt/bin/bash,' $(1)/opt/etc/tc-qos-helper.sh
 	$(FIND) $(1)/opt/lib/netdata -type f | $(XARGS) $(SED) \
 		's,^#!.*bash,#!/opt/bin/bash,; \
-		s,^#!.*env sh,#!/bin/sh,; \
-		s,^#!.*python,#!/opt/bin/python,'
+		s,^#!.*env sh,#!/bin/sh,'
 endef
 
 $(eval $(call BuildPackage,netdata))

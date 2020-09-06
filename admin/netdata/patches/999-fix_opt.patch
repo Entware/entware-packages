@@ -1,5 +1,5 @@
---- a/system/edit-config.in	2019-11-28 01:47:29.000000000 +0300
-+++ b/system/edit-config.in	2020-03-02 21:57:27.334395683 +0300
+--- a/system/edit-config.in
++++ b/system/edit-config.in
 @@ -1,6 +1,6 @@
 -#!/usr/bin/env sh
 +#!/bin/sh
