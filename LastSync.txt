@@ -1,8 +1,9 @@
-commit dfd6bf328d6f841a1d52def9d6b0e3f8ab21b6e0 (HEAD -> master, origin/master, origin/HEAD)
-Merge: a0caea584 918983044
+commit f86c2ae27b1d275803a9bbe3f39de3293c975c2d
+Merge: 3aa04f8c2 f38ba5fd6
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Tue May 26 14:07:56 2020 -0700
+Date:   Thu Sep 3 14:04:51 2020 -0700
 
-    Merge pull request #12331 from dl12345/avahi
+    Merge pull request #13293 from neheb/lc
     
-    avahi: fix reliance on config symbol SSP_SUPPORT
+    libcap: update to 2.43
+
