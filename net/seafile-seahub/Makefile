@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=seafile-seahub
 PKG_VERSION:=7.1.4
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/haiwen/seahub/tar.gz/v$(PKG_VERSION)-server?
@@ -21,7 +21,7 @@ PKG_LICENSE_FILES:=LICENSE.txt
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/seahub-$(PKG_VERSION)-server
 
-HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:="Django~=1.11"
+HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:=Django-1.11
 
 PKG_BUILD_PARALLEL:=1
 PYTHON3_PKG_BUILD:=0
@@ -76,7 +76,7 @@ MAKE_VARS += \
 	DJANGO_ADMIN_PY="$(STAGING_DIR_HOSTPKG)/bin/django-admin"
 
 define Build/Compile
-	$(call HostPython3/PipInstall,$(HOST_PYTHON3_PACKAGE_BUILD_DEPENDS))
+	$(call HostPython3/PipInstall,$(PYTHON3_PKG_HOST_PIP_INSTALL_ARGS))
 	$(call Build/Compile/Default,locale)
 endef
 
