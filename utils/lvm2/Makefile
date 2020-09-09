@@ -56,11 +56,12 @@ endef
 
 CONFIGURE_ARGS += \
 	--disable-o_direct \
-	--with-confdir=/opt/etc
+	--with-confdir=/opt/etc \
 	--with-default-pid-dir=/opt/var/run \
 	--with-default-dm-run-dir=/opt/var/run \
 	--with-default-run-dir=/opt/var/run/lvm \
-	--with-default-locking-dir=/opt/var/lock/lvm
+	--with-default-locking-dir=/opt/var/lock/lvm \
+	--disable-selinux
 
 ifneq ($(shell /bin/sh -c "echo -n 'X'"),X)
 MAKE_SHELL = SHELL=/bin/bash
