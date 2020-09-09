@@ -1,0 +1,18 @@
+New --without-selinux option breaks stdbuf detection with -Werror:
+
+conftest.c:643: warning: "HAVE_SELINUX_SELINUX_H" redefined
+...
+configure:73619: $? = 0
+configure: failed program was:
+
+--- ./configure
++++ ./configure
+@@ -73599,7 +73599,7 @@
+ $as_echo_n "checking whether this system supports stdbuf... " >&6; }
+ CFLAGS="-fPIC $CFLAGS"
+ LDFLAGS="-shared $LDFLAGS"
+-stdbuf_supported=no
++stdbuf_supported=yes
+ # Note we only LINK here rather than RUN to support cross compilation
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
