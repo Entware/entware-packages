@@ -39,17 +39,17 @@ define Package/softflowd/description
 endef
 
 define Package/softflowd/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/softflowd $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/softflowctl $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/$(PKG_NAME).config $(1)/etc/config/$(PKG_NAME)
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/$(PKG_NAME).init $(1)/etc/init.d/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/softflowd $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/softflowctl $(1)/opt/sbin/
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DATA) ./files/$(PKG_NAME).config $(1)/etc/config/$(PKG_NAME)
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/$(PKG_NAME).init $(1)/etc/init.d/$(PKG_NAME)
 endef
 
-define Package/softflowd/conffiles
-/etc/config/softflowd
-endef
+#define Package/softflowd/conffiles
+#/etc/config/softflowd
+#endef
 
 $(eval $(call BuildPackage,softflowd))
