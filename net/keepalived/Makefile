@@ -86,7 +86,7 @@ CONFIGURE_ARGS+= \
 	--with-run-dir="/opt/var/run" \
 	--with-default_config_file="/opt/etc/keepalived/keepalived.conf"
 
-CONFUGURE_VARS+= \
+CONFIGURE_VARS+= \
 	ac_cv_func_setns=yes
 
 ifeq ($(CONFIG_KEEPALIVED_VRRP),)
