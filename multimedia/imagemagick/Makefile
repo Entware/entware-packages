@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=imagemagick
 PKG_VERSION:=7.0.9
 PKG_REVISION:=5
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_MAINTAINER:=Val Kulkov <val.kulkov@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REVISION).tar.gz
@@ -162,7 +162,6 @@ define Package/imagemagick/install
 		s,$(TOOLCHAIN_DIR),/opt,g; \
 		s,$(STAGING_DIR_HOST),/opt,' \
 			$(1)/$(IMlibdir)/config-Q8/configure.xml
-	$(FIND) $(1)/$(IMlibdir) -iname "*.la" -exec rm -rf {} +
 endef
 
 $(eval $(call BuildPackage,imagemagick))
