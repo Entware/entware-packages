@@ -4,12 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: CONFIGURE_VARS+=CPPFLAGS="-DNDEBUG -I$(STAGING_DIR)/opt/include"
+# do detect libcap
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chrony
 PKG_VERSION:=3.5
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.tuxfamily.org/chrony/
@@ -60,7 +62,7 @@ CONFIGURE_ARGS+= \
 	--with-sendmail=/opt/sbin/sendmail
 #	--with-user=chrony
 
-CONFIGURE_VARS+=CPPFLAGS=-DNDEBUG
+CONFIGURE_VARS+=CPPFLAGS="-DNDEBUG -I$(STAGING_DIR)/opt/include"
 
 define Package/chrony/install
 	$(INSTALL_DIR) $(1)/opt/bin/
@@ -77,6 +79,8 @@ define Package/chrony/install
 #	$(INSTALL_CONF) ./files/chrony.conf $(1)/etc/chrony/chrony.conf
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/examples/chrony.conf.* $(1)/opt/etc/chrony/
 	$(INSTALL_DIR) $(1)/opt/var/{lib,log,run}/chrony
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S06chronyd $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,chrony))
