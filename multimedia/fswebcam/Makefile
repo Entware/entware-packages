@@ -40,11 +40,11 @@ define Package/fswebcam/description
 endef
 
 EXTRA_CFLAGS+= $(TARGET_CPPFLAGS)
-EXTRA_LDFLAGS+= $(TARGET_LDFLAGS) -Wl,-rpath-link,$(STAGING_DIR)/usr/lib
+EXTRA_LDFLAGS+= $(TARGET_LDFLAGS) -Wl,-rpath-link,$(STAGING_DIR)/opt/lib
 
 define Package/fswebcam/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/fswebcam $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/fswebcam $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,fswebcam))
