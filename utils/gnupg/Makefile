@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: CONFLICTS:=gnupg2
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnupg
 PKG_VERSION:=1.4.23
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://gnupg.org/ftp/gcrypt/gnupg
@@ -30,6 +31,7 @@ define Package/gnupg/Default
   DEPENDS:=+zlib +libncurses +libreadline
   TITLE:=GNU privacy guard - a free PGP replacement
   URL:=http://www.gnupg.org/
+  CONFLICTS:=gnupg2
 endef
 
 define Package/gnupg
