@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=coreutils
 PKG_VERSION:=8.32
-PKG_RELEASE:=1
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/coreutils
@@ -20,6 +20,7 @@ PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:gnu:coreutils
 
+PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -41,19 +42,19 @@ DIR_BIN := \
 	touch true uname
 
 DIR_USR_BIN := \
-	basename cksum comm cut dirname du env expand expr factor fold groups	\
-	head hostid id install logname md5sum mkfifo nl nohup nproc od paste	\
-	printf readlink realpath seq sha1sum sha256sum sha512sum shred shuf	\
-	sort split sum tac tail tee test timeout tr truncate tty unexpand uniq	\
-	unlink uptime users wc who whoami yes
+	basename chcon cksum comm cut dirname du env expand expr factor fold	\
+	groups head hostid id install logname md5sum mkfifo nl nohup nproc od	\
+	paste printf readlink realpath runcon seq sha1sum sha256sum sha512sum	\
+	shred shuf sort split sum tac tail tee test timeout tr truncate tty	\
+	unexpand uniq unlink uptime users wc who whoami yes
 
 DIR_USR_SBIN := \
 	chroot
 
 # BusyBox does not provide these yet
 DIR_OTHERS := \
-	base32 b2sum basenc chcon csplit dir dircolors fmt join numfmt pathchk	\
-	pinky pr ptx runcon sha224sum sha384sum stdbuf tsort vdir
+	base32 b2sum basenc csplit dir dircolors fmt join numfmt pathchk pinky	\
+	pr ptx sha224sum sha384sum stdbuf tsort vdir
 
 #$(eval $(foreach a,$(DIR_BIN),ALTS_$(a):=300:/bin/$(a):/usr/bin/gnu-$(a)$(newline)))
 #$(eval $(foreach a,$(DIR_USR_BIN),ALTS_$(a):=300:/usr/bin/$(a):/usr/bin/gnu-$(a)$(newline)))
@@ -109,12 +110,11 @@ $(foreach a,$(COREUTILS_APPLETS),$(eval $(call GenPlugin,coreutils-$(a),$(a))))
 CONFIGURE_VARS += \
 	gl_cv_func_mbrtowc_incomplete_state=yes \
 	gl_cv_func_mbrtowc_retval=yes \
-	gl_cv_func_wcrtomb_retval=yes
-
-ifneq ($(CONFIG_USE_UCLIBC),)
-  CONFIGURE_VARS += \
-	ac_cv_type_pthread_spinlock_t=$(if $(filter 0.9.30% 0.9.2% 0.9.31%,$(call qstrip,$(CONFIG_UCLIBC_VERSION))),no,yes)
-endif
+	gl_cv_func_wcrtomb_retval=yes \
+	ac_cv_header_selinux_context_h=no \
+	ac_cv_header_selinux_flash_h=no \
+	ac_cv_header_selinux_selinux_h=no \
+	ac_cv_search_setfilecon=no
 
 CONFIGURE_ARGS += \
 	--disable-xattr \
@@ -130,13 +130,6 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_USE_MUSL),with,without)-included-regex \
 	--without-selinux \
 	--with-gmp
-
-define Build/Compile
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		DESTDIR="$(PKG_INSTALL_DIR)" \
-		SHELL="/bin/bash" \
-		all install
-endef
 
 define Package/coreutils/install
 	true
