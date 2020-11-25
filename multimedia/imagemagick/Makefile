@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=imagemagick
 PKG_VERSION:=7.0.9
 PKG_REVISION:=5
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Val Kulkov <val.kulkov@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REVISION).tar.gz
@@ -118,6 +118,8 @@ CONFIGURE_ARGS += \
 	--without-webp \
 	--without-x \
 	--without-zstd \
+	--without-gslib \
+	--without-gvc \
 	--without-pango \
 	--without-perl \
 	--without-rsvg \
@@ -130,7 +132,7 @@ CONFIGURE_ARGS += \
 	--with-gs-font-dir=/opt/share/fonts/type1/gsfonts \
 	--with-dejavu-font-dir=/opt/share/fonts/ttf-dejavu
 
-TARGET_CFLAGS += -flto
+TARGET_CFLAGS += $(if $(CONFIG_GCC_USE_VERSION_10),,-flto)
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -162,6 +164,9 @@ define Package/imagemagick/install
 		s,$(TOOLCHAIN_DIR),/opt,g; \
 		s,$(STAGING_DIR_HOST),/opt,' \
 			$(1)/$(IMlibdir)/config-Q8/configure.xml
+	$(FIND) $(1)/$(IMlibdir) -iname "*.la" -exec $(SED) \
+		's,$(STAGING_DIR),,g; \
+		s,-L$(TOOLCHAIN_DIR)/lib ,,g' {} +
 endef
 
 $(eval $(call BuildPackage,imagemagick))
