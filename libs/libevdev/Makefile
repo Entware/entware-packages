@@ -5,12 +5,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libevdev
-PKG_VERSION:=1.9.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.10.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.freedesktop.org/software/libevdev/
-PKG_HASH:=e7e18a64264f2dea19b6c50a481f8c062529d42919ccda0bc861495bce28eb9e
+PKG_HASH:=3522c26e2c148be0ad68ce26fbced408a4185dea90bfe8079dc82b8ace962d4a
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=MIT
@@ -44,17 +44,17 @@ MESON_ARGS += \
 	-Dcoverity=false
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/include/libevdev-1.0/libevdev
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libevdev-1.0/libevdev/*.h $(1)/opt/include/libevdev-1.0/libevdev
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libevdev.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libevdev.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libevdev/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libevdev.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libevdev))
