@@ -244,7 +244,7 @@ endef
 define Package/vim-help/install
 	tar -C $(1) -xf $(PKG_BUILD_DIR)/docs.tar
 	# Entware specific: fix exec path in scripts
-	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/share/vim/vim82/doc/vim2html.pl
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/share/vim/vim$(VIMVER)/doc/vim2html.pl
 endef
 
 define Package/xxd/install
