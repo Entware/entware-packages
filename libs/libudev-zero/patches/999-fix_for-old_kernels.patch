@@ -1,0 +1,23 @@
+--- a/udev_device.c
++++ b/udev_device.c
+@@ -9,6 +9,20 @@
+ #include "udev.h"
+ #include "udev_list.h"
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++/* INPUT_PROP_POINTING_STICK since Linux 3.17 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,17,0)
++#define INPUT_PROP_POINTING_STICK	0x05	/* is a pointing stick */
++#endif /* INPUT_PROP_POINTING_STICK since Linux 3.17 */
++
++/* INPUT_PROP_ACCELEROMETER since Linux 4.0 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)
++#define INPUT_PROP_ACCELEROMETER	0x06	/* has accelerometer */
++#endif /* INPUT_PROP_ACCELEROMETER since Linux 4.0 */
++
+ enum { BITS_MAX = 96 };
+ 
+ struct udev_device {
