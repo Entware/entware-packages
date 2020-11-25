@@ -2,16 +2,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: enable daemon mode
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpd
-PKG_VERSION:=0.21.25
-PKG_RELEASE:=4
+PKG_VERSION:=0.21.26
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.musicpd.org/download/mpd/0.21/
-PKG_HASH:=20a0ad01bf327b2dbeb6ae8e1af952cb0de83d2d63fab0fa4b7183a74765c201
+PKG_HASH:=f9e68221c7a6829ec02f281eb313b2f24182020f5eb65ab22b337e6169ea4eea
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
@@ -34,7 +35,7 @@ define Package/mpd/Default
   TITLE:=Music Player Daemon
   URL:=https://www.musicpd.org/
   DEPENDS:= +zlib +libcurl +libpthread +libmpdclient +boost $(ICONV_DEPENDS) \
-	    +AUDIO_SUPPORT:alsa-lib +libexpat +libflac +libid3tag +libfaad2 +libopus
+            +AUDIO_SUPPORT:alsa-lib +libexpat +libflac +libid3tag +libfaad2 +libopus
 endef
 
 define Package/mpd/Default/description
@@ -47,7 +48,7 @@ endef
 define Package/mpd-full
 $(call Package/mpd/Default)
   TITLE+= (full)
-  DEPENDS+= +AUDIO_SUPPORT:pulseaudio-daemon +libvorbis +libmms +libupnp +libshout +yajl \
+  DEPENDS+= +AUDIO_SUPPORT:pulseaudio-daemon +libvorbis +libmms +libnpupnp +libshout +yajl \
             +BUILD_PATENTED:libffmpeg +!BUILD_PATENTED:libmad
   PROVIDES:=mpd
   VARIANT:=full
@@ -85,7 +86,7 @@ endef
 define Package/mpd-avahi-service
 $(call Package/mpd/Default)
   TITLE+= (Avahi service)
-  DEPENDS+=+avahi-daemon
+  DEPENDS+=+avahi-dbus-daemon
 endef
 
 define Package/mpd-avahi-service/description
@@ -172,7 +173,7 @@ MESON_ARGS += \
 ifeq ($(BUILD_VARIANT),full)
 
   MESON_ARGS += \
-	-Dupnp=enabled \
+	-Dupnp=npupnp \
 	-Dmms=enabled \
 	-Dsoundcloud=enabled \
 	-Dffmpeg=$(if $(CONFIG_BUILD_PATENTED),en,dis)abled \
