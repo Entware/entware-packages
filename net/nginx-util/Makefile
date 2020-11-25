@@ -71,8 +71,8 @@ define Package/nginx-ssl-util-nopcre/install
 endef
 
 
-#$(eval $(call BuildPackage,nginx-util))
 #$(eval $(call BuildPackage,nginx-ssl-util))
+#$(eval $(call BuildPackage,nginx-ssl-util-nopcre))
 
 
 # TODO: remove after a transition period (together with above and pkg nginx):
