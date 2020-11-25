@@ -43,6 +43,7 @@ define Package/libtorrent/description
 endef
 
 CONFIGURE_ARGS += \
+	--enable-shared \
 	--enable-static \
 	--enable-aligned \
 	--enable-openssl \
