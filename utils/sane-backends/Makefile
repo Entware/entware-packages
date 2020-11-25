@@ -10,12 +10,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sane-backends
-PKG_VERSION:=1.0.30
-PKG_RELEASE:=2
+PKG_VERSION:=1.0.31
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://gitlab.com/sane-project/backends/uploads/c3dd60c9e054b5dee1e7b01a7edc98b0
-PKG_HASH:=3f5d96a9c47f6124a46bb577c776bbc4896dd17b9203d8bfbc7fe8cbbcf279a3
+PKG_SOURCE_URL:=https://gitlab.com/sane-project/backends/uploads/8bf1cae2e1803aefab9e5331550e5d5d/
+PKG_HASH:=4a3b10fcb398ed854777d979498645edfe66fcac2f2fd2b9117a79ff45e2a5aa
 
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
@@ -80,7 +80,7 @@ CONFIGURE_ARGS += \
 	--enable-static \
 	--disable-preload \
 	--without-snmp \
-	--disable-avahi \
+	--without-avahi \
 	--disable-locking \
 	--without-usb-record-replay \
 
