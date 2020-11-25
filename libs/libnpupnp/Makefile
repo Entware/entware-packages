@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libnpupnp
-PKG_VERSION:=4.0.10
+PKG_VERSION:=4.0.14
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.lesbonscomptes.com/upmpdcli/downloads
-PKG_HASH:=a682d0584d79acd5a4d551ae18efc83cb0765624da27fb0edcd47e3fb94418f9
+PKG_HASH:=ea5f5bf388bf8c028a25630c58e9a42762fddd357e7e2581b192856e01aad044
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=LGPL-2.1-or-later
@@ -35,8 +35,8 @@ TARGET_CFLAGS += -flto
 TARGET_LDFLAGS += -flto
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include/npupnp/upnp
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/npupnp/upnp/* $(1)/opt/include/npupnp/upnp
+	$(INSTALL_DIR) $(1)/opt/include/npupnp
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/npupnp/* $(1)/opt/include/npupnp/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnpupnp.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
