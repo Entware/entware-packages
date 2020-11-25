@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=keepalived
-PKG_VERSION:=2.0.20
-PKG_RELEASE:=4
+PKG_VERSION:=2.1.5
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.keepalived.org/software
-PKG_HASH:=9670fbc5eb3dc113828be8b702549dc68ec9578cf83287520d935be76fc8f193
+PKG_HASH:=d94d7ccbc5c95ab39c95a0e5ae89a25a224f39b6811f2930d3a1885a69732259
 
 PKG_CPE_ID:=cpe:/a:keepalived:keepalived
 PKG_LICENSE:=GPL-2.0-or-later
@@ -47,7 +47,7 @@ endef
 
 # specifying +(IPV6&&KEEPALIVED_IPTABLES) in the DEPENDS definition doesn't work
 ifeq ($(CONFIG_KEEPALIVED_IPTABLES)$(CONFIG_IPV6),yy)
-  KEEPALIVED_DEPENDS_LIBIP6TC=+libip6tc
+  KEEPALIVED_DEPENDS_LIBIP6TC=+iptables
 endif
 
 # The +kmod-nf-ipvs line should be +KEEPALIVED_LVS:kmod-nf-ipvs,
@@ -64,7 +64,8 @@ define Package/keepalived
     +KEEPALIVED_VRRP:libnl-route \
     +KEEPALIVED_VRRP:libnfnetlink \
     +KEEPALIVED_SHA1:libopenssl \
-    +iptables \
+    +KEEPALIVED_IPTABLES:iptables \
+    $(KEEPALIVED_DEPENDS_LIBIP6TC) \
     +KEEPALIVED_IPTABLES:libipset \
     +(KEEPALIVED_SNMP_VRRP||KEEPALIVED_SNMP_CHECKER||KEEPALIVED_SNMP_RFC2||KEEPALIVED_SNMP_RFC3):libnetsnmp \
     +KEEPALIVED_JSON:libjson-c \
