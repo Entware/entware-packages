@@ -11,12 +11,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
-PKG_VERSION:=3.19.12
-PKG_RELEASE:=2
+PKG_VERSION:=3.20.9
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
-PKG_HASH:=b7f398502fb659e0de8e54976237e3c6a64fec0b3c36054a515876f7b006b255
+PKG_HASH:=36251189aa9cc349f6a3eacbb7ac3c4fd26fc9f087c9f75cee051010c85d2ddf
 
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
@@ -27,6 +27,7 @@ PKG_BUILD_DEPENDS:= python3 libcups
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
+include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 
 define Package/hplip/Default
   SECTION:=utils
@@ -97,7 +98,7 @@ ifeq ($(CONFIG_PACKAGE_hplip-full),m)
 PKG_INSTALL:=1
 
 TARGET_CFLAGS += \
-	-I$(STAGING_DIR)/opt/include/libusb-1.0 -I$(STAGING_DIR)/opt/include/python3.8/
+	-I$(STAGING_DIR)/opt/include/libusb-1.0 -I$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)
 
   define Build/Configure
 	$(call Build/Configure/Default,\
@@ -113,10 +114,17 @@ TARGET_CFLAGS += \
 		PYTHON_PREFIX="$(STAGING_DIR_HOSTPKG)" \
 		PYTHON_EXEC_PREFIX="$(STAGING_DIR_HOSTPKG)" \
 		PYTHON_PLATFORM="linux" \
-		PYTHONINCLUDEDIR="$(STAGING_DIR)/opt/include/python3.8/" \
+		PYTHONINCLUDEDIR="$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)" \
 	)
   endef
 endif
+
+#define Build/Install
+#	mkdir -p $(PKG_INSTALL_DIR)/usr/share/sane
+#	sed -n -e '/key="usb.product_id"/{s/.*int_outof="0x//;s/;0x/\n/g;s/".*//;p}' \
+#		$(PKG_BUILD_DIR)/data/rules/20-hplip-devices.fdi | sort -u > \
+#		$(PKG_INSTALL_DIR)/usr/share/sane/03f0-hplip.usbid
+#endef
 
 define Package/hplip-common/install
 	$(INSTALL_DIR) $(1)/usr/lib
@@ -163,8 +171,8 @@ define Package/hplip-full/install
 	$(INSTALL_DIR) $(1)/opt/lib/sane
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/sane/libsane-hpaio.so* $(1)/opt/lib/sane
 
-	$(INSTALL_DIR) $(1)/opt/lib/python3.8/site-packages
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/python3.8/site-packages/{cups,hpmud,pcard,scan}ext.so $(1)/opt/lib/python3.8/site-packages
+	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/site-packages/{cups,hpmud,pcard,scan}ext.so $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
 
 	$(INSTALL_DIR) $(1)/opt/etc/hp
 	$(SED) 's|/usr/|/opt/|g' $(PKG_INSTALL_DIR)/opt/etc/hp/hplip.conf
