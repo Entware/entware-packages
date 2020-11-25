@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -562,7 +562,7 @@ if eval "test x$CURSES_LIB_NAME = x"; th
+@@ -576,7 +576,7 @@ if eval "test x$CURSES_LIB_NAME = x"; th
  
  	if test "x$enable_utf8" != xno; then
  		OLDLIBS="$LIBS"
