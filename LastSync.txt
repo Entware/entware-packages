@@ -1,9 +1,8 @@
-commit f86c2ae27b1d275803a9bbe3f39de3293c975c2d
-Merge: 3aa04f8c2 f38ba5fd6
+commit 1d3c84d4e65e1fb20645be58f49a4ac068f1e96c (HEAD -> master, origin/master, origin/HEAD)
+Merge: 0d3176abe b0af8ae44
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Thu Sep 3 14:04:51 2020 -0700
+Date:   Tue Nov 24 14:40:56 2020 -0800
 
-    Merge pull request #13293 from neheb/lc
+    Merge pull request #13996 from neheb/jpg
     
-    libcap: update to 2.43
-
+    libjpeg-turbo: update to 2.0.6
