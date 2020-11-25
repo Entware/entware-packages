@@ -1,6 +1,6 @@
 --- a/scripts/seafile.sh
 +++ b/scripts/seafile.sh
-@@ -42,10 +42,9 @@ fi
+@@ -40,10 +40,9 @@ fi
  function validate_running_user () {
      real_data_dir=`readlink -f ${default_seafile_data_dir}`
      running_user=`id -un`

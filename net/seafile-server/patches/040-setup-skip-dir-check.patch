@@ -12,7 +12,7 @@
  
 --- a/scripts/setup-seafile.sh
 +++ b/scripts/setup-seafile.sh
-@@ -415,7 +415,6 @@ if [[ $# -ge 1 && "$1" == "auto" ]]; the
+@@ -413,7 +413,6 @@ if [[ $# -ge 1 && "$1" == "auto" ]]; the
      need_pause=0
  fi
  

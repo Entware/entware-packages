@@ -42,7 +42,7 @@
 +        sys.exit(1)
 --- a/scripts/seahub.sh
 +++ b/scripts/seahub.sh
-@@ -250,7 +250,10 @@ function stop_seahub () {
+@@ -248,7 +248,10 @@ function stop_seahub () {
  
  function check_init_admin() {
      check_init_admin_script=${INSTALLPATH}/check_init_admin.py

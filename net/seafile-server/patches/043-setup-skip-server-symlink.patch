@@ -10,7 +10,7 @@
  
 --- a/scripts/setup-seafile.sh
 +++ b/scripts/setup-seafile.sh
-@@ -689,17 +689,6 @@ fi
+@@ -687,17 +687,6 @@ fi
  # /data/haiwen/
  #            -- seafile-server-2.0.4
  #            -- seafile-server-latest # symlink to 2.0.4
@@ -30,7 +30,7 @@
  chmod 0700 "$default_ccnet_conf_dir"
 --- a/scripts/upgrade/minor-upgrade.sh
 +++ b/scripts/upgrade/minor-upgrade.sh
-@@ -162,7 +162,6 @@ make_media_custom_symlink;
+@@ -160,7 +160,6 @@ make_media_custom_symlink;
  
  move_old_elasticsearch_config_to_latest;
  

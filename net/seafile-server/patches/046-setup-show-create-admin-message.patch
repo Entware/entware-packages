@@ -12,7 +12,7 @@
  -----------------------------------------------------------------
 --- a/scripts/setup-seafile.sh
 +++ b/scripts/setup-seafile.sh
-@@ -710,6 +710,9 @@ echo "----------------------------------
+@@ -708,6 +708,9 @@ echo "----------------------------------
  echo "Your seafile server configuration has been completed successfully." 
  echo "-----------------------------------------------------------------"
  echo 
