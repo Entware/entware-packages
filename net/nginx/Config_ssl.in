@@ -20,7 +20,7 @@ config NGINX_UBUS
 	prompt "Enable UBUS module"
 	help
 		Enable UBUS api support directly from the server.
-	default y
+	default n
 
 config NGINX_FLV
 	bool
