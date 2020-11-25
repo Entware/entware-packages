@@ -1,0 +1,34 @@
+--- a/whois.conf
++++ b/whois.conf
+@@ -9,3 +9,9 @@
+ # Eg: 
+ # \.nz$ nz.whois-servers.net
+ #
++\.com\.ru$ whois.nic.ru
++\.net\.ru$ whois.nic.ru
++\.org\.ru$ whois.nic.ru
++\.pp\.ru$  whois.nic.ru
++\.msk\.ru$ whois.nic.ru
++\.spb\.ru$ whois.nic.ru
+--- a/config.h
++++ b/config.h
+@@ -7,9 +7,7 @@
+ #define DEFAULTSERVER   "whois.arin.net"
+ 
+ /* Configuration file */
+-/*
+-#define CONFIG_FILE "/etc/whois.conf"
+-*/
++#define CONFIG_FILE "/opt/etc/whois.conf"
+ 
+ 
+ /* autoconf in cpp macros */
+@@ -119,7 +117,7 @@
+ #  define NLS_CAT_NAME   "whois"
+ # endif
+ # ifndef LOCALEDIR
+-#  define LOCALEDIR     "/usr/share/locale"
++#  define LOCALEDIR     "/opt/share/locale"
+ # endif
+ #endif
+ 
