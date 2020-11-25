@@ -77,6 +77,11 @@ pre_checks()
 
 		case "$cmd" in
 			uhttpd)
+				if [ -n "$UHTTPD_LISTEN_HTTP" ]; then
+					debug "Already handled uhttpd; skipping"
+					continue
+				fi
+
 				debug "Found uhttpd listening on port 80; trying to disable."
 
 				UHTTPD_LISTEN_HTTP=$(uci get uhttpd.main.listen_http)
@@ -96,6 +101,11 @@ pre_checks()
 				fi
 				;;
 			nginx*)
+				if [ "$NGINX_WEBSERVER" -eq "1" ]; then
+					debug "Already handled nginx; skipping"
+					continue
+				fi
+
 				debug "Found nginx listening on port 80; trying to disable."
 				NGINX_WEBSERVER=1
 				local tries=0
@@ -200,6 +210,8 @@ issue_cert()
 	local user_cleanup
 	local ret
 	local domain_dir
+	local acme_server
+	local days
 
 	config_get_bool enabled "$section" enabled 0
 	config_get_bool use_staging "$section" use_staging
@@ -213,6 +225,8 @@ issue_cert()
 	config_get dns "$section" dns
 	config_get user_setup "$section" user_setup
 	config_get user_cleanup "$section" user_cleanup
+	config_get acme_server "$section" acme_server
+	config_get days "$section" days
 
 	UPDATE_NGINX=$update_nginx
 	UPDATE_UHTTPD=$update_uhttpd
@@ -266,6 +280,16 @@ issue_cert()
 	acme_args="$acme_args --keylength $keylength"
 	[ -n "$ACCOUNT_EMAIL" ] && acme_args="$acme_args --accountemail $ACCOUNT_EMAIL"
 	[ "$use_staging" -eq "1" ] && acme_args="$acme_args --staging"
+
+	if [ -n "$acme_server" ]; then
+		log "Using custom ACME server URL"
+		acme_args="$acme_args --server $acme_server"
+	fi
+
+	if [ -n "$days" ]; then
+		log "Renewing after $days days"
+		acme_args="$acme_args --days $days"
+	fi
 
 	if [ -n "$dns" ]; then
 		log "Using dns mode"
