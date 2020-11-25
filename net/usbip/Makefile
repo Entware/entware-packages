@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=11
-PKG_LICENSE:=GPL-2.0
+PKG_RELEASE:=12
+PKG_LICENSE:=GPL-2.0-only
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
 # Package Automatic match version in kernel
-# MD5SUM is not useful kernel package already check it
+# HASH is not useful kernel package already check it
 PKG_VERSION:=$(shell  sed -n -e '/^AC_INIT/s/.*\[\([[:digit:]\.]*\)\].*/\1/gp' $(LINUX_DIR)/drivers/staging/usbip/userspace/configure.ac)
 PKG_SOURCE:=
 PKG_SOURCE_URL:=
@@ -52,7 +52,7 @@ endef
 define Package/usbip
   $(call Package/usbip/Default)
   TITLE+= (common)
-  DEPENDS+= +libwrap +libudev-fbsd
+  DEPENDS+= +libwrap +libudev
 endef
 
 define Package/usbip-client
@@ -71,10 +71,12 @@ CONFIGURE_PATH:=.
 MAKE_PATH:=.
 LIBTOOL_PATHS:=.
 
-# Entware specific CFLAGS -Wno-...
-MAKE_FLAGS+=CFLAGS='-Wno-format-truncation -Wno-format-overflow -Wno-implicit-fallthrough \
-	-Dudev_device_get_devpath\(x\)=udev_device_get_syspath\(x\)+strlen\(\"/sys\"\) \
-	-DSIGCLD=SIGCHLD'
+# Entware specific: add CFLAGS -Wno-*
+MAKE_FLAGS += \
+	CFLAGS='-Wno-format-truncation \
+		-Wno-format-overflow \
+		-Wno-implicit-fallthrough'
+
 CONFIGURE_ARGS += \
 	--disable-silent-rules \
 	--with-usbids-dir=/opt/share/hwdata
