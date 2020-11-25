@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptsetup
-PKG_VERSION:=2.3.3
-PKG_RELEASE:=1
+PKG_VERSION:=2.3.4
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/cryptsetup/v2.3
-PKG_HASH:=3bca4ffe39e2f94cef50f6ea65acb873a6dbce5db34fc6bcefe38b6d095e82df
+PKG_HASH:=9d16eebb96b53b514778e813019b8dd15fea9fec5aafde9fae5febf59df83773
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0-or-later LGPL-2.1-or-later
@@ -30,7 +30,7 @@ define Package/cryptsetup
   CATEGORY:=Utilities
   SUBMENU:=Encryption
   TITLE:=Cryptsetup
-  DEPENDS:=$(ICONV_DEPENDS) +libblkid +libuuid +libpopt +lvm2 +libdevmapper +libjson-c +libopenssl $(INTL_DEPENDS)
+  DEPENDS:=$(ICONV_DEPENDS) $(INTL_DEPENDS) +libblkid +libuuid +libpopt +lvm2 +libdevmapper +libjson-c +libopenssl
   URL:=https://gitlab.com/cryptsetup/cryptsetup/
 endef
 
@@ -57,8 +57,6 @@ ifeq ($(CONFIG_LINUX_2_6_36),y)
 CONFIGURE_ARGS+= \
 	--disable-kernel_crypto
 endif
-
-TARGET_LDFLAGS += $(if $(ICONV_FULL),-liconv) $(if $(INTL_FULL),-lintl)
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
