@@ -1,0 +1,8 @@
+/opt/var/log/lighttpd/error.log {
+	maxsize 1M
+	compress
+	delaycompress
+	postrotate
+		/opt/etc/init.d/S80lighttpd reload
+	endscript
+}

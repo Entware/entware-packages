@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lighttpd
 PKG_VERSION:=1.4.55
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://download.lighttpd.net/lighttpd/releases-1.4.x
@@ -41,7 +41,7 @@ endef
 define Package/lighttpd
   $(call Package/lighttpd/Default)
   MENU:=1
-  DEPENDS:=+LIGHTTPD_SSL:libopenssl +libpcre +libpthread
+  DEPENDS:=+LIGHTTPD_SSL:libopenssl +libpcre +libpthread +LIGHTTPD_LOGROTATE:logrotate
   TITLE:=A flexible and lightweight web server
 endef
 
@@ -54,6 +54,13 @@ config LIGHTTPD_SSL
 	  Implements SSL support in lighttpd (using libopenssl). This
 	  option is required if you enable the SSL engine in your
 	  lighttpd confguration file.
+
+config LIGHTTPD_LOGROTATE
+	bool "Logrotate support"
+	depends on PACKAGE_lighttpd
+	default n
+	help
+	  It adds support for logrotate functionality.
 endef
 
 MESON_ARGS += \
@@ -89,13 +96,18 @@ endif
 
 define Package/lighttpd/conffiles
 /opt/etc/lighttpd/lighttpd.conf
-/opt/etc/lighttpd/conf.d/30-accesslog.conf
-/opt/etc/lighttpd/conf.d/30-access.conf
-/opt/etc/lighttpd/conf.d/30-alias.conf
+/opt/etc/lighttpd/mime.conf
+/opt/etc/lighttpd/conf.d/10-redirect.conf
+/opt/etc/lighttpd/conf.d/20-auth.conf
 /opt/etc/lighttpd/conf.d/20-authn_file.conf
+/opt/etc/lighttpd/conf.d/20-authn_gssapi.conf
 /opt/etc/lighttpd/conf.d/20-authn_ldap.conf
 /opt/etc/lighttpd/conf.d/20-authn_mysql.conf
-/opt/etc/lighttpd/conf.d/20-auth.conf
+/opt/etc/lighttpd/conf.d/20-authn_pam.conf
+/opt/etc/lighttpd/conf.d/20-authn_sasl.conf
+/opt/etc/lighttpd/conf.d/30-access.conf
+/opt/etc/lighttpd/conf.d/30-accesslog.conf
+/opt/etc/lighttpd/conf.d/30-alias.conf
 /opt/etc/lighttpd/conf.d/30-cgi.conf
 /opt/etc/lighttpd/conf.d/30-cml.conf
 /opt/etc/lighttpd/conf.d/30-compress.conf
@@ -107,20 +119,28 @@ define Package/lighttpd/conffiles
 /opt/etc/lighttpd/conf.d/30-fastcgi.conf
 /opt/etc/lighttpd/conf.d/30-flv_streaming.conf
 /opt/etc/lighttpd/conf.d/30-magnet.conf
+/opt/etc/lighttpd/conf.d/30-maxminddb.conf
 /opt/etc/lighttpd/conf.d/30-mysql_vhost.conf
 /opt/etc/lighttpd/conf.d/30-proxy.conf
-/opt/etc/lighttpd/conf.d/10-redirect.conf
 /opt/etc/lighttpd/conf.d/30-rewrite.conf
 /opt/etc/lighttpd/conf.d/30-rrdtool.conf
 /opt/etc/lighttpd/conf.d/30-scgi.conf
 /opt/etc/lighttpd/conf.d/30-secdownload.conf
 /opt/etc/lighttpd/conf.d/30-setenv.conf
 /opt/etc/lighttpd/conf.d/30-simple_vhost.conf
+/opt/etc/lighttpd/conf.d/30-sockproxy.conf
 /opt/etc/lighttpd/conf.d/30-ssi.conf
+/opt/etc/lighttpd/conf.d/30-staticfile.conf
 /opt/etc/lighttpd/conf.d/30-status.conf
 /opt/etc/lighttpd/conf.d/30-trigger_b4_dl.conf
+/opt/etc/lighttpd/conf.d/30-uploadprogress.conf
 /opt/etc/lighttpd/conf.d/30-userdir.conf
 /opt/etc/lighttpd/conf.d/30-usertrack.conf
+/opt/etc/lighttpd/conf.d/30-vhostdb.conf
+/opt/etc/lighttpd/conf.d/30-vhostdb_dbi.conf
+/opt/etc/lighttpd/conf.d/30-vhostdb_ldap.conf
+/opt/etc/lighttpd/conf.d/30-vhostdb_mysql.conf
+/opt/etc/lighttpd/conf.d/30-vhostdb_pgsql.conf
 /opt/etc/lighttpd/conf.d/30-webdav.conf
 /opt/etc/lighttpd/conf.d/30-wstunnel.conf
 endef
@@ -138,6 +158,11 @@ define Package/lighttpd/install
 	done
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/lighttpd $(1)/opt/sbin/
+
+ifneq ($(strip $(CONFIG_LIGHTTPD_LOGROTATE)),)
+	$(INSTALL_DIR) $(1)/opt/etc/logrotate.d
+	$(CP) ./files/lighttpd.logrotate $(1)/opt/etc/logrotate.d/lighttpd.conf
+endif
 	$(INSTALL_DIR) $(1)/opt/share/www $(1)/opt/var/log/lighttpd
 endef
 
@@ -181,8 +206,8 @@ $(eval $(call BuildPackage,lighttpd))
 $(eval $(call BuildPlugin,redirect,URL redirection,+PACKAGE_lighttpd-mod-redirect:libpcre,10))
 
 # Next, permit authentication.
-$(eval $(call BuildPlugin,auth,Authentication,,20))
-$(eval $(call BuildPlugin,authn_file,File-based authentication,lighttpd-mod-auth,20))
+$(eval $(call BuildPlugin,auth,Authentication,+PACKAGE_lighttpd-mod-auth:lighttpd-mod-authn_file,20))
+$(eval $(call BuildPlugin,authn_file,File-based authentication,,20))
 $(eval $(call BuildPlugin,authn_gssapi,Kerberos-based authentication,lighttpd-mod-auth +PACKAGE_lighttpd-mod-authn_gssapi:krb5-libs,20))
 $(eval $(call BuildPlugin,authn_ldap,LDAP-based authentication,lighttpd-mod-auth +PACKAGE_lighttpd-mod-authn_ldap:libopenldap,20))
 $(eval $(call BuildPlugin,authn_mysql,Mysql-based authentication,lighttpd-mod-auth +PACKAGE_lighttpd-mod-authn_mysql:libmysqlclient,20))
