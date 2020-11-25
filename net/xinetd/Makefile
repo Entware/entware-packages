@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xinetd
 PKG_VERSION:=2.3.15
-PKG_RELEASE:=7
+PKG_RELEASE:=10
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/xinetd-org/xinetd/archive
@@ -41,7 +41,7 @@ endef
 
 define Package/xinetd/conffiles
 /opt/etc/xinetd.conf
-/opt/etc/xinetd.d/
+/opt/etc/xinetd.d
 endef
 
 TARGET_CFLAGS += -DNO_RPC
@@ -59,10 +59,11 @@ CONFIGURE_VARS += \
 define Package/xinetd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/xinetd $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) ./files/xinetd.conf $(1)/opt/etc/xinetd.conf
-	$(INSTALL_DIR) $(1)/opt/etc/xinetd.d
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S10xinetd $(1)/opt/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/xinetd.d
 endef
 
 $(eval $(call BuildPackage,xinetd))
