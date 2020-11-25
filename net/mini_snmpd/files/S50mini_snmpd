@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ENABLED=yes
-PROCS=mini_snmpd
+PROCS=mini-snmpd
 ARGS="-i br0,eth0 -D super_router -L antarctida -C my@mail.com"
 PREARGS=""
 DESC=$PROCS
