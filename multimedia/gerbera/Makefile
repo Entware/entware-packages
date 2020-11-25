@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gerbera
-PKG_VERSION:=1.6.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.6.4
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/gerbera/gerbera/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=3a4956ec5fea1101e8daa32d9cfb985db908a49e2ac6137a1b2bf509e2684a6c
+PKG_HASH:=cbe7ea78977db8c02fcca1759ed149f199a590afaf4a6d21ffcca8623d1a0cc5
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
@@ -46,8 +46,6 @@ define Package/gerbera/conffiles
 endef
 
 CMAKE_OPTIONS += \
-	-DCXX_FILESYSTEM_NO_LINK_NEEDED=$(if $(CONFIG_GCC_USE_VERSION_9),ON,OFF) \
-	-DCXX_FILESYSTEM_STDCPPFS_NEEDED=$(if $(CONFIG_GCC_USE_VERSION_8),ON,OFF) \
 	-DIconv_INCLUDE_DIR=$(ICONV_PREFIX)/include \
 	-DIconv_LIBRARY=$(ICONV_PREFIX)/lib/libiconv.a \
 	-DWITH_MAGIC=ON \
@@ -70,8 +68,7 @@ CMAKE_OPTIONS += \
 TARGET_CFLAGS += \
 	-ffunction-sections \
 	-fdata-sections \
-	-flto \
-	-I$(STAGING_DIR)/opt/include/npupnp/upnp
+	-flto
 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
