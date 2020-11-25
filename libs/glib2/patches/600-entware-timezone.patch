@@ -1,6 +1,6 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -449,7 +449,7 @@ zone_info_unix (const gchar  *identifier
+@@ -450,7 +450,7 @@ zone_info_unix (const gchar  *identifier
  
    tzdir = g_getenv ("TZDIR");
    if (tzdir == NULL)
@@ -9,7 +9,7 @@
  
    /* identifier can be a relative or absolute path name;
       if relative, it is interpreted starting from /usr/share/zoneinfo
-@@ -473,7 +473,7 @@ zone_info_unix (const gchar  *identifier
+@@ -474,7 +474,7 @@ zone_info_unix (const gchar  *identifier
        gchar *canonical_path = NULL;
        GError *read_link_err = NULL;
  

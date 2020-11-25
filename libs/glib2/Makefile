@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=glib2
-PKG_VERSION:=2.65.2
+PKG_VERSION:=2.66.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=glib-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=@GNOME/glib/2.65
-PKG_HASH:=445b1951eaa82d7a8af46bdff5dcc8030406db1ceeb0f0c3a88983f70152c555
+PKG_SOURCE_URL:=@GNOME/glib/2.66
+PKG_HASH:=a269ffe69fbcc3a21ff1acb1b6146b2a5723499d6e2de33ae16ccb6d2438ef60
 
 PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 PKG_LICENSE:=LGPL-2.1-or-later
@@ -49,6 +49,7 @@ TARGET_CFLAGS += -ffunction-sections -fdata-sections
 TARGET_LDFLAGS += -Wl,--gc-sections -liconv $(if $(INTL_FULL),-lintl)
 
 COMP_ARGS= \
+	-Ddefault_library=both \
 	-Diconv=external \
 	-Dselinux=disabled \
 	-Dlibmount=disabled \
@@ -68,22 +69,6 @@ COMP_ARGS= \
 
 MESON_HOST_ARGS += $(COMP_ARGS) -Dxattr=false
 MESON_ARGS += $(COMP_ARGS) -Dxattr=true -Db_lto=true
-
-# hack to compile static libraries
-define Build/Compile
-	$(call Build/Compile/Meson)
-	$(call Ninja,-C $(MESON_BUILD_DIR) install,DESTDIR="$(PKG_INSTALL_DIR)")
-	$(call Meson, \
-		--reconfigure \
-		--buildtype plain \
-		--native-file $(PKG_BUILD_DIR)/openwrt-native.txt \
-		--cross-file $(PKG_BUILD_DIR)/openwrt-cross.txt \
-		-Ddefault_library=static \
-		$(MESON_ARGS) \
-		$(MESON_BUILD_DIR) \
-		$(PKG_BUILD_DIR), \
-		$(MESON_VARS))
-endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/bin
