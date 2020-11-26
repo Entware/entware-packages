@@ -53,10 +53,10 @@ CONFIGURE_ARGS+= \
 #	--disable-demo - Upstream Github Issue #4 Fixed 20160707
 
 define Package/mini_snmpd/install
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/mini-snmpd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/mini_snmpd $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/mini-snmpd.conf $(1)/opt/etc
+	$(INSTALL_CONF) ./files/mini_snmpd.config $(1)/opt/etc
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S50mini_snmpd $(1)/opt/etc/init.d/
 endef
