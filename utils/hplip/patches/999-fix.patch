@@ -1,0 +1,11 @@
+--- a/scan/sane/hpaio.c
++++ b/scan/sane/hpaio.c
+@@ -36,7 +36,7 @@
+ #include <string.h>
+ #include <cups/cups.h>
+ #include "hpmud.h"
+-#include "avahiDiscovery.h"
++#include "protocol/discovery/avahiDiscovery.h"
+ #include "hp_ipp.h"
+ #include "soap.h"
+ #include "soapht.h"

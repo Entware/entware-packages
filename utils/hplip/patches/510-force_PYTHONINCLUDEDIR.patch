@@ -1,7 +1,7 @@
 --- a/configure.in
 +++ b/configure.in
-@@ -612,7 +612,7 @@ if test "$class_driver" = "no" && test "
-    AC_ARG_VAR([PYTHON], [Python interpreter/compiler command])
+@@ -627,7 +627,7 @@ if test "$class_driver" = "no" && test "
+    AC_CHECK_PROGS(PYTHON,[python python3 python2])
     AM_PATH_PYTHON([2.2])
     AC_MSG_CHECKING([for path to Python.h])
 -   PYTHONINCLUDEDIR=`$PYTHON -c "from distutils.sysconfig import get_python_inc; print (get_python_inc());"`

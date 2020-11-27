@@ -1,11 +1,14 @@
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -89,7 +89,7 @@ lib_LTLIBRARIES += libhpdiscovery.la
- libhpdiscovery_la_SOURCES = protocol/discovery/mdns.c protocol/discovery/mdns.h
- libhpdiscovery_la_CFLAGS  = -DCONFDIR=\"$(hplip_confdir)\"
- libhpdiscovery_la_LDFLAGS = -version-info 0:1:0
--libhpdiscovery_la_LIBADD  = -l$(SNMPLIB) -lcrypto
-+libhpdiscovery_la_LIBADD  = -l$(SNMPLIB)
+@@ -88,9 +88,9 @@ if NETWORK_BUILD
+ lib_LTLIBRARIES += libhpdiscovery.la
+ #libhpdiscovery_la_SOURCES = protocol/discovery/mdns.c protocol/discovery/mdns.h
+ libhpdiscovery_la_SOURCES = protocol/discovery/avahiDiscovery.c protocol/discovery/avahiDiscovery.h
+-libhpdiscovery_la_CFLAGS  = -DCONFDIR=\"$(hplip_confdir)\" -I/usr/include/avahi-client -I/usr/include/avahi-core -I/usr/include/avahi-common $(DBUS_CFLAGS)
++libhpdiscovery_la_CFLAGS  = -DCONFDIR=\"$(hplip_confdir)\" $(DBUS_CFLAGS)
+ libhpdiscovery_la_LDFLAGS = -version-info 0:1:0 -L$(libdir)
+-libhpdiscovery_la_LIBADD  = -l$(SNMPLIB) -lcrypto -lavahi-client -lavahi-core -lavahi-common $(DBUS_LIBS)
++libhpdiscovery_la_LIBADD  = -l$(SNMPLIB) $(DBUS_LIBS)
  endif #NETWORK_BUILD
  
  

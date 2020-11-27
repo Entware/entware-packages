@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
 PKG_VERSION:=3.20.9
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
@@ -97,7 +97,7 @@ ifeq ($(CONFIG_PACKAGE_hplip-full),m)
 
 PKG_INSTALL:=1
 
-TARGET_CFLAGS += \
+TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/opt/include/libusb-1.0 -I$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)
 
   define Build/Configure
