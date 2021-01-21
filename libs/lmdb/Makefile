@@ -70,27 +70,27 @@ define Build/Compile
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/$(MAKE_PATH)/lmdb.h $(1)/usr/include
-	$(CP) $(PKG_BUILD_DIR)/$(MAKE_PATH)/liblmdb.{a,so} $(1)/usr/lib
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig/
-	$(CP) $(PKG_BUILD_DIR)/liblmdb.pc $(1)/usr/lib/pkgconfig/lmdb.pc
+	$(INSTALL_DIR) $(1)/opt/include
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/$(MAKE_PATH)/lmdb.h $(1)/opt/include
+	$(CP) $(PKG_BUILD_DIR)/$(MAKE_PATH)/liblmdb.{a,so} $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_BUILD_DIR)/liblmdb.pc $(1)/opt/lib/pkgconfig/lmdb.pc
 endef
 
 define Package/lmdb/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/local/lib/*.so $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/local/lib/*.so $(1)/opt/lib
 endef
 
 define Package/lmdb-utils/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/local/bin/mdb_{stat,copy,dump,load} $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/local/bin/mdb_{stat,copy,dump,load} $(1)/opt/bin
 endef
 
 define Package/lmdb-test/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(MAKE_PATH)/mtest $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/$(MAKE_PATH)/mtest $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,lmdb))

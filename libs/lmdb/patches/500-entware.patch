@@ -1,0 +1,11 @@
+--- a/libraries/liblmdb/Makefile
++++ a/libraries/liblmdb/Makefile
+@@ -27,7 +27,7 @@
+ LDLIBS	=
+ SOLIBS	=
+ SOEXT	= .so
+-prefix	= /usr/local
++prefix	= /opt/local
+ exec_prefix = $(prefix)
+ bindir = $(exec_prefix)/bin
+ libdir = $(exec_prefix)/lib

@@ -42,18 +42,18 @@ endef
 
 ifeq ($(CONFIG_arc),)
 define Build/InstallDev
-	$(INSTALL_DIR)						$(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/urcu*		$(1)/usr/include/
-	$(INSTALL_DIR)						$(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/liburcu*.{a,so*}	$(1)/usr/lib/
-	$(INSTALL_DIR)						$(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/*.pc		$(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR)						$(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/urcu*		$(1)/opt/include/
+	$(INSTALL_DIR)						$(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/liburcu*.{a,so*}	$(1)/opt/lib/
+	$(INSTALL_DIR)						$(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc		$(1)/opt/lib/pkgconfig/
 endef
 endif
 
 define Package/liburcu/install
-	$(INSTALL_DIR)					$(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/liburcu*.so.*	$(1)/usr/lib/
+	$(INSTALL_DIR)					$(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/liburcu*.so.*	$(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,liburcu))

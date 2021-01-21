@@ -142,7 +142,7 @@ endef
 
 define Package/knot-tests/description
 	Unit tests for the Knot DNS server and libraries.
-	Usage: /usr/share/knot/runtests.sh
+	Usage: /opt/share/knot/runtests.sh
 endef
 
 export KNOT_VERSION_FORMAT=release
@@ -154,15 +154,15 @@ CONFIGURE_ARGS += 			\
 	--disable-fastparser		\
 	--without-libidn		\
 	--with-libnghttp2=no		\
-	--with-rundir=/var/run/knot	\
-	--with-storage=/var/lib/knot	\
-	--with-configdir=/etc/knot	\
+	--with-rundir=/opt/var/run/knot	\
+	--with-storage=/opt/var/lib/knot	\
+	--with-configdir=/opt/etc/knot	\
 	--with-conf-mapsize=20
 
 TARGET_CFLAGS += -DNDEBUG
 
 define Package/knot/conffiles
-/etc/knot/knot.conf
+/opt/etc/knot/knot.conf
 endef
 
 define Build/Compile
@@ -172,39 +172,39 @@ endef
 
 ifneq ($(CONFIG_arc),y)
 define Build/InstallDev
-	$(INSTALL_DIR)					$(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.{a,so*}	$(1)/usr/lib/
+	$(INSTALL_DIR)					$(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.{a,so*}	$(1)/opt/lib/
 
-	$(INSTALL_DIR)						$(1)/usr/include/libknot
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libknot/*		$(1)/usr/include/libknot/
+	$(INSTALL_DIR)						$(1)/opt/include/libknot
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libknot/*		$(1)/opt/include/libknot/
 
-	$(INSTALL_DIR)						$(1)/usr/include/libdnssec
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libdnssec/*	$(1)/usr/include/libdnssec/
+	$(INSTALL_DIR)						$(1)/opt/include/libdnssec
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libdnssec/*	$(1)/opt/include/libdnssec/
 
-	$(INSTALL_DIR)						$(1)/usr/include/libzscanner
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libzscanner/*	$(1)/usr/include/libzscanner/
+	$(INSTALL_DIR)						$(1)/opt/include/libzscanner
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libzscanner/*	$(1)/opt/include/libzscanner/
 
-	$(INSTALL_DIR)							$(1)/usr/lib/pkgconfig
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/*.pc	$(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR)							$(1)/opt/lib/pkgconfig
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc	$(1)/opt/lib/pkgconfig/
 endef
 endif
 
 define Package/knot-libs/install
-	$(INSTALL_DIR) 						$(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libdnssec.so.*		$(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libknot.so.*		$(1)/usr/lib/
+	$(INSTALL_DIR) 						$(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdnssec.so.*		$(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libknot.so.*		$(1)/opt/lib/
 endef
 
 define Package/knot-libzscanner/install
-	$(INSTALL_DIR) 						$(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libzscanner.so.*	$(1)/usr/lib/
+	$(INSTALL_DIR) 						$(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libzscanner.so.*	$(1)/opt/lib/
 endef
 
 define Package/knot/install
-	$(INSTALL_DIR) 						$(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/knotc	$(1)/usr/bin/
-	$(INSTALL_DIR) 						$(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/knotd	$(1)/usr/sbin/
+	$(INSTALL_DIR) 						$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/knotc	$(1)/opt/bin/
+	$(INSTALL_DIR) 						$(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/knotd	$(1)/opt/sbin/
 
 	$(INSTALL_DIR) 							$(1)/etc/knot
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/etc/knot/knot.sample.conf	$(1)/etc/knot/knot.conf
@@ -214,50 +214,50 @@ define Package/knot/install
 endef
 
 define Package/knot-dig/install
-	$(INSTALL_DIR)						$(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/kdig		$(1)/usr/bin/
+	$(INSTALL_DIR)						$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/kdig		$(1)/opt/bin/
 endef
 
 define Package/knot-host/install
-	$(INSTALL_DIR)						$(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/khost		$(1)/usr/bin/
+	$(INSTALL_DIR)						$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/khost		$(1)/opt/bin/
 endef
 
 define Package/knot-nsupdate/install
-	$(INSTALL_DIR)						$(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/knsupdate	$(1)/usr/bin/
+	$(INSTALL_DIR)						$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/knsupdate	$(1)/opt/bin/
 endef
 
 define Package/knot-zonecheck/install
-	$(INSTALL_DIR)						$(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/kzonecheck	$(1)/usr/bin/
+	$(INSTALL_DIR)						$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/kzonecheck	$(1)/opt/bin/
 endef
 
 define Package/knot-keymgr/install
-	$(INSTALL_DIR)						$(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/keymgr	$(1)/usr/bin/
+	$(INSTALL_DIR)						$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/keymgr	$(1)/opt/bin/
 endef
 
 define Package/knot-tests/install
-	$(INSTALL_DIR) 						$(1)/usr/share/knot
-	$(INSTALL_BIN) ./files/runtests.sh			$(1)/usr/share/knot/
+	$(INSTALL_DIR) 						$(1)/opt/share/knot
+	$(INSTALL_BIN) ./files/runtests.sh			$(1)/opt/share/knot/
 
-	$(INSTALL_DIR) 							$(1)/usr/share/knot/tap
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/tap/.libs/runtests	$(1)/usr/share/knot/tap/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/tap/libtap.sh		$(1)/usr/share/knot/tap/
+	$(INSTALL_DIR) 							$(1)/opt/share/knot/tap
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/tap/.libs/runtests	$(1)/opt/share/knot/tap/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/tap/libtap.sh		$(1)/opt/share/knot/tap/
 
-	$(INSTALL_DIR)								$(1)/usr/share/knot/tests
+	$(INSTALL_DIR)								$(1)/opt/share/knot/tests
 
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/libzscanner/.libs/zscanner-tool	$(1)/usr/share/knot/tests/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/libzscanner/test_zscanner		$(1)/usr/share/knot/tests/
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/tests/libzscanner/TESTS		$(1)/usr/share/knot/tests/
-	cp -a $(PKG_BUILD_DIR)/tests/libzscanner/data				$(1)/usr/share/knot/tests/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/libzscanner/.libs/zscanner-tool	$(1)/opt/share/knot/tests/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tests/libzscanner/test_zscanner		$(1)/opt/share/knot/tests/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/tests/libzscanner/TESTS		$(1)/opt/share/knot/tests/
+	cp -a $(PKG_BUILD_DIR)/tests/libzscanner/data				$(1)/opt/share/knot/tests/
 
 	for module in contrib knot libdnssec libknot modules utils; do \
 		find $(PKG_BUILD_DIR)/tests/$$$${module}/.libs -maxdepth 1 -executable -type f | \
 			xargs -I{} basename {} | \
 			xargs -I{} $(INSTALL_BIN) -T $(PKG_BUILD_DIR)/tests/$$$${module}/.libs/{} \
-										$(1)/usr/share/knot/tests/$$$${module}_{}; \
+										$(1)/opt/share/knot/tests/$$$${module}_{}; \
 	done
 endef
 
