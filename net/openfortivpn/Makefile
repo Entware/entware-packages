@@ -41,25 +41,32 @@ define Package/openfortivpn/description
   It is compatible with Fortinet VPNs.
 endef
 
+define Package/openfortivpn/conffiles
+/opt/etc/openfortivpn/config
+endef
+
 CONFIGURE_ARGS += \
 	--enable-proc \
 	--with-rt_dst="yes" \
 	--disable-resolvconf \
 	--with-resolvconf=DISABLED \
-	--with-pppd="/usr/sbin/pppd"
+	--with-pppd="/opt/sbin/pppd"
 
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Package/openfortivpn/install
 	$(INSTALL_DIR) \
-	  $(1)/usr/sbin \
-          $(1)/lib/netifd/proto \
-	  $(1)/etc/hotplug.d/iface
+	  $(1)/opt/sbin
+#         $(1)/lib/netifd/proto \
+#	  $(1)/etc/hotplug.d/iface
 
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/openfortivpn $(1)/usr/sbin/
-	$(INSTALL_BIN) ./files/openfortivpn-wrapper $(1)/usr/sbin/
-	$(INSTALL_BIN) ./files/openfortivpn.sh $(1)/lib/netifd/proto/
-	$(INSTALL_BIN) ./files/openfortivpn-ppp-up $(1)/lib/netifd/openfortivpn-ppp-up
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/openfortivpn $(1)/opt/sbin/
+#	$(INSTALL_BIN) ./files/openfortivpn-wrapper $(1)/usr/sbin/
+#	$(INSTALL_BIN) ./files/openfortivpn.sh $(1)/lib/netifd/proto/
+#	$(INSTALL_BIN) ./files/openfortivpn-ppp-up $(1)/lib/netifd/openfortivpn-ppp-up
+
+	$(INSTALL_DIR) $(1)/opt/etc/openfortivpn
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/openfortivpn/* $(1)/opt/etc/openfortivpn
 endef
 
 $(eval $(call BuildPackage,openfortivpn))

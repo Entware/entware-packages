@@ -1,0 +1,53 @@
+--- a/src/ipv4.c
++++ b/src/ipv4.c
+@@ -623,12 +623,12 @@ static int ipv4_set_route(struct rtentry
+ 	/* we have to use the route command as tool for route manipulation */
+ 	char cmd[SHOW_ROUTE_BUFFER_SIZE];
+ 
+-	if (access("/sbin/route", F_OK) != 0) {
+-		log_error("/sbin/route: %s.\n", strerror(errno));
++	if (access("/opt/sbin/route", F_OK) != 0) {
++		log_error("/opt/sbin/route: %s.\n", strerror(errno));
+ 		return 1;
+ 	}
+ 
+-	strcpy(cmd, "/sbin/route -n add ");
++	strcpy(cmd, "/opt/sbin/route -n add ");
+ 	if (route->rt_flags & RTF_HOST)
+ 		strcat(cmd, "-host ");
+ 	else
+@@ -690,12 +690,12 @@ static int ipv4_del_route(struct rtentry
+ #else
+ 	char cmd[SHOW_ROUTE_BUFFER_SIZE];
+ 
+-	if (access("/sbin/route", F_OK) != 0) {
+-		log_error("/sbin/route: %s.\n", strerror(errno));
++	if (access("/opt/sbin/route", F_OK) != 0) {
++		log_error("/opt/sbin/route: %s.\n", strerror(errno));
+ 		return 1;
+ 	}
+ 
+-	strcpy(cmd, "/sbin/route -n delete ");
++	strcpy(cmd, "/opt/sbin/route -n delete ");
+ 	if (route->rt_flags & RTF_HOST)
+ 		strcat(cmd, "-host ");
+ 	else
+--- a/src/main.c
++++ b/src/main.c
+@@ -53,14 +53,14 @@
+ "  --pppd-ipparam=<string>       Provides an extra parameter to the ip-up, ip-pre-up\n" \
+ "                                and ip-down scripts. See man (8) pppd.\n" \
+ "  --pppd-call=<name>            Move most pppd options from pppd cmdline to\n" \
+-"                                /etc/ppp/peers/<name> and invoke pppd with\n" \
++"                                /opt/etc/ppp/peers/<name> and invoke pppd with\n" \
+ "                                'call <name>'.\n"
+ #elif HAVE_USR_SBIN_PPP
+ #define PPPD_USAGE \
+ "                    [--ppp-system=<system>]\n"
+ #define PPPD_HELP \
+ "  --ppp-system=<system>         Connect to the specified system as defined in\n" \
+-"                                /etc/ppp/ppp.conf.\n"
++"                                /opt/etc/ppp/ppp.conf.\n"
+ #else
+ #error "Neither HAVE_USR_SBIN_PPPD nor HAVE_USR_SBIN_PPP have been defined."
+ #endif

@@ -1,0 +1,28 @@
+--- a/src/tunnel.c
++++ b/src/tunnel.c
+@@ -34,7 +34,9 @@
+ #endif
+ 
+ #include <openssl/err.h>
++#ifdef OPENSSL_ENGINE
+ #include <openssl/engine.h>
++#endif
+ #include <openssl/ui.h>
+ #include <openssl/x509v3.h>
+ #if HAVE_SYSTEMD
+@@ -952,6 +954,7 @@ int ssl_connect(struct tunnel *tunnel)
+ 
+ 	/* Use engine for PIV if user-cert config starts with pkcs11 URI: */
+ 	if (tunnel->config->use_engine > 0) {
++#ifdef OPENSSL_ENGINE
+ 		ENGINE *e;
+ 
+ 		ENGINE_load_builtin_engines();
+@@ -1009,6 +1012,7 @@ int ssl_connect(struct tunnel *tunnel)
+ 			          ERR_error_string(ERR_peek_last_error(), NULL));
+ 			return 1;
+ 		}
++#endif
+ 
+ 	} else {        /* end PKCS11-engine */
+ 
