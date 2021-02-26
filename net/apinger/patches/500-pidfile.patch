@@ -1,6 +1,6 @@
 --- a/src/main.c
 +++ b/src/main.c
-@@ -84,7 +84,7 @@
+@@ -84,7 +84,7 @@ struct config default_config={
  	"nobody",		/* user */
  	NULL,			/* group */
  	"/usr/lib/sendmail -t",	/* mailer */
@@ -11,7 +11,7 @@
  	"%b %d %H:%M:%S"	/* timestamp format */
 --- a/src/cfgtest.c
 +++ b/src/cfgtest.c
-@@ -46,7 +46,7 @@
+@@ -46,7 +46,7 @@ struct config default_config={
  	0, 			/* debug */
  	"nobody",		/* user */
  	NULL,			/* group */
@@ -20,7 +20,7 @@
  };
  
  int foreground=1;
-@@ -55,6 +55,6 @@
+@@ -55,6 +55,6 @@ int foreground=1;
  int main(int argc,char *argv[]){
  int ret;
  	
