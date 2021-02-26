@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=krb5
 PKG_VERSION:=1.18.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 
@@ -104,6 +104,9 @@ define Build/InstallDev
 	# needed for samba4, to detect system-krb5
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/krb5-config $(1)/opt/bin
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/krb5-config
+	$(INSTALL_DIR) $(2)/bin
+	$(LN) ../../opt/bin/krb5-config $(2)/bin/krb5-config
 endef
 
 define Package/krb5-libs/install
