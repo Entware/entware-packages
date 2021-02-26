@@ -1,8 +1,11 @@
+# Entware specific: added depends and ldflags, revert back config,
+# disabled extra_cflags (config.h:45: warning: "HAVE_GETOPT_LONG" redefined)
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=whois
 PKG_VERSION:=5.5.7
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ftp.debian.org/debian/pool/main/w/whois
