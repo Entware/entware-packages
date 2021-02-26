@@ -1,6 +1,6 @@
 --- a/fsck_hfs.tproj/dfalib/SVerify1.c
 +++ b/fsck_hfs.tproj/dfalib/SVerify1.c
-@@ -60,6 +60,28 @@
+@@ -60,6 +60,28 @@ static void CheckHFSExtentRecords(SGlobP
  static Boolean DoesOverlap(SGlobPtr GPtr, UInt32 fileID, const char *attrname, UInt32 startBlock, UInt32 blockCount, UInt8 forkType); 
  
  static int CompareExtentFileID(const void *first, const void *second);
