@@ -1,6 +1,6 @@
---- a/config.c
-+++ b/config.c
-@@ -343,7 +343,7 @@ static const char *config_def_dpd_idle(v
+--- a/src/config.c
++++ b/src/config.c
+@@ -365,7 +365,7 @@ static const char *config_def_dpd_idle(v
  
  static const char *config_ca_dir(void)
  {
@@ -9,16 +9,16 @@
  }
  
  static const char *config_def_auth_mode(void)
-@@ -363,7 +363,7 @@ static const char *config_def_app_versio
- 
- static const char *config_def_script(void)
- {
--	return "/etc/vpnc/vpnc-script";
-+	return "/opt/etc/vpnc/vpnc-script";
- }
+@@ -390,7 +390,7 @@ static const char *config_def_script(voi
  
  static const char *config_def_pid_file(void)
-@@ -659,7 +659,7 @@ static char *get_config_filename(const c
+ {
+-	return "/run/vpnc.pid";
++	return "/opt/var/run/vpnc.pid";
+ }
+ 
+ static const char *config_def_vendor(void)
+@@ -682,7 +682,7 @@ static char *get_config_filename(const c
  {
  	char *realname;
  
@@ -27,7 +27,7 @@
  	return realname;
  }
  
-@@ -895,8 +895,8 @@ void do_config(int argc, char **argv)
+@@ -927,8 +927,8 @@ void do_config(int argc, char **argv)
  	}
  
  	if (!got_conffile) {
