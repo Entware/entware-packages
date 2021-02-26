@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=12
+PKG_RELEASE:=13
 PKG_LICENSE:=GPL-2.0-only
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -52,7 +52,7 @@ endef
 define Package/usbip
   $(call Package/usbip/Default)
   TITLE+= (common)
-  DEPENDS+= +libwrap +libudev
+  DEPENDS+= +libwrap +libudev +usbids
 endef
 
 define Package/usbip-client
@@ -89,20 +89,9 @@ endef
 CONFIGURE_VARS+= $(if $(CONFIG_USE_GLIBC),LIBS='-lpthread')
 CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include"
 
-USB_IDS_VER:=0.318
-USB_IDS_FILE:=usb.ids.$(USB_IDS_VER)
-define Download/usb.ids
-  FILE:=$(USB_IDS_FILE)
-  URL_FILE:=usb.ids
-  URL:=@GITHUB/vcrhonek/hwdata/v$(USB_IDS_VER)
-  HASH:=84bc5452e4e45c2250e01bc74e03528b2a53c4724b2c4a5feaea76a922f83915
-endef
-
 define Package/usbip/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libusbip.so.* $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/share/hwdata
-	$(CP) $(DL_DIR)/usb.ids.$(USB_IDS_VER) $(1)/opt/share/hwdata/usb.ids
 endef
 
 define Package/usbip-client/install
@@ -117,7 +106,6 @@ define Package/usbip-server/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/usbipd $(1)/opt/sbin/
 endef
 
-$(eval $(call Download,usb.ids))
 $(eval $(call BuildPackage,usbip))
 $(eval $(call BuildPackage,usbip-client))
 $(eval $(call BuildPackage,usbip-server))
