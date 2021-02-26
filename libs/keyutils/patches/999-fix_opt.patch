@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -6,20 +6,20 @@ SPECFILE	:= keyutils.spec
+@@ -7,20 +7,20 @@ SPECFILE	:= keyutils.spec
  NO_GLIBC_KEYERR	:= 0
  NO_ARLIB	:= 0
  NO_SOLIB	:= 0
@@ -28,7 +28,7 @@
  
  ###############################################################################
  #
-@@ -67,12 +67,10 @@ BUILDFOR	:= $(shell file /usr/bin/make |
+@@ -68,12 +68,10 @@ BUILDFOR	:= $(shell file /usr/bin/make |
  
  ifeq ($(origin CFLAGS),undefined)
  ifeq ($(BUILDFOR),32-bit)
@@ -41,7 +41,7 @@
  LIBDIR		:= /lib64
  USRLIBDIR	:= /usr/lib64
  endif
-@@ -184,7 +182,7 @@ ifeq ($(NO_SOLIB),0)
+@@ -200,7 +198,7 @@ ifeq ($(NO_SOLIB),0)
  	$(INSTALL) -D $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(LIBNAME)
  	$(LNS) $(LIBNAME) $(DESTDIR)$(LIBDIR)/$(SONAME)
  	mkdir -p $(DESTDIR)$(USRLIBDIR)
