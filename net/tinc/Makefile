@@ -1,24 +1,29 @@
 #
-# Copyright (C) 2007-2019 OpenWrt.org
+# Copyright (C) 2007-2021 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: bumped to 1.1pre17 from 1.0.36
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tinc
-PKG_VERSION:=1.1pre17
-PKG_RELEASE:=2
+PKG_VERSION:=1.1-git
+PKG_RELEASE=$(PKG_SOURCE_VERSION)-1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://www.tinc-vpn.org/packages
-PKG_HASH:=61b9c9f9f396768551f39216edcc41918c65909ffd9af071feb3b5f9f9ac1c27
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=http://tinc-vpn.org/git/tinc
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=3ee0d5dd
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
+PKG_MIRROR_HASH:=fe57dcce5c17ec2cea96fefc69c5af977df7d457f1ae7c4775e00a21878a2c19
 
 PKG_CPE_ID:=cpe:/a:tinc:tinc
 
 PKG_BUILD_PARALLEL:=1
+PKG_CONFIG_DEPENDS:=zlib lzo openssl
+PKG_BUILD_DEPENDS:=zlib lzo openssl
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -26,10 +31,10 @@ include $(INCLUDE_DIR)/package.mk
 define Package/tinc
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+liblzo +libopenssl +librt
+  DEPENDS:=+liblzo +libopenssl +librt +zlib
   TITLE:=VPN tunneling daemon
   URL:=http://www.tinc-vpn.org/
-  MAINTAINER:=Saverio Proto <zioproto@gmail.com>
+  MAINTAINER:=Erwan Mas <erwan@mas.nom.fr>
   SUBMENU:=VPN
 endef
 
@@ -41,14 +46,26 @@ endef
 TARGET_CFLAGS += -std=gnu99
 
 CONFIGURE_ARGS += \
+	--with-kernel="$(LINUX_DIR)" \
 	--disable-curses \
 	--disable-readline \
-	--with-zlib="$(STAGING_DIR)/opt" \
-	--with-lzo-include="$(STAGING_DIR)/opt/include/lzo"
+	--with-lzo-include="$(STAGING_DIR)/opt/include/lzo" \
+	--with-zlib="$(STAGING_DIR)/opt"
+
+CONFIGURE_VARS += \
+	ac_cv_have_decl_OpenSSL_add_all_algorithms=yes
 
 define Package/tinc/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/tinc $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/tincd $(1)/opt/sbin/
+#	$(INSTALL_DIR) $(1)/etc/init.d/
+#	$(INSTALL_BIN) files/$(PKG_NAME).init $(1)/etc/init.d/$(PKG_NAME)
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) files/$(PKG_NAME).config $(1)/etc/config/$(PKG_NAME)
+	$(INSTALL_DIR) $(1)/opt/etc/tinc
+	$(INSTALL_DIR) $(1)/opt/lib/upgrade/keep.d
+	$(INSTALL_DATA) files/tinc.upgrade $(1)/opt/lib/upgrade/keep.d/tinc
 endef
 
 $(eval $(call BuildPackage,tinc))
