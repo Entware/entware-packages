@@ -1,13 +1,11 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -440,8 +440,8 @@ yes)
- 		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "WINDOWSFONTDIR", 
- 				   [Windows font directory])
+@@ -490,7 +490,7 @@ yes)
+ 	elif test "$os_darwin" = "yes"; then
+ 		FC_DEFAULT_FONTS_IN="/System/Library/Fonts,/Library/Fonts,~/Library/Fonts,/System/Library/Assets/com_apple_MobileAsset_Font3,/System/Library/Assets/com_apple_MobileAsset_Font4"
  	else
--		FC_DEFAULT_FONTS="/usr/share/fonts"
--		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "/usr/share/fonts", 
-+		FC_DEFAULT_FONTS="/opt/share/fonts"
-+		AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "/opt/share/fonts", 
- 				   [System font directory])
+-		FC_DEFAULT_FONTS_IN="/usr/share/fonts"
++		FC_DEFAULT_FONTS_IN="/opt/share/fonts"
  	fi
  	;;
+ *)
