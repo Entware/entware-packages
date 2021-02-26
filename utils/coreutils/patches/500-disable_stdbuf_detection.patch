@@ -5,9 +5,9 @@ conftest.c:643: warning: "HAVE_SELINUX_SELINUX_H" redefined
 configure:73619: $? = 0
 configure: failed program was:
 
---- ./configure
-+++ ./configure
-@@ -73599,7 +73599,7 @@
+--- a/configure
++++ b/configure
+@@ -73599,7 +73599,7 @@ fi
  $as_echo_n "checking whether this system supports stdbuf... " >&6; }
  CFLAGS="-fPIC $CFLAGS"
  LDFLAGS="-shared $LDFLAGS"
