@@ -4,13 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: battery, madwifi, swap, write_log plugins added; iptables, iwinfo, routeros removed
+# Entware specific: battery, madwifi, write_log plugins added;
+# dhcpleases, ipstatistics, iptables, iwinfo, routeros, snmp6, ubi plugins removed.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.12.0
-PKG_RELEASE:=1
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -42,6 +43,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	curl_xml \
 	dbi \
 	dcpmm \
+	dhcpleases \
 	dpdkevents \
 	dpdkstat \
 	dpdk_telemetry \
@@ -60,6 +62,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	ipc \
 	ipmi \
 	ipstats \
+	ipstatistics \
 	iptables \
 	ipvs \
 	iwinfo \
@@ -105,6 +108,7 @@ COLLECTD_PLUGINS_DISABLED:= \
 	slurm \
 	smart \
 	snmp_agent \
+	snmp6 \
 	statsd \
 	synproxy \
 	sysevent \
@@ -259,7 +263,7 @@ CONFIGURE_VARS+= \
 
 ifneq ($(CONFIG_PACKAGE_collectd-mod-lua),)
 CONFIGURE_VARS+= \
-	LDFLAGS="$$$$LDFLAGS -ldl -llua"
+	LDFLAGS="$$$$LDFLAGS -llua"
 endif
 
 ifneq ($(CONFIG_PACKAGE_COLLECTD_ENCRYPTED_NETWORK),)
@@ -324,7 +328,7 @@ define Package/collectd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/collectd{,mon} $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libcollectdclient.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcollectdclient.so.* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/share/collectd
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/collectd/types.db $(1)/opt/share/collectd/
 	$(INSTALL_DIR) $(1)/opt/etc
@@ -410,6 +414,7 @@ $(eval $(call BuildPlugin,csv,CSV output,csv,))
 $(eval $(call BuildPlugin,curl,cURL input,curl,+PACKAGE_collectd-mod-curl:libcurl))
 #$(eval $(call BuildPlugin,dbi,relational database input,dbi,+PACKAGE_collectd-mod-dbi:libdbi))
 $(eval $(call BuildPlugin,df,disk space input,df,))
+#$(eval $(call BuildPlugin,dhcpleases,show dhcpleases,dhcpleases,))
 $(eval $(call BuildPlugin,disk,disk usage/timing input,disk,))
 $(eval $(call BuildPlugin,dns,DNS traffic input,dns,+PACKAGE_collectd-mod-dns:libpcap))
 $(eval $(call BuildPlugin,email,email output,email,))
@@ -419,6 +424,7 @@ $(eval $(call BuildPlugin,exec,process exec input,exec,))
 $(eval $(call BuildPlugin,filecount,file count input,filecount,))
 $(eval $(call BuildPlugin,fscache,file-system based caching framework input,fscache,))
 $(eval $(call BuildPlugin,interface,network interfaces input,interface,))
+#$(eval $(call BuildPlugin,ipstatistics,ipstatistics input,ipstatistics,))
 #$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables +libip4tc +libip6tc))
 $(eval $(call BuildPlugin,irq,interrupt usage input,irq,))
 #$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
@@ -451,7 +457,8 @@ $(eval $(call BuildPlugin,protocols,network protocols input,protocols,))
 $(eval $(call BuildPlugin,rrdtool,RRDtool output,rrdtool,+PACKAGE_collectd-mod-rrdtool:librrd1))
 $(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod-sensors:libsensors))
 $(eval $(call BuildPlugin,snmp,SNMP input,snmp,+PACKAGE_collectd-mod-snmp:libnetsnmp))
-$(eval $(call BuildPlugin,swap,swap usage,swap,))
+#$(eval $(call BuildPlugin,snmp6,snmp6 input,snmp6,))
+$(eval $(call BuildPlugin,swap,swap input,swap,))
 $(eval $(call BuildPlugin,syslog,syslog output,syslog,))
 $(eval $(call BuildPlugin,tail,tail input,tail,))
 $(eval $(call BuildPlugin,tail-csv,tail CSV input,tail_csv,))
