@@ -1,0 +1,11 @@
+--- a/keepalived/check/libipvs.c
++++ b/keepalived/check/libipvs.c
+@@ -26,6 +26,8 @@
+ #include <stdint.h>
+ #include <stdbool.h>
+ 
++#include "align.h"
++
+ #ifdef LIBIPVS_USE_NL
+ #include <netlink/netlink.h>
+ #include <netlink/genl/genl.h>
