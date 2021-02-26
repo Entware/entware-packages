@@ -1,6 +1,6 @@
 --- a/lib/isc/netmgr/udp.c
 +++ b/lib/isc/netmgr/udp.c
-@@ -29,6 +29,17 @@
+@@ -30,6 +30,17 @@
  #include "netmgr-int.h"
  #include "uv-compat.h"
  
