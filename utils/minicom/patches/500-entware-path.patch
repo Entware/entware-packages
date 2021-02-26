@@ -1,6 +1,6 @@
 --- a/src/rwconf.c
 +++ b/src/rwconf.c
-@@ -77,14 +77,14 @@
+@@ -77,14 +77,14 @@ struct pars mpars[] = {
    { "",			0,   "pname11" },
    { "",			0,   "pname12" },
  #if defined(__linux__) || defined(__GNU__)
@@ -23,7 +23,7 @@
  #else
    /* Most sites have this in /usr/local, except Linux. */
    { "/usr/local/bin/sz -vv",	0,   "pprog1" },
-@@ -96,7 +96,7 @@
+@@ -96,7 +96,7 @@ struct pars mpars[] = {
    { "/usr/local/bin/kermit -i -l %l -s", 0, "pprog7" },
    { "/usr/local/bin/kermit -i -l %l -r", 0, "pprog8" },
  #endif
