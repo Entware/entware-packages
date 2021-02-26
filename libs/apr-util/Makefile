@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apr-util
 PKG_VERSION:=1.6.1
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/apr/
@@ -21,7 +21,7 @@ PKG_LICENSE_FILES:=LICENSE
 
 PKG_CPE_ID:=cpe:/a:apache:apr-util
 
-PKG_BUILD_PARALLEL:=1
+#PKG_BUILD_PARALLEL:=1
 
 PKG_CONFIG_DEPENDS := \
 	CONFIG_PACKAGE_libaprutil-crypto-openssl \
@@ -145,6 +145,8 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/include/apr-1 \
 		$(1)/opt/lib/apr-util-1 $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/apu-1-config $(1)/opt/bin
+	$(SED) '/^prefix=\|^exec_prefix=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/apu-1-config
+	$(SED) '/^bindir=/s|/opt|$$$${prefix}|' $(1)/opt/bin/apu-1-config
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/apr-1/* $(1)/opt/include/apr-1
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/apr-util-1/apr_*.{a,so} \
 			$(1)/opt/lib/apr-util-1 2>/dev/null || :
@@ -152,8 +154,8 @@ define Build/InstallDev
 						$(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/apr-util-1.pc \
 					$(1)/opt/lib/pkgconfig
-	$(SED) '/^prefix=\|^exec_prefix=/s|/opt|$(STAGING_DIR)/opt|' \
-					$(1)/opt/bin/apu-1-config
+	$(INSTALL_DIR) $(2)/bin
+	$(LN) ../../opt/bin/apu-1-config $(2)/bin/apu-1-config
 endef
 
 define Package/libaprutil/install
