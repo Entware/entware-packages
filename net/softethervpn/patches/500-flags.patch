@@ -1,6 +1,6 @@
 --- a/src/makefiles/linux_32bit.mak
 +++ b/src/makefiles/linux_32bit.mak
-@@ -40,11 +40,11 @@
+@@ -77,11 +77,11 @@ INSTALL_VPNCLIENT_DIR=/usr/vpnclient/
  INSTALL_VPNCMD_DIR=/usr/vpncmd/
  
  ifeq ($(DEBUG),YES)
@@ -18,7 +18,7 @@
  # Files
 --- a/src/makefiles/linux_64bit.mak
 +++ b/src/makefiles/linux_64bit.mak
-@@ -40,11 +40,11 @@
+@@ -77,11 +77,11 @@ INSTALL_VPNCLIENT_DIR=/usr/vpnclient/
  INSTALL_VPNCMD_DIR=/usr/vpncmd/
  
  ifeq ($(DEBUG),YES)
