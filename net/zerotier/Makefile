@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zerotier
-PKG_VERSION:=1.4.6
-PKG_RELEASE:=5
+PKG_VERSION:=1.6.3
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/zerotier/ZeroTierOne/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=d1a0eeb03acfa446f67adf5901902d17de14b4648c21e160024acf476e3d4fba
+PKG_HASH:=437d51a396e65f45822b0e5ee3761e3dfaf3507d9cc8f9b01e09c5541395d7b2
 PKG_BUILD_DIR:=$(BUILD_DIR)/ZeroTierOne-$(PKG_VERSION)
 
 PKG_MAINTAINER:=Moritz Warning <moritzwarning@web.de>
@@ -57,10 +57,6 @@ endef
 # Make binary smaller
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
-
-ifdef CONFIG_USE_UCLIBC
-	TARGET_CFLAGS += -D'valloc(a)=aligned_alloc(getpagesize(),a)'
-endif
 
 #define Package/zerotier/conffiles
 #/etc/config/zerotier
