@@ -1,0 +1,13 @@
+--- a/Makefile
++++ b/Makefile
+@@ -3,8 +3,8 @@
+ # DESTDIR is for non root installs (eg packages, NFS) only!
+ DESTDIR =
+ 
+-binprefix = 
+-manprefix = /usr
++binprefix = /opt
++manprefix = /opt
+ exec_prefix = $(binprefix)/
+ sbindir = $(exec_prefix)sbin
+ mandir = $(manprefix)/share/man
