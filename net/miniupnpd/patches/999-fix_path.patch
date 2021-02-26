@@ -1,6 +1,6 @@
 --- a/Makefile.linux
 +++ b/Makefile.linux
-@@ -45,9 +45,9 @@ DOXYGEN ?= doxygen
+@@ -46,9 +46,9 @@ DOXYGEN ?= doxygen
  DEPFLAGS = -MM -MG -MT $(patsubst %.d,%.o,$@) -MT $@
  # -M : with system headers, -MM : without
  
@@ -12,7 +12,7 @@
  MANINSTALLDIR = $(INSTALLPREFIX)/share/man/man8
  
  include config.mk
-@@ -141,8 +141,8 @@ install:	miniupnpd $(SRCDIR)/miniupnpd.8
+@@ -142,8 +142,8 @@ install:	miniupnpd $(SRCDIR)/miniupnpd.8
  	$(INSTALL) $(SRCDIR)/netfilter/ip6tables_removeall.sh $(DESTDIR)$(ETCINSTALLDIR)
  	$(INSTALL) $(SRCDIR)/netfilter/miniupnpd_functions.sh $(DESTDIR)$(ETCINSTALLDIR)
  	$(INSTALL) -m 0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
