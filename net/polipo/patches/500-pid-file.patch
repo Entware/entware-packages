@@ -1,6 +1,6 @@
 --- a/util.c
 +++ b/util.c
-@@ -600,12 +600,24 @@
+@@ -600,12 +600,24 @@ writePid(char *pidfile)
      int fd, n, rc;
      char buf[16];
  
