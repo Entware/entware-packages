@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -11671,7 +11671,7 @@ for ac_func in alarm accept4 setitimer g
+@@ -11704,7 +11704,7 @@ for ac_func in alarm accept4 setitimer g
   clock confstr copy_file_range ctermid dup3 execv explicit_bzero explicit_memset \
   faccessat fchmod fchmodat fchown fchownat \
   fdwalk fexecve fdopendir fork fpathconf fstatat ftime ftruncate futimesat \
@@ -11,7 +11,7 @@
   getpriority getresuid getresgid getpwent getpwnam_r getpwuid_r getspnam getspent getsid getwd \
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3667,7 +3667,7 @@ AC_CHECK_FUNCS(alarm accept4 setitimer g
+@@ -3682,7 +3682,7 @@ AC_CHECK_FUNCS(alarm accept4 setitimer g
   clock confstr copy_file_range ctermid dup3 execv explicit_bzero explicit_memset \
   faccessat fchmod fchmodat fchown fchownat \
   fdwalk fexecve fdopendir fork fpathconf fstatat ftime ftruncate futimesat \
