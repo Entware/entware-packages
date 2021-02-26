@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xz
 PKG_VERSION:=5.2.5
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/lzmautils
@@ -47,16 +47,16 @@ $(call Package/xz/Default)
   TITLE:=liblzma library from XZ Utils
 endef
 
-# $(1): package name & command in /usr/bin/
+# $(1): package name & command in /opt/bin/
 # $(2): package dependencies
-# $(3): symbolic links to $(1) in /usr/bin/
+# $(3): symbolic links to $(1) in /opt/bin/
 define BuildSubPackage
 
   define Package/$(1)
   $(call Package/xz/Default)
     DEPENDS:=xz-utils $(2)
     TITLE:=$(1) utility from XZ Utils
-#    $(if $(3),ALTERNATIVES:=$(foreach f,$(1) $(3),300:/usr/bin/$(f):/usr/bin/lzmautils-$(1)))
+#    $(if $(3),ALTERNATIVES:=$(foreach f,$(1) $(3),300:/usr/bin/$(f):/usr/libexec/$(1)-lzmautils))
   endef
 
   define Package/$(1)/description
