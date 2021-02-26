@@ -6,6 +6,7 @@
 
 START=19
 USE_PROCD=1
+SCRIPTNAME="mwan3-init"
 
 service_running() {
 	[ -d "$MWAN3_STATUS_DIR" ]
@@ -26,7 +27,6 @@ start_tracker() {
 start_service() {
 	local enabled hotplug_pids
 
-	config_load mwan3
 	mwan3_init
 	config_foreach start_tracker interface
 
@@ -56,7 +56,6 @@ start_service() {
 stop_service() {
 	local ipset rule IP IPTR IPT family table tid
 
-	config_load mwan3
 	mwan3_init
 	config_foreach mwan3_interface_shutdown interface
 
@@ -72,7 +71,7 @@ stop_service() {
 			IP="$IP6"
 		fi
 
-		for tid in $(ip route list table all | sed -ne 's/.*table \([0-9]\+\).*/\1/p' | sort -u); do
+		for tid in $($IP route list table all | sed -ne 's/.*table \([0-9]\+\).*/\1/p' | sort -u); do
 			[ $tid -gt $MWAN3_INTERFACE_MAX ] && continue
 			$IP route flush table $tid &> /dev/null
 		done
