@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=snort3
-PKG_VERSION:=3.0.3-1
-PKG_RELEASE:=1
+PKG_VERSION:=3.1.0.0
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.snort.org/downloads/snortplus/
-PKG_HASH:=30a22cec90d77504db80d8e8902f98c536b1b8160c575fb66a97a6765f83c600
+PKG_HASH:=c4e2e78e3afa879d7e35e482afe42a6c4b96ed26198a9979edf7953b5151ccbf
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
@@ -45,6 +45,8 @@ endef
 CMAKE_OPTIONS += \
 	-DUSE_TIRPC:BOOL=YES \
 	-DENABLE_STATIC_DAQ:BOOL=NO \
+	-DDAQ_INCLUDE_DIR=$(STAGING_DIR)/usr/include/daq3 \
+	-DDAQ_LIBRARIES_DIR_HINT:PATH=$(STAGING_DIR)/usr/lib/daq3 \
 	-DENABLE_COREFILES:BOOL=NO \
 	-DENABLE_GDB:BOOL=NO \
 	-DMAKE_DOC:BOOL=NO \
@@ -54,8 +56,8 @@ CMAKE_OPTIONS += \
 	-DHAVE_LIBUNWIND=OFF \
 	-DHAVE_LZMA=OFF
 
-TARGET_CFLAGS  += -I$(STAGING_DIR)/usr/include/tirpc
-TARGET_LDFLAGS += -ltirpc
+TARGET_CFLAGS  += -I$(STAGING_DIR)/usr/include/daq3 -I$(STAGING_DIR)/usr/include/tirpc
+TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib/daq3 -ltirpc
 
 define Package/snort3/conffiles
 /etc/config/snort
@@ -83,10 +85,6 @@ define Package/snort3/install
 	$(INSTALL_DIR) $(1)/usr/share/lua
 	$(CP) \
 		$(PKG_INSTALL_DIR)/usr/include/snort/lua/snort_plugin.lua \
-		$(1)/usr/share/lua/
-
-	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/snort/lua/snort_config.lua \
 		$(1)/usr/share/lua/
 
 	$(INSTALL_DIR) $(1)/etc/snort
