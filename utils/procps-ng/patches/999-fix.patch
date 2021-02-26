@@ -1,0 +1,10 @@
+--- a/sysctl.c
++++ b/sysctl.c
+@@ -58,6 +58,7 @@ static const char DEFAULT_PRELOAD[] = "/
+ static const char *DEPRECATED[] = {
+ 	"base_reachable_time",
+ 	"retrans_time",
++	"swnat_flush",
+ 	""
+ };
+ static bool IgnoreDeprecated;
