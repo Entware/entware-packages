@@ -1,0 +1,11 @@
+--- a/src/pulsecore/core-util.c
++++ b/src/pulsecore/core-util.c
+@@ -2311,7 +2311,7 @@
+ 
+     /* This should be locale independent */
+ 
+-#ifdef HAVE_STRTOD_L
++#if 0
+ 
+     PA_ONCE_BEGIN {
+ 
