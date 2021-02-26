@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xmlrpc-c
 PKG_VERSION:=1.51.06
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=@SF/xmlrpc-c/Xmlrpc-c%20Super%20Stable/$(PKG_VERSION)
@@ -137,6 +137,7 @@ define Build/InstallDev
 	$(INSTALL_BIN) \
 		$(PKG_INSTALL_DIR)/opt/bin/xmlrpc-c-config \
 		$(2)/bin/
+	$(SED) 's,PREFIX="/opt",PREFIX="$(STAGING_DIR)/opt",g' $(2)/bin/xmlrpc-c-config
 	$(SED) \
 		's,HEADERINST_DIR="/opt/include",HEADERINST_DIR="$(STAGING_DIR)/opt/include",g' \
 		$(2)/bin/xmlrpc-c-config
