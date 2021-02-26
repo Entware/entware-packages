@@ -8,24 +8,25 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sudo
-PKG_VERSION:=1.8.31
+PKG_VERSION:=1.9.5p2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.sudo.ws/dist
-PKG_HASH:=7ea8d97a3cee4c844e0887ea7a1bd80eb54cc98fd77966776cb1a80653ad454f
+PKG_HASH:=539e2ef43c8a55026697fb0474ab6a925a11206b5aa58710cb42a0e1c81f0978
 
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
+
 PKG_LICENSE:=ISC
 PKG_LICENSE_FILES:=doc/LICENSE
 PKG_CPE_ID:=cpe:/a:todd_miller:sudo
 
-PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
-
+PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=sudo/host
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
 
 define Package/sudo
   SECTION:=admin
@@ -48,7 +49,7 @@ endef
 
 TARGET_LDFLAGS += -lssp
 
-CONFIGURE_ARGS+= \
+CONFIGURE_ARGS += \
 	--without-pam \
 	--disable-pam-session \
 	--with-editor=/bin/vi \
@@ -57,11 +58,9 @@ CONFIGURE_ARGS+= \
 	--with-rundir=/opt/var/lib/sudo \
 	--with-vardir=/opt/var/lib/sudo
 
-CONFIGURE_VARS+= \
+CONFIGURE_VARS += \
 	sudo_cv_uid_t_len=10 \
 	sudo_cv_func_unsetenv_void=no
-
-include $(INCLUDE_DIR)/host-build.mk
 
 define Host/Compile
 	cd $(HOST_BUILD_DIR)/lib/util; \
@@ -73,20 +72,29 @@ define Host/Install
 	$(CP) $(HOST_BUILD_DIR)/lib/util/mksig{list,name} $(STAGING_DIR_HOSTPKG)/bin/
 endef
 
-$(eval $(call HostBuild))
-
 define Package/sudo/install
-	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) \
+		$(1)/opt/etc/{init.d,sudoers.d} \
+		$(1)/opt/{bin,sbin} \
+		$(1)/opt/lib/sudo
+
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/sudo $(1)/opt/bin/
 	chmod 4755 $(1)/opt/bin/sudo
-	$(INSTALL_DIR) $(1)/opt/sbin
 	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/visudo $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/sudoers $(1)/opt/etc/
 	chmod 0440 $(1)/opt/etc/sudoers
-	$(INSTALL_DIR) $(1)/opt/etc/sudoers.d
-	$(INSTALL_DIR) $(1)/opt/lib/sudo
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/sudo/*.so* $(1)/opt/lib/sudo/
+#	$(INSTALL_BIN) ./files/sudo.init $(1)/etc/init.d/sudo
 endef
 
+#define Package/sudo/postinst
+##!/bin/sh
+#
+#[ -n "$$IPKG_INSTROOT" ] || {
+#	/etc/init.d/sudo enable
+#	/etc/init.d/sudo start
+#}
+#endef
+
+$(eval $(call HostBuild))
 $(eval $(call BuildPackage,sudo))
