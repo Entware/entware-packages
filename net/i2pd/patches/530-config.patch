@@ -12,7 +12,7 @@
  ## Tunnels config files path
  ## Use that path to store separated tunnels in different config files.
 -## Default: ~/.i2pd/tunnels.d or /var/lib/i2pd/tunnels.d
--tunnelsdir = /etc/i2pd/tunnels.conf
+-tunnelsdir = /etc/i2pd/tunnels.d
 +## Default: ~/.i2pd/tunnels.d or /opt/etc/i2pd/tunnels.d
 +# tunnelsdir = /opt/etc/i2pd/tunnels.d
  
@@ -22,7 +22,7 @@
  
  ## Logging configuration section
  ## By default logs go to stdout with level 'info' and higher
-@@ -25,17 +25,17 @@ tunnelsdir = /etc/i2pd/tunnels.conf
+@@ -25,17 +25,17 @@ tunnelsdir = /etc/i2pd/tunnels.d
  ##  * stdout - print log entries to stdout
  ##  * file - log entries to a file
  ##  * syslog - use syslog, see man 3 syslog
