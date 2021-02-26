@@ -1,6 +1,6 @@
 --- a/fakeidentd-2.6.c
 +++ b/fakeidentd-2.6.c
-@@ -526,7 +526,7 @@
+@@ -526,7 +526,7 @@ static void godaemon(void)
  #ifdef TRG
  #define PIDFILE "/var/run/" TRG ".pid"
  #else
