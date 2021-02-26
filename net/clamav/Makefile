@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clamav
-PKG_VERSION:=0.102.4
-PKG_RELEASE:=1
+PKG_VERSION:=0.103.0
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.clamav.net/downloads/production/
-PKG_HASH:=eebd426a68020ecad0d2084b8c763e6898ccfd5febcae833d719640bb3ff391b
+PKG_HASH:=32a9745277bfdda80e77ac9ca2f5990897418e9416880f3c31553ca673e80546
 
 PKG_MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr> \
 		Lucian Cristian <lucian.cristian@gmail.com>
@@ -85,10 +85,10 @@ CONFIGURE_VARS += $(if $(CONFIG_IPV6),have_cv_ipv6=yes)
 
 TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -fno-rtti -flto
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed $(if $(CONFIG_USE_MUSL),-lfts)
-TARGET_LDFLAGS += -lcurl
 
 #define Package/clamav/conffiles
 #/etc/config/clamav
+#/etc/config/clamav-milter
 #endef
 
 define Package/clamav/install
@@ -99,17 +99,19 @@ define Package/clamav/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamconf $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamdscan $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamscan $(1)/opt/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/clamonacc $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/clamonacc $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sigtool $(1)/opt/sbin/
 
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib*/lib*.so.* $(1)/opt/lib/
 
-#	$(INSTALL_DIR) $(1)/opt/etc/config
-#	$(INSTALL_CONF) ./files/clamav.config $(1)/opt/etc/config/clamav
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/clamav.config $(1)/etc/config/clamav
+#	$(INSTALL_CONF) ./files/clamav-milter.config $(1)/etc/config/clamav-milter
 
-#	$(INSTALL_DIR) $(1)/opt/etc/init.d/
-#	$(INSTALL_BIN) ./files/clamav.init $(1)/opt/etc/init.d/clamav
+#	$(INSTALL_DIR) $(1)/etc/init.d/
+#	$(INSTALL_BIN) ./files/clamav.init $(1)/etc/init.d/clamav
+#	$(INSTALL_BIN) ./files/clamav-milter.init $(1)/etc/init.d/clamav-milter
 
 	$(INSTALL_DIR) $(1)/opt/share/clamav
 	$(CP) ./files/bytecode.cvd $(1)/opt/share/clamav/
