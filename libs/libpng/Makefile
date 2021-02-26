@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libpng
 PKG_VERSION:=1.6.37
-PKG_RELEASE:=7
+PKG_RELEASE:=10
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/libpng
@@ -35,23 +35,21 @@ endef
 
 CMAKE_OPTIONS += \
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DPNG_BUILD_ZLIB=ON \
+	-DPNG_BUILD_ZLIB=OFF \
 	-DPNG_SHARED=ON \
 	-DPNG_STATIC=ON \
+	-DPNG_EXECUTABLES=OFF \
 	-DPNG_TESTS=OFF \
 	-DPNG_FRAMEWORK=OFF \
 	-DPNG_DEBUG=OFF \
 	-DPNG_HARDWARE_OPTIMIZATIONS=O$(if $(findstring powerpc,$(CONFIG_ARCH))$(findstring mipsel,$(CONFIG_ARCH)),FF,N) \
 	-Dld-version-script=OFF
 
-TARGET_CFLAGS += $(TARGET_CPPFLAGS)
-TARGET_LDFLAGS += -lz
-
 define Build/InstallDev
 	$(call Build/InstallDev/cmake,$(1))
-	$(SED) \
-		's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' \
-		$(1)/opt/bin/libpng{,16}-config
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/libpng{,16}-config
+	$(SED) '/^includedir=/s|/opt|$$$${prefix}|' $(1)/opt/bin/libpng{,16}-config
+	$(SED) '/^libdir=/s|/opt|$$$${prefix}|' $(1)/opt/bin/libpng{,16}-config
 	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libpng16.pc
 	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libpng16.pc
 	$(INSTALL_DIR) $(2)/bin
