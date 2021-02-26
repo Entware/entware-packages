@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aircrack-ng
 PKG_VERSION:=1.6
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:aircrack-ng:aircrack-ng
@@ -105,7 +105,7 @@ define Package/aircrack-ng/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libaircrack-*.so $(1)/opt/lib/
 	rm -f $(1)/opt/sbin/airmon-ng
 endef
 
