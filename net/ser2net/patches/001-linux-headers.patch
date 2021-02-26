@@ -9,7 +9,7 @@
  #include "controller.h"
  
  #ifdef USE_UUCP_LOCKING
-@@ -30,6 +28,9 @@
+@@ -30,6 +28,9 @@ extern int uucp_locking_enabled;
  
  #ifdef linux
  

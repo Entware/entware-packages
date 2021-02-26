@@ -21,8 +21,6 @@ Patch sent upstream:
  create mode 100644 sysfs-led.c
  create mode 100644 sysfs-led.h
 
-diff --git a/Makefile.am b/Makefile.am
-index d56179f..866eb89 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -2,9 +2,9 @@ sbin_PROGRAMS = ser2net
@@ -37,8 +35,6 @@ index d56179f..866eb89 100644
  man_MANS = ser2net.8
  EXTRA_DIST = $(man_MANS) ser2net.conf ser2net.spec ser2net.init
  
-diff --git a/dataxfer.c b/dataxfer.c
-index 646a71b..b99cabf 100644
 --- a/dataxfer.c
 +++ b/dataxfer.c
 @@ -42,6 +42,7 @@
@@ -90,7 +86,7 @@ index 646a71b..b99cabf 100644
  	port->dev_bytes_sent += count;
  	port->tcp_to_dev.cursize -= count;
  	if (port->tcp_to_dev.cursize != 0) {
-@@ -1854,6 +1868,12 @@ myconfig(void *data, struct absout *eout, const char *pos)
+@@ -1854,6 +1868,12 @@ myconfig(void *data, struct absout *eout
      } else if (strncmp(pos, "tb=", 3) == 0) {
  	/* trace both directions. */
  	port->trace_both.filename = find_tracefile(pos + 3);
@@ -103,8 +99,6 @@ index 646a71b..b99cabf 100644
  #ifdef USE_RS485_FEATURE
      } else if (strncmp(pos, "rs485=", 6) == 0) {
  	/* get RS485 configuration. */
-diff --git a/readconfig.c b/readconfig.c
-index d4ca0d4..62cff5c 100644
 --- a/readconfig.c
 +++ b/readconfig.c
 @@ -31,6 +31,7 @@
@@ -235,8 +229,6 @@ index d4ca0d4..62cff5c 100644
  
      config_num++;
  
-diff --git a/ser2net.conf b/ser2net.conf
-index 870926c..dc2ba19 100644
 --- a/ser2net.conf
 +++ b/ser2net.conf
 @@ -53,6 +53,8 @@
@@ -277,9 +269,6 @@ index 870926c..dc2ba19 100644
  3021:telnet:0:/dev/ttyUSB1:9600 banner2 open1 close1 remctl
 +
 +5000:telnet:0:/dev/ttyAPP0:9600 NONE 1STOPBIT 8DATABITS -XONXOFF LOCAL -RTSCTS led-tx=tx led-rx=rx
-diff --git a/sysfs-led.c b/sysfs-led.c
-new file mode 100644
-index 0000000..efe0b29
 --- /dev/null
 +++ b/sysfs-led.c
 @@ -0,0 +1,43 @@
@@ -326,9 +315,6 @@ index 0000000..efe0b29
 +{
 +    return led_write(led, "activate", "1");
 +}
-diff --git a/sysfs-led.h b/sysfs-led.h
-new file mode 100644
-index 0000000..00b21b6
 --- /dev/null
 +++ b/sysfs-led.h
 @@ -0,0 +1,11 @@
@@ -343,8 +329,6 @@ index 0000000..00b21b6
 +int led_blink_kick(char *led);
 +
 +#endif /* SYSFS_LED_H */
-diff --git a/utils.c b/utils.c
-index c194c4c..c96cedb 100644
 --- a/utils.c
 +++ b/utils.c
 @@ -25,6 +25,9 @@
@@ -357,7 +341,7 @@ index c194c4c..c96cedb 100644
  
  #include "ser2net.h"
  #include "utils.h"
-@@ -205,3 +208,30 @@ write_ignore_fail(int fd, const char *data, size_t count)
+@@ -205,3 +208,30 @@ write_ignore_fail(int fd, const char *da
  	count -= written;
      }
  }
@@ -388,8 +372,6 @@ index c194c4c..c96cedb 100644
 +
 +    return close(fd);
 +}
-diff --git a/utils.h b/utils.h
-index 582ea88..8af65ec 100644
 --- a/utils.h
 +++ b/utils.h
 @@ -64,6 +64,9 @@ char *find_tracefile(const char *name);
@@ -402,7 +384,7 @@ index 582ea88..8af65ec 100644
  void check_ipv6_only(int family, struct sockaddr *addr, int fd);
  
  /* Make sure the full contents get written, return an error if it occurs. */
-@@ -72,4 +75,10 @@ int write_full(int fd, char *data, size_t count);
+@@ -72,4 +75,10 @@ int write_full(int fd, char *data, size_
  /* Write the data completely out, return without comment on error. */
  void write_ignore_fail(int fd, const char *data, size_t count);
  
@@ -413,6 +395,3 @@ index 582ea88..8af65ec 100644
 +int file_store(const char *filename, const char *buf, size_t count);
 +
  #endif /* UTILS */
--- 
-1.7.10.4
-
