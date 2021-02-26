@@ -1,0 +1,28 @@
+--- a/src/enum_net.cpp	2020-09-03 15:03:03.000000000 +0300
++++ b/src/enum_net.cpp	2020-09-09 11:51:26.058011725 +0300
+@@ -338,7 +338,14 @@
+ 				case IFLA_OPERSTATE: memcpy(&ret.oper_state, ptr, sizeof(int)); break;
+ 
+ 				// ignore these attributes
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++/* IFLA_CARRIER since Linux 3.9 */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
+ 				case IFLA_CARRIER:
++#endif /* IFLA_CARRIER since Linux 3.9 */
+ 				case IFLA_ADDRESS:
+ 				case IFLA_BROADCAST:
+ 				case IFLA_QDISC:
+@@ -351,7 +358,10 @@
+ 				case IFLA_LINKINFO:
+ 				case IFLA_STATS64:
+ 				case IFLA_STATS:
++/* IFLA_PROMISCUITY since Linux 3.9 */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
+ 				case IFLA_PROMISCUITY:
++#endif /* IFLA_PROMISCUITY since Linux 3.9 */
+ 				default:
+ 					break;
+ 			};
