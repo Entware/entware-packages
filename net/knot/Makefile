@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=knot
-PKG_VERSION:=3.0.2
+PKG_VERSION:=3.0.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://secure.nic.cz/files/knot-dns/
-PKG_HASH:=f813a5e53263ef51d0415508e1f7d33cfbb75a139ccb10a344ae5a91689933fb
+PKG_HASH:=451d8913a769b7e4bcb3e250a3181b448e28a82cfc58cea6f2509475d7327983
 
 PKG_MAINTAINER:=Daniel Salzman <daniel.salzman@nic.cz>
 PKG_LICENSE:=GPL-3.0 LGPL-2.0 0BSD BSD-3-Clause OLDAP-2.8
@@ -206,11 +206,11 @@ define Package/knot/install
 	$(INSTALL_DIR) 						$(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/knotd	$(1)/opt/sbin/
 
-	$(INSTALL_DIR) 							$(1)/etc/knot
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/etc/knot/knot.sample.conf	$(1)/etc/knot/knot.conf
+	$(INSTALL_DIR) 							$(1)/opt/etc/knot
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/knot/knot.sample.conf	$(1)/opt/etc/knot/knot.conf
 
-	$(INSTALL_DIR)				$(1)/etc/init.d
-	$(INSTALL_BIN) ./files/knotd.init	$(1)/etc/init.d/knotd
+#	$(INSTALL_DIR)				$(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/knotd.init	$(1)/etc/init.d/knotd
 endef
 
 define Package/knot-dig/install
