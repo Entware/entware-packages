@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=grep
 PKG_VERSION:=3.6
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/grep
@@ -46,6 +46,8 @@ endef
 define Package/grep/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*bash,#!/bin/sh,' $(1)/opt/bin/{e,f}grep
 endef
 
 $(eval $(call BuildPackage,grep))
