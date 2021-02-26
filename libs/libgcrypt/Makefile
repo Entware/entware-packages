@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libgcrypt
 PKG_VERSION:=1.8.7
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/
@@ -57,11 +57,10 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/bin $(2)/bin $(1)/opt/include $(1)/opt/lib $(1)/opt/share/aclocal
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/libgcrypt-config $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/gcrypt*.h $(1)/opt/include/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgcrypt.{la,a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/aclocal/libgcrypt.m4 $(1)/opt/share/aclocal/
-	$(SED) 's,^libdir=\"$$$${exec_prefix}/lib,libdir=\"$(STAGING_DIR)/opt/lib,g' $(1)/opt/bin/libgcrypt-config
-	$(SED) 's,^includedir=\"$$$${prefix}/include/,includedir=\"$(STAGING_DIR)/opt/include/,g' $(1)/opt/bin/libgcrypt-config
-	ln -sf $(STAGING_DIR)/opt/bin/libgcrypt-config $(2)/bin/
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/libgcrypt-config
+	$(LN) ../../opt/bin/libgcrypt-config $(2)/bin/libgcrypt-config
 endef
 
 define Package/libgcrypt/install
