@@ -1,6 +1,6 @@
 --- a/photosyst.c
 +++ b/photosyst.c
-@@ -2208,7 +2208,7 @@ getperfevents(struct cpustat *cs)
+@@ -2266,7 +2266,7 @@ getperfevents(struct cpustat *cs)
  void
  do_perfevents(char *tagname, char *tagvalue)
  {
@@ -8,4 +8,15 @@
 +	mcleanstop(1, "atop built with NOPERFEVENT, cannot use perfevents\n");
  }
  #endif
+ 
+--- a/showgeneric.c
++++ b/showgeneric.c
+@@ -2682,7 +2682,7 @@ printg(const char *format, ...)
+ 	va_start(args, format);
+ 
+ 	if (screen)
+-		vwprintw(stdscr, (char *) format, args);
++		vw_printw(stdscr, (char *) format, args);
+ 	else
+ 		vprintf(format, args);
  
