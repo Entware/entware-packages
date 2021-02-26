@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libdnet
 PKG_VERSION:=1.14
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/ofalk/libdnet/tar.gz/$(PKG_NAME)-$(PKG_VERSION)?
@@ -46,13 +46,11 @@ CONFIGURE_VARS += \
 	ac_cv_dnet_bsd_bpf=no
 
 define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/dnet-config $(1)/opt/bin/
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/dnet-config
 	$(INSTALL_DIR) $(2)/bin
-	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/opt/bin/dnet-config \
-		$(2)/bin/
-	$(SED) \
-		's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' \
-		$(2)/bin/dnet-config
+	$(LN) ../../opt/bin/dnet-config $(2)/bin/
 
 	$(INSTALL_DIR) $(1)/opt/include
 	$(INSTALL_DATA)\
