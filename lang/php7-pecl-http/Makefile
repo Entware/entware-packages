@@ -42,9 +42,7 @@ CONFIGURE_VARS+= \
 	PECL_cv_HAVE_LIBCURL_WolfSSL=$(if $(CONFIG_LIBCURL_WOLFSSL),yes,no) \
 	PECL_cv_HAVE_LIBCURL_mbedTLS=$(if $(CONFIG_LIBCURL_MBEDTLS),yes,no) \
 	PECL_cv_HAVE_LIBCURL_axTLS=no \
-	PECL_cv_LIBCURL_TLSAUTH_SRP=$(if $(CONFIG_LIBCURL_TLS_SRP),yes,no) \
-	PECL_cv_libevent_cppflags=-I$(STAGING_DIR)/opt/include/event2 \
-	PECL_cv_libevent_ldflags=-L$(STAGING_DIR)/opt/lib
+	PECL_cv_LIBCURL_TLSAUTH_SRP=$(if $(CONFIG_LIBCURL_TLS_SRP),yes,no)
 
 CONFIGURE_ARGS+= \
 	--with-http \
@@ -56,5 +54,5 @@ CONFIGURE_ARGS+= \
 	--with-http-libidnkit-dir=no \
 	--with-http-libidnkit2-dir=no
 
-$(eval $(call PECLPackage,http,$(PECL_LONGNAME),+icu +libcurl +librt +libevent2 +PACKAGE_libidn:libidn +libidn2 +php7-mod-iconv +php7-mod-session +php7-pecl-raphf +php7-pecl-propro,30))
+$(eval $(call PHP7PECLPackage,http,$(PECL_LONGNAME),+icu +libcurl +librt +libevent2 +PACKAGE_libidn:libidn +libidn2 +php7-mod-iconv +php7-mod-session +php7-pecl-raphf +php7-pecl-propro,30))
 $(eval $(call BuildPackage,$(PKG_NAME)))
