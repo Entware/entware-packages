@@ -137,6 +137,11 @@ define Package/apache-suexec
 $(call Package/apache/Default)
   TITLE:=Apache suEXEC
   DEPENDS:=apache
+  # Directory "/usr/lib/apache2/suexec_dir" is installed with mode 0750
+  # and is only accessible by root and the group apache. This way apache
+  # can access the SUID binary "suexec" contained within while others
+  # cannot.
+  FILE_MODES:=/opt/lib/apache2/suexec_dir:root:root:0750
 endef
 
 define Package/apache-suexec/description
@@ -340,22 +345,6 @@ define Package/apache-utils/install
 		$(PKG_INSTALL_DIR)/opt/sbin/{checkgid,envvars*,htcacheclean,rotatelogs} \
 									$(1)/opt/sbin
 endef
-
-# Directory "suexec_dir" is installed with '-m0750' above and contains
-# SUID binary "suexec". Below post-install script changes the group of
-# "suexec_dir" to apache, so user apache can access the folder (and the
-# SUID binary). The script only changes the group if the directory is
-# currently owned by "root:root".
-#define Package/apache-suexec/postinst
-##!/bin/sh
-#if [ -z "$${IPKG_INSTROOT}" ]; then
-#  dir="/usr/lib/apache2/suexec_dir"
-#  if ! [ -L "$$dir" ] && [ -d "$$dir" ] && [ -O "$$dir" ] && [ -G "$$dir" ]; then
-#    chown :apache "$$dir"
-#  fi
-#fi
-#exit 0
-#endef
 
 define Package/apache/Module
 define Package/apache-mod-$(1)
