@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -2910,7 +2910,7 @@
+@@ -2910,7 +2910,7 @@ fi
  
    if test "x$netsnmpconfig" != "xno"; then
      CPPFLAGS="$CPPFLAGS `$netsnmpconfig --base-cflags 2>/dev/null`"
