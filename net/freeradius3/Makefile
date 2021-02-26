@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=freeradius3
 PKG_VERSION:=3_0_21
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=release_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/FreeRADIUS/freeradius-server/archive
