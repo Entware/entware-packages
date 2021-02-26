@@ -1,7 +1,4 @@
 #
-# Copyright (C) 2006-2011 OpenWrt.org
-# Copyright (C) 2017-2018 Luiz Angelo Daros de Luca <luizluca@gmail.com>
-#
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
@@ -11,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
-PKG_VERSION:=3.20.9
-PKG_RELEASE:=1a
+PKG_VERSION:=3.21.2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
-PKG_HASH:=36251189aa9cc349f6a3eacbb7ac3c4fd26fc9f087c9f75cee051010c85d2ddf
+PKG_HASH:=410421a13e62205d41bacd3215993c89e513fb4d7fab07e23e2720465aea7c41
 
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
@@ -98,7 +95,8 @@ ifeq ($(CONFIG_PACKAGE_hplip-full),m)
 PKG_INSTALL:=1
 
 TARGET_CPPFLAGS += \
-	-I$(STAGING_DIR)/opt/include/libusb-1.0 -I$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)
+	-I$(STAGING_DIR)/opt/include/libusb-1.0 \
+	-I$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)
 
   define Build/Configure
 	$(call Build/Configure/Default,\
@@ -120,10 +118,10 @@ TARGET_CPPFLAGS += \
 endif
 
 #define Build/Install
-#	mkdir -p $(PKG_INSTALL_DIR)/usr/share/sane
+#	mkdir -p $(PKG_INSTALL_DIR)/opt/share/sane
 #	sed -n -e '/key="usb.product_id"/{s/.*int_outof="0x//;s/;0x/\n/g;s/".*//;p}' \
 #		$(PKG_BUILD_DIR)/data/rules/20-hplip-devices.fdi | sort -u > \
-#		$(PKG_INSTALL_DIR)/usr/share/sane/03f0-hplip.usbid
+#		$(PKG_INSTALL_DIR)/opt/share/sane/03f0-hplip.usbid
 #endef
 
 define Package/hplip-common/install
