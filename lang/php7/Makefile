@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=7.4.12
-PKG_RELEASE:=2
+PKG_VERSION:=7.4.15
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 PKG_LICENSE:=PHP-3.01
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=e82d2bcead05255f6b7d2ff4e2561bc334204955820cabc2457b5239fde96b76
+PKG_HASH:=9b859c65f0cf7b3eff9d4a28cfab719fb3d36a1db3c20d874a79b5ec44d43cb8
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -47,7 +47,7 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
 
 define Package/php7/Default
-  SUBMENU:=PHP
+  SUBMENU:=PHP7
   SECTION:=lang
   CATEGORY:=Languages
   TITLE:=PHP7 Hypertext preprocessor
@@ -257,9 +257,9 @@ endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-imap),)
   CONFIGURE_ARGS+= \
-		--with-imap=shared,"$(STAGING_DIR)/opt" \
-		--with-kerberos=no \
-		--with-imap-ssl="$(STAGING_DIR)/opt"
+	--with-imap=shared,"$(STAGING_DIR)/opt" \
+	--with-kerberos=no \
+	--with-imap-ssl="$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-imap
 endif
