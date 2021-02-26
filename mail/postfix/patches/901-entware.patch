@@ -79,7 +79,7 @@
  #endif
  extern char *var_mail_spool_dir;
  
-@@ -2689,17 +2689,17 @@ extern int var_fault_inj_code;
+@@ -2692,17 +2692,17 @@ extern int var_fault_inj_code;
    */
  #define VAR_SENDMAIL_PATH		"sendmail_path"
  #ifndef DEF_SENDMAIL_PATH
@@ -100,7 +100,7 @@
  #endif
  
  #define VAR_OPENSSL_PATH		"openssl_path"
-@@ -2710,7 +2710,7 @@ extern char *var_openssl_path;
+@@ -2713,7 +2713,7 @@ extern char *var_openssl_path;
  
  #define VAR_MANPAGE_DIR			"manpage_directory"
  #ifndef DEF_MANPAGE_DIR
@@ -109,7 +109,7 @@
  #endif
  
  #define VAR_SAMPLE_DIR			"sample_directory"
-@@ -4117,7 +4117,7 @@ extern bool var_smtp_tls_conn_reuse;
+@@ -4120,7 +4120,7 @@ extern bool var_smtp_tls_conn_reuse;
    */
  #define VAR_SHLIB_DIR	"shlib_directory"
  #ifndef DEF_SHLIB_DIR
