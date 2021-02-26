@@ -136,7 +136,7 @@
    SET(scriptdir ${prefix}/${INSTALL_BINDIR})
 --- a/scripts/mysql_install_db.sh
 +++ b/scripts/mysql_install_db.sh
-@@ -364,8 +364,8 @@ then
+@@ -363,8 +363,8 @@ then
    if test -z "$plugindir"
    then
      echo "Could not find plugin directory." >&2
