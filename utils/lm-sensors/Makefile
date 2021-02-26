@@ -73,6 +73,7 @@ endef
 
 define Package/lm-sensors/conffiles
 /opt/etc/sensors.conf
+/opt/etc/sensors3.conf
 endef
 
 define Build/Compile
@@ -122,6 +123,6 @@ define Package/libsensors/install
 	$(CP) $(PKG_BUILD_DIR)/lib/libsensors.so* $(1)/opt/lib
 endef
 
+$(eval $(call BuildPackage,libsensors))
 $(eval $(call BuildPackage,lm-sensors))
 $(eval $(call BuildPackage,lm-sensors-detect))
-$(eval $(call BuildPackage,libsensors))
