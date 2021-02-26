@@ -1,11 +1,10 @@
-From: Santiago Vila <sanvila@debian.org>
-Subject: Fix FTBFS with glibc 2.28
-Bug-Debian: https://bugs.debian.org/915152
-X-Debian-version: 1.4.18-2
+update for glibc libio.h removal in 2.28+
 
-Based on this gnulib commit by Paul Eggert:
+see
+https://src.fedoraproject.org/rpms/m4/c/814d592134fad36df757f9a61422d164ea2c6c9b?branch=master
 
-https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
+Upstream-Status: Backport [https://git.savannah.gnu.org/cgit/gnulib.git/commit/?id=4af4a4a718]
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
 
 --- a/lib/fflush.c
 +++ b/lib/fflush.c
@@ -18,7 +17,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
  
  /* Clear the stream's ungetc buffer, preserving the value of ftello (fp).  */
  static void
-@@ -72,7 +72,7 @@
+@@ -72,7 +72,7 @@ clear_ungetc_buffer (FILE *fp)
  
  #endif
  
@@ -27,7 +26,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
  
  # if (defined __sferror || defined __DragonFly__ || defined __ANDROID__) && defined __SNPT
  /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin, Android */
-@@ -148,7 +148,7 @@
+@@ -148,7 +148,7 @@ rpl_fflush (FILE *stream)
    if (stream == NULL || ! freading (stream))
      return fflush (stream);
  
@@ -38,7 +37,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
  
 --- a/lib/fpending.c
 +++ b/lib/fpending.c
-@@ -32,7 +32,7 @@
+@@ -32,7 +32,7 @@ __fpending (FILE *fp)
    /* Most systems provide FILE as a struct and the necessary bitmask in
       <stdio.h>, because they need it for implementing getc() and putc() as
       fast macros.  */
@@ -49,7 +48,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
    /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin, Android */
 --- a/lib/fpurge.c
 +++ b/lib/fpurge.c
-@@ -62,7 +62,7 @@
+@@ -62,7 +62,7 @@ fpurge (FILE *fp)
    /* Most systems provide FILE as a struct and the necessary bitmask in
       <stdio.h>, because they need it for implementing getc() and putc() as
       fast macros.  */
@@ -71,7 +70,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
    return (fp->_IO_read_end - fp->_IO_read_ptr)
 --- a/lib/freading.c
 +++ b/lib/freading.c
-@@ -31,7 +31,7 @@
+@@ -31,7 +31,7 @@ freading (FILE *fp)
    /* Most systems provide FILE as a struct and the necessary bitmask in
       <stdio.h>, because they need it for implementing getc() and putc() as
       fast macros.  */
@@ -82,7 +81,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
                && fp->_IO_read_base != NULL));
 --- a/lib/fseeko.c
 +++ b/lib/fseeko.c
-@@ -47,7 +47,7 @@
+@@ -47,7 +47,7 @@ fseeko (FILE *fp, off_t offset, int when
  #endif
  
    /* These tests are based on fpurge.c.  */
@@ -91,7 +90,7 @@ https://lists.gnu.org/r/bug-gnulib/2018-03/msg00002.html
    if (fp->_IO_read_end == fp->_IO_read_ptr
        && fp->_IO_write_ptr == fp->_IO_write_base
        && fp->_IO_save_base == NULL)
-@@ -123,7 +123,7 @@
+@@ -123,7 +123,7 @@ fseeko (FILE *fp, off_t offset, int when
            return -1;
          }
  
