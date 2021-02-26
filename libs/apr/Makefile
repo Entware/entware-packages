@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apr
 PKG_VERSION:=1.7.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@APACHE/apr/
@@ -95,9 +95,13 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/build-1/* $(1)/opt/share/build-1
 	$(SED) '/^prefix=\|^exec_prefix=/s|/opt|$(STAGING_DIR)/opt|' \
 					$(1)/opt/bin/apr-1-config
+	$(SED) '/^bindir=/s|/opt|$$$${prefix}|' $(1)/opt/bin/apr-1-config
 	$(SED) '/^datadir=/s|/opt|$$$${prefix}|' $(1)/opt/bin/apr-1-config
+	$(SED) '/^datarootdir=/s|/opt|$$$${prefix}|' $(1)/opt/bin/apr-1-config
 	$(SED) 's,/opt/share/build-1,$(STAGING_DIR)/opt/share/build-1,g' \
 				$(1)/opt/share/build-1/apr_rules.mk
+	$(INSTALL_DIR) $(2)/bin
+	$(LN) ../../opt/bin/apr-1-config $(2)/bin/apr-1-config
 endef
 
 define Package/libapr/install
