@@ -1,0 +1,11 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -370,7 +370,7 @@ distprep: catman-do depend-check
+ 	$(AUTORECONF)
+ 	-rm -rf autom4te.cache .depend.bak
+ 
+-install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files install-sysconf host-key check-config
++install: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files install-sysconf host-key
+ install-nokeys: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files install-sysconf
+ install-nosysconf: $(CONFIGFILES) $(MANPAGES) $(TARGETS) install-files
+ 

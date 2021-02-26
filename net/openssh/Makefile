@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
 PKG_VERSION:=8.4p1
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
@@ -21,6 +21,10 @@ PKG_LICENSE_FILES:=LICENCE
 PKG_CPE_ID:=cpe:/a:openssh:openssh
 
 PKG_REMOVE_FILES:=
+PKG_CONFIG_DEPENDS := \
+	CONFIG_OPENSSH_LIBFIDO2
+
+PKG_BUILD_DEPENDS += OPENSSH_LIBFIDO2:libfido2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -48,6 +52,9 @@ endef
 define Package/openssh-client
 	$(call Package/openssh/Default)
 	TITLE+= client
+#	ALTERNATIVES:=\
+#		200:/usr/bin/ssh:/usr/libexec/ssh-openssh \
+#		200:/usr/bin/scp:/usr/libexec/scp-openssh
 endef
 
 define Package/openssh-client/description
@@ -79,9 +86,13 @@ endef
 
 define Package/openssh-server
 	$(call Package/openssh/Default)
-	DEPENDS+= +openssh-keygen
+	DEPENDS+= +openssh-keygen +OPENSSH_LIBFIDO2:libfido2
 	TITLE+= server
 	USERID:=sshd=22:sshd=22
+endef
+
+define Package/openssh-server/config
+	source "$(SOURCE)/Config.in"
 endef
 
 define Package/openssh-server/description
@@ -162,8 +173,9 @@ CONFIGURE_ARGS += \
 	--without-bsd-auth \
 	--without-kerberos5 \
 	--with-stackprotect \
-	--with$(if $(CONFIG_OPENSSL_ENGINE),,out)-ssl-engine
-
+	--with$(if $(CONFIG_OPENSSL_ENGINE),,out)-ssl-engine \
+	--with$(if $(CONFIG_OPENSSH_LIBFIDO2),,out)-security-key-builtin
+	
 ifeq ($(BUILD_VARIANT),with-pam)
 CONFIGURE_ARGS += \
 	--with-pam
@@ -216,6 +228,8 @@ define Package/openssh-server/install
 	sed -r -i 's,^#(HostKey /opt/etc/ssh/ssh_host_(rsa|ed25519)_key)$$$$,\1,' $(1)/opt/etc/ssh/sshd_config
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S40sshd $(1)/opt/etc/init.d/
+#	$(INSTALL_DIR) $(1)/lib/preinit
+#	$(INSTALL_BIN) ./files/sshd.failsafe $(1)/lib/preinit/99_10_failsafe_sshd
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/sshd $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/var/empty
