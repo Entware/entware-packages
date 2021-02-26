@@ -1,14 +1,14 @@
---- a/uvcdynctrl/udev/rules/80-uvcdynctrl.rules	2014-11-29 13:11:29.000000000 +0300
-+++ b/uvcdynctrl/udev/rules/80-uvcdynctrl.rules	2019-12-16 14:34:10.413960304 +0300
+--- a/uvcdynctrl/udev/rules/80-uvcdynctrl.rules
++++ b/uvcdynctrl/udev/rules/80-uvcdynctrl.rules
 @@ -6,4 +6,4 @@
  # udev versions confirmed to work: 141 (Ubuntu 9.04), 142 (Ubuntu 9.10)
  # udev versions confirmed not to work: 117 (Ubuntu 8.04)
  ###################################################################################################
 -ACTION=="add", SUBSYSTEM=="video4linux", DRIVERS=="uvcvideo", RUN+="/lib/udev/uvcdynctrl"
 +ACTION=="add", SUBSYSTEM=="video4linux", DRIVERS=="uvcvideo", RUN+="/opt/lib/udev/uvcdynctrl"
---- a/uvcdynctrl/udev/scripts/uvcdynctrl	2014-11-29 13:11:29.000000000 +0300
-+++ b/uvcdynctrl/udev/scripts/uvcdynctrl	2019-12-16 14:34:42.177600581 +0300
-@@ -19,7 +19,7 @@
+--- a/uvcdynctrl/udev/scripts/uvcdynctrl
++++ b/uvcdynctrl/udev/scripts/uvcdynctrl
+@@ -19,7 +19,7 @@ uvcdynctrlpath=uvcdynctrl
  
  # Determine log destination
  if [ "$debug" != 0 ]; then
@@ -17,9 +17,9 @@
  else
  	logfile=/dev/null
  fi
---- a/uvcdynctrl/CMakeLists.txt	2019-12-16 11:47:27.620695151 +0300
-+++ b/uvcdynctrl/CMakeLists.txt	2019-12-16 14:14:18.826362513 +0300
-@@ -102,11 +102,11 @@
+--- a/uvcdynctrl/CMakeLists.txt
++++ b/uvcdynctrl/CMakeLists.txt
+@@ -102,11 +102,11 @@ install (
  # Note that having absolute paths here requires CPACK_SET_DESTDIR to be set to "ON".
  install (
  	FILES	udev/rules/80-uvcdynctrl.rules
