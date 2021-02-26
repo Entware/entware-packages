@@ -6,7 +6,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: downgraded from 20200821 to 20190709, kernels are too old.
+# Entware specific: keep 20190709 version, kernels are too old.
 
 include $(TOPDIR)/rules.mk
 
@@ -146,7 +146,7 @@ endef
 
 define Package/iputils-tftpd/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin//tftpd $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tftpd $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,iputils-ping))
