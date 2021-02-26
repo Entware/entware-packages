@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ntfs-3g
 PKG_VERSION:=2017.3.23
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)_ntfsprogs-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://www.tuxera.com/opensource/
@@ -121,6 +121,8 @@ CONFIGURE_ARGS += \
 	--enable-static \
 	--with-uuid
 
+TARGET_CFLAGS += -DMAJOR_IN_SYSMACROS
+
 # configure/make according selection
 ifdef CONFIG_PACKAGE_NTFS-3G_USE_LIBFUSE
 	CONFIGURE_ARGS += --with-fuse=external
@@ -160,19 +162,19 @@ define Package/ntfs-3g/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libntfs-3g.so.* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.ntfs-3g $(1)/opt/sbin/
+	$(LN) ../bin/ntfs-3g $(1)/opt/sbin/mount.ntfs-3g
 endef
 
 define Package/ntfs-3g-low/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lowntfs-3g $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.lowntfs-3g $(1)/opt/sbin/
+	$(LN) ../bin/lowntfs-3g $(1)/opt/sbin/mount.lowntfs-3g
 endef
 
 define Package/ntfs-3g-utils/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mkfs.ntfs $(1)/opt/sbin/
+	$(LN) ../sbin/mkntfs $(1)/opt/sbin/mkfs.ntfs
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(FIND) $(PKG_INSTALL_DIR)/opt/bin/ -type f ! -regex '.*[^/]*ntfs-3g[^/]*' -exec $(INSTALL_BIN) {} $(1)/opt/bin/ \;
 	$(INSTALL_DIR) $(1)/opt/sbin
