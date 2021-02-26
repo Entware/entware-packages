@@ -1,8 +1,8 @@
-commit 1d3c84d4e65e1fb20645be58f49a4ac068f1e96c (HEAD -> master, origin/master, origin/HEAD)
-Merge: 0d3176abe b0af8ae44
+commit 9e32bfa1f96381335498241202ea575e1ead9f42 (HEAD -> master, origin/master, origin/HEAD)
+Merge: 5e0ef1d53 e30f0480c
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Tue Nov 24 14:40:56 2020 -0800
+Date:   Thu Feb 25 06:15:12 2021 -0800
 
-    Merge pull request #13996 from neheb/jpg
+    Merge pull request #14896 from rsalvaterra/torfix
     
-    libjpeg-turbo: update to 2.0.6
+    tor: fix building without OpenSSL engine support
