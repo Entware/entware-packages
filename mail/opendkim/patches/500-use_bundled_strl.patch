@@ -76,8 +76,6 @@ opendkim/Makefile.am
  create mode 100644 linux_string/strlcpy.c
 
 
-diff --git a/libopendkim/Makefile.am b/libopendkim/Makefile.am
-index b105eefa..b7082508 100644
 --- a/libopendkim/Makefile.am
 +++ b/libopendkim/Makefile.am
 @@ -9,6 +9,9 @@ LDADD = ./libopendkim.la
@@ -90,8 +88,6 @@ index b105eefa..b7082508 100644
  libopendkim_la_CPPFLAGS = $(LIBCRYPTO_CPPFLAGS)
  libopendkim_la_CFLAGS = $(LIBCRYPTO_INCDIRS) $(LIBOPENDKIM_INC) $(COV_CFLAGS)
  libopendkim_la_LDFLAGS = -no-undefined  $(LIBCRYPTO_LIBDIRS) $(COV_LDFLAGS) -version-info $(LIBOPENDKIM_VERSION_INFO)
-diff --git a/libopendkim/dkim-cache.c b/libopendkim/dkim-cache.c
-index c43cc0c1..a72f4a02 100644
 --- a/libopendkim/dkim-cache.c
 +++ b/libopendkim/dkim-cache.c
 @@ -34,6 +34,11 @@
@@ -106,8 +102,6 @@ index c43cc0c1..a72f4a02 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/dkim-canon.c b/libopendkim/dkim-canon.c
-index 93021c37..95b8c829 100644
 --- a/libopendkim/dkim-canon.c
 +++ b/libopendkim/dkim-canon.c
 @@ -50,6 +50,11 @@
@@ -122,8 +116,6 @@ index 93021c37..95b8c829 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/dkim-keys.c b/libopendkim/dkim-keys.c
-index a2bd7dc2..0b57589e 100644
 --- a/libopendkim/dkim-keys.c
 +++ b/libopendkim/dkim-keys.c
 @@ -34,6 +34,11 @@
@@ -138,8 +130,6 @@ index a2bd7dc2..0b57589e 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/dkim-test.c b/libopendkim/dkim-test.c
-index 3985db83..d0916a42 100644
 --- a/libopendkim/dkim-test.c
 +++ b/libopendkim/dkim-test.c
 @@ -41,6 +41,11 @@
@@ -154,8 +144,6 @@ index 3985db83..d0916a42 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/dkim.c b/libopendkim/dkim.c
-index caf1eaf4..fe1f7653 100644
 --- a/libopendkim/dkim.c
 +++ b/libopendkim/dkim.c
 @@ -96,6 +96,11 @@
@@ -170,8 +158,6 @@ index caf1eaf4..fe1f7653 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test122.c b/libopendkim/tests/t-test122.c
-index bc75a071..c36d38cd 100644
 --- a/libopendkim/tests/t-test122.c
 +++ b/libopendkim/tests/t-test122.c
 @@ -27,6 +27,11 @@
@@ -186,8 +172,6 @@ index bc75a071..c36d38cd 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test123.c b/libopendkim/tests/t-test123.c
-index dcdf8c8f..63e25c40 100644
 --- a/libopendkim/tests/t-test123.c
 +++ b/libopendkim/tests/t-test123.c
 @@ -27,6 +27,11 @@
@@ -202,8 +186,6 @@ index dcdf8c8f..63e25c40 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test127.c b/libopendkim/tests/t-test127.c
-index 9abcdd7b..43a938f6 100644
 --- a/libopendkim/tests/t-test127.c
 +++ b/libopendkim/tests/t-test127.c
 @@ -27,6 +27,11 @@
@@ -218,8 +200,6 @@ index 9abcdd7b..43a938f6 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test131.c b/libopendkim/tests/t-test131.c
-index 21e1ae2e..fd9944b3 100644
 --- a/libopendkim/tests/t-test131.c
 +++ b/libopendkim/tests/t-test131.c
 @@ -28,6 +28,11 @@
@@ -234,8 +214,6 @@ index 21e1ae2e..fd9944b3 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test136.c b/libopendkim/tests/t-test136.c
-index 397c7417..5043407f 100644
 --- a/libopendkim/tests/t-test136.c
 +++ b/libopendkim/tests/t-test136.c
 @@ -27,6 +27,11 @@
@@ -250,8 +228,6 @@ index 397c7417..5043407f 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test142.c b/libopendkim/tests/t-test142.c
-index d36afbdf..e7cc6643 100644
 --- a/libopendkim/tests/t-test142.c
 +++ b/libopendkim/tests/t-test142.c
 @@ -27,6 +27,11 @@
@@ -266,8 +242,6 @@ index d36afbdf..e7cc6643 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test153.c b/libopendkim/tests/t-test153.c
-index 2b01568a..7d8a5e3f 100644
 --- a/libopendkim/tests/t-test153.c
 +++ b/libopendkim/tests/t-test153.c
 @@ -23,6 +23,11 @@
@@ -282,8 +256,6 @@ index 2b01568a..7d8a5e3f 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test42.c b/libopendkim/tests/t-test42.c
-index 98e0a9f2..74c9f2ee 100644
 --- a/libopendkim/tests/t-test42.c
 +++ b/libopendkim/tests/t-test42.c
 @@ -31,6 +31,11 @@
@@ -298,8 +270,6 @@ index 98e0a9f2..74c9f2ee 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test55.c b/libopendkim/tests/t-test55.c
-index f89bc436..02072e18 100644
 --- a/libopendkim/tests/t-test55.c
 +++ b/libopendkim/tests/t-test55.c
 @@ -27,6 +27,11 @@
@@ -314,8 +284,6 @@ index f89bc436..02072e18 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test56.c b/libopendkim/tests/t-test56.c
-index 03273228..ab643931 100644
 --- a/libopendkim/tests/t-test56.c
 +++ b/libopendkim/tests/t-test56.c
 @@ -27,6 +27,11 @@
@@ -330,8 +298,6 @@ index 03273228..ab643931 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test57.c b/libopendkim/tests/t-test57.c
-index e24c6a23..04a3031f 100644
 --- a/libopendkim/tests/t-test57.c
 +++ b/libopendkim/tests/t-test57.c
 @@ -29,6 +29,11 @@
@@ -346,8 +312,6 @@ index e24c6a23..04a3031f 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test73.c b/libopendkim/tests/t-test73.c
-index 3c7645b3..06b78a3c 100644
 --- a/libopendkim/tests/t-test73.c
 +++ b/libopendkim/tests/t-test73.c
 @@ -32,6 +32,11 @@
@@ -362,8 +326,6 @@ index 3c7645b3..06b78a3c 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test84.c b/libopendkim/tests/t-test84.c
-index 1f87e34c..64660691 100644
 --- a/libopendkim/tests/t-test84.c
 +++ b/libopendkim/tests/t-test84.c
 @@ -31,6 +31,11 @@
@@ -378,8 +340,6 @@ index 1f87e34c..64660691 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/tests/t-test88.c b/libopendkim/tests/t-test88.c
-index c10c968d..081b7b2a 100644
 --- a/libopendkim/tests/t-test88.c
 +++ b/libopendkim/tests/t-test88.c
 @@ -27,6 +27,11 @@
@@ -394,8 +354,6 @@ index c10c968d..081b7b2a 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/libopendkim/util.c b/libopendkim/util.c
-index 6792b169..d8f1cf31 100644
 --- a/libopendkim/util.c
 +++ b/libopendkim/util.c
 @@ -32,6 +32,11 @@
@@ -410,9 +368,6 @@ index 6792b169..d8f1cf31 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/linux_string/linux_string.h b/linux_string/linux_string.h
-new file mode 100644
-index 00000000..268ec4c5
 --- /dev/null
 +++ b/linux_string/linux_string.h
 @@ -0,0 +1,7 @@
@@ -423,9 +378,6 @@ index 00000000..268ec4c5
 +size_t strlcat(char *dst, const char *src, size_t dsize);
 +size_t strlcpy(char *dst, const char *src, size_t dsize);
 +#endif
-diff --git a/linux_string/strlcat.c b/linux_string/strlcat.c
-new file mode 100644
-index 00000000..4ca0e970
 --- /dev/null
 +++ b/linux_string/strlcat.c
 @@ -0,0 +1,56 @@
@@ -485,9 +437,6 @@ index 00000000..4ca0e970
 +
 +	return(dlen + (src - osrc));	/* count does not include NUL */
 +}
-diff --git a/linux_string/strlcpy.c b/linux_string/strlcpy.c
-new file mode 100644
-index 00000000..399b2859
 --- /dev/null
 +++ b/linux_string/strlcpy.c
 @@ -0,0 +1,51 @@
@@ -542,8 +491,6 @@ index 00000000..399b2859
 +
 +	return(src - osrc - 1);	/* count does not include NUL */
 +}
-diff --git a/miltertest/miltertest.c b/miltertest/miltertest.c
-index 04e50c04..dbe121db 100644
 --- a/miltertest/miltertest.c
 +++ b/miltertest/miltertest.c
 @@ -42,6 +42,11 @@
@@ -558,11 +505,9 @@ index 04e50c04..dbe121db 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/Makefile.am b/opendkim/Makefile.am
-index 4aa615c1..dc8c3879 100644
 --- a/opendkim/Makefile.am
 +++ b/opendkim/Makefile.am
-@@ -23,6 +23,9 @@ dist_doc_DATA = opendkim.conf.sample opendkim.conf.simple \
+@@ -23,6 +23,9 @@ dist_doc_DATA = opendkim.conf.sample ope
  if BUILD_FILTER
  sbin_PROGRAMS += opendkim
  opendkim_SOURCES = opendkim.c opendkim.h opendkim-ar.c opendkim-ar.h opendkim-arf.c opendkim-arf.h opendkim-config.h opendkim-crypto.c opendkim-crypto.h opendkim-db.c opendkim-db.h opendkim-dns.c opendkim-dns.h opendkim-lua.c opendkim-lua.h config.c config.h flowrate.c flowrate.h reputation.c reputation.h stats.c stats.h test.c test.h util.c util.h
@@ -582,7 +527,7 @@ index 4aa615c1..dc8c3879 100644
  opendkim_testkey_CPPFLAGS = -I$(srcdir)/../libopendkim $(LIBCRYPTO_CPPFLAGS)
  opendkim_testkey_CFLAGS = $(LIBCRYPTO_CFLAGS) $(COV_CFLAGS) $(PTHREAD_CFLAGS)
  opendkim_testkey_LDFLAGS = $(LIBCRYPTO_LIBDIRS) $(COV_LDFLAGS) $(PTHREAD_CFLAGS)
-@@ -172,6 +178,9 @@ opendkim_testmsg_LDADD = ../libopendkim/libopendkim.la $(LIBCRYPTO_LIBS) $(LIBRE
+@@ -172,6 +178,9 @@ opendkim_testmsg_LDADD = ../libopendkim/
  
  opendkim_genzone_CC = $(PTHREAD_CC)
  opendkim_genzone_SOURCES = config.c config.h opendkim-db.c opendkim-db.h opendkim-genzone.c opendkim-lua.c util.c util.h
@@ -602,8 +547,6 @@ index 4aa615c1..dc8c3879 100644
  opendkim_atpszone_CPPFLAGS = -I$(srcdir)/../libopendkim $(LIBCRYPTO_CPPFLAGS)
  opendkim_atpszone_CFLAGS = $(COV_CFLAGS) $(LIBCRYPTO_CFLAGS) $(PTHREAD_CFLAGS)
  opendkim_atpszone_LDFLAGS = $(COV_LDFLAGS) $(LIBCRYPTO_LIBDIRS) $(PTHREAD_CFLAGS)
-diff --git a/opendkim/config.c b/opendkim/config.c
-index 566aafd6..0ee12aed 100644
 --- a/opendkim/config.c
 +++ b/opendkim/config.c
 @@ -27,6 +27,11 @@
@@ -618,8 +561,6 @@ index 566aafd6..0ee12aed 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/flowrate.c b/opendkim/flowrate.c
-index 03541d03..7434daef 100644
 --- a/opendkim/flowrate.c
 +++ b/opendkim/flowrate.c
 @@ -21,6 +21,11 @@
@@ -634,8 +575,6 @@ index 03541d03..7434daef 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/opendkim-ar.c b/opendkim/opendkim-ar.c
-index eb9d96ab..e06a01f2 100644
 --- a/opendkim/opendkim-ar.c
 +++ b/opendkim/opendkim-ar.c
 @@ -26,6 +26,11 @@
@@ -650,8 +589,6 @@ index eb9d96ab..e06a01f2 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/opendkim-db.c b/opendkim/opendkim-db.c
-index af0c13c9..e8d1dcae 100644
 --- a/opendkim/opendkim-db.c
 +++ b/opendkim/opendkim-db.c
 @@ -41,6 +41,11 @@
@@ -666,8 +603,6 @@ index af0c13c9..e8d1dcae 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/opendkim-spam.c b/opendkim/opendkim-spam.c
-index a15d26bd..0afb67c9 100644
 --- a/opendkim/opendkim-spam.c
 +++ b/opendkim/opendkim-spam.c
 @@ -30,6 +30,11 @@
@@ -682,8 +617,6 @@ index a15d26bd..0afb67c9 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/opendkim-testkey.c b/opendkim/opendkim-testkey.c
-index fc1df4af..abf8867f 100644
 --- a/opendkim/opendkim-testkey.c
 +++ b/opendkim/opendkim-testkey.c
 @@ -41,6 +41,11 @@
@@ -698,8 +631,6 @@ index fc1df4af..abf8867f 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/opendkim.c b/opendkim/opendkim.c
-index 3df4d66c..f9b8844b 100644
 --- a/opendkim/opendkim.c
 +++ b/opendkim/opendkim.c
 @@ -97,6 +97,11 @@
@@ -714,8 +645,6 @@ index 3df4d66c..f9b8844b 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/reputation.c b/opendkim/reputation.c
-index 523b271e..69e17125 100644
 --- a/opendkim/reputation.c
 +++ b/opendkim/reputation.c
 @@ -26,6 +26,11 @@
@@ -730,8 +659,6 @@ index 523b271e..69e17125 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/stats.c b/opendkim/stats.c
-index 3f95aaac..7c1ed1af 100644
 --- a/opendkim/stats.c
 +++ b/opendkim/stats.c
 @@ -45,6 +45,11 @@
@@ -746,8 +673,6 @@ index 3f95aaac..7c1ed1af 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/test.c b/opendkim/test.c
-index 06d00adf..5b4f0f1d 100644
 --- a/opendkim/test.c
 +++ b/opendkim/test.c
 @@ -26,6 +26,11 @@
@@ -762,8 +687,6 @@ index 06d00adf..5b4f0f1d 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/opendkim/util.c b/opendkim/util.c
-index ce14f465..c29995f7 100644
 --- a/opendkim/util.c
 +++ b/opendkim/util.c
 @@ -51,6 +51,11 @@
@@ -778,8 +701,6 @@ index ce14f465..c29995f7 100644
  /* libstrl if needed */
  #ifdef USE_STRL_H
  # include <strl.h>
-diff --git a/stats/opendkim-importstats.c b/stats/opendkim-importstats.c
-index 7c63294d..104655e2 100644
 --- a/stats/opendkim-importstats.c
 +++ b/stats/opendkim-importstats.c
 @@ -28,6 +28,11 @@
@@ -796,7 +717,7 @@ index 7c63294d..104655e2 100644
  # include <strl.h>
 --- a/configure.ac
 +++ b/configure.ac
-@@ -39,7 +39,7 @@
+@@ -39,7 +39,7 @@ AM_INIT_AUTOMAKE(
    dnl Automake version before 1.13 (when the serial-tests option was
    dnl still the default) still defined the badly obsolete macro
    dnl 'AM_PROG_INSTALL'.
@@ -805,7 +726,7 @@ index 7c63294d..104655e2 100644
  )
  AC_CONFIG_HEADERS([build-config.h])
  
-@@ -189,11 +189,22 @@
+@@ -189,11 +189,22 @@ AC_TYPE_UINT64_T
  # Checks for library functions.
  #
  AC_FUNC_FORK
@@ -829,7 +750,7 @@ index 7c63294d..104655e2 100644
  AC_CHECK_FUNCS([dup2 endpwent getcwd gethostname gethostbyname getaddrinfo gethostbyname2 gettimeofday isascii memchr memmove memset regcomp select socket strcasecmp strchr strdup strerror strncasecmp strrchr strstr strtol strtoul strtoull realpath strsep])
  
  bsdstrl_h_found="no"
-@@ -227,7 +238,7 @@
+@@ -227,7 +238,7 @@ fi
  # we need something above to have worked
  if test x"$strl_found" != x"yes" -a x"$libstrl_found" != x"yes"
  then
