@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lmdb
-PKG_VERSION:=0.9.24
-PKG_RELEASE:=3
+PKG_VERSION:=0.9.28
+PKG_RELEASE:=1
 
 PKG_SOURCE:=LMDB_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/LMDB/lmdb/tar.gz/LMDB_$(PKG_VERSION)?
-PKG_HASH:=44602436c52c29d4f301f55f6fd8115f945469b868348e3cddaf91ab2473ea26
+PKG_HASH:=47457d3d3ae2c489b52078a07e9f55ec6e094b48c2204029c7754e2972fe1882
 PKG_BUILD_DIR:=$(BUILD_DIR)/lmdb-LMDB_$(PKG_VERSION)
 
 PKG_MAINTAINER:=Jan Pavlinec <jan.pavlinec@nic.cz>
@@ -80,12 +80,12 @@ endef
 
 define Package/lmdb/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/local/lib/*.so $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so $(1)/opt/lib
 endef
 
 define Package/lmdb-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/local/bin/mdb_{stat,copy,dump,load} $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mdb_{stat,copy,dump,load} $(1)/opt/bin
 endef
 
 define Package/lmdb-test/install
