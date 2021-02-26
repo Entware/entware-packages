@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=glib2
-PKG_VERSION:=2.66.1
+PKG_VERSION:=2.66.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=glib-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNOME/glib/2.66
-PKG_HASH:=a269ffe69fbcc3a21ff1acb1b6146b2a5723499d6e2de33ae16ccb6d2438ef60
+PKG_HASH:=97df8670e32f9fd4f7392b0980e661dd625012015d58350da1e58e343f4af984
 
 PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 PKG_LICENSE:=LGPL-2.1-or-later
@@ -46,7 +46,7 @@ endef
 
 HOST_LDFLAGS += -liconv -Wl,-rpath,$(STAGING_DIR_HOSTPKG)/lib
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
-TARGET_LDFLAGS += -Wl,--gc-sections -liconv $(if $(INTL_FULL),-lintl)
+TARGET_LDFLAGS += -Wl,--gc-sections $(if $(INTL_FULL),-lintl)
 
 COMP_ARGS= \
 	-Ddefault_library=both \
