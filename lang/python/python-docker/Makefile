@@ -1,11 +1,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-docker
-PKG_VERSION:=4.3.1
+PKG_VERSION:=4.4.3
 PKG_RELEASE:=1
 
 PYPI_NAME:=docker
-PKG_HASH:=bad94b8dd001a8a4af19ce4becc17f41b09f228173ffe6a4e0355389eef142f2
+PKG_HASH:=de5753b7f6486dd541a98393e423e387579b8974a5068748b83f852cc76a89d6
 
 PKG_MAINTAINER:=Javier Marcet <javier@marcet.info>
 PKG_LICENSE:=Apache-2.0
