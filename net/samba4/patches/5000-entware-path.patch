@@ -11,7 +11,7 @@
  			ccache_name = talloc_asprintf(ccc, "MEMORY:%p", 
 --- a/lib/util/util.c
 +++ b/lib/util/util.c
-@@ -209,7 +209,7 @@ _PUBLIC_ const char *tmpdir(void)
+@@ -214,7 +214,7 @@ _PUBLIC_ const char *tmpdir(void)
  	char *p;
  	if ((p = getenv("TMPDIR")))
  		return p;
@@ -27,29 +27,13 @@
  
  	/* Fallback to a FILE ccache */
 -	snprintf(gen_cc, sizeof(gen_cc), "FILE:/tmp/krb5cc_%u", uid);
-+	snprintf(gen_cc, sizeof(gen_cc), "/opt/tmp/krb5cc_%d", uid);
++	snprintf(gen_cc, sizeof(gen_cc), "FILE:/opt/tmp/krb5cc_%d", uid);
  
  create_env:
  	/*
---- a/source3/rpc_server/srv_pipe.c
-+++ b/source3/rpc_server/srv_pipe.c
-@@ -75,11 +75,11 @@ static void dump_pdu_region(const char *
- 	for (i = 1; i < 100; i++) {
- 		if (v != -1) {
- 			fname = talloc_asprintf(talloc_tos(),
--						"/tmp/%s_%d.%d.prs",
-+						"/opt/tmp/%s_%d.%d.prs",
- 						name, v, i);
- 		} else {
- 			fname = talloc_asprintf(talloc_tos(),
--						"/tmp/%s_%d.prs",
-+						"/opt/tmp/%s_%d.prs",
- 						name, i);
- 		}
- 		if (!fname) {
 --- a/source3/smbd/process.c
 +++ b/source3/smbd/process.c
-@@ -1419,7 +1419,7 @@ static void smb_dump(const char *name, i
+@@ -1418,7 +1418,7 @@ static void smb_dump(const char *name, i
  	len = smb_len_tcp(data)+4;
  	for (i=1;i<100;i++) {
  		fname = talloc_asprintf(talloc_tos(),
@@ -60,7 +44,7 @@
  				type ? "req" : "resp");
 --- a/source3/winbindd/winbindd_pam.c
 +++ b/source3/winbindd/winbindd_pam.c
-@@ -572,11 +572,11 @@ static const char *generate_krb5_ccache(
+@@ -571,11 +571,11 @@ static const char *generate_krb5_ccache(
  	if (uid != -1) {
  		if (strequal(type, "FILE")) {
  			gen_cc = talloc_asprintf(
