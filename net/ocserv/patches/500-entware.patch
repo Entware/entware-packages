@@ -1,8 +1,8 @@
 --- a/src/config.c
 +++ b/src/config.c
-@@ -56,8 +56,8 @@
- 
+@@ -59,8 +59,8 @@
  #include <getopt.h>
+ #include <snapshot.h>
  
 -#define OLD_DEFAULT_CFG_FILE "/etc/ocserv.conf"
 -#define DEFAULT_CFG_FILE "/etc/ocserv/ocserv.conf"
