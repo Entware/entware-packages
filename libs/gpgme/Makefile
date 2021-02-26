@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpgme
-PKG_VERSION:=1.15.0
+PKG_VERSION:=1.15.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://gnupg.org/ftp/gcrypt/$(PKG_NAME)
-PKG_HASH:=0b472bc12c7d455906c8a539ec56da0a6480ef1c3a87aa5b74d7125df68d0e5b
+PKG_HASH:=eebc3c1b27f1c8979896ff361ba9bb4778b508b2496c2fc10e3775a40b1de1ad
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -83,6 +83,15 @@ define Build/InstallDev
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/cmake/Gpgmepp/*.cmake \
 		$(1)/opt/lib/cmake/Gpgmepp
+
+	$(INSTALL_DIR) $(2)/bin $(1)/opt/bin
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/opt/bin/gpgme-config \
+		$(2)/bin/
+	$(SED) \
+		's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' \
+		$(2)/bin/gpgme-config
+	$(LN) -sf $(STAGING_DIR)/host/bin/gpgme-config $(1)/opt/bin/gpgme-config
 endef
 
 define Package/libgpgme/install
