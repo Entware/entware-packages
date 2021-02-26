@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=kmod
 PKG_VERSION:=27
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/kernel/kmod
@@ -67,7 +67,7 @@ define Package/kmod/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/kmod $(1)/opt/sbin
 
 	for b in $(LEGACY_BINARIES); do \
-		ln -sf kmod $(1)/opt/sbin/$$$$b ; \
+		$(LN) kmod $(1)/opt/sbin/$$$$b ; \
 	done
 endef
 
@@ -94,6 +94,8 @@ define Build/InstallDev
 
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libkmod.pc $(1)/opt/lib/pkgconfig/
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libkmod.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libkmod.pc
 endef
 
 
