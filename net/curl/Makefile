@@ -8,21 +8,22 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=curl
-PKG_VERSION:=7.72.0
-PKG_RELEASE:=2
+PKG_VERSION:=7.75.0
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://dl.uxnr.de/mirror/curl/ \
 	https://curl.mirror.anstey.ca/ \
 	https://curl.askapache.com/download/ \
 	https://curl.haxx.se/download/
-PKG_HASH:=0ded0808c4d85f2ee0db86980ae610cc9d165e9ca9da466196cc73c346513713
+PKG_HASH:=fe0c49d8468249000bda75bcfdf9e30ff7e9a86d35f1a21f428d79c389d55675
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:haxx:libcurl
 
 PKG_FIXUP:=autoreconf
+PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 PKG_CONFIG_DEPENDS:= \
@@ -159,20 +160,13 @@ CONFIGURE_ARGS += \
 	$(call autoconf_bool,CONFIG_LIBCURL_UNIX_SOCKETS,unix-sockets) \
 	$(call autoconf_bool,CONFIG_LIBCURL_VERBOSE,verbose) \
 
-define Build/Compile
-	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
-		DESTDIR="$(PKG_INSTALL_DIR)" \
-		CC="$(TARGET_CC)" \
-		install
-endef
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(2)/bin $(1)/opt/bin $(1)/opt/include $(1)/opt/lib $(1)/opt/lib/pkgconfig
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/curl-config $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/curl $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcurl.{a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_BUILD_DIR)/libcurl.pc $(1)/opt/lib/pkgconfig/
-	$(SED) 's,-L$$$${exec_prefix}/lib,,g' $(1)/opt/bin/curl-config
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/curl-config
 	[ -n "$(TARGET_LDFLAGS)" ] && $(SED) 's#$(TARGET_LDFLAGS)##g' $(1)/opt/lib/pkgconfig/libcurl.pc || true
 	$(LN) $(STAGING_DIR)/opt/bin/curl-config $(2)/bin/
 endef
@@ -187,5 +181,5 @@ define Package/libcurl/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcurl.so.* $(1)/opt/lib/
 endef
 
-$(eval $(call BuildPackage,curl))
 $(eval $(call BuildPackage,libcurl))
+$(eval $(call BuildPackage,curl))
