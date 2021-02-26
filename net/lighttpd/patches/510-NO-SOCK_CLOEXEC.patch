@@ -1,7 +1,7 @@
 This patch is only needed for old kernels that do not have SOCK_CLOEXEC flag - used in tomato and keenetic
 --- a/src/fdevent.c
 +++ b/src/fdevent.c
-@@ -17,12 +17,22 @@
+@@ -15,12 +15,22 @@
  #include <fcntl.h>
  #include <time.h>
  
@@ -22,5 +22,5 @@ This patch is only needed for old kernels that do not have SOCK_CLOEXEC flag - u
 +#undef SOCK_NONBLOCK
 +#endif /* SOCK_CLOEXEC & SOCK_NONBLOCK since Linux 2.6.27 */
  
- int fdevent_config(server *srv) {
+ int fdevent_config(const char **event_handler_name, log_error_st *errh) {
  	static const struct ev_map { fdevent_handler_t et; const char *name; } event_handlers[] =
