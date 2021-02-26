@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=taglib
 PKG_VERSION:=1.12-beta-1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/taglib/taglib/tar.gz/v$(PKG_VERSION)?
@@ -52,6 +52,8 @@ define Build/InstallDev
 	$(SED) '/^prefix=\|^exec_prefix=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/taglib-config
 	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/taglib.pc
 	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/taglib.pc
+	$(INSTALL_DIR) $(2)/bin
+	$(LN) ../../opt/bin/taglib-config $(2)/bin/taglib-config
 endef
 
 $(eval $(call BuildPackage,taglib))
