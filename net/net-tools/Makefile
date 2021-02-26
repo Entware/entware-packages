@@ -50,7 +50,7 @@ define Package/net-tools
 #  ALTERNATIVES:=300:/sbin/route:/usr/libexec/net-tools-route
 endef
 
-define Package/net-tools-route/description
+define Package/net-tools/description
 	Linux base networking tools.
 endef
 
