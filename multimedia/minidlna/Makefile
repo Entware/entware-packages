@@ -9,13 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=minidlna
-PKG_RELEASE:=8
+PKG_VERSION:=1.3.0
+PKG_RELEASE:=1
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://git.code.sf.net/p/minidlna/git
-PKG_SOURCE_DATE:=2019-12-09
-PKG_SOURCE_VERSION:=0763719f2776f91114bc5564919896f28e078c77
-PKG_MIRROR_HASH:=93030a80eff44c0ec13f54daf3b2ba345b70ef8645e0343a34092f37d6f9e8dd
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=@SF/minidlna
+PKG_HASH:=47d9b06b4c48801a4c1112ec23d24782728b5495e95ec2195bbe5c81bc2d3c63
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later BSD-3-Clause
@@ -24,7 +23,6 @@ PKG_LICENSE_FILES:=COPYING LICENCE.miniupnpd
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=util-linux
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -35,9 +33,8 @@ define Package/minidlna
   TITLE:=UPnP A/V & DLNA Media Server
   URL:=http://minidlna.sourceforge.net/
   DEPENDS:= +libpthread +libexif +libjpeg +libsqlite3 +libffmpeg \
-  	+libid3tag +libflac +libvorbis +libuuid \
-	+libffmpegthumbnailer +libopusfile \
-  	$(ICONV_DEPENDS) $(INTL_DEPENDS)
+  	+libid3tag +libflac +libvorbis $(ICONV_DEPENDS) $(INTL_DEPENDS) \
+	+libffmpegthumbnailer +libopusfile
   USERID:=minidlna:minidlna
 endef
 
@@ -54,7 +51,6 @@ TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/opt/include \
 	-I$(STAGING_DIR)/opt/include/FLAC \
 	-I$(STAGING_DIR)/opt/include/libexif \
-	-I$(STAGING_DIR)/opt/include/uuid \
 	-I$(STAGING_DIR)/opt/include/vorbis \
 	-I$(ICONV_PREFIX)/include \
 	-I$(INTL_PREFIX)/include \
@@ -79,8 +75,6 @@ CONFIGURE_ARGS += \
 	--with-db-path="/opt/var/minidlna" \
 	--with-log-path="/opt/var/log" \
 	--enable-thumbnail
-
-TARGET_CFLAGS += -DHAVE_CLOCK_GETTIME
 
 define Package/minidlna/install
 	$(INSTALL_DIR) $(1)/opt/sbin

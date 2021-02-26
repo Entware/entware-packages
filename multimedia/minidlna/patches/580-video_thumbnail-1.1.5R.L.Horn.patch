@@ -82,7 +82,7 @@
  		if( !ret )
 --- a/configure.ac
 +++ b/configure.ac
-@@ -632,7 +632,22 @@ AC_ARG_ENABLE(static,
+@@ -643,7 +643,22 @@ AC_ARG_ENABLE(lto,
          ]
  )
  
@@ -108,17 +108,17 @@
  		;;
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -62,6 +62,7 @@ minidlnad_LDADD = \
+@@ -61,6 +61,7 @@ minidlnad_LDADD = \
  	@LIBINTL@ \
  	@LIBICONV@ \
  	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
 +	@LIBFFMPEGTHUMBNAILER_LIBS@ \
  	@opus_LIBS@
  
- minidlnad_LDFLAGS = @STATIC_LDFLAGS@
+ testupnpdescgen_SOURCES = testupnpdescgen.c upnpdescgen.c
 --- a/minidlna.c
 +++ b/minidlna.c
-@@ -709,6 +709,11 @@ init(int argc, char **argv)
+@@ -712,6 +712,11 @@ init(int argc, char **argv)
  	runtime_vars.max_connections = 50;
  	runtime_vars.root_container = NULL;
  	runtime_vars.ifaces[0] = NULL;
@@ -130,7 +130,7 @@
  
  	/* read options file first since
  	 * command line arguments have final say */
-@@ -925,6 +930,30 @@ init(int argc, char **argv)
+@@ -928,6 +933,30 @@ init(int argc, char **argv)
  			if (strtobool(ary_options[i].value))
  				SETFLAG(WIDE_LINKS_MASK);
  			break;

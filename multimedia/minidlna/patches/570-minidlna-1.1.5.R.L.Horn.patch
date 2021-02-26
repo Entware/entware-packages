@@ -103,8 +103,8 @@
  # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  # USA.
  
--AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@
-+AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@ \
+-AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
++AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 \
 +	    @libpng_CFLAGS@ @opus_CFLAGS@
  
  SUBDIRS=
@@ -116,7 +116,7 @@
  			upnpreplyparse.c minixml.c clients.c \
  			getifaddr.c process.c upnpglobalvars.c \
  			options.c minissdp.c uuid.c upnpevents.c \
-@@ -52,6 +53,7 @@ endif
+@@ -52,13 +53,15 @@ endif
  
  minidlnad_LDADD = \
  	@LIBJPEG_LIBS@ \
@@ -124,7 +124,6 @@
  	@LIBID3TAG_LIBS@ \
  	@LIBSQLITE3_LIBS@ \
  	@LIBAVFORMAT_LIBS@ \
-@@ -59,7 +61,8 @@ minidlnad_LDADD = \
  	@LIBEXIF_LIBS@ \
  	@LIBINTL@ \
  	@LIBICONV@ \
@@ -132,8 +131,8 @@
 +	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
 +	@opus_LIBS@
  
- minidlnad_LDFLAGS = @STATIC_LDFLAGS@
- 
+ testupnpdescgen_SOURCES = testupnpdescgen.c upnpdescgen.c
+ testupnpdescgen_LDADD = \
 --- a/albumart.c
 +++ b/albumart.c
 @@ -39,19 +39,30 @@
@@ -275,7 +274,7 @@
  LDFLAGS_SAVE="$LDFLAGS"
  for dir in "" /usr/local $SEARCH_DIR; do
      if test -n "$dir"; then
-@@ -486,6 +491,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
+@@ -483,6 +488,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
           AM_CONDITIONAL(HAVE_AVAHI, false),
          -lavahi-client -lavahi-common)
  
@@ -1294,7 +1293,7 @@
  
  #if SQLITE_VERSION_NUMBER < 3005001
  # warning "Your SQLite3 library appears to be too old!  Please use 3.5.1 or newer."
-@@ -300,6 +302,127 @@ getfriendlyname(char *buf, int len)
+@@ -304,6 +306,127 @@ getfriendlyname(char *buf, int len)
  #endif
  }
  
@@ -1422,7 +1421,7 @@
  static time_t
  _get_dbtime(void)
  {
-@@ -810,6 +933,34 @@ init(int argc, char **argv)
+@@ -813,6 +936,34 @@ init(int argc, char **argv)
  			if (!strtobool(ary_options[i].value))
  				CLEARFLAG(SUBTITLES_MASK);
  			break;
@@ -2017,7 +2016,7 @@
  enum event_type {
  	E_INVALID,
  	E_SUBSCRIBE,
-@@ -1393,29 +1393,29 @@ SendResp_icon(struct upnphttp * h, char
+@@ -1410,29 +1410,29 @@ SendResp_icon(struct upnphttp * h, char
  	if( strcmp(icon, "sm.png") == 0 )
  	{
  		DPRINTF(E_DEBUG, L_HTTP, "Sending small PNG icon\n");
@@ -2055,7 +2054,7 @@
  		strcpy(mime+6, "jpeg");
  	}
  	else
-@@ -1632,8 +1632,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1649,8 +1649,10 @@ SendResp_resizedimg(struct upnphttp * h,
  	int scale = 1;
  	const char *tmode;
  
@@ -2067,20 +2066,22 @@
  	ret = sql_get_table(db, buf, &result, &rows, NULL);
  	if( ret != SQLITE_OK )
  	{
-@@ -1642,9 +1644,9 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1659,10 +1661,10 @@ SendResp_resizedimg(struct upnphttp * h,
  	}
  	if( rows )
  	{
 -		file_path = result[3];
 -		resolution = result[4];
--		rotate = result[5] ? atoi(result[5]) : 0;
+-                if (result[5])
+-			rotate = atoi(result[5]);
 +		file_path = result[4];
 +		resolution = result[5];
-+		rotate = result[6] ? atoi(result[6]) : 0;
++                if (result[6])
++			rotate = atoi(result[6]);
  	}
  	if( !file_path || !resolution || (access(file_path, F_OK) != 0) )
  	{
-@@ -1654,6 +1656,20 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1672,6 +1674,20 @@ SendResp_resizedimg(struct upnphttp * h,
  		return;
  	}
  
@@ -2101,7 +2102,7 @@
  	if( saveptr )
  		saveptr = strchr(saveptr, '?');
  	path = saveptr ? saveptr + 1 : object;
-@@ -1777,7 +1793,12 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1795,7 +1811,12 @@ SendResp_resizedimg(struct upnphttp * h,
  	if( strcmp(h->HttpVer, "HTTP/1.0") == 0 )
  	{
  		chunked = 0;
@@ -2115,7 +2116,7 @@
  	}
  	else
  	{
-@@ -1795,6 +1816,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1813,6 +1834,10 @@ SendResp_resizedimg(struct upnphttp * h,
  		}
  
  		imdst = image_resize(imsrc, dstw, dsth);
@@ -2126,7 +2127,7 @@
  		data = image_save_to_jpeg_buf(imdst, &size);
  
  		strcatf(&str, "Content-Length: %d\r\n\r\n", size);
-@@ -1804,7 +1829,12 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1822,7 +1847,12 @@ SendResp_resizedimg(struct upnphttp * h,
  	{
  		if( chunked )
  		{
@@ -2140,7 +2141,7 @@
  			if( !imsrc )
  			{
  				DPRINTF(E_WARN, L_HTTP, "Unable to open image %s!\n", file_path);
-@@ -1812,6 +1842,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1830,6 +1860,10 @@ SendResp_resizedimg(struct upnphttp * h,
  				goto resized_error;
  			}
  			imdst = image_resize(imsrc, dstw, dsth);
