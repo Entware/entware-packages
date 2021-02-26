@@ -1,0 +1,11 @@
+--- a/glib/gstrfuncs.c
++++ b/glib/gstrfuncs.c
+@@ -322,7 +322,7 @@
+     defined (HAVE_STRTOD_L) && \
+     defined (HAVE_STRTOULL_L) && \
+     defined (HAVE_STRTOLL_L)
+-#define USE_XLOCALE 1
++#undef USE_XLOCALE
+ #endif
+ 
+ #ifdef USE_XLOCALE
