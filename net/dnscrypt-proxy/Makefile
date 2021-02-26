@@ -4,13 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: more plugins added
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnscrypt-proxy
 PKG_SOURCE_DATE:=2019-08-20
 PKG_SOURCE_VERSION:=07ac3825b5069adc28e2547c16b1d983a8ed8d80
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/dyne/dnscrypt-proxy
