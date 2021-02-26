@@ -1,0 +1,11 @@
+--- a/configure
++++ b/configure
+@@ -43,7 +43,7 @@ OPTIONS=(
+   "tvhcsa:auto"
+   "bundle:no"
+   "dvbcsa:no"
+-  "dvben50221:auto"
++  "dvben50221:no"
+   "kqueue:no"
+   "dbus_1:auto"
+   "android:no"
