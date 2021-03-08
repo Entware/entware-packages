@@ -60,7 +60,7 @@ $(call Package/gost_engine/Default/description)
 This package contains the GOST engine command-line utilities gostsum and gost12sum.
 endef
 
-CMAKE_OPTIONS += -DOPENSSL_ENGINES_DIR=/usr/lib/$(ENGINES_DIR)
+CMAKE_OPTIONS += -DOPENSSL_ENGINES_DIR=/opt/lib/$(ENGINES_DIR)
 
 define Package/libopenssl-gost_engine/install
 	$(INSTALL_DIR) $(1)/opt/lib/$(ENGINES_DIR)
