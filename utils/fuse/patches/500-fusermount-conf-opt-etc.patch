@@ -1,5 +1,5 @@
---- a/util/fusermount.c	2021-02-20 19:40:28.469256093 +0000
-+++ b/util/fusermount.c	2021-02-20 19:40:41.499255476 +0000
+--- a/util/fusermount.c
++++ b/util/fusermount.c
 @@ -37,7 +37,7 @@
  #define FUSE_DEV_OLD "/proc/fs/fuse/dev"
  #define FUSE_DEV_NEW "/dev/fuse"
