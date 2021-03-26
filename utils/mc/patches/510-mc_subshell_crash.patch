@@ -1,0 +1,22 @@
+--- a/lib/strutil/strutilutf8.c	(revision b6de6e8f2dd170fc104461e1bdefc5a8c6f43958)
++++ b/lib/strutil/strutilutf8.c	(date 1614298486046)
+@@ -448,6 +448,7 @@
+     result.width = 0;
+     result.compose = FALSE;
+     actual = result.text;
++    if (!text) length=0;
+ 
+     /* check if text start with combining character,
+      * add space at begin in this case */
+--- a/src/filemanager/layout.c
++++ b/src/filemanager/layout.c
+@@ -966,6 +966,9 @@
+     char *tmp_prompt = (char *) mc_prompt;
+ 
+ #ifdef ENABLE_SUBSHELL
++    if (!command_prompt || subshell_prompt == NULL)
++        return;
++
+     if (mc_global.tty.use_subshell)
+     {
+         tmp_prompt = g_string_free (subshell_prompt, FALSE);
