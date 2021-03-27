@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=htop
 PKG_VERSION:=3.0.5
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/htop-dev/htop/tar.gz/$(PKG_VERSION)?
@@ -46,7 +46,10 @@ CONFIGURE_ARGS += \
 	--disable-hwloc \
 	LIBS="-L$(STAGING_DIR)/opt/lib"
 
+# Entware specific `ac_cv_func_openat=no` it is needed for some devices (kernels ???)
+
 CONFIGURE_VARS += \
+	ac_cv_func_openat=no \
 	ac_cv_file__proc_stat=yes \
 	ac_cv_file__proc_meminfo=yes
 
