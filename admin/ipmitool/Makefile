@@ -34,9 +34,9 @@ define Package/ipmitool/Default/description
 endef
 
 define Package/ipmitool/install
-	$(INSTALL_DIR) $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ipmievd $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ipmitool $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ipmievd $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/ipmitool $(1)/opt/sbin/
 endef
 
 CONFIGURE_ARGS += \
