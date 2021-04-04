@@ -4,8 +4,8 @@ service tangd
     socket_type     = stream
     wait            = no
     user            = root
-    server          = /usr/libexec/tangdw
-    server_args     = /usr/share/tang/cache
+    server          = /opt/libexec/tangdw
+    server_args     = /opt/share/tang/cache
     log_on_success  += USERID
     log_on_failure  += USERID
     disable         = no
