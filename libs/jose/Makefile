@@ -51,23 +51,23 @@ define Package/libjose/description
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR)	$(1)/usr/lib
-	$(INSTALL_DIR)  $(1)/usr/include
-	$(INSTALL_DIR)	$(1)/usr/include/$(PKG_NAME)
-	$(INSTALL_DIR)	$(1)/usr/lib/pkgconfig
-	$(CP)	$(PKG_INSTALL_DIR)/usr/lib/lib$(PKG_NAME).so*	$(1)/usr/lib
-	$(CP)	$(PKG_INSTALL_DIR)/usr/include/$(PKG_NAME)/*.h	$(1)/usr/include/$(PKG_NAME)
-	$(CP)	$(PKG_BUILD_DIR)/*.pc				$(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR)	$(1)/opt/lib
+	$(INSTALL_DIR)  $(1)/opt/include
+	$(INSTALL_DIR)	$(1)/opt/include/$(PKG_NAME)
+	$(INSTALL_DIR)	$(1)/opt/lib/pkgconfig
+	$(CP)	$(PKG_INSTALL_DIR)/opt/lib/lib$(PKG_NAME).so*	$(1)/opt/lib
+	$(CP)	$(PKG_INSTALL_DIR)/opt/include/$(PKG_NAME)/*.h	$(1)/opt/include/$(PKG_NAME)
+	$(CP)	$(PKG_BUILD_DIR)/*.pc				$(1)/opt/lib/pkgconfig
 endef
 
 define Package/libjose/install
-	$(INSTALL_DIR)	$(1)/usr/lib
-	$(CP)		$(PKG_INSTALL_DIR)/usr/lib/lib$(PKG_NAME).so*	$(1)/usr/lib/
+	$(INSTALL_DIR)	$(1)/opt/lib
+	$(CP)		$(PKG_INSTALL_DIR)/opt/lib/lib$(PKG_NAME).so*	$(1)/opt/lib/
 endef
 
 define Package/jose/install
-	$(INSTALL_DIR)  $(1)/usr/bin
-	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/usr/bin/$(PKG_NAME)          $(1)/usr/bin/
+	$(INSTALL_DIR)  $(1)/opt/bin
+	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/opt/bin/$(PKG_NAME)          $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,libjose))
