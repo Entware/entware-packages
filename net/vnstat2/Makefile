@@ -60,28 +60,25 @@ define Package/vnstati2/description
 endef
 
 define Package/vnstat2/conffiles
-/etc/vnstat.conf
-/etc/config/vnstat
+/opt/etc/vnstat.conf
 endef
 
 CONFIGURE_ARGS += --disable-extra-paths
 
 define Package/vnstat2/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/vnstat $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/vnstatd $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/cfg/vnstat.conf $(1)/etc/
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/vnstat.config $(1)/etc/config/vnstat
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/vnstat.init $(1)/etc/init.d/vnstat
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/vnstat $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/vnstatd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/cfg/vnstat.conf $(1)/opt/etc/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S32vnstat2 $(1)/opt/etc/init.d/
 endef
 
 define Package/vnstati2/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/vnstati $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/vnstati $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,vnstat2))

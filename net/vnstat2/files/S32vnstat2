@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ ! -f "/opt/var/lib/vnstat/*" ]; then
+    echo 'Point right interface(s) to monitor, like `vnstat -u -i ppp0`.'
+    echo 'Remove -i ppp0 to monitor all of them.'
+fi
+
+ENABLED=yes
+PROCS=vnstatd
+ARGS="-d"
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+. /opt/etc/init.d/rc.func

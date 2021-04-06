@@ -1,0 +1,37 @@
+--- a/src/cfg.c
++++ b/src/cfg.c
+@@ -400,10 +400,8 @@
+ 		/* try to open first available config file */
+ 		if (tryhome && (*fd = fopen(buffer, "r")) != NULL) {
+ 			strncpy_nt(cfg.cfgfile, buffer, 512);
+-		} else if ((*fd = fopen("/etc/vnstat.conf", "r")) != NULL) {
+-			snprintf(cfg.cfgfile, 512, "/etc/vnstat.conf");
+-		} else if ((*fd = fopen("/usr/local/etc/vnstat.conf", "r")) != NULL) {
+-			snprintf(cfg.cfgfile, 512, "/usr/local/etc/vnstat.conf");
++		} else if ((*fd = fopen("/opt/etc/vnstat.conf", "r")) != NULL) {
++			snprintf(cfg.cfgfile, 512, "/opt/etc/vnstat.conf");
+ 		} else {
+ 			if (debug)
+ 				printf("Config file: none\n");
+--- a/src/common.h
++++ b/src/common.h
+@@ -64,7 +64,7 @@
+ #if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__APPLE__)
+ #define DATABASEDIR "/var/db/vnstat"
+ #else
+-#define DATABASEDIR "/var/lib/vnstat"
++#define DATABASEDIR "/opt/var/lib/vnstat"
+ #endif
+ #endif
+ 
+@@ -229,8 +229,8 @@
+ #define USELOGGING 2
+ #define CREATEDIRS 1
+ #define UPDATEFILEOWNER 1
+-#define LOGFILE "/var/log/vnstat/vnstat.log"
+-#define PIDFILE "/var/run/vnstat/vnstat.pid"
++#define LOGFILE "/opt/var/log/vnstat.log"
++#define PIDFILE "/opt/var/run/vnstat.pid"
+ #define IS64BIT -2
+ #define WALDB 0
+ #define WALDBCHECKPOINTINTERVALMINS 240
