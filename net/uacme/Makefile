@@ -70,30 +70,14 @@ CONFIGURE_ARGS+= \
 	$(if $(CONFIG_LIBCURL_OPENSSL),--without-gnutls --without-mbedtls --with-openssl,) \
 	$(if $(CONFIG_LIBCURL_WOLFSSL),--without-gnutls --with-mbedtls --without-openssl,)
 
-define Package/uacme/conffiles
-/etc/config/acme
-/etc/acme
-endef
-
 define Package/uacme/install
 	$(INSTALL_DIR) \
-	 $(1)/usr/sbin \
-	 $(1)/etc/acme \
-	 $(1)/etc/config \
-	 $(1)/etc/init.d \
-	 $(1)/usr/share/uacme
+	 $(1)/opt/sbin \
+	 $(1)/opt/share/uacme
 
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/uacme $(1)/usr/sbin/uacme
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/share/uacme/uacme.sh $(1)/usr/share/uacme/
-	$(SED) '/^CHALLENGE_PATH=/d' $(1)/usr/share/uacme/uacme.sh
-	$(INSTALL_CONF) ./files/acme.config $(1)/etc/config/acme
-	$(INSTALL_BIN) ./files/run.sh $(1)/usr/share/uacme/run-uacme
-	$(INSTALL_BIN) ./files/acme.init $(1)/etc/init.d/acme
-endef
-
-define Package/uacme/prerm
-#!/bin/sh
-sed -i '/\/etc\/init\.d\/acme start/d' /etc/crontabs/root
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/uacme $(1)/opt/sbin/uacme
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/uacme/uacme.sh $(1)/opt/share/uacme/
+	$(SED) '/^CHALLENGE_PATH=/d' $(1)/opt/share/uacme/uacme.sh
 endef
 
 $(eval $(call BuildPackage,uacme))
