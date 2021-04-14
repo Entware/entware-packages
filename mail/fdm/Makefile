@@ -50,35 +50,16 @@ define Package/fdm/config
 endef
 
 define Package/fdm/conffiles
-/etc/fdm.conf
+/opt/etc/fdm.conf
 endef
 
 define Package/fdm/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) ./files/etc/* $(1)/etc/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) ./files/etc/* $(1)/opt/etc/
 	$(INSTALL_DIR) $(1)/opt/fdm
 	chmod a+rwx $(1)/opt/fdm
-endef
-
-define Package/fdm/postinst
-#!/bin/sh
-if [ -z "$${IPKG_INSTROOT}" ]; then
-	echo "Creating cron job template for user _fdm..."
-	(crontab -l -u _fdm 2>/dev/null; echo "# */13 * * * * fdm -q fetch") | crontab -u _fdm -
-	echo "Please, edit file /etc/fdm.conf and enable cron job!"
-fi
-exit 0
-endef
-
-define Package/fdm/prerm
-#!/bin/sh
-if [ -z "$${IPKG_INSTROOT}" ]; then
-	echo "Don't forget disable cron job!"
-	echo "# crontab -r -u _fdm"
-fi
-exit 0
 endef
 
 $(eval $(call BuildPackage,fdm))
