@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=aircrack-ng
 PKG_VERSION:=1.6
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:aircrack-ng:aircrack-ng
