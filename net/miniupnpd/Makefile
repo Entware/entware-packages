@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=miniupnpd
 PKG_VERSION:=2.2.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=https://miniupnp.tuxfamily.org/files
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -26,18 +26,34 @@ PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/version.mk
 
-define Package/miniupnpd
+define Package/miniupnpd/Default
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+iptables +libuuid +libcap-ng
+  DEPENDS:=+iptables +IPV6:iptables +libuuid +libcap-ng
   TITLE:=Lightweight UPnP IGD, NAT-PMP & PCP daemon
   SUBMENU:=Firewall
   URL:=https://miniupnp.tuxfamily.org/
 endef
 
+define Package/miniupnpd
+  $(call Package/miniupnpd/Default)
+  TITLE+= (IGDv2)
+  CONFLICTS:=miniupnpd-igdv1
+  VARIANT:=igdv2
+endef
+
+define Package/miniupnpd-igdv1
+  $(call Package/miniupnpd/Default)
+  TITLE+= (IGDv1)
+  PROVIDES:=miniupnpd
+  VARIANT:=igdv1
+endef
+
 #define Package/miniupnpd/conffiles
 #/etc/config/upnpd
 #endef
+
+Package/miniupnpd-igdv1/conffiles = $(Package/miniupnpd/conffiles)
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -46,11 +62,14 @@ endef
 
 CONFIGURE_ARGS = \
 	$(if $(CONFIG_IPV6),--ipv6) \
-	--igd2 \
 	--leasefile \
 	--portinuse \
 	--firewall=iptables \
 	--disable-fork
+
+ifeq ($(BUILD_VARIANT),igdv2)
+	CONFIGURE_ARGS += --igd2
+endif
 
 TARGET_CFLAGS += $(FPIC) -flto
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
@@ -71,4 +90,7 @@ define Package/miniupnpd/install
 #	$(INSTALL_DATA) ./files/firewall.include $(1)/usr/share/miniupnpd/firewall.include
 endef
 
+Package/miniupnpd-igdv1/install = $(Package/miniupnpd/install)
+
 $(eval $(call BuildPackage,miniupnpd))
+$(eval $(call BuildPackage,miniupnpd-igdv1))
