@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.29.2
+PKG_VERSION:=1.30.1
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
@@ -18,7 +18,7 @@ PKG_CPE_ID:=cpe:/a:my-netdata:netdata
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/netdata/netdata/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=def61f78b03b92ff95d0511681f125afb0338961b7e6a7d7ea91f7463dc7d11e
+PKG_HASH:=e05f8b59d283fb2844280455b9481a2f9104730fd77f535312ff2fec40a6bc11
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -46,10 +46,6 @@ endef
 TARGET_CFLAGS := $(filter-out -O%,$(TARGET_CFLAGS))
 TARGET_CFLAGS += -ffunction-sections -fdata-sections -O3
 TARGET_LDFLAGS += -Wl,--gc-sections
-
-# Entware specific: help Netdata find the correct headers
-# (... fatal error: uuid/uuid.h: No such file or directory ...)
-TARGET_CFLAGS += -I$(STAGING_DIR)/opt/include
 
 CONFIGURE_ARGS += \
 	--with-zlib \

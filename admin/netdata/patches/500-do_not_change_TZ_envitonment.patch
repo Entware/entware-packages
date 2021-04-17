@@ -1,6 +1,6 @@
 --- a/daemon/main.c
 +++ b/daemon/main.c
-@@ -730,8 +730,8 @@ void set_global_environment() {
+@@ -735,8 +735,8 @@ void set_global_environment() {
  
      // set the path we need
      char path[1024 + 1], *p = getenv("PATH");
