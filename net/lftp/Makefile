@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lftp
 PKG_VERSION:=4.9.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://lftp.tech/ftp/ \
@@ -55,8 +55,6 @@ CONFIGURE_ARGS += \
 	--with-zlib="$(STAGING_DIR)/opt" \
 	--with-expat="$(STAGING_DIR)/opt" \
 	--disable-static
-
-TARGET_CXXFLAGS += -std=c++11
 
 define Package/lftp/install
 	$(INSTALL_DIR) $(1)/opt/bin
