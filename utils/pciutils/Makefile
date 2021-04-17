@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pciutils
 PKG_VERSION:=3.7.0
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/utils/pciutils
@@ -81,13 +81,6 @@ define Package/libpci/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
 endef
-
-define Package/pciutils/postinst
-#!/bin/sh
- cd /opt/share; /opt/sbin/update-pciids; rm pci.ids.gz.old
- exit 0
-endef
-
 
 $(eval $(call BuildPackage,libpci))
 $(eval $(call BuildPackage,pciutils))
