@@ -20,6 +20,7 @@ PKG_MAINTAINER:=Adrian Panella <ianchi74@outlook.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
+PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
@@ -30,21 +31,22 @@ MAKE_FLAGS:=$(filter-out LD=%,$(MAKE_FLAGS)) LD="$(TARGET_CC) -o"
 # Instead of blacklisting a boatload of platforms just enable
 # optimization where it makes sense (matters) ie ARMv7+ and x86_64
 
+# Entware specific: uses yasm (Minimum version is nasm-2.13)
+
 ifneq ($(findstring cortex-a,$(CPU_TYPE)),)
   CONFIGURE_ARGS += --enable-lto
   else
-  ifneq ($(CONFIG_TARGET_x64_3_2)$(CONFIG_TARGET_x86_2_6),)
+  ifneq ($(CONFIG_TARGET_x86_64),)
     CONFIGURE_ARGS += --enable-lto
     ifeq ($(CONFIG_NASM),y)
       CONFIGURE_VARS+= AS=nasm
       MAKE_FLAGS+= AS=nasm
+    endif
     else
     CONFIGURE_VARS+= AS=
     MAKE_FLAGS+= AS=
     CONFIGURE_ARGS += --disable-asm
-    endif
   endif
-  CONFIGURE_ARGS += --disable-asm
 endif
 
 CONFIGURE_ARGS += \
