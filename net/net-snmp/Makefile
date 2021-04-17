@@ -4,13 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: openssl support enabled, more binaries added to snmp-utils
+# Entware specific: keep 5.8 version, kernels are too old; openssl support enabled, more binaries added to snmp-utils
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-snmp
 PKG_VERSION:=5.8
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
@@ -42,7 +42,7 @@ define Package/libnetsnmp
 $(call Package/net-snmp/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +USE_GLIBC:libnl +libpci
+  DEPENDS:=+libnl +libopenssl +libpci +libpcre
   TITLE:=Open source SNMP implementation (libraries)
 endef
 
@@ -202,13 +202,15 @@ CONFIGURE_ARGS += \
 	--without-mysql \
 	--without-rpm \
 	--without-zlib \
+	--with-nl \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6) \
 	--disable-perl-cc-checks \
 	--disable-embedded-perl \
 	--without-perl-modules
 
 CONFIGURE_VARS += \
-	ac_cv_header_pcre_h=no \
+	ac_cv_header_netlink_netlink_h=yes \
+	netsnmp_cv_func_nl_connect_LIBS=-lnl-3
 
 ifeq ($(CONFIG_IPV6),y)
 SNMP_TRANSPORTS_INCLUDED+= UDPIPv6
