@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: no seccomp
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ocserv
 PKG_VERSION:=1.1.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_USE_MIPS16:=0
 
 PKG_BUILD_DIR :=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
@@ -23,8 +24,7 @@ PKG_LICENSE_FILES:=COPYING
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_OCSERV_PAM \
-	CONFIG_OCSERV_SECCOMP \
-	CONFIG_OCSERV_PROTOBUF \
+	CONFIG_OCSERV_PROTOBUF
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -39,7 +39,7 @@ define Package/ocserv
   TITLE:=OpenConnect VPN server
   URL:=http://www.infradead.org/ocserv/
   MAINTAINER:=Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com>
-  DEPENDS:= +OCSERV_RADIUS:libradcli +OCSERV_HTTP_PARSER:libhttp-parser +OCSERV_SECCOMP:libseccomp +libgnutls +certtool +libncurses +libreadline +OCSERV_PAM:libpam +OCSERV_PROTOBUF:libprotobuf-c +libev
+  DEPENDS:= +OCSERV_RADIUS:libradcli +OCSERV_HTTP_PARSER:libhttp-parser +libgnutls +certtool +libncurses +libreadline +OCSERV_PAM:libpam +OCSERV_PROTOBUF:libprotobuf-c +libev
   USERID:=ocserv=72:ocserv=72
 endef
 
@@ -76,9 +76,9 @@ ifneq ($(CONFIG_OCSERV_RADIUS),y)
 CONFIGURE_ARGS += --without-radius
 endif
 
-ifneq ($(CONFIG_OCSERV_SECCOMP),y)
+#ifneq ($(CONFIG_OCSERV_SECCOMP),y)
 CONFIGURE_ARGS += --disable-seccomp
-endif
+#endif
 
 ifneq ($(CONFIG_OCSERV_PROTOBUF),y)
 CONFIGURE_ARGS += --without-protobuf

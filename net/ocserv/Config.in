@@ -7,9 +7,10 @@ config OCSERV_PAM
 	bool "enable PAM"
 	default n
 
-config OCSERV_SECCOMP
-	bool "enable seccomp"
-	default n
+#config OCSERV_SECCOMP
+#	bool "enable seccomp"
+#	depends on !arc
+#	default n
 
 config OCSERV_RADIUS
 	bool "enable radius authentication"
