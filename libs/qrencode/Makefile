@@ -19,11 +19,10 @@ PKG_MAINTAINER:=Jonathan Bennett <JBennett@incomsystems.biz>
 PKG_LICENSE:=LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_PARALLEL:=1
 PKG_CONFIG_DEPENDS:=CONFIG_PACKAGE_qrencode
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/cmake.mk
+include ../../devel/ninja/ninja-cmake.mk
 
 define Package/libqrencode
   SECTION:=libs
@@ -68,7 +67,7 @@ define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/qrencode.h $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libqrencode.so* $(1)/opt/lib/
-	$(CP) $(PKG_BUILD_DIR)/libqrencode.pc $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libqrencode.pc $(1)/opt/lib/pkgconfig/
 	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libqrencode.pc
 	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libqrencode.pc
 endef
