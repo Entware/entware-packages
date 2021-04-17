@@ -20,11 +20,10 @@ PKG_LICENSE:=LGPL-2.1-only
 PKG_LICENSE_FILES:=COPYING.LIB
 
 CMAKE_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/cmake.mk
+include ../../devel/ninja/ninja-cmake.mk
 
 define Package/libftdi1
   SECTION:=libs
@@ -67,7 +66,6 @@ CMAKE_OPTIONS += \
 
 define Build/InstallDev
 	$(call Build/InstallDev/cmake,$(1))
-	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/libftdi1-config
 #	$(SED) 's,/usr/bin,/usr,g' $(1)/usr/lib/pkgconfig/libftdi1.pc
 	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libftdi1.pc
 	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libftdi1.pc
