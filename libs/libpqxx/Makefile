@@ -1,20 +1,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libpqxx
-PKG_VERSION:=7.3.1
+PKG_VERSION:=7.4.1
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/jtv/libpqxx
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_MIRROR_HASH:=6d5b66f01285310a53815963d56f5137be2d05fe426b0e15d73cd8df92b84989
+PKG_MIRROR_HASH:=fa7528342ac9bd9c9aacc5888362860efeacf7e866699f38afdd178fa41c2e23
 
 CMAKE_INSTALL:=1
 
 PKG_MAINTAINER:=Igor Bezzubchenko <garikello@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/cmake.mk
+include ../../devel/ninja/ninja-cmake.mk
 
 define Package/libpqxx
 	SECTION:=libs
