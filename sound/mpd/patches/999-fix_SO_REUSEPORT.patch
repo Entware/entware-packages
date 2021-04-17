@@ -1,7 +1,7 @@
 --- a/src/net/SocketDescriptor.cxx
 +++ b/src/net/SocketDescriptor.cxx
-@@ -46,6 +46,17 @@
- #include <errno.h>
+@@ -47,6 +47,17 @@
+ 
  #include <string.h>
  
 +#ifndef LINUX_VERSION_CODE
