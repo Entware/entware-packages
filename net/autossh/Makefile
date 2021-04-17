@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autossh
 PKG_VERSION:=1.4g
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://www.harding.motd.ca/autossh/
@@ -30,7 +30,7 @@ endef
 define Build/Compile
 	$(call Build/Compile/Default, -f Makefile \
 		CFLAGS="$(TARGET_CFLAGS) -Wall -D\"SSH_PATH=\\\"\$$$$(SSH)\\\"\" -D\"VER=\\\"\$$$$(VER)\\\"\"" \
-		LIBS=" -lnsl $(TARGET_LDFLAGS)" \
+		LIBS="$(TARGET_LDFLAGS) $(if $(CONFIG_GLIBC_USE_VERSION_2_33),,-lnsl)" \
 		all \
 	)
 endef
