@@ -8,27 +8,25 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dbus
-PKG_VERSION:=1.13.12
-PKG_RELEASE:=1
+PKG_VERSION:=1.13.18
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://dbus.freedesktop.org/releases/dbus
-PKG_HASH:=7588649b56dd257c6a5f85a8c45aa2dfdf9e99f4de3983710f452081ca43eca6
+PKG_HASH:=8078f5c25e34ab907ce06905d969dc8ef0ccbec367e1e1707c7ecf8460f4254e
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=AFL-2.1
 PKG_CPE_ID:=cpe:/a:freedesktop:dbus
 
-PKG_BUILD_PARALLEL:=1
-PKG_INSTALL:=1
-
 include $(INCLUDE_DIR)/package.mk
+include ../../devel/ninja/ninja-cmake.mk
 
 define Package/dbus/Default
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=Simple interprocess messaging system
-  URL:=http://dbus.freedesktop.org/
+  URL:=https://dbus.freedesktop.org/
 endef
 
 define Package/dbus/Default/description
@@ -73,37 +71,19 @@ $(call Package/dbus/Default/description)
  This package contains D-Bus utilities.
 endef
 
-define Package/dbus/conffiles
-/opt/share/dbus-1/session.conf
-/opt/share/dbus-1/system.conf
-endef
-
-CONFIGURE_ARGS += \
-	--disable-maintainer-mode \
-	--disable-developer \
-	--enable-debug=no \
-	--enable-shared \
-	--disable-static \
-	--disable-verbose-mode \
-	--disable-asserts \
-	--disable-xml-docs \
-	--disable-doxygen-docs \
-	--disable-ducktype-docs \
-	--disable-selinux \
-	--disable-apparmor \
-	--disable-libaudit \
-	--enable-inotify \
-	--disable-kqueue \
-	--disable-console-owner-file \
-	--disable-systemd \
-	--disable-tests \
-	--disable-code-coverage \
-	--disable-x11-autolaunch \
-	--with-session-socket-dir=/opt/tmp \
-	--with-system-socket=/opt/var/run/dbus/system_bus_socket \
-	--with-system-pid-file=/opt/var/run/dbus.pid \
-	--with-dbus-user=root \
-	--without-x
+CMAKE_OPTIONS += \
+	-DDBUS_BUILD_TESTS=OFF \
+	-DDBUS_LINUX=ON \
+	-DDBUS_DISABLE_ASSERT=ON \
+	-DBUS_ENABLE_STATS=OFF \
+	-DDBUS_ENABLE_CONTAINERS=OFF \
+	-DENABLE_SYSTEMD=OFF \
+	-DDBUS_BUS_ENABLE_SYSTEMD=OFF \
+	-DHAVE_SYSTEMD=OFF \
+	-DDBUS_WITH_GLIB=OFF \
+	-DDBUS_ENABLE_VERBOSE_MODE=OFF \
+	-DDBUS_DISABLE_CHECKS=ON \
+	-DDBUS_BUILD_X11=OFF \
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -113,7 +93,7 @@ define Build/InstallDev
 		$(PKG_INSTALL_DIR)/opt/lib/dbus-1.0/include/dbus/*.h \
 		$(1)/opt/lib/dbus-1.0/include/dbus/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libdbus-1.{so*,la} \
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libdbus-1.so* \
 		$(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/dbus-1.0 $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
@@ -134,7 +114,7 @@ define Package/dbus/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/dbus-uuidgen $(1)/opt/bin/
 	$(INSTALL_BIN) ./files/dbus-launch $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/dbus-daemon-launch-helper $(1)/opt/lib/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/dbus-daemon-launch-helper $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S20dbus $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/share/dbus-1
