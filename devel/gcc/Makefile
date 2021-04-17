@@ -24,7 +24,7 @@ endef
 PKG_NAME:=gcc
 # PKG_VERSION=7.3.0
 PKG_VERSION=7.4.0
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_INSTALL:=1
@@ -194,6 +194,7 @@ define Package/gcc/install
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/g++
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/$(REAL_GNU_TARGET_NAME)-c++
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc $(1)/opt/bin/gcc
+	ln -s $(REAL_GNU_TARGET_NAME)-gcc $(1)/opt/bin/cc
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc $(1)/opt/bin/$(REAL_GNU_TARGET_NAME)-gcc-$(PKG_VERSION)
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc-ar $(1)/opt/bin/gcc-ar
 	cp -ar $(PKG_INSTALL_DIR)/opt/lib/gcc $(1)/opt/lib
