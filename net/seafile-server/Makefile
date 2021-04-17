@@ -126,7 +126,7 @@ $(call Package/seafile-server/description)
   This package contains Python bindings for Seafile server.
 endef
 
-TARGET_LDFLAGS += -lssp
+TARGET_LDFLAGS += $(if $(CONFIG_GCC_LIBSSP),-lssp)
 
 CONFIGURE_ARGS += \
 	--disable-console \
