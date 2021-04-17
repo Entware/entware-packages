@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=oci-runtime-tools
-PKG_VERSION:=1.0.0-pre20210122
-PKG_RELEASE:=2
+PKG_VERSION:=1.0.0-pre20210326
+PKG_RELEASE:=$(AUTORELEASE)
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 
@@ -10,8 +10,8 @@ PKG_SOURCE_PROTO:=git
 PKG_SOURCE_NAME:=runtime-tools
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/opencontainers/runtime-tools.git
-PKG_SOURCE_VERSION:=453547deb724af135587e654f52d86b8619f21b9
-PKG_MIRROR_HASH:=34f3aefc4f6f3bb93330ec7cbeb2eb987b82184da53d453e8b04b5750faa8728
+PKG_SOURCE_VERSION:=59cdde06764be8d761db120664020f0415f36045
+PKG_MIRROR_HASH:=ef331e3ad5f99220583399fe1c2ded243f4b01f8dabc7acd152d46304da70f6f
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 
@@ -22,8 +22,17 @@ PKG_USE_MIPS16:=0
 GO_PKG:=github.com/opencontainers/runtime-tools/
 GO_PKG_LDFLAGS_X:=main.gitCommit=$(PKG_SOURCE_VERSION) main.version=$(PKG_SOURCE_VERSION)
 
+BUSYBOX_STATIC_VERSION:=1.31.0
+
 include $(INCLUDE_DIR)/package.mk
 include ../../lang/golang/golang-package.mk
+
+define Download/busybox-static-armv8l
+  URL:=https://busybox.net/downloads/binaries/$$(BUSYBOX_STATIC_VERSION)-defconfig-multiarch-musl/
+  URL_FILE:=busybox-armv8l
+  FILE:=busybox-$(BUSYBOX_STATIC_VERSION)-static-armv8l
+  HASH:=141adb1b625a6f44c4b114f76b4387b4ea4f7ab802b88eb40e0d2f6adcccb1c3
+endef
 
 define Package/oci-runtime-tool
   SECTION:=utils
@@ -43,7 +52,7 @@ define Package/oci-runtime-tests
   CATEGORY:=Utilities
   TITLE:=OCI runtimetest tool
   URL:=https://github.com/opencontainers/runtime-tools
-  DEPENDS:=@(i386||i686||x86_64) oci-runtime-tool +tar
+  DEPENDS:=@(aarch64||i386||i686||x86_64) oci-runtime-tool +tar
 endef
 
 define Package/oci-runtime-tests/description
@@ -55,6 +64,21 @@ define Package/oci-runtime-tests/description
 endef
 
 GO_PKG_BUILD_VARS += GO111MODULE=auto
+
+define Build/Prepare
+	$(call Build/Prepare/Default)
+ifdef CONFIG_aarch64
+	$(eval $(call Download,busybox-static-armv8l))
+	( \
+		mkdir -p $(PKG_BUILD_DIR)/rootfs-armv8l ;\
+		cd $(PKG_BUILD_DIR)/rootfs-armv8l ;\
+		$(TAR) xzf ../rootfs-amd64.tar.gz ;\
+		$(CP) $(DL_DIR)/busybox-$(BUSYBOX_STATIC_VERSION)-static-armv8l bin/busybox ;\
+		chmod 0755 bin/busybox ;\
+		$(TAR) czf ../rootfs-arm64.tar.gz . ;\
+	)
+endif
+endef
 
 define Build/Compile
 	$(call GoPackage/Build/Compile)
@@ -74,10 +98,15 @@ define Package/oci-runtime-tests/install
 		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$$$${testbin} \
 			$(1)/usr/libexec/oci-runtime-test/$$$${testbin}.t ; \
 	done )
+ifdef CONFIG_x86
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rootfs-386.tar.gz $(1)/usr/libexec/oci-runtime-test
 ifdef CONFIG_x86_64
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rootfs-amd64.tar.gz $(1)/usr/libexec/oci-runtime-test
 endif
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rootfs-386.tar.gz $(1)/usr/libexec/oci-runtime-test
+endif
+ifdef CONFIG_aarch64
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/rootfs-arm64.tar.gz $(1)/usr/libexec/oci-runtime-test
+endif
 endef
 
 $(eval $(call GoBinPackage,oci-runtime-tools))
