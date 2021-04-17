@@ -1,8 +1,8 @@
-commit 9e32bfa1f96381335498241202ea575e1ead9f42 (HEAD -> master, origin/master, origin/HEAD)
-Merge: 5e0ef1d53 e30f0480c
+commit 37f4d88cf2e1460aaa9690af47945c076531725e (HEAD -> master, origin/master, origin/HEAD)
+Merge: 49966f2be 7f5534ac7
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Thu Feb 25 06:15:12 2021 -0800
+Date:   Fri Apr 16 18:24:36 2021 -0700
 
-    Merge pull request #14896 from rsalvaterra/torfix
+    Merge pull request #14656 from stintel/miniupnpd
     
-    tor: fix building without OpenSSL engine support
+    miniupnpd: introduce IGDv1 variant
