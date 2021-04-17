@@ -1,6 +1,6 @@
 --- a/glib/gstrfuncs.c
 +++ b/glib/gstrfuncs.c
-@@ -322,7 +322,7 @@
+@@ -322,7 +322,7 @@ const guint16 * const g_ascii_table = as
      defined (HAVE_STRTOD_L) && \
      defined (HAVE_STRTOULL_L) && \
      defined (HAVE_STRTOLL_L)

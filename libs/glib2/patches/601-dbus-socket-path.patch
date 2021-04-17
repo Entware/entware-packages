@@ -1,7 +1,7 @@
 --- a/gio/gdbusaddress.c
 +++ b/gio/gdbusaddress.c
-@@ -1323,7 +1323,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
-       ret = g_strdup (g_getenv ("DBUS_SYSTEM_BUS_ADDRESS"));
+@@ -1337,7 +1337,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
+ 
        if (ret == NULL)
          {
 -          ret = g_strdup ("unix:path=/var/run/dbus/system_bus_socket");
