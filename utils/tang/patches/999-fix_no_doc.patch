@@ -1,0 +1,11 @@
+--- a/meson.build
++++ b/meson.build
+@@ -59,7 +59,7 @@ bins = []
+ mans = []
+ units = []
+ 
+-subdir('doc')
++#subdir('doc')
+ subdir('src')
+ subdir('units')
+ subdir('tests')
