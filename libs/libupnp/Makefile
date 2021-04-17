@@ -1,23 +1,24 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libupnp
-PKG_VERSION:=1.14.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.14.5
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/pupnp
-PKG_HASH:=ecb23d4291968c8a7bdd4eb16fc2250dbacc16b354345a13342d67f571d35ceb
+PKG_HASH:=227ffa407be6b91d4e42abee1dd27e4b8d7e5ba8d3d45394cca4e1eadc65149a
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:libupnp_project:libupnp
 
-PKG_FIXUP:=autoreconf
-PKG_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_PACKAGE_libupnp-sample \
+	CONFIG_IPV6
 
 include $(INCLUDE_DIR)/package.mk
+include ../../devel/ninja/ninja-cmake.mk
 
 define Package/libupnp/Default
   SECTION:=libs
@@ -49,32 +50,33 @@ define Package/libupnp-sample/description
 TVcontrolpoint & tvdevice sample applications run inside /opt/etc/upnp-tvdevice/
 endef
 
-CONFIGURE_ARGS += \
-	--enable-client \
-	--enable-device \
-	--enable-gena \
-	--enable-reuseaddr \
-	--enable-gena \
-	--enable-webserver \
-	--enable-ssdp \
-	--enable-soap \
-	--enable-tools \
-	--enable-blocking_tcp_connections \
-	--enable-samples \
-	--disable-debug \
-	--disable-optssdp \
-	--disable-unspecified_server \
-	--disable-open_ssl \
-	--disable-scriptsupport \
-	--disable-postwrite
-
-TARGET_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+CMAKE_OPTIONS += \
+	-DBUILD_TESTING=OFF \
+	-Dclient=ON \
+	-Ddevice=ON \
+	-Dwebserver=OFF \
+	-Dssdp=ON \
+	-Doptssdp=OFF \
+	-Dsoap=ON \
+	-Dgena=ON \
+	-Dtools=ON \
+	-Dipv6=O$(if $(CONFIG_IPV6),N,FF) \
+	-Dunspecified_server=OFF \
+	-Dopen_ssl=OFF \
+	-Dblocking_tcp_connections=ON \
+	-Dscriptsupport=OFF \
+	-Dpostwrite=OFF \
+	-Dreuseaddr=ON \
+	-Dsamples=O$(if $(CONFIG_PACKAGE_libupnp-sample),N,FF) \
+	-DDOWNLOAD_AND_BUILD_DEPS=OFF
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/upnp $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{ixml,upnp}.{a,so*,la} $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib{ixml,upnp}.{a,so*} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/cmake
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/cmake/* $(1)/opt/lib/cmake
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libupnp.pc $(1)/opt/lib/pkgconfig/
 endef
@@ -86,9 +88,9 @@ endef
 
 define Package/libupnp-sample/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/upnp/sample/.libs/* $(1)/opt/bin
-	$(INSTALL_DIR) $(1)/opt/etc/upnp-tvdevice/web
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/upnp/sample/web/* $(1)/opt/etc/upnp-tvdevice
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tv* $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/share/upnp
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/upnp/tv* $(1)/opt/share/upnp
 endef
 
 $(eval $(call BuildPackage,libupnp))
