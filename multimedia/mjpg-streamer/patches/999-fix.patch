@@ -11,7 +11,7 @@
  static int debug = 0;
  
  /* fcc2s - convert pixelformat to string
-@@ -515,7 +519,7 @@ int video_set_dv_timings(struct vdIn *vd
+@@ -524,7 +528,7 @@ int video_set_dv_timings(struct vdIn *vd
      v4l2_std_id std;
  
      memset(&timings, 0, sizeof(timings));
