@@ -6,13 +6,12 @@
 #
 
 include $(TOPDIR)/rules.mk
-#include $(INCLUDE_DIR)/uclibc++.mk
 
 BASE_VERSION:=4.7.25
 
 PKG_NAME:=db47
 PKG_VERSION:=$(BASE_VERSION).4.NC
-PKG_RELEASE:=6
+PKG_RELEASE:=7
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/db-$(BASE_VERSION).NC
 PKG_SOURCE:=db-$(BASE_VERSION).NC.tar.gz
