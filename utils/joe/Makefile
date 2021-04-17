@@ -5,10 +5,9 @@
 # See /LICENSE for more information.
 #
 
-# changes by David Kuehling <dvdkhlng TA gmx TOD de>:
+# changes by Vitaly Prosko <villy TA sft TOD ru>:
 #
-#  - include support for all emulation modes jmacs jpico etc.
-#  - see patches/002-builtinrc.patch
+#  - added new package joe-extra with all additional joe's stuff
 #
 # changes by Vitaly Prosko <villy TA sft TOD ru>:
 #
@@ -21,7 +20,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=joe
 PKG_VERSION:=4.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/joe-editor
@@ -42,9 +41,22 @@ define Package/joe
   DEPENDS:=+libncurses
 endef
 
+define Package/joe-extras
+  SECTION:=utils
+  CATEGORY:=Utilities
+  SUBMENU:=Editors
+  TITLE:=Extra data for JOE - Joes own editor
+  URL:=https://sourceforge.net/projects/joe-editor/
+  DEPENDS:=+joe
+endef
+
 define Package/joe/description
 Joe is world-famous Wordstar like text editor, that also features
 Emacs and Pico emulation
+endef
+
+define Package/joe-extras/description
+Additional data for full Joe editor functionality
 endef
 
 define Package/joe/install
@@ -54,8 +66,28 @@ define Package/joe/install
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/rc/joerc $(1)/opt/etc/joe/joerc
 endef
 
+define Package/joe-extras/install
+	$(INSTALL_DIR) $(1)/opt/etc/joe
+	$(INSTALL_DIR) $(1)/opt/share/joe/{syntax,lang,charmaps,colors}
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/rc/{ftyperc,jicerc.ru,jmacsrc,jpicorc,jstarrc,rjoerc} $(1)/opt/etc/joe/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/syntax/*.jsf $(1)/opt/share/joe/syntax/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/po/*.po $(1)/opt/share/joe/lang/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/charmaps/klingon $(1)/opt/share/joe/charmaps/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/colors/*.jcf $(1)/opt/share/joe/colors/
+endef
+
 define Package/joe/conffiles
 /opt/etc/joe/joerc
 endef
 
+define Package/joe-extras/conffiles
+/opt/etc/joe/ftype
+/opt/etc/joe/jicerc.ru
+/opt/etc/joe/jmacsrc
+/opt/etc/joe/jpicorc
+/opt/etc/joe/jstarrc
+/opt/etc/joe/rjoerc
+endef
+
 $(eval $(call BuildPackage,joe))
+$(eval $(call BuildPackage,joe-extras))
