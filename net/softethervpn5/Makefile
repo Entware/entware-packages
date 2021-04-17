@@ -24,7 +24,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/SoftEtherVPN-$(PKG_VERSION)
 include $(INCLUDE_DIR)/package.mk
 #include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/nls.mk
-include $(INCLUDE_DIR)/cmake.mk
+include ../../devel/ninja/ninja-cmake.mk
 
 define Package/softethervpn5/Default
   SECTION:=net
@@ -84,8 +84,8 @@ endef
 #export USE_MUSL=YES
 # BUG: outdated host/include/elf.h
 HOST_CFLAGS += $(FPIC) -DAT_HWCAP2=26
-TARGET_CFLAGS += $(FPIC) -I$(STAGING_DIR)/opt/include
-CMAKE_OPTIONS = -DICONV_LIB_PATH="$(ICONV_PREFIX)/lib"
+TARGET_CFLAGS += $(FPIC)
+CMAKE_OPTIONS += -DICONV_LIB_PATH="$(ICONV_PREFIX)/lib"
 
 # static build for host (hamcorebuilder), avoid -fpic on ncurses/host and shared libs can't be found on host
 define Host/Prepare
@@ -116,13 +116,13 @@ define Package/softethervpn5-libs/install
 	$(CP) $(PKG_BUILD_DIR)/build/libcedar.so $(1)/opt/lib/
 	$(CP) $(PKG_BUILD_DIR)/build/libmayaqua.so $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/libexec/softethervpn
+	$(CP) $(PKG_BUILD_DIR)/src/bin/hamcore $(1)/opt/libexec/softethervpn/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build/vpncmd $(1)/opt/libexec/softethervpn/
 	$(INSTALL_BIN) files/launcher.sh $(1)/opt/libexec/softethervpn/
 	$(INSTALL_DATA) files/dummy $(1)/opt/libexec/softethervpn/lang.config
-	$(CP) $(PKG_BUILD_DIR)/src/bin/hamcore $(1)/opt/libexec/softethervpn/
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tmp/hamcorebuilder $(1)/opt/bin
 	$(LN) ../../opt/libexec/softethervpn/launcher.sh $(1)/opt/bin/vpncmd
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tmp/hamcorebuilder $(1)/opt/bin
 endef
 
 define Package/softethervpn5-server/install
