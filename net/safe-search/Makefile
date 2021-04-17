@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=safe-search
-PKG_VERSION:=2.0.0
-PKG_RELEASE:=1
+PKG_VERSION:=2.0.1
+PKG_RELEASE:=$(AUTORELEASE)
 PKG_LICENSE:=MIT
 PKG_MAINTAINER:=Gregory L. Dietsche <Gregory.Dietsche@cuw.edu>
 
@@ -53,8 +53,9 @@ endef
 
 define Package/safe-search/postinst
 #!/bin/sh
-if [ -z "$${IPGK_INSTROOT}" ]; then
-  echo "0 * * * * /bin/nice /usr/sbin/safe-search-maintenance>/dev/null 2>&1">>/etc/crontabs/root
+if [ -z "$${IPKG_INSTROOT}" ]; then
+  crontab -l | grep -v "safe-search-maintenance" | sort | uniq | crontab -
+  echo "1 1 * * 1 /bin/nice /usr/sbin/safe-search-maintenance>/dev/null 2>&1">>/etc/crontabs/root
   /etc/init.d/cron restart
 fi
 exit 0
@@ -62,7 +63,7 @@ endef
 
 define Package/safe-search/prerm
 #!/bin/sh
-if [ -z "$${IPGK_INSTROOT}" ]; then
+if [ -z "$${IPKG_INSTROOT}" ]; then
 	uci del_list dhcp.@dnsmasq[0].addnhosts=/etc/safe-search/enabled
 	uci commit dhcp
 	/etc/init.d/dnsmasq reload
@@ -73,7 +74,7 @@ endef
 
 define Package/safe-search/postrm
 #!/bin/sh
-if [ -z "$${IPGK_INSTROOT}" ]; then
+if [ -z "$${IPKG_INSTROOT}" ]; then
 	rm -rf /etc/safe-search/enabled
 	rmdir /etc/safe-search/available
 	rmdir /etc/safe-search/
