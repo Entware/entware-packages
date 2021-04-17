@@ -8,13 +8,14 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=imagemagick
 PKG_VERSION:=7.0.9
 PKG_REVISION:=5
-PKG_RELEASE:=2
+PKG_RELEASE:=4
 PKG_MAINTAINER:=Val Kulkov <val.kulkov@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REVISION).tar.gz
 PKG_SOURCE_URL:=http://github.com/ImageMagick/ImageMagick/archive/$(PKG_VERSION)-$(PKG_REVISION)
 PKG_HASH:=d15abd31e7e18f7edec47df156773a23e5100386e55c6ce50f5353e9572d3413
 PKG_BUILD_DIR:=$(BUILD_DIR)/ImageMagick-$(PKG_VERSION)-$(PKG_REVISION)
+PKG_FIXUP:=autoreconf
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
@@ -149,6 +150,13 @@ define Build/InstallDev
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* \
 		$(1)/opt/lib/pkgconfig/
+
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/opt/bin/*-config \
+		$(1)/opt/bin/
+	$(SED) 's|prefix=/opt|prefix=$(STAGING_DIR)/opt|' \
+		$(1)/opt/bin/*-config
 endef
 
 IMlibdir:=opt/lib/ImageMagick-$(PKG_VERSION)
