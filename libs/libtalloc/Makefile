@@ -17,6 +17,7 @@ PKG_HASH:=ef4822d2fdafd2be8e0cabc3ec3c806ae29b8268e932c5e9a4cd5585f37f9f77
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=LGPL-3.0-or-later
 
+PKG_BUILD_DEPENDS:=python3/host
 PKG_BUILD_PARALLEL:=0
 
 include $(INCLUDE_DIR)/package.mk
