@@ -1,19 +1,25 @@
+#
+# Copyright (C) 2007 OpenWrt
+# Copyright (C) 2011-2020 Entware
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+# Entware specific - we use 1.2.x as more compatible
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libtorrent-rasterbar
-PKG_VERSION:=2.0.2
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_VERSION:=1.2.13
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/arvidn/libtorrent/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=d5960e8c9f80f62126d723c6cc0522e7900c9c323f28994027eae3325fe03a3f
-
-PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
-PKG_LICENSE:=BSD-3-Clause
-PKG_LICENSE_FILES:=COPYING
+PKG_HASH:=976d2771ffcd564f08a63351e9c22e842aaa8cd29f6f7fe25d169c038a844e85
 
 include $(INCLUDE_DIR)/package.mk
 include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/nls.mk
 include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 
 define Package/libtorrent-rasterbar/Default
@@ -25,7 +31,7 @@ define Package/libtorrent-rasterbar
 	$(call Package/libtorrent-rasterbar/Default)
 	SECTION:=libs
 	CATEGORY:=Libraries
-	DEPENDS:=+boost-system +libatomic +libopenssl +libstdcpp
+	DEPENDS:=+boost-system +libatomic +libopenssl +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS)
 endef
 
 define Package/python3-libtorrent
@@ -46,31 +52,15 @@ define Package/python3-libtorrent/description
 	$(call Package/libtorrent-rasterbar/description)
 	This package contains Python 3 bindings for the libtorrent-rasterbar library.
 endef
-
-define Download/try_signal
-	VERSION:=334fd139e2bb387017b42d36753a03935e3bca75
-	SUBDIR:=deps/try_signal
-	FILE:=$(PKG_NAME)-try_signal-$$(VERSION).tar.xz
-	URL:=https://github.com/arvidn/try_signal.git
-	MIRROR_HASH:=c85d65352c20713cb6cfb005942b46ab7579dc7eef3b876666bff9347149d47f
-	PROTO:=git
-endef
-$(eval $(call Download,try_signal))
-
-PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
-
-define Build/Prepare
-	$(Build/Prepare/Default)
-	$(eval $(Download/try_signal))
-	xzcat $(DL_DIR)/$(FILE) | tar -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
-endef
-
 TARGET_CXXFLAGS += -DBOOST_BIND_GLOBAL_PLACEHOLDERS
 
-TARGET_LDFLAGS += -latomic
+TARGET_LDFLAGS += -latomic $(if $(INTL_FULL),-liconv) $(if $(INTL_FULL),-lintl)
 
 CMAKE_OPTIONS += \
-	-Dpython-bindings=ON
+	-Dpython-bindings:BOOL=ON \
+	-DPYTHON_EXECUTABLE:FILEPATH=$(STAGING_DIR_HOSTPKG)/bin/python$(PYTHON3_VERSION) \
+	-DPYTHON_SITE_PACKAGES="/opt/lib/python$(PYTHON3_VERSION)/site-packages" \
+	-DPYTHON_EXT_SUFFIX=""
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -83,7 +73,7 @@ endef
 
 define Package/libtorrent-rasterbar/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtorrent-rasterbar.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtorrent-rasterbar.so* $(1)/opt/lib
 endef
 
 define Package/python3-libtorrent/install
