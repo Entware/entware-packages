@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: prerm script removed
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
 PKG_VERSION:=1.19.6
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
@@ -383,19 +384,6 @@ endif
 endef
 
 Package/nginx-all-module/install = $(Package/nginx-ssl/install)
-
-define Package/nginx-ssl/prerm
-#!/bin/sh
-[ -z "$${IPKG_INSTROOT}" ] || exit 0
-[ "$${PKG_UPGRADE}" = "1" ] && exit 0
-eval $$(/usr/bin/nginx-util get_env)
-[ "$$(uci get "nginx.$${LAN_NAME}.$${MANAGE_SSL}")" = "self-signed" ] || exit 0
-rm -f "$$(uci get "nginx.$${LAN_NAME}.ssl_certificate")"
-rm -f "$$(uci get "nginx.$${LAN_NAME}.ssl_certificate_key")"
-exit 0
-endef
-
-#Package/nginx-all-module/prerm = $(Package/nginx-ssl/prerm)
 
 define Build/Prepare
 	$(Build/Prepare/Default)
