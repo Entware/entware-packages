@@ -353,3 +353,9 @@
  0	search/10/w	#!\040/usr/bin/env\040python	Python script text executable
  !:strength + 15
  !:mime text/x-script.python
+--- a/magic/Magdir/mail.news
++++ b/magic/Magdir/mail.news
+@@ -83,2 +83,2 @@
+ 0	string	CRYPTED\003\007		Dovecot encrypted message
+->9	byte	xu			\b, dcrypt version %d
++>9	byte	x			\b, dcrypt version %d
