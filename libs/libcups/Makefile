@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cups
 PKG_VERSION:=2.2.12
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-source.tar.gz
 PKG_SOURCE_URL:=https://github.com/apple/cups/releases/download/v$(PKG_VERSION)/
@@ -114,6 +114,8 @@ define Package/cups/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/cups $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S60cupsd $(1)/opt/etc/init.d/
+	# XXX
+	$(SED) 's,$(TOOLCHAIN_DIR),/opt,g;s,$(STAGING_DIR),,g' $(1)/opt/bin/cups-config
 endef
 
 $(eval $(call BuildPackage,libcups))
