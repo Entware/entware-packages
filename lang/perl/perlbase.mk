@@ -1,3 +1,5 @@
+include perlver.mk
+
 define Package/perlbase-template
 SUBMENU:=Perl
 SECTION:=lang
@@ -294,6 +296,13 @@ endef
 define Package/perlbase-config/install
 $(call perlmod/Install,$(1),Config Config.pm Config_git.pl Config_heavy.pl,)
 $(call perlmod/InstallBaseTests,$(1),cpan/Config-Perl-V/t lib/Config.t lib/Config/Extensions.t)
+	# Entware specific: fix path
+	$(SED) 's,$(STAGING_DIR_HOSTPKG)/usr,/opt,; \
+		s,$(TOOLCHAIN_DIR),/opt,g; \
+		s,$(STAGING_DIR),,g' \
+			$(1)/opt/lib/perl5/$(PERL_VERSION2)/Config_heavy.pl
+	$(SED) 's,$(STAGING_DIR)/lib\s,,;s,$(STAGING_DIR),,' \
+			$(1)/opt/lib/perl5/$(PERL_VERSION2)/Config.pm
 endef
 
 $(eval $(call BuildPackage,perlbase-config))
