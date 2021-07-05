@@ -1,6 +1,6 @@
 --- a/make-linux.mk
 +++ b/make-linux.mk
-@@ -278,12 +278,12 @@ endif
+@@ -274,12 +274,12 @@ endif
  # ARM32 hell -- use conservative CFLAGS
  ifeq (0,3)
  	ifeq ($(shell if [ -e /usr/bin/dpkg ]; then dpkg --print-architecture; fi),armel)
