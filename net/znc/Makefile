@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=znc
 PKG_VERSION:=1.8.2
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://znc.in/releases \
@@ -64,11 +64,12 @@ define Package/znc/install
 #	$(INSTALL_DIR) $(1)/etc/config
 #	$(INSTALL_DATA) ./files/znc.conf $(1)/etc/config/znc
 	$(INSTALL_DIR) $(1)/opt/lib/znc/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/modules/droproot.so $(1)/opt/lib/znc/
 endef
 
 
 ZNC_MODULES :=
-ZNC_MODULE_TARGETS :=
+ZNC_MODULE_TARGETS := droproot.so
 
 define module
   define Package/znc-mod-$(strip $(1))
@@ -198,9 +199,6 @@ $(eval $(call module,dcc,Allows you to transfer files to and from ZNC.))
 $(eval $(call module,disconkick,This module will kick your client from all \
 	channels where you are$(,) in case if ZNC disconnects from server.))
 
-$(eval $(call module,droproot,Allows ZNC to drop root privileges and run as \
-	an un-privileged user.))
-
 $(eval $(call module,fail2ban,Block IPs for some time after a failed login.))
 
 $(eval $(call module,flooddetach,This module detaches you from channels which \
@@ -276,7 +274,7 @@ $(eval $(call webskin,ice))
 PKG_CONFIG_DEPENDS += $(patsubst %,CONFIG_PACKAGE_%,$(ZNC_MODULES))
 
 include $(INCLUDE_DIR)/package.mk
-include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 CMAKE_OPTIONS += \
 	-DWANT_ICU=O$(if $(CONFIG_ZNC_ICU),N,FF) \
