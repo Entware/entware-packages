@@ -1,6 +1,6 @@
 --- a/auth/credentials/credentials_krb5.c
 +++ b/auth/credentials/credentials_krb5.c
-@@ -624,7 +624,7 @@ static int cli_credentials_new_ccache(st
+@@ -625,7 +625,7 @@ static int cli_credentials_new_ccache(st
  		must_free_cc_name = true;
  
  		if (lpcfg_parm_bool(lp_ctx, NULL, "credentials", "krb5_cc_file", false)) {
@@ -11,7 +11,7 @@
  			ccache_name = talloc_asprintf(ccc, "MEMORY:%p", 
 --- a/lib/util/util.c
 +++ b/lib/util/util.c
-@@ -214,7 +214,7 @@ _PUBLIC_ const char *tmpdir(void)
+@@ -62,7 +62,7 @@ _PUBLIC_ const char *tmpdir(void)
  	char *p;
  	if ((p = getenv("TMPDIR")))
  		return p;
@@ -44,7 +44,7 @@
  				type ? "req" : "resp");
 --- a/source3/winbindd/winbindd_pam.c
 +++ b/source3/winbindd/winbindd_pam.c
-@@ -571,11 +571,11 @@ static const char *generate_krb5_ccache(
+@@ -573,11 +573,11 @@ static const char *generate_krb5_ccache(
  	if (uid != -1) {
  		if (strequal(type, "FILE")) {
  			gen_cc = talloc_asprintf(
