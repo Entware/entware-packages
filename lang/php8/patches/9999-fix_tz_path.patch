@@ -1,0 +1,11 @@
+--- a/ext/date/lib/parse_tz.c
++++ b/ext/date/lib/parse_tz.c
+@@ -441,7 +441,7 @@ void timelib_dump_tzinfo(timelib_tzinfo
+ #ifdef HAVE_SYSTEM_TZDATA_PREFIX
+ #define ZONEINFO_PREFIX HAVE_SYSTEM_TZDATA_PREFIX
+ #else
+-#define ZONEINFO_PREFIX "/usr/share/zoneinfo"
++#define ZONEINFO_PREFIX "/opt/share/zoneinfo"
+ #endif
+ 
+ /* System timezone database pointer. */

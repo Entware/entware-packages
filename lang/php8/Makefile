@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=8.0.3
+PKG_VERSION:=8.0.7
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=c9816aa9745a9695672951eaff3a35ca5eddcb9cacf87a4f04b9fb1169010251
+PKG_HASH:=d5fc2e4fc780a32404d88c360e3e0009bc725d936459668e9c2ac992f2d83654
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -89,7 +89,7 @@ define Package/php8/description
   your PHP flavour (cli, cgi or fastcgi).
 
   Please note, that installing php5 and php8 in parallel on the same target
-  is not supported in OpenWrt/LEDE.
+  is not supported in OpenWrt/LEDE/Entware.
 endef
 
 define Package/php8-cli
@@ -167,13 +167,13 @@ CONFIGURE_ARGS+= \
 	--disable-phpdbg \
 	--without-pear \
 	\
-	--with-config-file-path=/etc \
-	--with-config-file-scan-dir=/etc/php8 \
+	--with-config-file-path=/opt/etc \
+	--with-config-file-scan-dir=/opt/etc/php8 \
 	--disable-short-tags \
 	\
 	--without-valgrind \
 	--with-external-pcre \
-	--with-zlib="$(STAGING_DIR)/usr"
+	--with-zlib="$(STAGING_DIR)/opt"
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-bcmath),)
   CONFIGURE_ARGS+= --enable-bcmath=shared
@@ -212,13 +212,13 @@ else
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-fileinfo),)
-  CONFIGURE_ARGS+= --enable-fileinfo=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --enable-fileinfo=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --disable-fileinfo
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-filter),)
-  CONFIGURE_ARGS+= --enable-filter=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --enable-filter=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --disable-filter
 endif
@@ -231,20 +231,20 @@ endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-gd),)
   CONFIGURE_ARGS+= \
-	--enable-gd=shared,"$(STAGING_DIR)/usr" \
+	--enable-gd=shared,"$(STAGING_DIR)/opt" \
 	--with-external-gd
 else
   CONFIGURE_ARGS+= --disable-gd
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-gettext),)
-  CONFIGURE_ARGS+= --with-gettext=shared,"$(STAGING_DIR)/usr/lib/libintl-full"
+  CONFIGURE_ARGS+= --with-gettext=shared,"$(STAGING_DIR)/opt/lib/libintl-full"
 else
   CONFIGURE_ARGS+= --without-gettext
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-gmp),)
-  CONFIGURE_ARGS+= --with-gmp=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-gmp=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-gmp
 endif
@@ -257,9 +257,9 @@ endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-imap),)
   CONFIGURE_ARGS+= \
-		--with-imap=shared,"$(STAGING_DIR)/usr" \
+		--with-imap=shared,"$(STAGING_DIR)/opt" \
 		--with-kerberos=no \
-		--with-imap-ssl="$(STAGING_DIR)/usr"
+		--with-imap-ssl="$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-imap
 endif
@@ -273,7 +273,7 @@ endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-ldap),)
   CONFIGURE_ARGS+= \
-	--with-ldap=shared,"$(STAGING_DIR)/usr" \
+	--with-ldap=shared,"$(STAGING_DIR)/opt" \
 	--with-ldap-sasl
 else
   CONFIGURE_ARGS+= --without-ldap
@@ -309,7 +309,7 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-openssl)$(CONFIG_PACKAGE_php8-mod-ftp)$(C
   CONFIGURE_ARGS+= \
 	--with-openssl=shared \
 	--with-kerberos=no \
-	--with-openssl-dir="$(STAGING_DIR)/usr"
+	--with-openssl-dir="$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-openssl
 endif
@@ -328,7 +328,7 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-pdo),)
     CONFIGURE_ARGS+= --without-pdo-mysql
   endif
   ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-pdo-pgsql),)
-    CONFIGURE_ARGS+= --with-pdo-pgsql=shared,"$(STAGING_DIR)/usr"
+    CONFIGURE_ARGS+= --with-pdo-pgsql=shared,"$(STAGING_DIR)/opt"
   else
     CONFIGURE_ARGS+= --without-pdo-pgsql
   endif
@@ -342,7 +342,7 @@ else
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-pgsql),)
-  CONFIGURE_ARGS+= --with-pgsql=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-pgsql=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-pgsql
 endif
@@ -372,7 +372,7 @@ else
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-snmp),)
-  CONFIGURE_ARGS+= --with-snmp=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-snmp=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-snmp
 endif
@@ -420,7 +420,7 @@ else
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-xml),)
-  CONFIGURE_ARGS+= --enable-xml=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --enable-xml=shared,"$(STAGING_DIR)/opt"
   ifneq ($(CONFIG_PHP8_LIBXML),y)
     CONFIGURE_ARGS+= --with-expat
   endif
@@ -429,19 +429,19 @@ else
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-xmlreader),)
-  CONFIGURE_ARGS+= --enable-xmlreader=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --enable-xmlreader=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --disable-xmlreader
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-xmlwriter),)
-  CONFIGURE_ARGS+= --enable-xmlwriter=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --enable-xmlwriter=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --disable-xmlwriter
 endif
 
 ifneq ($(CONFIG_PACKAGE_php8-mod-zip),)
-  CONFIGURE_ARGS+= --with-zip=shared,"$(STAGING_DIR)/usr"
+  CONFIGURE_ARGS+= --with-zip=shared,"$(STAGING_DIR)/opt"
 else
   CONFIGURE_ARGS+= --without-zip
 endif
@@ -470,61 +470,60 @@ MAKE_VARS+= \
 	HOSTCC="$(HOSTCC)"
 
 define Package/php8/conffiles
-/etc/php.ini
-/etc/php8/
+/opt/etc/php.ini
+/opt/etc/php8/
 endef
 
 define Package/php8/install
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) ./files/php.ini $(1)/etc/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) ./files/php.ini $(1)/opt/etc/
 endef
 
 define Package/php8-cli/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_BUILD_DIR)/sapi/cli/php $(1)/usr/bin/php8-cli
-	ln -sf php8-cli $(1)/usr/bin/php-cli
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/sapi/cli/php $(1)/opt/bin/php8-cli
+	ln -sf php8-cli $(1)/opt/bin/php-cli
 endef
 
 define Package/php8-cgi/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_BUILD_DIR)/sapi/cgi/php-cgi $(1)/usr/bin/php8-cgi
-	ln -sf php8-cgi $(1)/usr/bin/php-cgi
-	ln -sf php8-cgi $(1)/usr/bin/php8-fcgi
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/sapi/cgi/php-cgi $(1)/opt/bin/php8-cgi
+	ln -sf php8-cgi $(1)/opt/bin/php-cgi
+	ln -sf php8-cgi $(1)/opt/bin/php8-fcgi
 endef
 
 define Package/php8-fastcgi/install
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/php8-fastcgi.config $(1)/etc/config/php8-fastcgi
+	$(INSTALL_DIR) $(1)/opt/etc/php8
+	$(INSTALL_DATA) ./files/php8-fastcgi.conf $(1)/opt/etc/php8/php8-fastcgi
 
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/php8-fastcgi.init $(1)/etc/init.d/php8-fastcgi
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S79php8-fastcgi $(1)/opt/etc/init.d
 endef
 
 define Package/php8-fastcgi/conffiles
-/etc/config/php8-fastcgi
+/opt/etc/php8/php8-fastcgi
 endef
 
 define Package/php8-fpm/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sapi/fpm/php-fpm $(1)/usr/bin/php8-fpm
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sapi/fpm/php-fpm $(1)/opt/bin/php8-fpm
 
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) ./files/php8-fpm.conf $(1)/etc/php8-fpm.conf
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) ./files/php8-fpm.conf $(1)/opt/etc/php8-fpm.conf
 
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/php8-fpm.config $(1)/etc/config/php8-fpm
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DATA) ./files/php8-fpm.config $(1)/etc/config/php8-fpm
 
-	$(INSTALL_DIR) $(1)/etc/php8-fpm.d
-	$(INSTALL_DATA) ./files/php8-fpm-www.conf $(1)/etc/php8-fpm.d/www.conf
+	$(INSTALL_DIR) $(1)/opt/etc/php8-fpm.d
+	$(INSTALL_DATA) ./files/php8-fpm-www.conf $(1)/opt/etc/php8-fpm.d/www.conf
 
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/php8-fpm.init $(1)/etc/init.d/php8-fpm
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S79php8-fpm $(1)/opt/etc/init.d
 endef
 
 define Package/php8-fpm/conffiles
-/etc/php8-fpm.conf
-/etc/php8-fpm.d/
-/etc/config/php8-fpm
+/opt/etc/php8-fpm.conf
+opt/etc/php8-fpm.d/
 endef
 
 define Build/Prepare
@@ -540,22 +539,22 @@ endef
 define Build/InstallDev
 	rm -rf $(PKG_BUILD_DIR)/staging
 	make -C $(PKG_BUILD_DIR) install INSTALL_ROOT=$(PKG_BUILD_DIR)/staging
-	rm -rf $(PKG_BUILD_DIR)/staging/usr/{share,man,sbin}
-	rm -f $(PKG_BUILD_DIR)/staging/usr/bin/{php,php-cgi,php-cli}
-	mv $(PKG_BUILD_DIR)/staging/usr/bin/phpize $(PKG_BUILD_DIR)/staging/usr/bin/phpize8
-	mv $(PKG_BUILD_DIR)/staging/usr/bin/php-config $(PKG_BUILD_DIR)/staging/usr/bin/php8-config
-	mv $(PKG_BUILD_DIR)/staging/usr/include/php $(PKG_BUILD_DIR)/staging/usr/include/php8
-	mv $(PKG_BUILD_DIR)/staging/usr/lib/php $(PKG_BUILD_DIR)/staging/usr/lib/php8
+	rm -rf $(PKG_BUILD_DIR)/staging/opt/{share,man,sbin}
+	rm -f $(PKG_BUILD_DIR)/staging/opt/bin/{php,php-cgi,php-cli}
+	mv $(PKG_BUILD_DIR)/staging/opt/bin/phpize $(PKG_BUILD_DIR)/staging/opt/bin/phpize8
+	mv $(PKG_BUILD_DIR)/staging/opt/bin/php-config $(PKG_BUILD_DIR)/staging/opt/bin/php8-config
+	mv $(PKG_BUILD_DIR)/staging/opt/include/php $(PKG_BUILD_DIR)/staging/opt/include/php8
+	mv $(PKG_BUILD_DIR)/staging/opt/lib/php $(PKG_BUILD_DIR)/staging/opt/lib/php8
 
-	$(CP) $(PKG_BUILD_DIR)/staging/usr $(STAGING_DIR)/
+	$(CP) $(PKG_BUILD_DIR)/staging/opt $(STAGING_DIR)/
 
-	sed -i -e "s#prefix='/usr'#prefix='$(STAGING_DIR)/usr'#" $(STAGING_DIR)/usr/bin/phpize8
-	sed -i -e "s#exec_prefix=\"\`eval echo /usr\`\"#exec_prefix='$(STAGING_DIR)/usr'#" $(STAGING_DIR)/usr/bin/phpize8
-	sed -i -e "s#/include\`/php\"#/include\`/php8\"#" $(STAGING_DIR)/usr/bin/phpize8
-	sed -i -e "s#/lib/php\`/build\"#/lib/php8\`/build\"#" $(STAGING_DIR)/usr/bin/phpize8
+	sed -i -e "s#prefix='/opt'#prefix='$(STAGING_DIR)/opt'#" $(STAGING_DIR)/opt/bin/phpize8
+	sed -i -e "s#exec_prefix=\"\`eval echo /opt\`\"#exec_prefix='$(STAGING_DIR)/opt'#" $(STAGING_DIR)/opt/bin/phpize8
+	sed -i -e "s#/include\`/php\"#/include\`/php8\"#" $(STAGING_DIR)/opt/bin/phpize8
+	sed -i -e "s#/lib/php\`/build\"#/lib/php8\`/build\"#" $(STAGING_DIR)/opt/bin/phpize8
 
-	sed -i -e "s#prefix=\"/usr\"#prefix=\"$(STAGING_DIR)/usr\"#" $(STAGING_DIR)/usr/bin/php8-config
-	sed -i -e "s#/include/php\"#/include/php8\"#" $(STAGING_DIR)/usr/bin/php8-config
+	sed -i -e "s#prefix=\"/opt\"#prefix=\"$(STAGING_DIR)/opt\"#" $(STAGING_DIR)/opt/bin/php8-config
+	sed -i -e "s#/include/php\"#/include/php8\"#" $(STAGING_DIR)/opt/bin/php8-config
 endef
 
 define BuildModule
@@ -571,13 +570,13 @@ define BuildModule
   endef
 
   define Package/php8-mod-$(1)/install
-	$(INSTALL_DIR) $$(1)/usr/lib/php8
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/modules/$(subst -,_,$(1)).so $$(1)/usr/lib/php8/
-	$(INSTALL_DIR) $$(1)/etc/php8
+	$(INSTALL_DIR) $$(1)/opt/lib/php8
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/modules/$(subst -,_,$(1)).so $$(1)/opt/lib/php8/
+	$(INSTALL_DIR) $$(1)/opt/etc/php8
       ifeq ($(5),zend)
-	echo "zend_extension=/usr/lib/php8/$(subst -,_,$(1)).so" > $$(1)/etc/php8/$(if $(4),$(4),20)_$(subst -,_,$(1)).ini
+	echo "zend_extension=/opt/lib/php8/$(subst -,_,$(1)).so" > $$(1)/opt/etc/php8/$(if $(4),$(4),20)_$(subst -,_,$(1)).ini
       else
-	echo "extension=$(subst -,_,$(1)).so" > $$(1)/etc/php8/$(if $(4),$(4),20)_$(subst -,_,$(1)).ini
+	echo "extension=$(subst -,_,$(1)).so" > $$(1)/opt/etc/php8/$(if $(4),$(4),20)_$(subst -,_,$(1)).ini
     endif
   endef
 

@@ -1,0 +1,11 @@
+--- a/ext/fileinfo/libmagic/file.h
++++ b/ext/fileinfo/libmagic/file.h
+@@ -91,7 +91,7 @@
+ #define ENABLE_CONDITIONALS
+ 
+ #ifndef MAGIC
+-#define MAGIC "/etc/magic"
++#define MAGIC "/opt/share/misc/magic"
+ #endif
+ 
+ #if defined(__EMX__) || defined(PHP_WIN32)
