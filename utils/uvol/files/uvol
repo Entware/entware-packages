@@ -3,6 +3,7 @@
 # uvol prototype
 # future development roadmap (aka. to-do):
 # * re-implement in C (use libubox, execve lvm/ubi*)
+# * hash to validate volume while writing
 # * add atomic batch processing for use by container/package manager
 
 if [ -z "$1" ]; then cat <<EOF
@@ -11,6 +12,7 @@ uvol storage volume manager
 syntax: uvol command ...
 
 commands:
+  boot				get active volumes ready (called on boot)
   free				show number of bytes available
   total				show total number of bytes
   align				show sector size in bytes
@@ -47,4 +49,4 @@ if [ -z "$uvol_backend" ]; then
 	return 2
 fi
 
-flock -x /tmp/run/uvol.lock $uvol_backend "$@"
+flock -x /tmp/run/uvol.lock "$uvol_backend" "$@"
