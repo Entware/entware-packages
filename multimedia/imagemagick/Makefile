@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=imagemagick
 PKG_VERSION:=7.0.9
 PKG_REVISION:=5
-PKG_RELEASE:=4
+PKG_RELEASE:=4a
 PKG_MAINTAINER:=Val Kulkov <val.kulkov@gmail.com>
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_REVISION).tar.gz
@@ -168,13 +168,12 @@ define Package/imagemagick/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/ImageMagick-* $(1)/opt/etc/
 	$(CP) $(PKG_INSTALL_DIR)/$(IMlibdir)/* $(1)/$(IMlibdir)/
 	# Entware specific:
-	$(SED) 's,$(STAGING_DIR),,g; \
-		s,$(TOOLCHAIN_DIR),/opt,g; \
-		s,$(STAGING_DIR_HOST),/opt,' \
+	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g; \
+		s,$(STAGING_DIR_HOST),/opt,g; \
+		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=ImageMagick-$(PKG_VERSION),,g' \
 			$(1)/$(IMlibdir)/config-Q8/configure.xml
-	$(FIND) $(1)/$(IMlibdir) -iname "*.la" -exec $(SED) \
-		's,$(STAGING_DIR),,g; \
-		s,-L$(TOOLCHAIN_DIR)/lib ,,g' {} +
+	$(FIND) $(1)/$(IMlibdir) -type f -a -name "*.la" -exec $(SED) \
+		's,$(STAGING_DIR),,g;s,-L$(TOOLCHAIN_DIR)/lib ,,g' {} +
 endef
 
 $(eval $(call BuildPackage,imagemagick))
