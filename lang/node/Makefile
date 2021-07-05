@@ -4,17 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# XXX Entware specific: revert/rename patch for mips BE & soft-float support
+# XXX Entware specific: revert/rename patch for mipsel & soft-float support
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=node
-PKG_VERSION:=v14.16.1
+PKG_VERSION:=v14.17.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://nodejs.org/dist/$(PKG_VERSION)
-PKG_HASH:=e44adbbed6756c2c1a01258383e9f00df30c147b36e438f6369b5ef1069abac3
+PKG_HASH:=ddf1d2d56ddf35ecd98c5ea5ddcd690b245899f289559b4330c921255f5a247f
 
 PKG_MAINTAINER:=Hirokazu MORIKAWA <morikw2@gmail.com>, Adrian Panella <ianchi74@outlook.com>
 PKG_LICENSE:=MIT
@@ -144,8 +144,13 @@ define Package/node/install
 endef
 
 define Package/node-npm/install
-	$(INSTALL_DIR) $(1)/opt/lib/node_modules
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/* $(1)/opt/lib/node_modules/
+	$(INSTALL_DIR) $(1)/opt/lib/node_modules/npm
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/{package.json,LICENSE} \
+		$(1)/opt/lib/node_modules/npm/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/{AUTHORS,*.md} \
+		$(1)/opt/lib/node_modules/npm/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/node_modules/npm/{node_modules,bin,lib} \
+		$(1)/opt/lib/node_modules/npm/
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(LN) ../lib/node_modules/npm/bin/npm-cli.js $(1)/opt/bin/npm
 	$(LN) ../lib/node_modules/npm/bin/npx-cli.js $(1)/opt/bin/npx
