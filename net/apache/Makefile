@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=apache
 PKG_VERSION:=2.4.46
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 PKG_SOURCE_NAME:=httpd
 
 PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION).tar.bz2
@@ -314,6 +314,8 @@ define Package/apache/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/{apachectl,apache2} \
 							$(1)/opt/sbin
 	$(LN) -s /opt/sbin/apachectl $(1)/opt/etc/init.d/S80apache
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/dbmmanage
 endef
 
 define Package/apache-ab/install
