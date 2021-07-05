@@ -15,7 +15,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ruby
 PKG_VERSION:=3.0.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 # First two numbes
 PKG_ABI_VERSION:=$(subst $(space),.,$(wordlist 1, 2, $(subst .,$(space),$(PKG_VERSION))))
@@ -211,6 +211,13 @@ define Package/ruby-dev/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/ruby-$(PKG_ABI_VERSION) $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libruby.so $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/ruby-$(PKG_ABI_VERSION).pc $(1)/opt/lib/pkgconfig/
+	# Entware specific: fix path
+	$(SED) 's,$(TOOLCHAIN_DIR),/opt,g; \
+		s,$(ICONV_PREFIX),/opt,g; \
+		s,$(INTL_PREFIX),/opt,g; \
+		s,$(STAGING_DIR),,g; \
+		s,-L$(PKG_BUILD_DIR),,g' \
+			$(1)/opt/lib/pkgconfig/ruby-$(PKG_ABI_VERSION).pc
 endef
 
 RUBY_STDLIB :=
@@ -982,7 +989,13 @@ define RubyBuildPackage/install
 	  [ -n "$(2)" ] && cd $(2) && $(TAR) -xf - \
 	); \
 	$(FIND) $(2)/opt/lib/ruby -type f -exec $(SED) \
-		's,^\#!.*bash,\#!/opt/bin/bash,; \
+		's,$(STAGING_DIR),,g; \
+		 s,$(TOOLCHAIN_DIR),/opt,g; \
+		 s,$(STAGING_DIR_HOST),/opt,g; \
+		 s,$(ICONV_PREFIX),/opt,g; \
+		 s,$(INTL_PREFIX),/opt,g; \
+		 s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=$(PKG_NAME)-$(PKG_VERSION),,g; \
+		 s,^\#!.*bash,\#!/opt/bin/bash,; \
 		 s,^\#!.*ruby$$$$$$$$,\#!/opt/bin/ruby,; \
 		 s,^\#!.*env ruby,\#!/opt/bin/ruby,; \
 		 s,^\#!.*env,\#!/opt/bin/env,' {} \; \
