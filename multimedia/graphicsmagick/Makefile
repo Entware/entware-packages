@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=graphicsmagick
 PKG_VERSION:=1.3.35
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/GraphicsMagick-$(PKG_VERSION)
 PKG_SOURCE:=GraphicsMagick-$(PKG_VERSION).tar.bz2
@@ -98,6 +98,13 @@ define Package/graphicsmagick/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/$(GMlibdir)/* $(1)/$(GMlibdir)/
+	# XXX
+	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g; \
+		s,$(STAGING_DIR_HOST),/opt,g; \
+		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=GraphicsMagick-$(PKG_VERSION),,g' \
+			$(1)/opt/bin/GraphicsMagick-config
+	$(FIND) $(1)/$(GMlibdir) -type f -a -name "*.la" -exec $(SED) \
+		's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g' {} +
 endef
 
 $(eval $(call BuildPackage,graphicsmagick))
