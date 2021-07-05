@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
 PKG_VERSION:=3.21
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SAVANNAH/$(PKG_NAME)
@@ -70,6 +70,18 @@ define Package/gpsd-clients/description
   testing the GPS daemon.
 endef
 
+define Package/gpsd-utils
+  $(call Package/gpsd/Default)
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE:=GPS daemon utils
+endef
+
+define Package/gpsd-utils/description
+  $(call Package/gpsd/Default/description)
+  This package contains utilities for interacting with GPS daemon.
+endef
+
 define Package/libgps
   $(call Package/gpsd/Default)
   SECTION:=libs
@@ -82,9 +94,8 @@ define Package/libgps/description
   This package contains the libgps library.
 endef
 
-# Entware specific: help gpsd find the correct curses headers (CFLAGS...)
 SCONS_VARS += \
-	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
+	CFLAGS="$(TARGET_CFLAGS) $(EXTRA_CFLAGS) -L$(STAGING_DIR)/opt/lib" \
 	LINKFLAGS="$(TARGET_LDFLAGS)"
 
 SCONS_OPTIONS += \
@@ -106,7 +117,7 @@ SCONS_OPTIONS += \
 	implicit_link=no \
 	chrpath=no \
 	manbuild=no \
-	sysroot="$(STAGING_DIR)" \
+	sysroot="$(TOOLCHAIN_DIR)" \
 	target="$(TARGET_CROSS:-=)"
 
 define Build/InstallDev
@@ -139,6 +150,11 @@ define Package/gpsd-clients/install
 		$(1)/opt/bin/
 endef
 
+define Package/gpsd-utils/install
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/gpsdctl $(1)/opt/sbin/
+endef
+
 define Package/libgps/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgps.so.* $(1)/opt/lib/
@@ -146,4 +162,5 @@ endef
 
 $(eval $(call BuildPackage,gpsd))
 $(eval $(call BuildPackage,gpsd-clients))
+$(eval $(call BuildPackage,gpsd-utils))
 $(eval $(call BuildPackage,libgps))
