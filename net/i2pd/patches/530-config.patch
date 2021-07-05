@@ -22,7 +22,7 @@
  
  ## Logging configuration section
  ## By default logs go to stdout with level 'info' and higher
-@@ -25,17 +25,17 @@ tunnelsdir = /etc/i2pd/tunnels.d
+@@ -26,17 +26,17 @@ tunnelsdir = /etc/i2pd/tunnels.d
  ##  * stdout - print log entries to stdout
  ##  * file - log entries to a file
  ##  * syslog - use syslog, see man 3 syslog
@@ -38,21 +38,21 @@
  ## Write full CLF-formatted date and time to log (default: write only time)
  # logclftime = true
  
- ## Daemon mode. Router will go to background after start
+ ## Daemon mode. Router will go to background after start. Ignored on Windows
 -# daemon = true
 +daemon = true
  
  ## Specify a family, router belongs to (default - none)
  # family =
-@@ -195,9 +195,9 @@ verify = true
+@@ -208,9 +208,9 @@ verify = true
  [addressbook]
  ## AddressBook subscription URL for initial setup
  ## Default: reg.i2p at "mainline" I2P Network
 -# defaulturl = http://shx5vqsw7usdaunyzr2qmes2fq37oumybpudrd4jjj4e4vk4uusa.b32.i2p/hosts.txt
 +defaulturl = http://shx5vqsw7usdaunyzr2qmes2fq37oumybpudrd4jjj4e4vk4uusa.b32.i2p/hosts.txt
  ## Optional subscriptions URLs, separated by comma
--# subscriptions = http://inr.i2p/export/alive-hosts.txt,http://stats.i2p/cgi-bin/newhosts.txt,http://rus.i2p/hosts.txt
-+subscriptions = http://inr.i2p/export/alive-hosts.txt,http://stats.i2p/cgi-bin/newhosts.txt,http://rus.i2p/hosts.txt
+-# subscriptions = http://reg.i2p/hosts.txt,http://identiguy.i2p/hosts.txt,http://stats.i2p/cgi-bin/newhosts.txt,http://rus.i2p/hosts.txt
++subscriptions = http://reg.i2p/hosts.txt,http://identiguy.i2p/hosts.txt,http://stats.i2p/cgi-bin/newhosts.txt,http://rus.i2p/hosts.txt
  
  [limits]
  ## Maximum active transit sessions (default:2500)
