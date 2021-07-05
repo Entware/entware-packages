@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx-util
-PKG_VERSION:=1.5
+PKG_VERSION:=1.6
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Peter Stadler <peter.stadler@student.uibk.ac.at>
 
 include $(INCLUDE_DIR)/package.mk
-include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 CMAKE_OPTIONS+= -DUBUS=y
 CMAKE_OPTIONS+= -DVERSION=$(PKG_VERSION)
