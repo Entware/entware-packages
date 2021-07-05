@@ -1,0 +1,20 @@
+--- a/minissdp.c
++++ b/minissdp.c
+@@ -40,6 +40,17 @@
+ #include "codelength.h"
+ #include "macros.h"
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++/* SO_REUSEPORT since Linux 3.9 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,9,0)
++#define SO_REUSEPORT SO_REUSEADDR
++/* or #define SO_REUSEPORT 0x0200 */
++/* Allow local address and port reuse. */
++#endif
++
+ #ifndef MIN
+ #define MIN(x,y) (((x)<(y))?(x):(y))
+ #endif /* MIN */
