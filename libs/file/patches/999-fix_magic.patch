@@ -1,27 +1,343 @@
 --- a/magic/Magdir/clojure
 +++ b/magic/Magdir/clojure
-@@ -3,6 +3,10 @@
+@@ -3,20 +3,32 @@
  # URL:  https://clojure.org/
  # From: Jason Felice <jason.m.felice@gmail.com>
  
 +0	string/w	#!/opt/bin/clj	Clojure script text executable
 +!:mime	text/x-clojure
-+0	string/w	#!/opt/bin/clojure	Clojure script text executable
-+!:mime	text/x-clojure
  0	string/w	#!\ /usr/bin/clj	Clojure script text executable
  !:mime	text/x-clojure
  0	string/w	#!\ /usr/local/bin/clj	Clojure script text executable
-@@ -11,6 +15,10 @@
+ !:mime	text/x-clojure
++0	string/w	#!/opt/bin/clojure	Clojure script text executable
++!:mime	text/x-clojur
+ 0	string/w	#!\ /usr/bin/clojure	Clojure script text executable
  !:mime	text/x-clojure
  0	string/w	#!\ /usr/local/bin/clojure	Clojure script text executable
  !:mime	text/x-clojure
-+0	string/W	#!/opt/bin/clj	Clojure script text executable
-+!:mime	text/x-clojure
-+0	string/W	#!/opt/bin/clojure	Clojure script text executable
++0	string/W	#!/opt/bin/env\ clj	Clojure script text executable
 +!:mime	text/x-clojure
  0	string/W	#!/usr/bin/env\ clj	Clojure script text executable
  !:mime	text/x-clojure
++0	string/W	#!/opt/bin/env\ clojure	Clojure script text executable
++!:mime	text/x-clojure
  0	string/W	#!/usr/bin/env\ clojure	Clojure script text executable
+ !:mime	text/x-clojure
++0	string/W	#!\ /opt/bin/env\ clj	Clojure script text executable
++!:mime	text/x-clojure
+ 0	string/W	#!\ /usr/bin/env\ clj	Clojure script text executable
+ !:mime	text/x-clojure
++0	string/W	#!\ /opt/bin/env\ clojure	Clojure script text executable
++!:mime	text/x-clojure
+ 0	string/W	#!\ /usr/bin/env\ clojure	Clojure script text executable
+ !:mime	text/x-clojure
+ 
+--- a/magic/Magdir/commands
++++ b/magic/Magdir/commands
+@@ -4,20 +4,32 @@
+ # commands:  file(1) magic for various shells and interpreters
+ #
+ #0	string/w	:			shell archive or script for antique kernel text
++0	string/wt	#!/opt/bin/sh		POSIX shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /bin/sh		POSIX shell script text executable
+ !:mime	text/x-shellscript
++0	string/wb	#!/opt/bin/sh		POSIX shell script executable (binary data)
++!:mime	text/x-shellscript
+ 0	string/wb	#!\ /bin/sh		POSIX shell script executable (binary data)
+ !:mime	text/x-shellscript
+ 
++0	string/wt	#!/opt/bin/csh		C shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /bin/csh		C shell script text executable
+ !:mime	text/x-shellscript
+ 
+ # korn shell magic, sent by George Wu, gwu@clyde.att.com
++0	string/wt	#!/opt/bin/ksh		Korn shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /bin/ksh		Korn shell script text executable
+ !:mime	text/x-shellscript
++0	string/wb	#!/opt/bin/ksh		Korn shell script executable (binary data)
++!:mime	text/x-shellscript
+ 0	string/wb	#!\ /bin/ksh		Korn shell script executable (binary data)
+ !:mime	text/x-shellscript
+ 
++0	string/wt 	#!/opt/bin/tcsh		Tenex C shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt 	#!\ /bin/tcsh		Tenex C shell script text executable
+ !:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/bin/tcsh	Tenex C shell script text executable
+@@ -29,25 +41,37 @@
+ 
+ #
+ # zsh/ash/ae/nawk/gawk magic from cameron@cs.unsw.oz.au (Cameron Simpson)
++0	string/wt	#!/opt/bin/zsh		Paul Falstad's zsh script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /bin/zsh		Paul Falstad's zsh script text executable
+ !:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/bin/zsh	Paul Falstad's zsh script text executable
+ !:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/local/bin/zsh	Paul Falstad's zsh script text executable
+ !:mime	text/x-shellscript
++0	search/1	#!/opt/bin/env\ zsh	Paul Falstad's zsh script text executable
++!:mime	text/x-shellscript
+ 0	search/1	#!/usr/bin/env\ zsh	Paul Falstad's zsh script text executable
+ !:mime	text/x-shellscript
+ 
++0	string/wt	#!/opt/bin/ash		Neil Brown's ash script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/local/bin/ash	Neil Brown's ash script text executable
+ !:mime	text/x-shellscript
++0	string/wt	#!/opt/bin/ae		Neil Brown's ae script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/local/bin/ae	Neil Brown's ae script text executable
+ !:mime	text/x-shellscript
++0	string/wt	#!/opt/bin/nawk		new awk script text executable
++!:mime	text/x-nawk
+ 0	string/wt	#!\ /bin/nawk		new awk script text executable
+ !:mime	text/x-nawk
+ 0	string/wt	#!\ /usr/bin/nawk	new awk script text executable
+ !:mime	text/x-nawk
+ 0	string/wt	#!\ /usr/local/bin/nawk	new awk script text executable
+ !:mime	text/x-nawk
++0	string/wt	#!/opt/bin/gawk		GNU awk script text executable
++!:mime	text/x-gawk
+ 0	string/wt	#!\ /bin/gawk		GNU awk script text executable
+ !:mime	text/x-gawk
+ 0	string/wt	#!\ /usr/bin/gawk	GNU awk script text executable
+@@ -55,6 +79,8 @@
+ 0	string/wt	#!\ /usr/local/bin/gawk	GNU awk script text executable
+ !:mime	text/x-gawk
+ #
++0	string/wt	#!/opt/bin/awk		awk script text executable
++!:mime	text/x-awk
+ 0	string/wt	#!\ /bin/awk		awk script text executable
+ !:mime	text/x-awk
+ 0	string/wt	#!\ /usr/bin/awk	awk script text executable
+@@ -62,11 +88,16 @@
+ 0	regex/4096	=^[\040\t\f\r\n]{0,100}BEGIN[\040\t\f\r\n]{0,100}[{]	awk or perl script text
+ 
+ # AT&T Bell Labs' Plan 9 shell
++0	string/wt	#!/opt/bin/rc	Plan 9 rc shell script text executable
+ 0	string/wt	#!\ /bin/rc	Plan 9 rc shell script text executable
+ 
+ # bash shell magic, from Peter Tobias (tobias@server.et-inf.fho-emden.de)
++0	string/wt	#!/opt/bin/bash	Bourne-Again shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /bin/bash	Bourne-Again shell script text executable
+ !:mime	text/x-shellscript
++0	string/wb	#!/opt/bin/bash	Bourne-Again shell script executable (binary data)
++!:mime	text/x-shellscript
+ 0	string/wb	#!\ /bin/bash	Bourne-Again shell script executable (binary data)
+ !:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/bin/bash	Bourne-Again shell script text executable
+@@ -86,23 +117,35 @@
+ 
+ # Fish shell magic
+ # From: Benjamin Lowry <ben@ben.gmbh>
++0	string/wt	#!/opt/bin/fish		fish shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/local/bin/fish		fish shell script text executable
+ !:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/bin/fish		fish shell script text executable
+ !:mime	text/x-shellscript
++0	string/wt	#!/opt/bin/env\ fish		fish shell script text executable
++!:mime	text/x-shellscript
+ 0	string/wt	#!\ /usr/bin/env\ fish		fish shell script text executable
+ !:mime	text/x-shellscript
+ 
+ 
++0	search/1/wt	#!/opt/bin/tclsh	Tcl/Tk script text executable
++!:mime  text/x-tcl
+ 0	search/1/wt	#!\ /usr/bin/tclsh	Tcl/Tk script text executable
+ !:mime  text/x-tcl
+ 
++0	search/1/wt	#!/opt/bin/texlua	LuaTex script text executable
++!:mime	text/x-luatex
+ 0	search/1/wt	#!\ /usr/bin/texlua	LuaTex script text executable
+ !:mime	text/x-luatex
+ 
++0	search/1/wt	#!/opt/bin/luatex	LuaTex script text executable
++!:mime	text/x-luatex
+ 0	search/1/wt	#!\ /usr/bin/luatex	LuaTex script text executable
+ !:mime	text/x-luatex
+ 
++0	search/1/wt	#!/opt/bin/stap	Systemtap script text executable
++!:mime  text/x-systemtap
+ 0	search/1/wt	#!\ /usr/bin/stap	Systemtap script text executable
+ !:mime  text/x-systemtap
+ 
+@@ -117,6 +160,9 @@
+ !:mime	text/x-php
+ 0	search/1	=<?\r			PHP script text
+ !:mime	text/x-php
++0	search/1/w	#!/opt/bin/php		PHP script text executable
++!:strength + 10
++!:mime	text/x-php
+ 0	search/1/w	#!\ /usr/local/bin/php	PHP script text executable
+ !:strength + 10
+ !:mime	text/x-php
+@@ -138,6 +184,7 @@
+ # Type: Pdmenu
+ # URL:  https://packages.debian.org/pdmenu
+ # From: Edward Betts <edward@debian.org>
++0	string		#!/opt/bin/pdmenu	Pdmenu configuration file text
+ 0	string		#!/usr/bin/pdmenu	Pdmenu configuration file text
+ 
+ # From Danny Weldon
+--- a/magic/Magdir/javascript
++++ b/magic/Magdir/javascript
+@@ -3,16 +3,24 @@
+ # $File: javascript,v 1.2 2019/08/05 10:34:26 christos Exp $
+ # javascript:  magic for javascript and node.js scripts.
+ #
++0	search/1/w	#!/opt/bin/node		Node.js script text executable
++!:mime application/javascript
+ 0	search/1/w	#!/bin/node		Node.js script text executable
+ !:mime application/javascript
+ 0	search/1/w	#!/usr/bin/node		Node.js script text executable
+ !:mime application/javascript
++0	search/1/w	#!/opt/bin/nodejs	Node.js script text executable
++!:mime application/javascript
+ 0	search/1/w	#!/bin/nodejs		Node.js script text executable
+ !:mime application/javascript
+ 0	search/1/w	#!/usr/bin/nodejs	Node.js script text executable
+ !:mime application/javascript
++0	search/1	#!/opt/bin/node		Node.js script text executable
++!:mime application/javascript
+ 0	search/1	#!/usr/bin/env\ node	Node.js script text executable
+ !:mime application/javascript
++0	search/1	#!/opt/bin/nodejs	Node.js script text executable
++!:mime application/javascript
+ 0	search/1	#!/usr/bin/env\ nodejs	Node.js script text executable
+ !:mime application/javascript
+ # Hermes by Facebook https://hermesengine.dev/
+--- a/magic/Magdir/lua
++++ b/magic/Magdir/lua
+@@ -6,10 +6,14 @@
+ # From: Reuben Thomas <rrt@sc3d.org>, Seo Sanghyeon <tinuviel@sparcs.kaist.ac.kr>
+ 
+ # Lua scripts
++0	search/1/w	#!/opt/bin/lua		Lua script text executable
++!:mime	text/x-lua
+ 0	search/1/w	#!\ /usr/bin/lua	Lua script text executable
+ !:mime	text/x-lua
+ 0	search/1/w	#!\ /usr/local/bin/lua	Lua script text executable
+ !:mime	text/x-lua
++0	search/1	#!/opt/bin/lua		Lua script text executable
++!:mime	text/x-lua
+ 0	search/1	#!/usr/bin/env\ lua	Lua script text executable
+ !:mime	text/x-lua
+ 0	search/1	#!\ /usr/bin/env\ lua	Lua script text executable
+--- a/magic/Magdir/mail.news
++++ b/magic/Magdir/mail.news
+@@ -81,4 +81,4 @@
+ # File format spec: https://wiki.dovecot.org/Design/Dcrypt/#File_format
+ # From: Stephen Gildea
+ 0	string	CRYPTED\003\007		Dovecot encrypted message
+->9	byte	xu			\b, dcrypt version %d
++>9	byte	x			\b, dcrypt version %d
+--- a/magic/Magdir/perl
++++ b/magic/Magdir/perl
+@@ -5,6 +5,8 @@
+ # The `eval' lines recognizes an outrageously clever hack.
+ # Keith Waclena <keith@cerberus.uchicago.edu>
+ # Send additions to <perl5-porters@perl.org>
++0	search/1024	eval\ "exec\ /opt/bin/perl	Perl script text
++!:mime	text/x-perl
+ 0	search/1024	eval\ "exec\ perl		Perl script text
+ !:mime	text/x-perl
+ 0	search/1024	eval\ "exec\ /bin/perl		Perl script text
+@@ -13,6 +15,8 @@
+ !:mime	text/x-perl
+ 0	search/1024	eval\ "exec\ /usr/local/bin/perl	Perl script text
+ !:mime	text/x-perl
++0	search/1024	eval\ 'exec\ /opt/bin/perl	Perl script text
++!:mime	text/x-perl
+ 0	search/1024	eval\ 'exec\ perl		Perl script text
+ !:mime	text/x-perl
+ 0	search/1024	eval\ 'exec\ /bin/perl		Perl script text
+@@ -23,6 +27,8 @@
+ !:mime	text/x-perl
+ 0	search/1024	eval\ '(exit\ $?0)'\ &&\ eval\ 'exec	Perl script text
+ !:mime	text/x-perl
++0	string	#!/opt/bin/perl		Perl script text executable
++!:mime	text/x-perl
+ 0	string	#!/usr/bin/env\ perl	Perl script text executable
+ !:mime	text/x-perl
+ 0	string	#!\ /usr/bin/env\ perl	Perl script text executable
+--- a/magic/Magdir/python
++++ b/magic/Magdir/python
+@@ -216,12 +216,18 @@
+ 0	belong		0x610d0d0a	python 3.9 byte-compiled
+ !:mime text/x-bytecode.python
+ 
++0	search/1/w	#!\040/opt/bin/python	Python script text executable
++!:strength + 15
++!:mime text/x-script.python
+ 0	search/1/w	#!\040/usr/bin/python	Python script text executable
+ !:strength + 15
+ !:mime text/x-script.python
+ 0	search/1/w	#!\040/usr/local/bin/python	Python script text executable
+ !:strength + 15
+ !:mime text/x-script.python
++0	search/10/w	#!\040/opt/bin/env\040python	Python script text executable
++!:strength + 15
++!:mime text/x-script.python
+ 0	search/10/w	#!\040/usr/bin/env\040python	Python script text executable
+ !:strength + 15
+ !:mime text/x-script.python
+--- a/magic/Magdir/ruby
++++ b/magic/Magdir/ruby
+@@ -6,12 +6,18 @@
+ # From: Reuben Thomas <rrt@sc3d.org>
+ 
+ # Ruby scripts
++0	search/1/w	#!/opt/bin/ruby				Ruby script text executable
++!:strength + 15
++!:mime text/x-ruby
+ 0	search/1/w	#!\ /usr/bin/ruby				Ruby script text executable
+ !:strength + 15
+ !:mime text/x-ruby
+ 0	search/1/w	#!\ /usr/local/bin/ruby	Ruby script text executable
+ !:strength + 15
+ !:mime text/x-ruby
++0	search/1	#!/opt/bin/ruby				Ruby script text executable
++!:strength + 15
++!:mime text/x-ruby
+ 0	search/1	#!/usr/bin/env\ ruby				Ruby script text executable
+ !:strength + 15
+ !:mime text/x-ruby
+--- a/magic/Magdir/tcl
++++ b/magic/Magdir/tcl
+@@ -4,18 +4,26 @@
+ # From: gustaf neumann
+ 
+ # Tcl scripts
++0	search/1/w	#!/opt/bin/tcl		Tcl script text executable
++!:mime	text/x-tcl
+ 0	search/1/w	#!\ /usr/bin/tcl	Tcl script text executable
+ !:mime	text/x-tcl
+ 0	search/1/w	#!\ /usr/local/bin/tcl	Tcl script text executable
+ !:mime	text/x-tcl
++0	search/1	#!/opt/bin/tcl		Tcl script text executable
++!:mime	text/x-tcl
+ 0	search/1	#!/usr/bin/env\ tcl	Tcl script text executable
+ !:mime	text/x-tcl
+ 0	search/1	#!\ /usr/bin/env\ tcl	Tcl script text executable
+ !:mime	text/x-tcl
++0	search/1/w	#!/opt/bin/wish		Tcl/Tk script text executable
++!:mime	text/x-tcl
+ 0	search/1/w	#!\ /usr/bin/wish	Tcl/Tk script text executable
+ !:mime	text/x-tcl
+ 0	search/1/w	#!\ /usr/local/bin/wish	Tcl/Tk script text executable
+ !:mime	text/x-tcl
++0	search/1	#!/opt/bin/wish		Tcl/Tk script text executable
++!:mime	text/x-tcl
+ 0	search/1	#!/usr/bin/env\ wish	Tcl/Tk script text executable
+ !:mime	text/x-tcl
+ 0	search/1	#!\ /usr/bin/env\ wish	Tcl/Tk script text executable
 --- a/magic/Magdir/varied.script
 +++ b/magic/Magdir/varied.script
 @@ -35,18 +35,30 @@
@@ -55,307 +371,3 @@
  0	string/b	#!\ /usr/bin/env	a
  >16	string/b	>\0			%s script executable (binary data)
  !:strength / 10
---- a/magic/Magdir/ruby
-+++ b/magic/Magdir/ruby
-@@ -6,12 +6,18 @@
- # From: Reuben Thomas <rrt@sc3d.org>
- 
- # Ruby scripts
-+0	search/1/w	#!/opt/bin/ruby				Ruby script text executable
-+!:strength + 15
-+!:mime text/x-ruby
- 0	search/1/w	#!\ /usr/bin/ruby				Ruby script text executable
- !:strength + 15
- !:mime text/x-ruby
- 0	search/1/w	#!\ /usr/local/bin/ruby	Ruby script text executable
- !:strength + 15
- !:mime text/x-ruby
-+0	search/1	#!/opt/bin/ruby				Ruby script text executable
-+!:strength + 15
-+!:mime text/x-ruby
- 0	search/1	#!/usr/bin/env\ ruby				Ruby script text executable
- !:strength + 15
- !:mime text/x-ruby
---- a/magic/Magdir/commands
-+++ b/magic/Magdir/commands
-@@ -4,20 +4,32 @@
- # commands:  file(1) magic for various shells and interpreters
- #
- #0	string/w	:			shell archive or script for antique kernel text
-+0	string/wt	#!/opt/bin/sh		POSIX shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wb	#!/opt/bin/sh		POSIX shell script executable (binary data)
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/sh		POSIX shell script text executable
- !:mime	text/x-shellscript
- 0	string/wb	#!\ /bin/sh		POSIX shell script executable (binary data)
- !:mime	text/x-shellscript
- 
-+0	string/wt	#!/opt/bin/csh		C shell script text executable
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/csh		C shell script text executable
- !:mime	text/x-shellscript
- 
- # korn shell magic, sent by George Wu, gwu@clyde.att.com
-+0	string/wt	#!/opt/bin/ksh		Korn shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wb	#!/opt/bin/ksh		Korn shell script executable (binary data)
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/ksh		Korn shell script text executable
- !:mime	text/x-shellscript
- 0	string/wb	#!\ /bin/ksh		Korn shell script executable (binary data)
- !:mime	text/x-shellscript
- 
-+0	string/wt 	#!/opt/bin/tcsh		Tenex C shell script text executable
-+!:mime	text/x-shellscript
- 0	string/wt 	#!\ /bin/tcsh		Tenex C shell script text executable
- !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/tcsh	Tenex C shell script text executable
-@@ -29,6 +41,8 @@
- 
- #
- # zsh/ash/ae/nawk/gawk magic from cameron@cs.unsw.oz.au (Cameron Simpson)
-+0	string/wt	#!/opt/bin/zsh		Paul Falstad's zsh script text executable
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/zsh		Paul Falstad's zsh script text executable
- !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/zsh	Paul Falstad's zsh script text executable
-@@ -38,16 +52,24 @@
- 0	search/1	#!/usr/bin/env\ zsh	Paul Falstad's zsh script text executable
- !:mime	text/x-shellscript
- 
-+0	string/wt	#!/opt/bin/ash		Neil Brown's ash script text executable
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/local/bin/ash	Neil Brown's ash script text executable
- !:mime	text/x-shellscript
-+0	string/wt	#!/opt/bin/ae		Neil Brown's ae script text executable
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/local/bin/ae	Neil Brown's ae script text executable
- !:mime	text/x-shellscript
-+0	string/wt	#!/opt/bin/nawk		new awk script text executable
-+!:mime	text/x-nawk
- 0	string/wt	#!\ /bin/nawk		new awk script text executable
- !:mime	text/x-nawk
- 0	string/wt	#!\ /usr/bin/nawk	new awk script text executable
- !:mime	text/x-nawk
- 0	string/wt	#!\ /usr/local/bin/nawk	new awk script text executable
- !:mime	text/x-nawk
-+0	string/wt	#!/opt/bin/gawk		GNU awk script text executable
-+!:mime	text/x-gawk
- 0	string/wt	#!\ /bin/gawk		GNU awk script text executable
- !:mime	text/x-gawk
- 0	string/wt	#!\ /usr/bin/gawk	GNU awk script text executable
-@@ -55,6 +77,8 @@
- 0	string/wt	#!\ /usr/local/bin/gawk	GNU awk script text executable
- !:mime	text/x-gawk
- #
-+0	string/wt	#!/opt/bin/awk		awk script text executable
-+!:mime	text/x-awk
- 0	string/wt	#!\ /bin/awk		awk script text executable
- !:mime	text/x-awk
- 0	string/wt	#!\ /usr/bin/awk	awk script text executable
-@@ -62,9 +86,14 @@
- 0	regex/4096	=^[\040\t\f\r\n]{0,100}BEGIN[\040\t\f\r\n]{0,100}[{]	awk or perl script text
- 
- # AT&T Bell Labs' Plan 9 shell
-+0	string/wt	#!/opt/bin/rc	Plan 9 rc shell script text executable
- 0	string/wt	#!\ /bin/rc	Plan 9 rc shell script text executable
- 
- # bash shell magic, from Peter Tobias (tobias@server.et-inf.fho-emden.de)
-+0	string/wt	#!/opt/bin/bash	Bourne-Again shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wb	#!/opt/bin/bash	Bourne-Again shell script executable (binary data)
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/bash	Bourne-Again shell script text executable
- !:mime	text/x-shellscript
- 0	string/wb	#!\ /bin/bash	Bourne-Again shell script executable (binary data)
-@@ -108,6 +137,42 @@
- 
- 
- 
-+# Fish shell magic
-+# From: Benjamin Lowry <ben@ben.gmbh>
-+0	string/wt	#!\ /opt/bin/fish		fish shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wt	#!\ /usr/local/bin/fish		fish shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wt	#!\ /usr/bin/fish		fish shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wt	#!\ /opt/bin/env\ fish		fish shell script text executable
-+!:mime	text/x-shellscript
-+0	string/wt	#!\ /usr/bin/env\ fish		fish shell script text executable
-+!:mime	text/x-shellscript
-+
-+
-+0	search/1/wt	#!\ /opt/bin/tclsh	Tcl/Tk script text executable
-+!:mime  text/x-tcl
-+0	search/1/wt	#!\ /usr/bin/tclsh	Tcl/Tk script text executable
-+!:mime  text/x-tcl
-+
-+0	search/1/wt	#!\ /opt/bin/texlua	LuaTex script text executable
-+!:mime	text/x-luatex
-+0	search/1/wt	#!\ /usr/bin/texlua	LuaTex script text executable
-+!:mime	text/x-luatex
-+
-+0	search/1/wt	#!\ /opt/bin/luatex	LuaTex script text executable
-+!:mime	text/x-luatex
-+0	search/1/wt	#!\ /usr/bin/luatex	LuaTex script text executable
-+!:mime	text/x-luatex
-+
-+0	search/1/wt	#!\ /opt/bin/stap	Systemtap script text executable
-+!:mime  text/x-systemtap
-+0	search/1/wt	#!\ /usr/bin/stap	Systemtap script text executable
-+!:mime  text/x-systemtap
-+
-+
-+
- # PHP scripts
- # Ulf Harnhammar <ulfh@update.uu.se>
- 0	search/1/c	=<?php			PHP script text
-@@ -117,6 +182,9 @@
- !:mime	text/x-php
- 0	search/1	=<?\r			PHP script text
- !:mime	text/x-php
-+0	search/1/w	#!/opt/bin/php		PHP script text executable
-+!:strength + 10
-+!:mime	text/x-php
- 0	search/1/w	#!\ /usr/local/bin/php	PHP script text executable
- !:strength + 10
- !:mime	text/x-php
-@@ -138,6 +206,7 @@
- # Type: Pdmenu
- # URL:  https://packages.debian.org/pdmenu
- # From: Edward Betts <edward@debian.org>
-+0	string		#!/opt/bin/pdmenu	Pdmenu configuration file text
- 0	string		#!/usr/bin/pdmenu	Pdmenu configuration file text
- 
- # From Danny Weldon
---- a/magic/Magdir/tcl
-+++ b/magic/Magdir/tcl
-@@ -4,18 +4,26 @@
- # From: gustaf neumann
- 
- # Tcl scripts
-+0	search/1/w	#!/opt/bin/tcl		Tcl script text executable
-+!:mime	text/x-tcl
- 0	search/1/w	#!\ /usr/bin/tcl	Tcl script text executable
- !:mime	text/x-tcl
- 0	search/1/w	#!\ /usr/local/bin/tcl	Tcl script text executable
- !:mime	text/x-tcl
-+0	search/1	#!/opt/bin/tcl		Tcl script text executable
-+!:mime	text/x-tcl
- 0	search/1	#!/usr/bin/env\ tcl	Tcl script text executable
- !:mime	text/x-tcl
- 0	search/1	#!\ /usr/bin/env\ tcl	Tcl script text executable
- !:mime	text/x-tcl
-+0	search/1/w	#!/opt/bin/wish		Tcl/Tk script text executable
-+!:mime	text/x-tcl
- 0	search/1/w	#!\ /usr/bin/wish	Tcl/Tk script text executable
- !:mime	text/x-tcl
- 0	search/1/w	#!\ /usr/local/bin/wish	Tcl/Tk script text executable
- !:mime	text/x-tcl
-+0	search/1	#!/opt/bin/wish		Tcl/Tk script text executable
-+!:mime	text/x-tcl
- 0	search/1	#!/usr/bin/env\ wish	Tcl/Tk script text executable
- !:mime	text/x-tcl
- 0	search/1	#!\ /usr/bin/env\ wish	Tcl/Tk script text executable
---- a/magic/Magdir/lua
-+++ b/magic/Magdir/lua
-@@ -6,10 +6,14 @@
- # From: Reuben Thomas <rrt@sc3d.org>, Seo Sanghyeon <tinuviel@sparcs.kaist.ac.kr>
- 
- # Lua scripts
-+0	search/1/w	#!/opt/bin/lua		Lua script text executable
-+!:mime	text/x-lua
- 0	search/1/w	#!\ /usr/bin/lua	Lua script text executable
- !:mime	text/x-lua
- 0	search/1/w	#!\ /usr/local/bin/lua	Lua script text executable
- !:mime	text/x-lua
-+0	search/1	#!/opt/bin/lua		Lua script text executable
-+!:mime	text/x-lua
- 0	search/1	#!/usr/bin/env\ lua	Lua script text executable
- !:mime	text/x-lua
- 0	search/1	#!\ /usr/bin/env\ lua	Lua script text executable
---- a/magic/Magdir/perl
-+++ b/magic/Magdir/perl
-@@ -5,6 +5,8 @@
- # The `eval' lines recognizes an outrageously clever hack.
- # Keith Waclena <keith@cerberus.uchicago.edu>
- # Send additions to <perl5-porters@perl.org>
-+0	search/1024	eval\ "exec\ /opt/bin/perl	Perl script text
-+!:mime	text/x-perl
- 0	search/1024	eval\ "exec\ perl		Perl script text
- !:mime	text/x-perl
- 0	search/1024	eval\ "exec\ /bin/perl		Perl script text
-@@ -13,6 +15,8 @@
- !:mime	text/x-perl
- 0	search/1024	eval\ "exec\ /usr/local/bin/perl	Perl script text
- !:mime	text/x-perl
-+0	search/1024	eval\ 'exec\ /opt/bin/perl	Perl script text
-+!:mime	text/x-perl
- 0	search/1024	eval\ 'exec\ perl		Perl script text
- !:mime	text/x-perl
- 0	search/1024	eval\ 'exec\ /bin/perl		Perl script text
-@@ -23,6 +27,8 @@
- !:mime	text/x-perl
- 0	search/1024	eval\ '(exit\ $?0)'\ &&\ eval\ 'exec	Perl script text
- !:mime	text/x-perl
-+0	string	#!/opt/bin/perl		Perl script text executable
-+!:mime	text/x-perl
- 0	string	#!/usr/bin/env\ perl	Perl script text executable
- !:mime	text/x-perl
- 0	string	#!\ /usr/bin/env\ perl	Perl script text executable
---- a/magic/Magdir/javascript
-+++ b/magic/Magdir/javascript
-@@ -3,16 +3,24 @@
- # $File: javascript,v 1.2 2019/08/05 10:34:26 christos Exp $
- # javascript:  magic for javascript and node.js scripts.
- #
-+0	search/1/w	#!/opt/bin/node		Node.js script text executable
-+!:mime application/javascript
- 0	search/1/w	#!/bin/node		Node.js script text executable
- !:mime application/javascript
- 0	search/1/w	#!/usr/bin/node		Node.js script text executable
- !:mime application/javascript
-+0	search/1/w	#!/opt/bin/nodejs	Node.js script text executable
-+!:mime application/javascript
- 0	search/1/w	#!/bin/nodejs		Node.js script text executable
- !:mime application/javascript
- 0	search/1/w	#!/usr/bin/nodejs	Node.js script text executable
- !:mime application/javascript
-+0	search/1	#!/opt/bin/node		Node.js script text executable
-+!:mime application/javascript
- 0	search/1	#!/usr/bin/env\ node	Node.js script text executable
- !:mime application/javascript
-+0	search/1	#!/opt/bin/nodejs	Node.js script text executable
-+!:mime application/javascript
- 0	search/1	#!/usr/bin/env\ nodejs	Node.js script text executable
- !:mime application/javascript
- # Hermes by Facebook https://hermesengine.dev/
---- a/magic/Magdir/python
-+++ b/magic/Magdir/python
-@@ -216,12 +216,18 @@
- 0	belong		0x610d0d0a	python 3.9 byte-compiled
- !:mime text/x-bytecode.python
- 
-+0	search/1/w	#!\040/opt/bin/python	Python script text executable
-+!:strength + 15
-+!:mime text/x-script.python
- 0	search/1/w	#!\040/usr/bin/python	Python script text executable
- !:strength + 15
- !:mime text/x-script.python
- 0	search/1/w	#!\040/usr/local/bin/python	Python script text executable
- !:strength + 15
- !:mime text/x-script.python
-+0	search/10/w	#!\040/opt/bin/env\040python	Python script text executable
-+!:strength + 15
-+!:mime text/x-script.python
- 0	search/10/w	#!\040/usr/bin/env\040python	Python script text executable
- !:strength + 15
- !:mime text/x-script.python
---- a/magic/Magdir/mail.news
-+++ b/magic/Magdir/mail.news
-@@ -83,2 +83,2 @@
- 0	string	CRYPTED\003\007		Dovecot encrypted message
-->9	byte	xu			\b, dcrypt version %d
-+>9	byte	x			\b, dcrypt version %d
