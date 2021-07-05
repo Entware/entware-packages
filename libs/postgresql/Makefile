@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postgresql
 PKG_VERSION:=13.2
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=3
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=PostgreSQL
 PKG_CPE_ID:=cpe:/a:postgresql:postgresql
@@ -216,6 +216,11 @@ define Package/pgsql-server/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/postgresql \
 		$(1)/opt/lib/
+	# XXX
+	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g; \
+		s,$(STAGING_DIR_HOST),/opt,g;s,$(PKG_BUILD_DIR)/src,/opt,g; \
+		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=$(PKG_NAME)-$(PKG_VERSION),,g' \
+			$(1)/opt/lib/postgresql/pgxs/src/Makefile.global
 
 #	$(INSTALL_DIR) $(1)/lib/functions
 #	$(INSTALL_BIN) ./files/postgresql.sh $(1)/lib/functions/
