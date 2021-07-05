@@ -1,0 +1,32 @@
+--- a/include/config.h
++++ b/include/config.h
+@@ -133,7 +133,7 @@
+  * set it.
+  */
+ #define DEFAULT_GSSAPISERVICENAME      "rcmd"
+-#define DEFAULT_GSSAPIKEYTAB           "FILE:/etc/sockd.keytab"
++#define DEFAULT_GSSAPIKEYTAB           "FILE:/opt/etc/sockd.keytab"
+ 
+ 
+ #define DEFAULT_PAM_USER "rhostusr"
+@@ -315,8 +315,8 @@
+ /*
+  * Name to give as ca cert file or cert db path
+  */
+-#define DEFAULT_LDAP_CACERTFILE    "/etc/ssl/certs/cert.pem"
+-#define DEFAULT_LDAP_CERTDBPATH    "/etc/certs"
++#define DEFAULT_LDAP_CACERTFILE    "/opt/etc/ssl/certs/cert.pem"
++#define DEFAULT_LDAP_CERTDBPATH    "/opt/etc/certs"
+ 
+ /*
+  * Name to give as USER when using PAM and username is not available
+--- a/lib/iface.c
++++ b/lib/iface.c
+@@ -213,6 +213,7 @@ get_ifconfig_output(ifname, output, outp
+    FILE *fp;
+    size_t i, rc;
+    const char *ifconfig_paths[] = { "ifconfig",
++                                    "/opt/sbin/ifconfig",
+                                     "/sbin/ifconfig",
+                                     "/usr/sbin/ifconfig"
+    };
