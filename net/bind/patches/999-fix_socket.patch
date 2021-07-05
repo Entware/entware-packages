@@ -1,6 +1,6 @@
 --- a/lib/isc/unix/socket.c
 +++ b/lib/isc/unix/socket.c
-@@ -104,6 +104,17 @@ typedef struct {
+@@ -105,6 +105,17 @@ typedef struct {
  #define USE_SELECT
  #endif /* HAVE_KQUEUE */
  
