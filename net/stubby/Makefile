@@ -5,22 +5,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stubby
-PKG_VERSION:=0.3.0
-PKG_RELEASE:=1
+PKG_VERSION:=0.4.0
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/getdnsapi/$(PKG_NAME)
 PKG_SOURCE_VERSION:=v$(PKG_VERSION)
-PKG_MIRROR_HASH:=f1585aa6881bf39c2c8f99df045d5739bb78403417a1e827644cb202fa4280f0
+PKG_MIRROR_HASH:=bc5f604da1b70287a6c3d89eac2e13ce8bca52840e7b72ab098a3deeb9935082
 
-PKG_MAINTAINER:=Jonathan Underwood <jonathan.underwood@gmail.com>
+PKG_MAINTAINER:=
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 
-CMAKE_INSTALL:=1
-
 include $(INCLUDE_DIR)/package.mk
-include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/stubby/Default
   TITLE:=stubby
@@ -46,6 +44,11 @@ define Package/stubby/conffiles
 /opt/etc/stubby/stubby.yml
 endef
 
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	rm $(PKG_BUILD_DIR)/cmake/modules/FindLibidn2.cmake $(PKG_BUILD_DIR)/cmake/modules/FindLibunbound.cmake
+endef
+
 define Package/stubby/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/stubby $(1)/opt/sbin/stubby
@@ -54,6 +57,8 @@ define Package/stubby/install
 	$(INSTALL_DIR) $(1)/opt/etc/stubby
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/stubby/stubby.yml $(1)/opt/etc/stubby/stubby.yml.default
 	$(INSTALL_DATA) ./files/stubby.yml $(1)/opt/etc/stubby/stubby.yml
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/stubby.conf $(1)/etc/config/stubby
 endef
 
 $(eval $(call BuildPackage,stubby))
