@@ -17,6 +17,7 @@
 #define AUC_VERSION "unknown"
 #endif
 
+#include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <dlfcn.h>
@@ -237,6 +238,7 @@ enum {
 	TARGET_METADATA_VERSION,
 	TARGET_REQUEST_HASH,
 	TARGET_SOURCE_DATE_EPOCH,
+	TARGET_QUEUE_POSITION,
 	TARGET_STATUS,
 	TARGET_STDERR,
 	TARGET_STDOUT,
@@ -262,6 +264,7 @@ static const struct blobmsg_policy target_policy[__TARGET_MAX] = {
 	[TARGET_METADATA_VERSION] = { .name = "metadata_version", .type = BLOBMSG_TYPE_INT32 },
 	[TARGET_REQUEST_HASH] = { .name = "request_hash", .type = BLOBMSG_TYPE_STRING },
 	[TARGET_SOURCE_DATE_EPOCH] = { .name = "source_date_epoch", .type = BLOBMSG_TYPE_STRING },
+	[TARGET_QUEUE_POSITION] = { .name = "queue_position", .type = BLOBMSG_TYPE_INT32 },
 	[TARGET_STATUS] = { .name = "status", .type = BLOBMSG_TYPE_STRING },
 	[TARGET_STDERR] = { .name = "stderr", .type = BLOBMSG_TYPE_STRING },
 	[TARGET_STDOUT] = { .name = "stdout", .type = BLOBMSG_TYPE_STRING },
@@ -359,6 +362,58 @@ static int load_config() {
 	return 0;
 }
 
+/*
+ * libdpkg - Debian packaging suite library routines
+ * vercmp.c - comparison of version numbers
+ *
+ * Copyright (C) 1995 Ian Jackson <iwj10@cus.cam.ac.uk>
+ */
+
+/* assume ascii; warning: evaluates x multiple times! */
+#define order(x) ((x) == '~' ? -1 \
+		: isdigit((x)) ? 0 \
+		: !(x) ? 0 \
+		: isalpha((x)) ? (x) \
+		: (x) + 256)
+
+static int verrevcmp(const char *val, const char *ref)
+{
+	if (!val)
+		val = "";
+	if (!ref)
+		ref = "";
+
+	while (*val || *ref) {
+		int first_diff = 0;
+
+		while ((*val && !isdigit(*val)) || (*ref && !isdigit(*ref))) {
+			int vc = order(*val), rc = order(*ref);
+			if (vc != rc)
+				return vc - rc;
+			val++;
+			ref++;
+		}
+
+		while (*val == '0')
+			val++;
+		while (*ref == '0')
+			ref++;
+		while (isdigit(*val) && isdigit(*ref)) {
+			if (!first_diff)
+				first_diff = *val - *ref;
+			val++;
+			ref++;
+		}
+		if (isdigit(*val))
+			return 1;
+		if (isdigit(*ref))
+			return -1;
+		if (first_diff)
+			return first_diff;
+	}
+	return 0;
+}
+
 
 /**
  * UBUS response callbacks
@@ -371,6 +426,9 @@ static int load_config() {
 #define ANSI_COLOR_RESET ANSI_ESC "[0m"
 #define ANSI_COLOR_RED ANSI_ESC "[1;31m"
 #define ANSI_COLOR_GREEN ANSI_ESC "[1;32m"
+#define ANSI_CURSOR_SAFE "[s"
+#define ANSI_CURSOR_RESTORE "[u"
+#define ANSI_ERASE_LINE "[K"
 
 #define PKG_UPGRADE 0x1
 #define PKG_DOWNGRADE 0x2
@@ -409,7 +467,7 @@ static void pkglist_check_cb(struct ubus_request *req, int type, struct blob_att
 			continue;
 		}
 
-		cmpres = strcmp(blobmsg_get_string(cur), pkg->version);
+		cmpres = verrevcmp(blobmsg_get_string(cur), pkg->version);
 		if (cmpres < 0)
 			*status |= PKG_UPGRADE;
 
@@ -474,12 +532,6 @@ static void board_cb(struct ubus_request *req, int type, struct blob_attr *msg) 
 
 	blobmsg_parse(board_policy, __BOARD_MAX, tb, blob_data(msg), blob_len(msg));
 
-	if (!tb[BOARD_BOARD_NAME]) {
-		fprintf(stderr, "No board name received\n");
-		rc=-ENODATA;
-		return;
-	}
-	board_name = strdup(blobmsg_get_string(tb[BOARD_BOARD_NAME]));
 
 	if (!tb[BOARD_RELEASE]) {
 		fprintf(stderr, "No release received\n");
@@ -503,6 +555,21 @@ static void board_cb(struct ubus_request *req, int type, struct blob_attr *msg) 
 	distribution = strdup(blobmsg_get_string(rel[RELEASE_DISTRIBUTION]));
 	version = strdup(blobmsg_get_string(rel[RELEASE_VERSION]));
 	revision = strdup(blobmsg_get_string(rel[RELEASE_REVISION]));
+
+	if (!strcmp(target, "x86/64") || !strcmp(target, "x86/generic")) {
+		/*
+		 * ugly work-around ahead:
+		 * ignore board name on generic x86 targets, as image name is always 'generic'
+		 */
+		board_name = strdup("generic");
+	} else {
+		if (!tb[BOARD_BOARD_NAME]) {
+			fprintf(stderr, "No board name received\n");
+			rc=-ENODATA;
+			return;
+		}
+		board_name = strdup(blobmsg_get_string(tb[BOARD_BOARD_NAME]));
+	}
 
 	blobmsg_add_string(buf, "distro", distribution);
 	blobmsg_add_string(buf, "target", target);
@@ -797,6 +864,11 @@ static int server_request(const char *url, struct blob_buf *inbuf, struct blob_b
 	out_offset = 0;
 	out_bytes = 0;
 	out_len = 0;
+
+#ifdef AUC_DEBUG
+	if (debug)
+		fprintf(stderr, "Requesting URL: %s\n", url);
+#endif
 
 	if (outbuf) {
 		jsb = malloc(sizeof(struct jsonblobber));
@@ -1133,8 +1205,16 @@ static struct branch *select_branch(char *name, char *select_version)
 				break;
 			}
 		} else {
-			if (!abr || (strcmp(br->version, abr->version) > 0))
-				abr = br;
+			/* if we are on a snapshot branch, stay there */
+			if (strcasestr(version, "snapshot")) {
+				if (strcasestr(br->version, "snapshot")) {
+					abr = br;
+					break;
+				}
+			} else {
+				if (!abr || (verrevcmp(br->version, abr->version) > 0))
+					abr = br;
+			}
 		}
 	}
 
@@ -1171,11 +1251,25 @@ static int add_upg_packages(struct blob_attr *reply, char *arch)
 
 	blobmsg_for_each_attr(cur, packages, rem) {
 		avpk = malloc(sizeof(struct avl_pkg));
+		if (!avpk)
+			return -ENOMEM;
+
 		avpk->name = strdup(blobmsg_name(cur));
+		if (!avpk->name)
+			return -ENOMEM;
+
 		avpk->version = strdup(blobmsg_get_string(cur));
+		if (!avpk->version)
+			return -ENOMEM;
+
 		avpk->avl.key = avpk->name;
-		if (!avpk->name || !avpk->version || avl_insert(&pkg_tree, &avpk->avl)) {
-			fprintf(stderr, "failed to insert package %s (%s)!\n", blobmsg_name(cur), blobmsg_get_string(cur));
+		if (avl_insert(&pkg_tree, &avpk->avl)) {
+
+#ifdef AUC_DEBUG
+			if (debug)
+				fprintf(stderr, "failed to insert package %s (%s)!\n", blobmsg_name(cur), blobmsg_get_string(cur));
+#endif
+
 			if (avpk->name)
 				free(avpk->name);
 
@@ -1183,7 +1277,6 @@ static int add_upg_packages(struct blob_attr *reply, char *arch)
 				free(avpk->version);
 
 			free(avpk);
-			return -ENOMEM;
 		}
 	}
 
@@ -1263,7 +1356,24 @@ static int req_add_selected_packages(struct blob_buf *req)
 	return 0;
 }
 
-static int select_image(struct blob_attr *images, char **image_name, char **image_sha256)
+#if defined(__amd64__) || defined(__i386__)
+static int system_is_efi(void)
+{
+	const char efidname[] = "/sys/firmware/efi/efivars";
+	int fd = open(efidname, O_DIRECTORY | O_PATH);
+
+	if (fd != -1) {
+		close(fd);
+		return 1;
+	} else {
+		return 0;
+	}
+}
+#else
+static inline int system_is_efi(void) { return 0; }
+#endif
+
+static int get_image_by_type(struct blob_attr *images, const char *typestr, char **image_name, char **image_sha256)
 {
 	struct blob_attr *tb[__IMAGES_MAX];
 	struct blob_attr *cur;
@@ -1277,13 +1387,34 @@ static int select_image(struct blob_attr *images, char **image_name, char **imag
 		    !tb[IMAGES_SHA256])
 			continue;
 
-		if (!strcmp(blobmsg_get_string(tb[IMAGES_TYPE]), "sysupgrade")) {
+		if (!strcmp(blobmsg_get_string(tb[IMAGES_TYPE]), typestr)) {
 			*image_name = strdup(blobmsg_get_string(tb[IMAGES_NAME]));
 			*image_sha256 = strdup(blobmsg_get_string(tb[IMAGES_SHA256]));
 			ret = 0;
 			break;
 		}
 	}
+
+	return ret;
+}
+
+static int select_image(struct blob_attr *images, char **image_name, char **image_sha256)
+{
+	const char *combined_type;
+	int ret;
+
+	if (system_is_efi())
+		combined_type = "combined-efi";
+	else
+		combined_type = "combined";
+
+	DPRINTF("images: %s\n", blobmsg_format_json_indent(images, true, 0));
+
+	ret = get_image_by_type(images, "sysupgrade", image_name, image_sha256);
+	if (!ret)
+		return 0;
+
+	ret = get_image_by_type(images, combined_type, image_name, image_sha256);
 
 	return ret;
 }
@@ -1335,14 +1466,14 @@ int main(int args, char *argv[]) {
 	char url[256];
 	char *sanetized_board_name, *image_name, *image_sha256, *tmp;
 	struct blob_attr *tbr[__REPLY_MAX];
-	struct blob_attr *tb[__TARGET_MAX];
+	struct blob_attr *tb[__TARGET_MAX] = {}; /* make sure tb is NULL initialized even if blobmsg_parse isn't called */
 	struct stat imgstat;
 	int check_only = 0;
 	int retry_delay = 0;
 	int upg_check = 0;
 	int revcmp;
 	unsigned char argc = 1;
-	bool force = false, use_get = false;
+	bool force = false, use_get = false, in_queue = false;
 
 	snprintf(user_agent, sizeof(user_agent), "%s (%s)", argv[0], AUC_VERSION);
 	fprintf(stdout, "%s\n", user_agent);
@@ -1506,7 +1637,19 @@ int main(int args, char *argv[]) {
 					fputs("Requesting build", stderr);
 
 				retry_delay = 2;
-				fputc('.', stderr);
+				if (tb[TARGET_QUEUE_POSITION]) {
+					fprintf(stderr, "%s%s (position in queue: %d)",
+						ANSI_ESC, in_queue?ANSI_CURSOR_RESTORE:ANSI_CURSOR_SAFE,
+						blobmsg_get_u32(tb[TARGET_QUEUE_POSITION]));
+					in_queue = true;
+				} else {
+					if (in_queue)
+						fprintf(stderr, "%s%s%s%s",
+							ANSI_ESC, ANSI_CURSOR_RESTORE,
+							ANSI_ESC, ANSI_ERASE_LINE);
+					fputc('.', stderr);
+					in_queue = false;
+				}
 			} else {
 				retry_delay = 0;
 			}
