@@ -10,19 +10,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chrony
-PKG_VERSION:=4.0
-PKG_RELEASE:=3
+PKG_VERSION:=4.1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.tuxfamily.org/chrony/
-PKG_HASH:=be27ea14c55e7a4434b2fa51d53018c7051c42fa6a3198c9aa6a1658bae0c625
+PKG_HASH:=ed76f2d3f9347ac6221a91ad4bd553dd0565ac188cd7490d0801d08f7171164c
 
 PKG_MAINTAINER:=Miroslav Lichvar <mlichvar0@gmail.com>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:tuxfamily:chrony
 
-#PKG_BUILD_DEPENDS:=pps-tools
+PKG_BUILD_DEPENDS:=pps-tools
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -75,7 +75,6 @@ CONFIGURE_ARGS+= \
 	--disable-readline \
 	--disable-rtc \
 	--disable-sechash \
-	--disable-pps \
 	--with-hwclockfile=/opt/sbin/hwclock \
 	--with-pidfile=/opt/var/run/chrony/chronyd.pid \
 	--with-sendmail=/opt/sbin/sendmail
