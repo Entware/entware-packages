@@ -11,7 +11,7 @@
  
 --- a/tunables.c
 +++ b/tunables.c
-@@ -254,19 +254,19 @@ tunables_load_defaults()
+@@ -261,19 +261,19 @@ tunables_load_defaults()
    /* -rw------- */
    tunable_chown_upload_mode = 0600;
  
@@ -37,7 +37,7 @@
    install_str_setting(0, &tunable_anon_root);
    install_str_setting(0, &tunable_local_root);
    install_str_setting(0, &tunable_banner_file);
-@@ -279,9 +279,9 @@ tunables_load_defaults()
+@@ -286,9 +286,9 @@ tunables_load_defaults()
    install_str_setting(0, &tunable_hide_file);
    install_str_setting(0, &tunable_deny_file);
    install_str_setting(0, &tunable_user_sub_token);
