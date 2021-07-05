@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: CONFIGURE_ARGS+= --with-system-expat="$(STAGING_DIR)/opt"
+# Entware specific: CONFIGURE_ARGS+= --with-system-expat="$(STAGING_DIR)/opt" TZPATH
 
 include $(TOPDIR)/rules.mk
 
@@ -12,12 +12,12 @@ include $(TOPDIR)/rules.mk
 include ../python3-version.mk
 
 PKG_NAME:=python3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=4b0e6644a76f8df864ae24ac500a51bbf68bd098f6a173e27d3b61cdca9aa134
+PKG_HASH:=0c5a140665436ec3dbfbb79e2dfb6d192655f26ef4a29aeffcb6d1820d716d83
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=Python/2.0
@@ -67,10 +67,21 @@ define Package/python3/Default/description
  the development of higher quality, more maintainable code.
 endef
 
+define Package/libpython3
+$(call Package/python3/Default)
+  TITLE:=Python $(PYTHON3_VERSION) core library
+  DEPENDS:=+libpthread +zlib
+  ABI_VERSION:=$(PYTHON3_VERSION)
+endef
+
+define Package/libpython3/description
+  This package contains only core Python library.
+endef
+
 define Package/python3-base
 $(call Package/python3/Default)
   TITLE:=Python $(PYTHON3_VERSION) interpreter
-  DEPENDS:=+libpthread +zlib
+  DEPENDS:=+libpthread +zlib +libpython3
 endef
 
 define Package/python3-base/description
@@ -145,6 +156,7 @@ DISABLE_BLUETOOTH:= \
 CONFIGURE_ARGS+= \
 	--sysconfdir=/opt/etc \
 	--with-system-expat="$(STAGING_DIR)/opt" \
+	--with-tzpath="/opt/share/zoneinfo:/usr/share/zoneinfo" \
 	--enable-optimizations \
 	--enable-shared \
 	--with-system-ffi \
@@ -193,7 +205,7 @@ define Build/Compile/python3-pip
 		--ignore-installed \
 		--root=$(PKG_BUILD_DIR)/install-pip \
 		--prefix=/opt \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py2.py3-none-any.whl
+		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py3-none-any.whl
 	$(call PatchDir,$(PKG_BUILD_DIR)/install-pip/opt/lib/python$(PYTHON3_VERSION)/site-packages,./patches-pip,)
 endef
 endif # CONFIG_PACKAGE_python3-pip
@@ -262,7 +274,6 @@ define Py3Package/python3-light/filespec
 -|/opt/lib/python$(PYTHON3_VERSION)/tkinter
 -|/opt/lib/python$(PYTHON3_VERSION)/turtledemo
 -|/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/_test*.so
--|/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/readline*.so
 -|/opt/lib/python$(PYTHON3_VERSION)/pdb.doc
 -|/opt/lib/python$(PYTHON3_VERSION)/test
 -|/opt/lib/python$(PYTHON3_VERSION)/*/test
@@ -271,16 +282,23 @@ define Py3Package/python3-light/filespec
 $(subst $(space),$(newline),$(foreach lib_file,$(PYTHON3_LIB_FILES_DEL),-|$(lib_file)))
 endef
 
-define Py3Package/python3-base/install
+define Package/libpython3/install
 	# Adding the lib-dynload folder (even just empty) suppresses 2 warnings when starting Python
 	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON3_VERSION)/lib-dynload/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON3_VERSION).so* $(1)/opt/lib/
+endef
+
+define Py3Package/python3-base/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(LN) python$(PYTHON3_VERSION) $(1)/opt/bin/python3
 	$(LN) python$(PYTHON3_VERSION) $(1)/opt/bin/python
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libpython$(PYTHON3_VERSION).so* $(1)/opt/lib/
   # This depends on being called before filespec is processed
 	$(SED) 's|$(TARGET_AR)|ar|g;s|$(TARGET_CROSS)readelf|readelf|g;s|$(TARGET_CC)|gcc|g;s|$(TARGET_CXX)|g++|g' \
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/_sysconfigdata.py
+  # XXX
+	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g;s,$(STAGING_DIR_HOST),/opt,g; \
+		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g' \
+			$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/_sysconfigdata.py
 endef
 
 Py3Package/python3-light/install:=:
@@ -326,7 +344,6 @@ endef
 define Host/Install
 	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)),,
 		rm -rf \
-			$(HOST_PYTHON3_PKG_DIR)/easy_install.py \
 			$(HOST_PYTHON3_PKG_DIR)/pkg_resources \
 			$(HOST_PYTHON3_PKG_DIR)/setuptools \
 			$(HOST_PYTHON3_PKG_DIR)/setuptools-* \
@@ -358,6 +375,8 @@ $(foreach package, $(PYTHON3_PACKAGES),  \
 	$(eval $(call BuildPackage,$(package))) \
 	$(eval $(call BuildPackage,$(package)-src)) \
 )
+
+$(eval $(call BuildPackage,libpython3))
 
 $(eval $(call Py3Package,python3-base))
 $(eval $(call Py3Package,python3-light))

@@ -20,6 +20,11 @@ define Py3Package/python3-dev/install
   # This depends on being called before filespec is processed
 	$(SED) 's|$(TARGET_AR)|ar|g;s|$(TARGET_CROSS)readelf|readelf|g;s|$(TARGET_CC)|gcc|g;s|$(TARGET_CXX)|g++|g' \
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION)/Makefile
+  # XXX
+	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g;s,$(STAGING_DIR_HOST),/opt,g; \
+		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g' \
+			$(PKG_INSTALL_DIR)/opt/bin/python$(PYTHON3_VERSION)-config \
+			$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION)/Makefile
 endef
 
 $(eval $(call Py3BasePackage,python3-dev, \
