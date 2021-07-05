@@ -24,7 +24,7 @@ endef
 PKG_NAME:=gcc
 # PKG_VERSION=7.3.0
 PKG_VERSION=7.4.0
-PKG_RELEASE:=6
+PKG_RELEASE:=6a
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_INSTALL:=1
@@ -145,7 +145,7 @@ define Build/Configure
 			--enable-target-optspace \
 			--with-gnu-ld \
 			--with-specs="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
-			--with-boot-ldflags="static-libstdc++ -static-libgcc -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
+			--with-boot-ldflags="-static-libstdc++ -static-libgcc -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--disable-nls \
 			--disable-libsanitizer \
 			--disable-libvtv \
@@ -216,6 +216,7 @@ endef
 
 define Package/gcc/postinst
 #!/bin/sh
+
 $(INSTALL_STATIC_SPEC)
 echo "There are no *-dev packages in Entware(with few exceptions)!"
 echo "Please install headers as described in the wiki:"
