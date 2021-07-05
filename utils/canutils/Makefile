@@ -21,7 +21,7 @@ PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
-include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/canutils/Default
   SECTION:=utils
@@ -58,10 +58,10 @@ $(foreach a,$(FILES),$(eval $(call GenPlugin,$(a))))
 
 define PartInstall
 define Package/canutils-$(1)/install
-	$(INSTALL_DIR) $$(1)/opt/bin
+	$(INSTALL_DIR) $$(1)/usr/bin
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/opt/bin/$(1) \
-		$$(1)/opt/bin/
+		$(PKG_INSTALL_DIR)/usr/bin/$(1) \
+		$$(1)/usr/bin/
 endef
 endef
 
