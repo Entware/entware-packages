@@ -1,0 +1,32 @@
+--- a/src/dep/libmnl/src/callback.c
++++ b/src/dep/libmnl/src/callback.c
+@@ -11,6 +11,10 @@
+ #include <libmnl/libmnl.h>
+ #include "internal.h"
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ static int mnl_cb_noop(const struct nlmsghdr *nlh, void *data)
+ {
+ 	return MNL_CB_OK;
+@@ -67,10 +71,18 @@ static inline int __mnl_cb_run(const voi
+ 		}
+ 
+ 		/* dump was interrupted */
++/* NLM_F_DUMP_INTR since Linux 3.1 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3,1,0)
++		if (nlh->nlmsg_flags) {
++			errno = EINTR;
++			return -1;
++		}
++#else
+ 		if (nlh->nlmsg_flags & NLM_F_DUMP_INTR) {
+ 			errno = EINTR;
+ 			return -1;
+ 		}
++#endif /* NLM_F_DUMP_INTR since Linux 3.1 */
+ 
+ 		/* netlink data message handling */
+ 		if (nlh->nlmsg_type >= NLMSG_MIN_TYPE) { 
