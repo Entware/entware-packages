@@ -1,6 +1,6 @@
 --- a/src/rpcbind.c
 +++ b/src/rpcbind.c
-@@ -106,7 +106,7 @@ char *nss_modules = "files";
+@@ -105,7 +105,7 @@ char *nss_modules = "files";
  /* who to suid to if -s is given */
  #define RUN_AS  "daemon"
  
