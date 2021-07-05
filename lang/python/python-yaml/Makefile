@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-yaml
 PKG_VERSION:=5.3.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PYPI_NAME:=PyYAML
 PKG_HASH:=b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d
@@ -18,6 +18,8 @@ PKG_MAINTAINER:=Josef Schlehofer <josef.schlehofer@nic.cz>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:pyyaml_project:pyyaml
+
+HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:=PyYAML # crawl & suricata
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
