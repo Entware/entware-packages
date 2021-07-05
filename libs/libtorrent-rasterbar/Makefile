@@ -18,7 +18,7 @@ PKG_SOURCE_URL:=https://codeload.github.com/arvidn/libtorrent/tar.gz/v$(PKG_VERS
 PKG_HASH:=976d2771ffcd564f08a63351e9c22e842aaa8cd29f6f7fe25d169c038a844e85
 
 include $(INCLUDE_DIR)/package.mk
-include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/cmake.mk
 include $(INCLUDE_DIR)/nls.mk
 include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 
@@ -52,6 +52,7 @@ define Package/python3-libtorrent/description
 	$(call Package/libtorrent-rasterbar/description)
 	This package contains Python 3 bindings for the libtorrent-rasterbar library.
 endef
+
 TARGET_CXXFLAGS += -DBOOST_BIND_GLOBAL_PLACEHOLDERS
 
 TARGET_LDFLAGS += -latomic $(if $(INTL_FULL),-liconv) $(if $(INTL_FULL),-lintl)
