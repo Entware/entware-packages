@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mariadb
 PKG_VERSION:=10.4.18
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL := \
@@ -167,7 +167,7 @@ MARIADB_SERVER_EXTRA := \
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/nls.mk
-include ../../devel/ninja/ninja-cmake.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 MARIADB_COMMON_DEPENDS := \
 	$(ICONV_DEPENDS) \
