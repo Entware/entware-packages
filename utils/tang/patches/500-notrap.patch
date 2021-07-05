@@ -1,0 +1,11 @@
+--- a/src/tangd-keygen
++++ b/src/tangd-keygen
+@@ -18,7 +18,7 @@
+ # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ #
+ 
+-trap 'exit' ERR
++#trap 'exit' ERR
+ 
+ if [ $# -ne 1 -a $# -ne 3 ] || [ ! -d "$1" ]; then
+     echo "Usage: $0 <jwkdir> [<sig> <exc>]" >&2
