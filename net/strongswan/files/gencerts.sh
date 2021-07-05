@@ -34,8 +34,8 @@ SHORT_DOMAIN="${DOMAIN%%.*}"
 ORG="$1"; shift
 
 # invariants...
-STRONGSWANDIR=/opt/etc
-SWANCTL_DIR=$STRONGSWANDIR/swanctl
+SYSCONFDIR=/opt/etc
+SWANCTL_DIR="$SYSCONFDIR/swanctl"
 : ${KEYINFO:="rsa:4096"}
 : ${CADAYS:=3650}
 : ${CRTDAYS:=730}
@@ -72,7 +72,7 @@ genca()
 
 	pki --self --ca --lifetime "$CADAYS" --in "$SWANCTL_DIR/private/$SHORT_DOMAIN.key" --type "$keytype" \
 		--dn "$ROOTDN" --outform pem > "$SWANCTL_DIR/x509ca/$SHORT_DOMAIN.crt"
-	chmod 0444 "$SWANCTL_DIR/cacerts/$SHORT_DOMAIN.crt"
+	chmod 0444 "$SWANCTL_DIR/x509ca/$SHORT_DOMAIN.crt"
 }
 
 genclientkey()
@@ -140,7 +140,7 @@ ROOTDN="$(makeDN "$C" "$ORG" "Root CA")"
 
 [ -f "$SWANCTL_DIR/x509ca/$SHORT_DOMAIN.crt" ] || genca
 
-PARENT="$STRONGSWANDIR"
+PARENT="$SYSCONFDIR"
 BASEDIR="${SWANCTL_DIR##$PARENT/}"
 
 for name in "$@"; do
