@@ -1,6 +1,6 @@
 --- a/wsd.c
 +++ b/wsd.c
-@@ -59,7 +59,7 @@ static char wsd_sequence[UUIDLEN], wsd_e
+@@ -73,7 +73,7 @@ static char wsd_sequence[UUIDLEN], wsd_e
  
  static void set_seed(void)
  {
@@ -9,16 +9,16 @@
  	unsigned long seed;
  
  	time((time_t *)&seed);
-@@ -94,7 +94,7 @@ static void uuid_random(char *uuid, size
+@@ -108,7 +108,7 @@ static void uuid_random(char *uuid, size
  
- static void uuid_endpoint(char *uuid, size_t len)
+ static void uuid_endpoint(char uuid[UUIDLEN])
  {
 -	FILE *fp = fopen("/etc/machine-id", "r");
 +	FILE *fp = fopen("/opt/etc/machine-id", "r");
  	int c, i = 0;
  	
  	if (!fp) {
-@@ -102,7 +102,7 @@ static void uuid_endpoint(char *uuid, si
+@@ -116,7 +116,7 @@ static void uuid_endpoint(char uuid[UUID
  	}
  
  	if (!fp) {
