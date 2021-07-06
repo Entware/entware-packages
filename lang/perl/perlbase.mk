@@ -1,5 +1,3 @@
-include perlver.mk
-
 define Package/perlbase-template
 SUBMENU:=Perl
 SECTION:=lang
