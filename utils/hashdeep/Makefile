@@ -32,14 +32,14 @@ define Package/hashdeep/description
 endef
 
 define Package/hashdeep/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/hashdeep \
-                   $(PKG_INSTALL_DIR)/usr/bin/md5deep \
-                   $(PKG_INSTALL_DIR)/usr/bin/sha1deep \
-                   $(PKG_INSTALL_DIR)/usr/bin/sha256deep \
-                   $(PKG_INSTALL_DIR)/usr/bin/tigerdeep \
-                   $(PKG_INSTALL_DIR)/usr/bin/whirlpooldeep \
-                   $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hashdeep \
+                   $(PKG_INSTALL_DIR)/opt/bin/md5deep \
+                   $(PKG_INSTALL_DIR)/opt/bin/sha1deep \
+                   $(PKG_INSTALL_DIR)/opt/bin/sha256deep \
+                   $(PKG_INSTALL_DIR)/opt/bin/tigerdeep \
+                   $(PKG_INSTALL_DIR)/opt/bin/whirlpooldeep \
+                   $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,hashdeep))
