@@ -170,7 +170,7 @@ define Package/imagemagick/install
 	# Entware specific:
 	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g; \
 		s,$(STAGING_DIR_HOST),/opt,g; \
-		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=ImageMagick-$(PKG_VERSION),,g' \
+		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=ImageMagick-$(PKG_VERSION),,g' \
 			$(1)/$(IMlibdir)/config-Q8/configure.xml
 	$(FIND) $(1)/$(IMlibdir) -type f -a -name "*.la" -exec $(SED) \
 		's,$(STAGING_DIR),,g;s,-L$(TOOLCHAIN_DIR)/lib ,,g' {} +
