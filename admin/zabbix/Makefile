@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zabbix
 PKG_VERSION:=5.0.7
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cdn.zabbix.com/zabbix/sources/stable/5.0/
@@ -267,7 +267,7 @@ endef
 define Package/zabbix-extra-network/postinst
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
-	killall -HUP ubusd
+	killall -s HUP ubusd
 fi
 endef
 
@@ -280,7 +280,7 @@ endef
 define Package/zabbix-extra-wifi/postinst
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
-	killall -HUP ubusd
+	killall -s HUP ubusd
 fi
 endef
 
