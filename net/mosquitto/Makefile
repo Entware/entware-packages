@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosquitto
 PKG_VERSION:=2.0.11
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=EPL-2.0
 PKG_LICENSE_FILES:=LICENSE.txt
 PKG_CPE_ID:=cpe:/a:eclipse:mosquitto
@@ -167,6 +167,8 @@ define Package/mosquitto/install/default
 	$(INSTALL_DIR) $(1)/opt/etc/mosquitto
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/mosquitto.conf $(1)/opt/etc/mosquitto/mosquitto.conf
 #	$(CP) ./files/* $(1)/
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S80mosquitto $(1)/opt/etc/init.d
 endef
 
 define Package/mosquitto-nossl/install

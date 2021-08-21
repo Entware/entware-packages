@@ -1,0 +1,11 @@
+--- a/src/net.c
++++ b/src/net.c
+@@ -757,7 +757,7 @@ static int net__socket_listen_tcp(struct
+ #if defined(__linux__)
+ 			if(errno == EACCES){
+ 				log__printf(NULL, MOSQ_LOG_ERR, "If you are trying to bind to a privileged port (<1024), try using setcap and do not start the broker as root:");
+-				log__printf(NULL, MOSQ_LOG_ERR, "    sudo setcap 'CAP_NET_BIND_SERVICE=+ep /usr/sbin/mosquitto'");
++				log__printf(NULL, MOSQ_LOG_ERR, "    sudo setcap 'CAP_NET_BIND_SERVICE=+ep /opt/sbin/mosquitto'");
+ 			}
+ #endif
+ 			net__print_error(MOSQ_LOG_ERR, "Error: %s");
