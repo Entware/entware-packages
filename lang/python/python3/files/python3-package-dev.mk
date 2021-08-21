@@ -22,7 +22,7 @@ define Py3Package/python3-dev/install
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION)/Makefile
   # XXX
 	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g;s,$(STAGING_DIR_HOST),/opt,g; \
-		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g' \
+		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g' \
 			$(PKG_INSTALL_DIR)/opt/bin/python$(PYTHON3_VERSION)-config \
 			$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/config-$(PYTHON3_VERSION)/Makefile
 endef
