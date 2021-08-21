@@ -1,8 +1,8 @@
 --- a/configure
 +++ b/configure
-@@ -43,7 +43,7 @@ OPTIONS=(
-   "tvhcsa:auto"
+@@ -60,7 +60,7 @@ OPTIONS=(
    "bundle:no"
+   "pngquant:no"
    "dvbcsa:no"
 -  "dvben50221:auto"
 +  "dvben50221:no"
