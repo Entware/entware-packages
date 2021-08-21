@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sane-backends
 PKG_VERSION:=1.0.32
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://gitlab.com/sane-project/backends/uploads/104f09c07d35519cc8e72e604f11643f
@@ -89,7 +89,7 @@ CONFIGURE_VARS += \
     ac_cv_func_mmap_fixed_mapped="yes"
 
 define Build/Configure
-	mkdir -p $(PKG_BUILD_DIR)/backend/.libs
+	$(INSTALL_DIR) $(PKG_BUILD_DIR)/backend/.libs
 	$(Build/Configure/Default)
 endef
 
