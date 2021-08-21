@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gdbm
 PKG_VERSION:=1.19
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/gdbm
@@ -38,8 +38,8 @@ define Package/libgdbm/description
 endef
 
 CONFIGURE_ARGS += \
-	--enable-shared \
-	--enable-static
+	--enable-libgdbm-compat \
+	--enable-shared
 
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
@@ -51,14 +51,16 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/gdbm.h $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/{gdbm,ndbm}.h $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgdbm.{a,so*} $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgdbm.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgdbm_compat.so* $(1)/opt/lib/
 endef
 
 define Package/libgdbm/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgdbm.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgdbm_compat.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libgdbm))
