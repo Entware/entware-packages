@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=8.0.7
+PKG_VERSION:=8.0.9
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=d5fc2e4fc780a32404d88c360e3e0009bc725d936459668e9c2ac992f2d83654
+PKG_HASH:=71a01b2b56544e20e28696ad5b366e431a0984eaa39aa5e35426a4843e172010
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -523,7 +523,7 @@ endef
 
 define Package/php8-fpm/conffiles
 /opt/etc/php8-fpm.conf
-opt/etc/php8-fpm.d/
+/opt/etc/php8-fpm.d/
 endef
 
 define Build/Prepare
