@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnupg
 PKG_VERSION:=1.4.23
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://gnupg.org/ftp/gcrypt/gnupg
@@ -35,13 +35,13 @@ endef
 define Package/gnupg
   $(call Package/gnupg/Default)
   MENU:=1
-#  ALTERNATIVES:=200:/usr/bin/gpg:/usr/bin/gpg1
+  ALTERNATIVES:=200:/opt/bin/gpg:/opt/bin/gpg1
 endef
 
 define Package/gpgv
   $(call Package/gnupg/Default)
   TITLE:=GnuPG signature verification only
-#  ALTERNATIVES:=200:/usr/bin/gpgv:/usr/bin/gpgv1
+  ALTERNATIVES:=200:/opt/bin/gpgv:/opt/bin/gpgv1
 endef
 
 define Package/gnupg-utils
@@ -87,7 +87,7 @@ CONFIGURE_ARGS += \
 MAKE_FLAGS += \
 	SUBDIRS="m4 intl zlib util mpi cipher tools g10 keyserver ${checks}" \
 
-TARGET_CFLAGS += $(if $(CONFIG_GCC_USE_VERSION_10),-DEXTERN_UNLESS_MAIN_MODULE=static)
+TARGET_CFLAGS += -DEXTERN_UNLESS_MAIN_MODULE=static
 
 define Package/gnupg/install
 	$(INSTALL_DIR) $(1)/opt/bin
