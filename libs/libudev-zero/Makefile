@@ -1,6 +1,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: keep ver. 0.4.8; INPUT_PROP_MAX && INPUT_PROP_CNT since linux-2.6.38
 
 include $(TOPDIR)/rules.mk
 
