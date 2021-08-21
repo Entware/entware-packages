@@ -101,7 +101,7 @@ define Package/graphicsmagick/install
 	# XXX
 	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g; \
 		s,$(STAGING_DIR_HOST),/opt,g; \
-		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=GraphicsMagick-$(PKG_VERSION),,g' \
+		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=GraphicsMagick-$(PKG_VERSION),,g' \
 			$(1)/opt/bin/GraphicsMagick-config
 	$(FIND) $(1)/$(GMlibdir) -type f -a -name "*.la" -exec $(SED) \
 		's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g' {} +
