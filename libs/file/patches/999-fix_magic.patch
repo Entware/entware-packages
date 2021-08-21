@@ -230,14 +230,6 @@
  0	search/1	#!/usr/bin/env\ lua	Lua script text executable
  !:mime	text/x-lua
  0	search/1	#!\ /usr/bin/env\ lua	Lua script text executable
---- a/magic/Magdir/mail.news
-+++ b/magic/Magdir/mail.news
-@@ -81,4 +81,4 @@
- # File format spec: https://wiki.dovecot.org/Design/Dcrypt/#File_format
- # From: Stephen Gildea
- 0	string	CRYPTED\003\007		Dovecot encrypted message
-->9	byte	xu			\b, dcrypt version %d
-+>9	byte	x			\b, dcrypt version %d
 --- a/magic/Magdir/perl
 +++ b/magic/Magdir/perl
 @@ -5,6 +5,8 @@
