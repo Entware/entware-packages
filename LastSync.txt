@@ -1,8 +1,8 @@
-commit f39a2bc32f12ccbd6e3a2857db7298494f607786
-Merge: 4b6ad9fd0 e2026346c
-Author: Rosen Penev <rosenp@gmail.com>
-Date:   Sat Jul 3 15:16:26 2021 -0700
+commit e29678aa2c4c106629f24e8fbabeecfd03671969 (HEAD -> master, origin/master, origin/HEAD)
+Merge: d889df02e 2d4911203
+Author: Petr Štetiar <ynezz@true.cz>
+Date:   Sat Aug 21 11:52:35 2021 +0200
 
-    Merge pull request #16012 from commodo/python-dateutil
+    Merge pull request #16312 from ynezz/upstream/c-ares-CVE-2021-3672
     
-    python-dateutil: add setuptools-scm build dep
+    c-ares: update to version 1.17.2
