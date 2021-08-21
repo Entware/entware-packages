@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -483,7 +483,7 @@ if(UNIX)
+ endif()
+ 
+  # Not used on Windows, where there is no system bus
+-set(DBUS_SYSTEM_PID_FILE ${DBUS_RUNSTATEDIR}/dbus/pid)
++set(DBUS_SYSTEM_PID_FILE ${DBUS_RUNSTATEDIR}/dbus/dbus.pid)
+ 
+ set(DBUS_CONSOLE_AUTH_DIR "" CACHE STRING "Directory to check for pam_console/pam_foreground flag files, or empty to ignore")
+ 

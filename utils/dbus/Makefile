@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dbus
 PKG_VERSION:=1.13.18
-PKG_RELEASE:=4
+PKG_RELEASE:=5a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://dbus.freedesktop.org/releases/dbus
@@ -74,7 +74,7 @@ endef
 CMAKE_OPTIONS += \
 	-DDBUS_SYSTEM_SOCKET=/opt/var/run/dbus/system_bus_socket \
 	-DDBUS_SESSION_SOCKET_DIR=/opt/tmp \
-	-DDBUS_SYSTEM_PID_FILE=/opt/var/run/dbus.pid \
+	-DDBUS_SYSTEM_PID_FILE=/opt/var/run/dbus/dbus.pid \
 	-DDBUS_BUILD_TESTS=OFF \
 	-DDBUS_LINUX=ON \
 	-DDBUS_DISABLE_ASSERT=ON \
@@ -124,6 +124,7 @@ define Package/dbus/install
 	$(INSTALL_BIN) ./files/S20dbus $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/share/dbus-1
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/dbus-1 $(1)/opt/share/
+	$(INSTALL_DIR) $(1)/opt/var/run/dbus
 endef
 
 define Package/dbus-utils/install
