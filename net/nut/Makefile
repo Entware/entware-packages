@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=22
+PKG_RELEASE:=23
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -513,6 +513,8 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-includes="-I$(STAGING_DIR)/opt/include") \
 	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lgd -lfreetype -ljpeg -lpng16 -ltiff -lwebp -lz") \
 	--with-pidpath=/opt/var/run
+
+TARGET_CXXFLAGS += -std=c++98
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib/pkgconfig
