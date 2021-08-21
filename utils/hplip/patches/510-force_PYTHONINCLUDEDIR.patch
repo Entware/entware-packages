@@ -1,6 +1,6 @@
 --- a/configure.in
 +++ b/configure.in
-@@ -637,7 +637,7 @@ if test "$class_driver" = "no" && test "
+@@ -651,7 +651,7 @@ if test "$class_driver" = "no" && test "
     AC_CHECK_PROGS(PYTHON,[python python3 python2])
     AM_PATH_PYTHON([2.2])
     AC_MSG_CHECKING([for path to Python.h])
