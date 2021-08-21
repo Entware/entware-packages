@@ -1,5 +1,6 @@
 # Entware specific: added depends and ldflags, revert back config,
-# disabled extra_cflags (config.h:45: warning: "HAVE_GETOPT_LONG" redefined)
+# disabled extra_cflags (config.h:45: warning: "HAVE_GETOPT_LONG" redefined),
+# keep NLS
 
 include $(TOPDIR)/rules.mk
 
