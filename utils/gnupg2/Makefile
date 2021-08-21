@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnupg
 PKG_VERSION:=2.2.23
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://gnupg.org/ftp/gcrypt/gnupg
@@ -36,13 +36,13 @@ endef
 define Package/gnupg2
   $(call Package/gnupg2/Default)
   MENU:=1
-#  ALTERNATIVES:=300:/usr/bin/gpg:/usr/bin/gpg2
+  ALTERNATIVES:=300:/opt/bin/gpg:/opt/bin/gpg2
 endef
 
 define Package/gpgv2
   $(call Package/gnupg2/Default)
   TITLE:=GnuPG signature verification only (version 2)
-#  ALTERNATIVES:=300:/usr/bin/gpgv:/usr/bin/gpgv2
+  ALTERNATIVES:=300:/opt/bin/gpgv:/opt/bin/gpgv2
 endef
 
 define Package/gnupg2-dirmngr
