@@ -5,8 +5,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postgresql
-PKG_VERSION:=13.2
-PKG_RELEASE:=3
+PKG_VERSION:=13.4
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=PostgreSQL
 PKG_CPE_ID:=cpe:/a:postgresql:postgresql
@@ -17,7 +17,7 @@ PKG_SOURCE_URL:=\
 	http://ftp.postgresql.org/pub/source/v$(PKG_VERSION) \
 	ftp://ftp.postgresql.org/pub/source/v$(PKG_VERSION)
 
-PKG_HASH:=5fd7fcd08db86f5b2aed28fcfaf9ae0aca8e9428561ac547764c2a2b0f41adfc
+PKG_HASH:=ea93e10390245f1ce461a54eb5f99a48d8cabd3a08ce4d652ec2169a357bc0cd
 
 PKG_USE_MIPS16:=0
 PKG_FIXUP:=autoreconf
@@ -70,7 +70,7 @@ endef
 define Package/pgsql-server
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+pgsql-cli
+  DEPENDS:=+pgsql-cli #+blockd
   TITLE:=PostgreSQL databases Server
   URL:=http://www.postgresql.org/
   SUBMENU:=Database
@@ -219,7 +219,7 @@ define Package/pgsql-server/install
 	# XXX
 	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g; \
 		s,$(STAGING_DIR_HOST),/opt,g;s,$(PKG_BUILD_DIR)/src,/opt,g; \
-		s,-fmacro-prefix-map=$(PKG_BUILD_DIR)=$(PKG_NAME)-$(PKG_VERSION),,g' \
+		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=$(PKG_NAME)-$(PKG_VERSION),,g' \
 			$(1)/opt/lib/postgresql/pgxs/src/Makefile.global
 
 #	$(INSTALL_DIR) $(1)/lib/functions
