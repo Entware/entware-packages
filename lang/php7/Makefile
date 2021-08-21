@@ -6,7 +6,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=7.4.20
+PKG_VERSION:=7.4.22
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=1fa46ca6790d780bf2cb48961df65f0ca3640c4533f0bca743cd61b71cb66335
+PKG_HASH:=8e078cd7d2f49ac3fcff902490a5bb1addc885e7e3b0d8dd068f42c68297bde8
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -494,7 +494,15 @@ define Package/php7-cgi/install
 endef
 
 define Package/php7-fastcgi/install
-	true
+	$(INSTALL_DIR) $(1)/opt/etc/php7
+	$(INSTALL_DATA) ./files/php7-fastcgi.conf $(1)/opt/etc/php7/php7-fastcgi
+
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S79php7-fastcgi $(1)/opt/etc/init.d
+endef
+
+define Package/php7-fastcgi/conffiles
+/opt/etc/php7/php7-fastcgi
 endef
 
 define Package/php7-fpm/install
@@ -503,6 +511,9 @@ define Package/php7-fpm/install
 
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) ./files/php7-fpm.conf $(1)/opt/etc/php7-fpm.conf
+
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DATA) ./files/php7-fpm.config $(1)/etc/config/php7-fpm
 
 	$(INSTALL_DIR) $(1)/opt/etc/php7-fpm.d
 	$(INSTALL_DATA) ./files/php7-fpm-www.conf $(1)/opt/etc/php7-fpm.d/www.conf

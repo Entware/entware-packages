@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. /opt/etc/php7/php7-fastcgi
+
+ENABLED=yes
+PROCS=php-fcgi
+ARGS="-b $BIND"
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+. /opt/etc/init.d/rc.func
