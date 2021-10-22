@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
 PKG_VERSION:=7.4.22
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 PKG_LICENSE:=PHP-3.01
@@ -463,6 +463,9 @@ ifneq ($(CONFIG_PHP7_SYSTEMTZDATA),)
 else
   CONFIGURE_ARGS+= --without-system-tzdata
 endif
+
+# XXX Entware specific:
+TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lresolv)
 
 CONFIGURE_VARS+= \
 	ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no) \
