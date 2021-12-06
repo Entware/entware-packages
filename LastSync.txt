@@ -1,8 +1,7 @@
-commit e29678aa2c4c106629f24e8fbabeecfd03671969 (HEAD -> master, origin/master, origin/HEAD)
-Merge: d889df02e 2d4911203
-Author: Petr Štetiar <ynezz@true.cz>
-Date:   Sat Aug 21 11:52:35 2021 +0200
+commit 0f46facfdba667473ffb57fbda31a145f644af48 (HEAD -> master, origin/master, origin/HEAD)
+Author: Tianling Shen <cnsztl@immortalwrt.org>
+Date:   Mon Dec 6 05:01:17 2021 +0800
 
-    Merge pull request #16312 from ynezz/upstream/c-ares-CVE-2021-3672
+    yq: Update to 4.16.1
     
-    c-ares: update to version 1.17.2
+    Signed-off-by: Tianling Shen <cnsztl@immortalwrt.org>
