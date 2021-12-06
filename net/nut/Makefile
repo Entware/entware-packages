@@ -24,6 +24,7 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_NUT_DRIVER_SNMP \
 	CONFIG_NUT_DRIVER_USB \
 	CONFIG_NUT_DRIVER_SERIAL \
+	CONFIG_NUT_DRIVER_NEON \
 	CONFIG_NUT_SSL \
 	CONFIG_PACKAGE_nut-web-cgi
 
@@ -85,6 +86,7 @@ define Package/nut-common
 	DEPENDS:= nut \
 		+NUT_DRIVER_SNMP:libnetsnmp \
 		+NUT_DRIVER_USB:libusb-compat \
+		+NUT_DRIVER_NEON:libneon \
 		+NUT_SSL:libopenssl
 endef
 
@@ -340,6 +342,7 @@ define DriverPackage
 		$(if $(filter $(1),snmp),DEPENDS+= @NUT_DRIVER_SNMP)
 		$(if $(filter $(1),usb),DEPENDS+= @NUT_DRIVER_USB)
 		$(if $(filter $(1),serial),DEPENDS+= @NUT_DRIVER_SERIAL)
+                $(if $(filter $(1),neon),DEPENDS+= @NUT_DRIVER_NEON)
         endef
 	# Deliberately empty description in order to trigger a build failure.
 	# It should be overridden by the list below, and when updating to a
@@ -376,6 +379,7 @@ USB_LIBUSB_DRIVERLIST = usbhid-ups bcmxcp_usb tripplite_usb \
  blazer_usb richcomm_usb riello_usb \
  nutdrv_atcl_usb \
  nutdrv_qx
+NEONXML_DRIVERLIST = netxml-ups
 # END: DO NOT EDIT!
 SERIAL_DRIVERLIST_IGNORE:=skel clone-outlet nutdrv_qx
 # nutdrv_qx can be either USB or serial. Given most routers have USB
@@ -388,6 +392,7 @@ SERIAL_DRIVERLIST_IGNORE:=skel clone-outlet nutdrv_qx
 $(foreach d,$(filter-out $(SERIAL_DRIVERLIST_IGNORE),$(SERIAL_DRIVERLIST)),$(eval $(call DriverPackage,serial,$(d))))
 $(foreach d,$(SNMP_DRIVERLIST),$(eval $(call DriverPackage,snmp,$(d))))
 $(foreach d,$(USB_LIBUSB_DRIVERLIST),$(eval $(call DriverPackage,usb,$(d))))
+$(foreach d,$(NEONXML_DRIVERLIST),$(eval $(call DriverPackage,neon,$(d))))
 
 $(eval $(call DriverDescription,serial,al175,\
 	Driver for Eltek UPS models with AL175 alarm module))
@@ -487,6 +492,8 @@ $(eval $(call DriverDescription,usb,nutdrv_atcl_usb,\
 	Driver for ATCL FOR UPS equipment))
 $(eval $(call DriverDescription,usb,nutdrv_qx,\
 	Driver for Q* protocol serial and USB based UPS equipment))
+$(eval $(call DriverDescription,neon,netxml-ups,\
+        Driver for NetXML based UPS equipment))
 
 CONFIGURE_ARGS += \
 	--sysconfdir=/opt/etc/nut \
@@ -497,7 +504,7 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_NUT_DRIVER_SNMP),with,without)-snmp $(if $(CONFIG_NUT_DRIVER_SNMP),--with-snmp-libs="$(TARGET_LDFLAGS) -lnetsnmp") \
 	--$(if $(CONFIG_NUT_DRIVER_SERIAL),with,without)-serial \
 	--without-doc \
-	--without-neon \
+        --$(if $(CONFIG_NUT_DRIVER_NEON),with,without)-neon \
 	--without-powerman \
 	--without-wrap \
 	--with-hotplug-dir=/opt/etc/hotplug \
@@ -538,3 +545,4 @@ $(eval $(call BuildPackage,nut-avahi-service))
 $(foreach d,$(filter-out $(SERIAL_DRIVERLIST_IGNORE),$(SERIAL_DRIVERLIST)),$(eval $(call BuildPackage,nut-driver-$(d))))
 $(foreach d,$(SNMP_DRIVERLIST),$(eval $(call BuildPackage,nut-driver-$(d))))
 $(foreach d,$(USB_LIBUSB_DRIVERLIST),$(eval $(call BuildPackage,nut-driver-$(d))))
+$(foreach d,$(NEONXML_DRIVERLIST),$(eval $(call BuildPackage,nut-driver-$(d))))
