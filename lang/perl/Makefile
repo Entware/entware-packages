@@ -13,7 +13,7 @@ include perlver.mk
 
 PKG_NAME:=perl
 PKG_VERSION:=$(PERL_VERSION)
-PKG_RELEASE:=5a
+PKG_RELEASE:=6
 
 PKG_SOURCE_URL:=\
 		https://cpan.metacpan.org/src/5.0 \
