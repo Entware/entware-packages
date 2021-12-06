@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lighttpd
-PKG_VERSION:=1.4.59
-PKG_RELEASE:=2
+PKG_VERSION:=1.4.61
+PKG_RELEASE:=1
 # release candidate ~rcX testing; remove for release
-#PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-1.4.59
+#PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-1.4.61
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://download.lighttpd.net/lighttpd/releases-1.4.x
-PKG_HASH:=fb953db273daef08edb6e202556cae8a3d07eed6081c96bd9903db957d1084d5
+PKG_HASH:=43f0d63d04a1b7c5b8aab07e0612e44ccad0afc0614bab784c5b019872363432
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 PKG_LICENSE:=BSD-3-Clause
@@ -23,7 +23,6 @@ PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:lighttpd:lighttpd
 
 PKG_INSTALL:=1
-PKG_BUILD_DEPENDS:=meson/host
 PKG_CONFIG_DEPENDS:=CONFIG_LIGHTTPD_SSL $(patsubst %,CONFIG_PACKAGE_lighttpd-mod-%,$(REBUILD_MODULES))
 
 REBUILD_MODULES=authn_gssapi authn_ldap authn_mysql cml magnet mysql_vhost trigger_b4_dl webdav
@@ -31,7 +30,7 @@ REBUILD_MODULES=authn_gssapi authn_ldap authn_mysql cml magnet mysql_vhost trigg
 include $(INCLUDE_DIR)/package.mk
 # iconv is required for lighttpd's mysql plugin
 include $(INCLUDE_DIR)/nls.mk
-include ../../devel/meson/meson.mk
+include $(INCLUDE_DIR)/meson.mk
 
 define Package/lighttpd/Default
   SECTION:=net

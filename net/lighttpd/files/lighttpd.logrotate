@@ -3,6 +3,6 @@
 	compress
 	delaycompress
 	postrotate
-		/opt/etc/init.d/S80lighttpd reload
+		/opt/etc/init.d/S80lighttpd restart
 	endscript
 }
