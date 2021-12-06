@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=7.4.22
-PKG_RELEASE:=1a
+PKG_VERSION:=7.4.26
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 PKG_LICENSE:=PHP-3.01
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=8e078cd7d2f49ac3fcff902490a5bb1addc885e7e3b0d8dd068f42c68297bde8
+PKG_HASH:=e305b3aafdc85fa73a81c53d3ce30578bc94d1633ec376add193a1e85e0f0ef8
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -174,6 +174,13 @@ CONFIGURE_ARGS+= \
 	--without-valgrind \
 	--with-external-pcre \
 	--with-zlib="$(STAGING_DIR)/opt"
+
+ifeq ($(CONFIG_LIBC_USE_GLIBC),y)
+TARGET_LDFLAGS += -ldl
+
+# XXX Entware specific: fixed issue #693
+TARGET_LDFLAGS += -lresolv
+endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php7-mod-bcmath),)
   CONFIGURE_ARGS+= --enable-bcmath=shared
@@ -464,9 +471,6 @@ else
   CONFIGURE_ARGS+= --without-system-tzdata
 endif
 
-# XXX Entware specific:
-TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lresolv)
-
 CONFIGURE_VARS+= \
 	ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no) \
 	php_cv_cc_rpath="no" \
@@ -528,6 +532,24 @@ endef
 define Package/php7-fpm/conffiles
 /opt/etc/php7-fpm.conf
 /opt/etc/php7-fpm.d/
+endef
+
+define Package/php7-mod-openssl/postinst
+#!/bin/sh
+
+if [ -e "/opt/etc/php7/20_openssl.ini" ] && [ -e "/opt/etc/php7/15_openssl.ini" ]; then
+	echo "Renaming PHP ini file '/opt/etc/php7/20_openssl.ini' -> '/opt/etc/php7/15_openssl.ini'"
+	mv /opt/etc/php7/20_openssl.ini /opt/etc/php7/15_openssl.ini
+fi
+endef
+
+define Package/php7-mod-mysqli/postinst
+#!/bin/sh
+
+if [ -e "/opt/etc/php7/20_mysqli.ini" ] && [ -e "/opt/etc/php7/30_mysqli.ini" ]; then
+	echo "Renaming PHP ini file '/opt/etc/php7/20_mysqli.ini' -> '/opt/etc/php7/30_mysqli.ini'"
+	mv /opt/etc/php7/20_mysqli.ini /opt/etc/php7/30_mysqli.ini
+fi
 endef
 
 define Build/Prepare
