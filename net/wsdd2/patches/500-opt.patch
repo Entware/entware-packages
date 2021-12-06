@@ -16,7 +16,7 @@
 -	FILE *fp = fopen("/etc/machine-id", "r");
 +	FILE *fp = fopen("/opt/etc/machine-id", "r");
  	int c, i = 0;
- 	
+ 
  	if (!fp) {
 @@ -116,7 +116,7 @@ static void uuid_endpoint(char uuid[UUID
  	}
