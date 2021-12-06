@@ -31,7 +31,7 @@ define Package/bridge
   CATEGORY:=Base system
   TITLE:=Ethernet bridging configuration utility
   URL:=http://www.linuxfromscratch.org/blfs/view/svn/basicnet/bridge-utils.html
-#  ALTERNATIVES:=300:/usr/sbin/brctl:/usr/libexec/brctl-bridge-utils
+  ALTERNATIVES:=300:/opt/sbin/brctl:/opt/libexec/brctl-bridge-utils
 endef
 
 define Package/bridge/description
