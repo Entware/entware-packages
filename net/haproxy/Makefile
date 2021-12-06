@@ -10,12 +10,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=haproxy
-PKG_VERSION:=2.4.1
+PKG_VERSION:=2.4.9
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.haproxy.org/download/2.4/src
-PKG_HASH:=1b2458b05e923d70cdc00a2c8e5579c2fcde9df16bbed8955f3f3030df14e62e
+PKG_HASH:=d56c7fe3c5afedd1b9a19e1b7f8f954feaf50a9c2f205f99891043858b72a763
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>, \
 		Christian Lachner <gladiac@gmail.com>
@@ -78,10 +78,16 @@ $(call Package/haproxy/Default/description)
  This package is built without SSL support.
 endef
 
+TARGET=linux-glibc
 ENABLE_LUA:=y
 
 ifeq ($(CONFIG_USE_UCLIBC),y)
+	ADDON+=USE_BACKTRACE=
 	ADDON+=USE_LIBCRYPT=
+endif
+
+ifeq ($(CONFIG_USE_MUSL),y)
+	TARGET=linux-musl
 endif
 
 ifeq ($(BUILD_VARIANT),ssl)
@@ -90,19 +96,17 @@ ifeq ($(BUILD_VARIANT),ssl)
 endif
 
 define Build/Compile
-	$(MAKE) TARGET=linux-glibc -C $(PKG_BUILD_DIR) \
+	$(MAKE) TARGET=$(TARGET) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		CC="$(TARGET_CC)" \
 		PCREDIR="$(STAGING_DIR)/opt/" \
 		USE_LUA=1 LUA_LIB_NAME="lua5.3" LUA_INC="$(STAGING_DIR)/opt/include/lua5.3" LUA_LIB="$(STAGING_DIR)/opt/lib" \
 		SMALL_OPTS="-DBUFSIZE=16384 -DMAXREWRITE=1030 -DSYSTEM_MAXCONN=165530" \
-		USE_LINUX_TPROXY=1 USE_LINUX_SPLICE=1 USE_TFO=1 USE_NS=1 \
-		USE_ZLIB=1 USE_PCRE=1 USE_PCRE_JIT=1 USE_GETADDRINFO=1 \
-		USE_THREAD=1 USE_PTHREAD_PSHARED=1 USE_PROMEX=1 \
+		USE_ZLIB=1 USE_PCRE=1 USE_PCRE_JIT=1 USE_PTHREAD_PSHARED=1 USE_PROMEX=1 \
 		VERSION="$(PKG_VERSION)" SUBVERS="-$(PKG_RELEASE)" \
 		VERDATE="$(shell date -d @$(SOURCE_DATE_EPOCH) '+%Y/%m/%d')" IGNOREGIT=1 \
-		$(ADDON) USE_BACKTRACE= \
-		CFLAGS="$(TARGET_CFLAGS) -fno-strict-aliasing -Wdeclaration-after-statement -Wno-unused-label -Wno-sign-compare -Wno-unused-parameter -Wno-clobbered -Wno-missing-field-initializers -Wno-cast-function-type -Wtype-limits -Wshift-negative-value -Wshift-overflow=2 -Wduplicated-cond -Wnull-dereference -fwrapv -fasynchronous-unwind-tables -Wno-null-dereference" \
+		$(ADDON) \
+		CFLAGS="$(TARGET_CFLAGS) -fno-strict-aliasing -Wdeclaration-after-statement -Wno-unused-label -Wno-sign-compare -Wno-unused-parameter -Wno-clobbered -Wno-missing-field-initializers -Wno-cast-function-type -Wno-address-of-packed-member -Wtype-limits -Wshift-negative-value -Wshift-overflow=2 -Wduplicated-cond -Wnull-dereference -fwrapv -fasynchronous-unwind-tables -Wno-null-dereference" \
 		LD="$(TARGET_CC)" \
 		LDFLAGS="$(TARGET_LDFLAGS) -latomic"
 
@@ -117,7 +121,7 @@ define Build/Compile
 	$(MAKE_VARS) $(MAKE) -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS) -Wno-address-of-packed-member" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		admin/halog/halog
 endef
@@ -127,8 +131,8 @@ define Package/haproxy/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/haproxy $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_CONF) ./files/haproxy.cfg $(1)/opt/etc/
-#	$(INSTALL_DIR) $(1)/etc/init.d
-#	$(INSTALL_BIN) ./files/haproxy.init $(1)/etc/init.d/haproxy
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S99haproxy $(1)/opt/etc/init.d/
 endef
 
 Package/haproxy-nossl/install = $(Package/haproxy/install)
