@@ -121,6 +121,7 @@ ovs_bridge_port_add() {
 	}
 
 	ovs-vsctl --may-exist add-port "$name" "$port" ${type:+ -- set interface "$port" type="$type"}
+	ovs_bridge_port_up "$port"
 	__port_list="$__port_list ${port} "
 }
 
@@ -162,6 +163,7 @@ ovs_bridge_port_add_complex() {
 	ovs-vsctl --may-exist add-port "$bridge" "$port" ${tag:+tag="$tag"} \
 		${ofport:+ -- set interface "$port" ofport_request="$ofport"} \
 		${type:+ -- set interface "$port" type="$type"}
+	ovs_bridge_port_up "$port"
 	__port_list="$__port_list ${port} "
 }
 
@@ -172,6 +174,12 @@ ovs_bridge_port_cleanup() {
 			*) ovs-vsctl del-port "$port";;
 		esac
 	done
+}
+
+ovs_bridge_port_up() {
+	local port="$1"
+
+	ip link set dev "$port" up
 }
 
 ovs_bridge_validate_datapath_id() {
@@ -185,6 +193,31 @@ ovs_bridge_validate_datapath_id() {
 		logger -t openvswitch "invalid datapath_id: $dpid"
 		return 1
 	fi
+}
+
+ovs_bridge_validate_datapath_desc() {
+	local dpdesc="$1"
+
+	if [ "$(echo $dpdesc | wc -c)" -le 255 ]; then
+		return 0
+	else
+		logger -t openvswitch "invalid datapath_desc: $dpdesc"
+		return 1
+	fi
+}
+
+ovs_bridge_validate_fail_mode() {
+	local fail_mode="$1"
+
+	case "$fail_mode" in
+		secure|standalone)
+			return 0
+			;;
+		*)
+			logger -t openvswitch "invalid fail_mode: $fail_mode"
+			return 1
+			;;
+	esac
 }
 
 ovs_bridge_init() {
@@ -206,6 +239,24 @@ ovs_bridge_init() {
 		ovs_bridge_validate_datapath_id "$datapath_id" && {
 			ovs-vsctl --if-exists set bridge "$name" other-config:datapath-id="$datapath_id"
 		}
+	}
+
+	config_get datapath_desc "$cfg" datapath_desc
+	[ -n "$datapath_desc" ] && {
+		ovs_bridge_validate_datapath_desc "$datapath_desc" && {
+			ovs-vsctl --if-exists set bridge "$name" other-config:dp-desc="$datapath_desc"
+		}
+	}
+
+	config_get fail_mode "$cfg" fail_mode
+	[ -n "$fail_mode" ] && {
+		ovs_bridge_validate_fail_mode "$fail_mode" && {
+			ovs-vsctl set-fail-mode "$name" "$fail_mode" 2> /dev/null
+		} || {
+			ovs-vsctl del-fail-mode "$name" 2> /dev/null
+		}
+	} || {
+		ovs-vsctl del-fail-mode "$name" 2> /dev/null
 	}
 
 	config_list_foreach "$cfg" "ports" ovs_bridge_port_add
