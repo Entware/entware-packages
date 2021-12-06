@@ -21,10 +21,9 @@ PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
 PKG_INSTALL:=1
-PKG_BUILD_DEPENDS:=meson/host
 
 include $(INCLUDE_DIR)/package.mk
-include ../../devel/meson/meson.mk
+include $(INCLUDE_DIR)/meson.mk
 
 define Package/tang
   SECTION:=utils
@@ -54,10 +53,11 @@ endef
 
 define Package/tang/postinst
 #!/bin/sh
-	mkdir -p /opt/share/tang/db
-	if [ -z "$(ls -A /opt/share/tang/db)" ]; then
-		/opt/libexec/tangd-keygen /opt/share/tang/db/
-	fi
+
+mkdir -p /opt/share/tang/db
+if [ -z "$(ls -A /opt/share/tang/db)" ]; then
+	/opt/libexec/tangd-keygen /opt/share/tang/db/
+fi
 endef
 
 $(eval $(call BuildPackage,tang))
