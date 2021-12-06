@@ -20,8 +20,8 @@ PKG_CPE_ID:=cpe:/a:libexpat:expat
 
 CMAKE_INSTALL:=1
 
-include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libexpat
@@ -35,7 +35,7 @@ define Package/libexpat/description
  A fast, non-validating, stream-oriented XML parsing library.
 endef
 
-OPTIONS += \
+CMAKE_OPTIONS += \
 	-DDOCBOOK_TO_MAN=OFF \
 	-DEXPAT_BUILD_TOOLS=OFF \
 	-DEXPAT_BUILD_EXAMPLES=OFF \
@@ -49,9 +49,6 @@ OPTIONS += \
 
 # XXX * Linux (including <3.17) / BSD / macOS (including <10.7) (/dev/urandom): XML_DEV_URANDOM
 TARGET_CFLAGS += -DXML_DEV_URANDOM
-
-CMAKE_OPTIONS += $(OPTIONS)
-CMAKE_HOST_OPTIONS += $(OPTIONS)
 
 define Package/libexpat/install
 	$(INSTALL_DIR) $(1)/opt/lib
