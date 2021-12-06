@@ -9,7 +9,7 @@
  #include <openssl/engine.h>
 +#else
 +#include <openssl/err.h>
-+#endif
++#endif /* OPENSSL_NO_ENGINE */
  
  #include "../crypto.h"
  
@@ -20,16 +20,17 @@
 +#ifndef OPENSSL_NO_ENGINE
  	ENGINE_load_builtin_engines();
  	ENGINE_register_all_complete();
-+#endif
- 
++#endif /* OPENSSL_NO_ENGINE */
+ #if OPENSSL_API_COMPAT < 0x10100000L
  	ERR_load_crypto_strings();
  	OpenSSL_add_all_algorithms();
-@@ -109,6 +116,8 @@ void crypto_init(void) {
- void crypto_exit(void) {
+@@ -111,7 +118,9 @@ void crypto_exit(void) {
+ #if OPENSSL_API_COMPAT < 0x10100000L
  	EVP_cleanup();
  	ERR_free_strings();
 +#ifndef OPENSSL_NO_ENGINE
  	ENGINE_cleanup();
-+#endif
++#endif /* OPENSSL_NO_ENGINE */
+ #endif
  	random_exit();
  }
