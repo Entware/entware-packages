@@ -11,16 +11,18 @@
  static int verbose_screen;
 --- a/src/dns_conf.h
 +++ b/src/dns_conf.h
-@@ -46,9 +46,9 @@ extern "C" {
+@@ -46,10 +46,10 @@ extern "C" {
  #define DEFAULT_DNS_TLS_PORT 853
  #define DEFAULT_DNS_HTTPS_PORT 443
  #define DNS_MAX_CONF_CNAME_LEN 256
 -#define SMARTDNS_CONF_FILE "/etc/smartdns/smartdns.conf"
 -#define SMARTDNS_LOG_FILE "/var/log/smartdns.log"
 -#define SMARTDNS_AUDIT_FILE "/var/log/smartdns-audit.log"
+-#define SMARTDNS_CACHE_FILE "/tmp/smartdns.cache"
 +#define SMARTDNS_CONF_FILE "/opt/etc/smartdns/smartdns.conf"
 +#define SMARTDNS_LOG_FILE "/opt/var/log/smartdns.log"
 +#define SMARTDNS_AUDIT_FILE "/opt/var/log/smartdns-audit.log"
++#define SMARTDNS_CACHE_FILE "/opt/tmp/smartdns.cache"
  
  enum domain_rule {
  	DOMAIN_RULE_FLAGS = 0,
