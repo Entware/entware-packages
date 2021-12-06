@@ -116,11 +116,10 @@ compare_values() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 is_chaos_calmer() { ubus -S call system board | grep -q 'Chaos Calmer'; }
 led_on(){ if [ -n "${1}" ] && [ -e "${1}/trigger" ]; then echo 'default-on' > "${1}/trigger" 2>&1; fi; }
 led_off(){ if [ -n "${1}" ] &&  [ -e "${1}/trigger" ]; then echo 'none' > "${1}/trigger" 2>&1; fi; }
-dnsmasq_hup() { killall -q -HUP dnsmasq; }
-dnsmasq_kill() { killall -q -KILL dnsmasq; }
+dnsmasq_hup() { killall -q -s HUP dnsmasq; }
+dnsmasq_kill() { killall -q -s KILL dnsmasq; }
 dnsmasq_restart() { /etc/init.d/dnsmasq restart >/dev/null 2>&1; }
 unbound_restart() { /etc/init.d/unbound restart >/dev/null 2>&1; }
-is_force_dns_active() { iptables-save | grep -q -w -- '--dport 53'; }
 is_present() { command -v "$1" >/dev/null 2>&1; }
 
 output() {
@@ -1083,32 +1082,37 @@ service_triggers() {
 
 check() {
 	load_package_config
-	local c string="$1" 
+	local c string="$1"
 	c="$(grep -c "$string" "$outputFile")"
+	c="${c:-0}"
 	if [ ! -s "$outputFile" ]; then
 		echo "No block-list ('$outputFile') found."
 	elif [ -z "$string" ]; then
 		echo "Usage: /etc/init.d/${packageName} check string"
 	elif [ "$c" -gt 0 ]; then
-		if [ "$c" -gt 1 ]; then
+		if [ "$c" -eq 1 ]; then
+			echo "Found 1 match for '$string' in '$outputFile':"
+		elif [ "$c" -le 20 ]; then
 			echo "Found $c matches for '$string' in '$outputFile':"
 		else
-			echo "Found 1 match for '$string' in '$outputFile':"
+			echo "Found $c matches for '$string' in '$outputFile'."
 		fi
-		case "$targetDNS" in
-			dnsmasq.addnhosts)
-				grep "$string" "$outputFile" | sed 's|^127.0.0.1 ||;s|^:: ||;';;
-			dnsmasq.conf)
-				grep "$string" "$outputFile" | sed 's|local=/||;s|/$||;';;
-			dnsmasq.ipset)
-				grep "$string" "$outputFile" | sed 's|ipset=/||;s|/adb$||;';;
-			dnsmasq.servers)
-				grep "$string" "$outputFile" | sed 's|server=/||;s|/$||;';;
-			unbound.adb_list)
-				grep "$string" "$outputFile" | sed 's|^local-zone: "||;s|" static$||;';;
-		esac
+		if [ "$c" -le 20 ]; then
+			case "$targetDNS" in
+				dnsmasq.addnhosts)
+					grep "$string" "$outputFile" | sed 's|^127.0.0.1 ||;s|^:: ||;';;
+				dnsmasq.conf)
+					grep "$string" "$outputFile" | sed 's|local=/||;s|/$||;';;
+				dnsmasq.ipset)
+					grep "$string" "$outputFile" | sed 's|ipset=/||;s|/adb$||;';;
+				dnsmasq.servers)
+					grep "$string" "$outputFile" | sed 's|server=/||;s|/$||;';;
+				unbound.adb_list)
+					grep "$string" "$outputFile" | sed 's|^local-zone: "||;s|" static$||;';;
+			esac
+		fi
 	else
-		echo "The $string is not found in current block-list ('$outputFile')."
+		echo "The '$string' is not found in current block-list ('$outputFile')."
 	fi
 }
 
