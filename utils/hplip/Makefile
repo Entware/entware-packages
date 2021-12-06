@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
 PKG_VERSION:=3.21.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
@@ -108,6 +108,7 @@ TARGET_CPPFLAGS += \
 		--with-icondir=/opt/var \
 		--with-systraydir=/opt/var \
 		ac_cv_lib_cups_cupsDoFileRequest=yes \
+		am_cv_python_version=$(PYTHON3_VERSION) \
 		LIBS="-lz -ljpeg -lusb -lcups -lpng -ltiff" \
 		PYTHON="$(STAGING_DIR_HOSTPKG)/bin/python3" \
 		PYTHON_PREFIX="$(STAGING_DIR_HOSTPKG)" \
@@ -119,10 +120,10 @@ TARGET_CPPFLAGS += \
 endif
 
 #define Build/Install
-#	mkdir -p $(PKG_INSTALL_DIR)/opt/share/sane
+#	mkdir -p $(PKG_INSTALL_DIR)/usr/share/sane
 #	sed -n -e '/key="usb.product_id"/{s/.*int_outof="0x//;s/;0x/\n/g;s/".*//;p}' \
 #		$(PKG_BUILD_DIR)/data/rules/20-hplip-devices.fdi | sort -u > \
-#		$(PKG_INSTALL_DIR)/opt/share/sane/03f0-hplip.usbid
+#		$(PKG_INSTALL_DIR)/usr/share/sane/03f0-hplip.usbid
 #endef
 
 define Package/hplip-common/install
