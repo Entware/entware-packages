@@ -5,9 +5,8 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=https://github.com/wkz/mdio-tools
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2021-07-19
-PKG_SOURCE_VERSION:=65f6898f25b00deebe1c38811e893d9dcd4d7ef3
-PKG_MIRROR_HASH:=9db854037b3e8596ccd71567a45aa60fd3cac88b01c9197d4dd9cf3f32589cb2
+PKG_SOURCE_VERSION:=1.0.0
+PKG_MIRROR_HASH:=e8050610965d7e2c83f4abdff76da7b57d0ed656bbbaff56c757c20d13806932
 
 PKG_FIXUP:=autoreconf
 
@@ -33,6 +32,11 @@ endef
 define Package/mdio-tools/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/mdio/mdio $(1)/usr/bin/
+endef
+
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	$(SED) 's/m4_esyscmd_s(.*)/$(PKG_VERSION)/' $(PKG_BUILD_DIR)/configure.ac
 endef
 
 $(eval $(call BuildPackage,mdio-tools))
