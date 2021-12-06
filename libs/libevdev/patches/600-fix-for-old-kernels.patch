@@ -1,0 +1,19 @@
+--- a/tools/libevdev-events.c
++++ b/tools/libevdev-events.c
+@@ -16,6 +16,16 @@
+ 
+ #include "libevdev/libevdev.h"
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38) /* INPUT_PROP_MAX since Linux 2.6.38 */
++#ifndef INPUT_PROP_MAX
++#define INPUT_PROP_MAX	0x1f
++#endif
++#endif  /* INPUT_PROP_MAX since Linux 2.6.38 */
++
+ static void
+ print_abs_bits(struct libevdev *dev, int axis)
+ {
