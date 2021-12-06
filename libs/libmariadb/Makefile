@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libmariadb
 PKG_VERSION:=3.1.12
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=mariadb-connector-c-$(PKG_VERSION)-src.tar.gz
 PKG_SOURCE_URL := \
@@ -29,7 +29,7 @@ MARIADB_CONF_DIR:=/opt/etc/mysql
 MARIADB_PLUGIN_DIR:=/opt/lib/mariadb/plugin
 
 MARIADB_PORT=3306
-MARIADB_SOCKET=/opt/var/run/mysqld/mysqld.sock
+MARIADB_SOCKET=/opt/var/run/mysql/mysql.sock
 
 MARIADB_CLIENT_PLUGINS := \
 	auth_gssapi_client \
@@ -48,7 +48,7 @@ include $(INCLUDE_DIR)/cmake.mk
 
 # Pass CPPFLAGS in the CFLAGS as otherwise the build system will
 # ignore them.
-TARGET_CFLAGS += $(TARGET_CPPFLAGS)
+TARGET_CFLAGS+=$(TARGET_CPPFLAGS)
 
 define Package/$(PKG_NAME)/install/plugin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)$(MARIADB_PLUGIN_DIR)/$(2).so $(1)$(MARIADB_PLUGIN_DIR)
@@ -67,7 +67,7 @@ endef
 
 define Package/$(PKG_NAME)
   $(call Package/$(PKG_NAME)/Default)
-  DEPENDS:=+mariadb-common \
+  DEPENDS:= \
 	  $(ICONV_DEPENDS) \
 	  +libopenssl \
 	  +zlib
@@ -75,10 +75,6 @@ define Package/$(PKG_NAME)
   MENU:=1
   PROVIDES:=libmariadbclient libmysqlclient libmysqlclient-r
   ABI_VERSION:=3
-endef
-
-define Package/$(PKG_NAME)/conffiles
-$(MARIADB_CONF_DIR)/conf.d/50-client.cnf
 endef
 
 define Package/$(PKG_NAME)/description
@@ -95,6 +91,8 @@ CMAKE_OPTIONS += -DWITH_UNIT_TESTS=0
 CMAKE_OPTIONS += -DCMAKE_CROSSCOMPILING=1
 
 CMAKE_OPTIONS += \
+	-DDEFAULT_CHARSET=utf8 \
+	-DDEFAULT_COLLATION=utf8_general_ci \
 	-DINSTALL_INCLUDEDIR=include/mysql \
 	-DINSTALL_LIBDIR=lib \
 	-DINSTALL_PLUGINDIR=lib/mariadb/plugin \
@@ -155,7 +153,6 @@ define Package/$(PKG_NAME)/install
 		$(PKG_INSTALL_DIR)$(MARIADB_PLUGIN_DIR)/sha256_password.so \
 		$(1)$(MARIADB_PLUGIN_DIR)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/libmariadb.so.$(ABI_VERSION) $(1)/opt/lib
-	$(INSTALL_DATA) conf/50-client.cnf $(1)$(MARIADB_CONF_DIR)/conf.d
 endef
 
 define BuildPlugin
