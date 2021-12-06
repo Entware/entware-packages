@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cyrus-sasl
 PKG_VERSION:=2.1.27
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 
