@@ -57,5 +57,9 @@ define Package/atftpd/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/atftpd $(1)/opt/sbin/
 endef
 
+#define Package/atftpd/conffiles
+#/etc/config/atftpd
+#endef
+
 $(eval $(call BuildPackage,atftp))
 $(eval $(call BuildPackage,atftpd))
