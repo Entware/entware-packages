@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=13
+PKG_RELEASE:=14
 PKG_LICENSE:=GPL-2.0-only
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -67,19 +67,21 @@ define Package/usbip-server
   DEPENDS+= usbip
 endef
 
+#define Package/usbip-server/conffiles
+#/etc/config/usbipd
+#endef
+
 CONFIGURE_PATH:=.
 MAKE_PATH:=.
 LIBTOOL_PATHS:=.
+CONFIGURE_ARGS+= --disable-silent-rules
 
 # Entware specific: add CFLAGS -Wno-*
 MAKE_FLAGS += \
 	CFLAGS='-Wno-format-truncation \
 		-Wno-format-overflow \
 		-Wno-implicit-fallthrough'
-
-CONFIGURE_ARGS += \
-	--disable-silent-rules \
-	--with-usbids-dir=/opt/share/hwdata
+CONFIGURE_ARGS += --with-usbids-dir=/opt/share/hwdata
 
 define Build/Configure
 	(cd $(PKG_BUILD_DIR); ./autogen.sh );
@@ -100,10 +102,9 @@ define Package/usbip-client/install
 endef
 
 define Package/usbip-server/install
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) files/S74usbipd $(1)/opt/etc/init.d
-	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/init.d
 	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/usbipd $(1)/opt/sbin/
+	$(INSTALL_BIN) ./files/S74usbipd $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,usbip))
