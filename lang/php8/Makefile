@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=8.0.9
-PKG_RELEASE:=1a
+PKG_VERSION:=8.0.13
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 PKG_LICENSE:=PHP-3.01
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=71a01b2b56544e20e28696ad5b366e431a0984eaa39aa5e35426a4843e172010
+PKG_HASH:=cd976805ec2e9198417651027dfe16854ba2c2c388151ab9d4d268513d52ed52
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -40,7 +40,7 @@ PHP8_MODULES= \
 
 PKG_CONFIG_DEPENDS:= \
 	$(patsubst %,CONFIG_PACKAGE_php8-mod-%,$(PHP8_MODULES)) \
-	CONFIG_PHP8_LIBXML CONFIG_PHP8_SYSTEMTZDATA
+	CONFIG_PHP8_LIBXML CONFIG_PHP8_SYSTEMTZDATA CONFIG_PACKAGE_apache-mod-php8
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
@@ -66,7 +66,7 @@ define Package/php8/config
 
 	config PHP8_SYSTEMTZDATA
 		bool "Use system timezone data instead of php's built-in database"
-		depends on PACKAGE_php8-cli || PACKAGE_php8-cgi
+		depends on PACKAGE_php8-cli || PACKAGE_php8-cgi || PACKAGE_apache-mod-php8
 		default y
 		help
 			Enabling this feature automatically selects the zoneinfo-core package
@@ -152,6 +152,22 @@ define Package/php8-mod-intl/description
   select/install package 'icu-full-data'.
 endef
 
+define Package/apache-mod-php8
+  $(call Package/php8/Default)
+  SUBMENU:=Web Servers/Proxies
+  SECTION:=net
+  CATEGORY:=Network
+  DEPENDS+=PACKAGE_apache-mod-php8:apache \
+	   +PACKAGE_php8-mod-intl:libstdcpp \
+	   +libpcre2 +zlib
+  TITLE:=PHP8 module for Apache Web Server
+endef
+
+define Package/apache-mod-php8/description
+  $(call Package/php8/Default/description)
+  This package contains the PHP module for the Apache Web Server.
+endef
+
 # not everything groks --disable-nls
 DISABLE_NLS:=
 
@@ -174,6 +190,13 @@ CONFIGURE_ARGS+= \
 	--without-valgrind \
 	--with-external-pcre \
 	--with-zlib="$(STAGING_DIR)/opt"
+
+ifeq ($(CONFIG_LIBC_USE_GLIBC),y)
+TARGET_LDFLAGS += -ldl
+
+# XXX Entware specific: fixed issue #693
+TARGET_LDFLAGS += -lresolv
+endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-bcmath),)
   CONFIGURE_ARGS+= --enable-bcmath=shared
@@ -458,8 +481,9 @@ else
   CONFIGURE_ARGS+= --without-system-tzdata
 endif
 
-# XXX Entware specific:
-TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lresolv)
+ifneq ($(CONFIG_PACKAGE_apache-mod-php8),)
+  CONFIGURE_ARGS+= --with-apxs2=$(STAGING_DIR)/opt/bin/apxs
+endif
 
 CONFIGURE_VARS+= \
 	ac_cv_c_bigendian_php=$(if $(CONFIG_BIG_ENDIAN),yes,no) \
@@ -529,6 +553,11 @@ define Package/php8-fpm/conffiles
 /opt/etc/php8-fpm.d/
 endef
 
+define Package/apache-mod-php8/install
+	$(INSTALL_DIR) $(1)/opt/lib/apache2
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/libs/libphp.so $(1)/opt/lib/apache2
+endef
+
 define Build/Prepare
 	$(call Build/Prepare/Default)
 	$(if $(QUILT),,( cd $(PKG_BUILD_DIR); touch configure.ac; ./buildconf --force ))
@@ -592,6 +621,7 @@ $(eval $(call BuildPackage,php8-cgi))
 $(eval $(call BuildPackage,php8-cli))
 $(eval $(call BuildPackage,php8-fastcgi))
 $(eval $(call BuildPackage,php8-fpm))
+$(eval $(call BuildPackage,apache-mod-php8))
 
 #$(eval $(call BuildModule,NAME,TITLE[,PKG DEPENDS]))
 $(eval $(call BuildModule,bcmath,Bcmath))
