@@ -1,0 +1,19 @@
+# linux/netlink.h:31:2: error: unknown type name 'sa_family_t'
+#	sa_family_t nl_family; /* AF_NETLINK */
+#	^~~~~~~~~~~
+--- a/src/libmbim-glib/mbim-net-port-manager.c
++++ b/src/libmbim-glib/mbim-net-port-manager.c
+@@ -24,12 +24,12 @@
+  *   Copyright (C) 2020-2021 Andrew Lassalle <andrewlassalle@chromium.org>
+  */
+ 
++#include <sys/socket.h>
+ #include <linux/if_link.h>
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
+ #include <net/if.h>
+ #include <net/if_arp.h>
+-#include <sys/socket.h>
+ #include <sys/types.h>
+ #include <string.h>
+ 
