@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.12.0
-PKG_RELEASE:=11
+PKG_RELEASE:=15
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -403,6 +403,32 @@ define BuildPlugin
 
 endef
 
+#define BuildScriptLuaPlugin
+#  PKG_CONFIG_DEPENDS+= CONFIG_PACKAGE_collectd-mod-$(1)
+
+#  define Package/collectd-mod-$(1)
+#  $$(call Package/collectd/Default)
+#    TITLE:=$(2) plugin
+#    DEPENDS:= $(4)
+#  endef
+
+#  define Package/collectd-mod-$(1)/install
+#	$(INSTALL_DIR) $$(1)/usr/lib/collectd-mod-lua
+#	for m in $(3); do \
+#		${INSTALL_DATA} \
+#			./files/lua-scripts/$$$$$$$${m}.lua $$(1)/usr/lib/collectd-mod-lua/ ; \
+#	done
+#	if [ -f ./files/usr/share/collectd/plugin/$(1).json ]; then \
+#		$(INSTALL_DIR) $$(1)/usr/share/collectd/plugin ; \
+#		$(INSTALL_DATA) ./files/usr/share/collectd/plugin/$(1).json \
+#			$$(1)/usr/share/collectd/plugin/$(1).json ; \
+#	fi
+#  endef
+
+#  $$(eval $$(call BuildPackage,collectd-mod-$(1)))
+
+#endef
+
 #define BuildScriptPlugin
 #  PKG_CONFIG_DEPENDS+= CONFIG_PACKAGE_collectd-mod-$(1)
 #
@@ -487,7 +513,7 @@ $(eval $(call BuildPlugin,processes,process status input,processes,+PACKAGE_coll
 $(eval $(call BuildPlugin,protocols,network protocols input,protocols,))
 #$(eval $(call BuildPlugin,routeros,MikroTik RouterOS input,routeros,+PACKAGE_collectd-mod-routeros:librouteros))
 $(eval $(call BuildPlugin,rrdtool,RRDtool output,rrdtool,+PACKAGE_collectd-mod-rrdtool:librrd1))
-$(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod-sensors:libsensors))
+$(eval $(call BuildPlugin,sensors,lm_sensors input,sensors,+PACKAGE_collectd-mod-sensors:lm-sensors))
 $(eval $(call BuildPlugin,smart,smart input,smart,+PACKAGE_collectd-mod-smart:libatasmart))
 $(eval $(call BuildPlugin,snmp,SNMP input,snmp,+PACKAGE_collectd-mod-snmp:libnetsnmp))
 #$(eval $(call BuildPlugin,snmp6,snmp6 input,snmp6,))
@@ -512,3 +538,4 @@ $(eval $(call BuildPlugin,write-http,HTTP POST output,write_http,+PACKAGE_collec
 $(eval $(call BuildPlugin,write-log,Log output,write_log,))
 
 #$(eval $(call BuildScriptPlugin,sqm,SQM/qdisc collection,sqm_collectd,+PACKAGE_collectd-mod-sqm:collectd-mod-exec))
+$(eval $(call BuildScriptLuaPlugin,ltq-dsl,Lantiq DSL collection,dsl,@TARGET_lantiq_xrx200 +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))
