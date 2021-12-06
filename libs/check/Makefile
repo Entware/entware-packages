@@ -45,8 +45,8 @@ CMAKE_OPTIONS += \
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON
 
 define Package/check/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libcheck.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcheck.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,check))
