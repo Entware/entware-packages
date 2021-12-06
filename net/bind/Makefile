@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bind
-PKG_VERSION:=9.17.13
+PKG_VERSION:=9.17.20
 PKG_RELEASE:=1
 USERID:=bind=57:bind=57
 
@@ -22,7 +22,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:= \
 	https://www.mirrorservice.org/sites/ftp.isc.org/isc/bind9/$(PKG_VERSION) \
 	https://ftp.isc.org/isc/bind9/$(PKG_VERSION)
-PKG_HASH:=bf485ac49715d43fa65c2c6e33271aab965bcd1b461fe2ac9f439754a210e6c7
+PKG_HASH:=93a961f6b4072af260c5d900299eb660defec035f9a000c864ea5b78869a4d35
 
 PKG_FIXUP:=autoreconf
 PKG_REMOVE_FILES:=aclocal.m4 libtool.m4
@@ -69,6 +69,7 @@ endef
 define Package/bind-server
   $(call Package/bind/Default)
   TITLE+= DNS server
+  DEPENDS+= libcap
 endef
 
 define Package/bind-server/config
@@ -126,8 +127,8 @@ endef
 define Package/bind-nslookup
   $(call Package/bind/Default)
   TITLE+= nslookup utility
-#  ALTERNATIVES:= \
-#	  200:/usr/bin/nslookup:/usr/libexec/nslookup-bind
+  ALTERNATIVES:= \
+	  200:/opt/bin/nslookup:/opt/libexec/nslookup-bind
 endef
 
 export BUILD_CC="$(TARGET_CC)"
@@ -135,7 +136,6 @@ export BUILD_CC="$(TARGET_CC)"
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 CONFIGURE_ARGS += \
-	--disable-linux-caps \
 	--with-openssl="$(STAGING_DIR)/opt" \
 	--with-libtool \
 	--without-lmdb \
@@ -260,8 +260,8 @@ define Package/bind-dig/install
 endef
 
 define Package/bind-nslookup/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/nslookup $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/nslookup $(1)/opt/libexec/nslookup-bind
 endef
 
 $(eval $(call BuildPackage,bind-libs))
