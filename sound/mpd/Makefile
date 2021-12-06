@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpd
-PKG_VERSION:=0.22.9
+PKG_VERSION:=0.23.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://www.musicpd.org/download/mpd/0.22/
-PKG_HASH:=f937403297c2240bd4a569f4b937ee7ab17398a5284ba9df4d6d4c3a0512bc64
+PKG_SOURCE_URL:=https://www.musicpd.org/download/mpd/0.23
+PKG_HASH:=74ec75689746baaeab7c65d70019f96f70b31b658cb25cfd2ebcca03f65acddf
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
@@ -27,14 +27,14 @@ PKG_USE_MIPS16:=0
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
-include ../../devel/meson/meson.mk
+include $(INCLUDE_DIR)/meson.mk
 
 define Package/mpd/Default
   SECTION:=sound
   CATEGORY:=Sound
   TITLE:=Music Player Daemon
   URL:=https://www.musicpd.org/
-  DEPENDS:= +zlib +libcurl +libpthread +libmpdclient +boost $(ICONV_DEPENDS) \
+  DEPENDS:= +zlib +libcurl +libpthread +libmpdclient +boost $(ICONV_DEPENDS) +libfmt \
             +AUDIO_SUPPORT:alsa-lib +libexpat +libflac +libid3tag +libfaad2 +libopus
   USERID:=mpd:mpd
 endef
@@ -49,7 +49,7 @@ endef
 define Package/mpd-full
 $(call Package/mpd/Default)
   TITLE+= (full)
-  DEPENDS+= +AUDIO_SUPPORT:pulseaudio-daemon +libvorbis +libmms +libupnp +libshout +yajl \
+  DEPENDS+= +AUDIO_SUPPORT:pulseaudio-daemon +libvorbis +libmms +libnpupnp +libshout +yajl \
             +libffmpeg +lame-lib +!BUILD_PATENTED:libmad
   PROVIDES:=mpd
   VARIANT:=full
@@ -130,7 +130,6 @@ MESON_ARGS += \
 	-Dnfs=disabled \
 	-Dsmbclient=disabled \
 	-Dqobuz=disabled \
-	-Dtidal=disabled \
 	-Dbzip2=disabled \
 	-Diso9660=disabled \
 	-Dzzip=disabled \
@@ -142,10 +141,11 @@ MESON_ARGS += \
 	-Dflac=enabled \
 	-Dfluidsynth=disabled \
 	-Dgme=disabled \
-	-Dmpg123=disabled \
 	-Dmikmod=disabled \
 	-Dmodplug=disabled \
 	-Dmpcdec=disabled \
+	-Dmpg123=disabled \
+	-Dopenmpt=disabled \
 	-Dopus=enabled \
 	-Dsidplay=disabled \
 	-Dsndfile=disabled \
@@ -164,6 +164,8 @@ MESON_ARGS += \
 	-Djack=disabled \
 	-Dopenal=disabled \
 	-Doss=disabled \
+	-Dpipewire=disabled \
+	-Dsnapcast=false \
 	-Dsndio=disabled \
 	-Dsolaris_output=disabled \
 	-Ddbus=disabled \
@@ -178,7 +180,7 @@ MESON_ARGS += \
 ifeq ($(BUILD_VARIANT),full)
 
   MESON_ARGS += \
-	-Dupnp=enabled \
+	-Dupnp=npupnp \
 	-Dmms=enabled \
 	-Dsoundcloud=enabled \
 	-Dffmpeg=$(if $(CONFIG_BUILD_PATENTED),en,dis)abled \
