@@ -1,0 +1,21 @@
+# linux/netlink.h:31:2: error: unknown type name 'sa_family_t'
+#	sa_family_t nl_family; /* AF_NETLINK */
+#	^~~~~~~~~~~
+--- a/src/libqmi-glib/qmi-net-port-manager-rmnet.c
++++ b/src/libqmi-glib/qmi-net-port-manager-rmnet.c
+@@ -21,6 +21,7 @@
+  * Copyright (C) 2020 Andrew Lassalle <andrewlassalle@chromium.org>
+  */
+ 
++#include <sys/socket.h>
+ #include <linux/if_link.h>
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
+@@ -37,7 +38,6 @@
+ #define ARPHRD_RAWIP 519
+ #endif
+ 
+-#include <sys/socket.h>
+ #include <sys/types.h>
+ #include <string.h>
+ 
