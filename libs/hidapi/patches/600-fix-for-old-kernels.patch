@@ -1,0 +1,14 @@
+--- a/linux/hid.c
++++ b/linux/hid.c
+@@ -45,6 +45,11 @@
+ 
+ #include "hidapi.h"
+ 
++/* HIDIOCSFEATURE & HIDIOCGFEATURE since Linux 2.6.39 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,39)
++#define HIDIOCSFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x06, len)
++#define HIDIOCGFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x07, len)
++#endif /* HIDIOCSFEATURE & HIDIOCGFEATURE since Linux 2.6.39 */
+ 
+ /* USB HID device property names */
+ const char *device_string_names[] = {
