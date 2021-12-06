@@ -4,13 +4,12 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: oniguruma dependency added
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jq
 PKG_VERSION:=1.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_LICENSE:=BSD
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -25,16 +24,16 @@ ifdef CONFIG_USE_MIPS16
   TARGET_CFLAGS += -fno-ipa-sra
 endif
 
-TARGET_CFLAGS += -std=c99 -D_DEFAULT_SOURCE
+TARGET_CFLAGS += -std=c99 -D_GNU_SOURCE
 
 CONFIGURE_ARGS+= \
 	--disable-docs \
-	--disable-valgrind
+	--disable-valgrind \
+	--without-oniguruma
 
 define Package/jq
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+oniguruma
   TITLE:=Lightweight and flexible command-line JSON processor.
   URL:=https://stedolan.github.io/jq/
   MAINTAINER:=Marko Ratkaj <marko.ratkaj@sartura.hr>
