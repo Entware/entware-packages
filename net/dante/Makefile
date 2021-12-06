@@ -127,7 +127,6 @@ endef
 define Package/socksify/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/socksify $(1)/opt/bin/
-
 ifeq ($(CONFIG_USE_GLIBC),y)
 	$(SED) 's|libdl.so|libdl.so.2|g' $(1)/opt/bin/socksify
 endif
