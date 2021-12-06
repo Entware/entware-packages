@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autoconf
 PKG_VERSION:=2.70
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=@GNU/autoconf
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -39,9 +39,12 @@ endef
 
 CONFIGURE_VARS += M4=m4 EMACS=no
 
+FIX_PATHS = $(SED) '1c \#!/opt/bin/perl' -e 's| /[^ ]*/bin/perl| /opt/bin/perl|g'
+
 define Package/autoconf/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+	grep -rEl "#\!.*perl" $(1)/opt/bin/ | xargs $(FIX_PATHS)
 	$(INSTALL_DIR) $(1)/opt/share/autoconf
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/autoconf/INSTALL \
 	$(1)/opt/share/autoconf/
@@ -62,9 +65,6 @@ define Package/autoconf/install
 	$(INSTALL_DIR) $(1)/opt/share/autoconf/m4sugar
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/autoconf/m4sugar/* \
 	$(1)/opt/share/autoconf/m4sugar/
-	# Entware specific: fix exec path in scripts
-	$(SED) 's,^#!.*perl,#!/opt/bin/perl,; \
-		s,$(STAGING_DIR_HOST),/opt,g' $(1)/opt/bin/*
 endef
 
 $(eval $(call BuildPackage,autoconf))
