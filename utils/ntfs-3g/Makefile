@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ntfs-3g
-PKG_VERSION:=2017.3.23
-PKG_RELEASE:=4
+PKG_VERSION:=2021.8.22
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)_ntfsprogs-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://www.tuxera.com/opensource/
-PKG_HASH:=3e5a021d7b761261836dcb305370af299793eedbded731df3d6943802e1262d5
+PKG_HASH:=55b883aa05d94b2ec746ef3966cb41e66bed6db99f22ddd41d1b8b94bb202efb
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=GPL-2.0-only LGPL-2.1-or-later
@@ -61,7 +61,7 @@ define Package/ntfs-3g/config
 config PACKAGE_NTFS-3G_USE_LIBFUSE
 	bool "use external FUSE library, selects package libfuse"
 	depends on PACKAGE_ntfs-3g
-	---help---
+	help
 	Ntfs-3g by default uses a minimalized lite version of FUSE.
 	If libfuse is part of your filesystem anyway (because of sshfs, owfs
 	etc.) it makes sense to activate this option and save some kilobytes
@@ -165,6 +165,7 @@ define Package/ntfs-3g/install
 	$(LN) ../bin/ntfs-3g $(1)/opt/sbin/mount.ntfs-3g
 endef
 
+
 define Package/ntfs-3g-low/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lowntfs-3g $(1)/opt/bin/
@@ -172,13 +173,13 @@ define Package/ntfs-3g-low/install
 	$(LN) ../bin/lowntfs-3g $(1)/opt/sbin/mount.lowntfs-3g
 endef
 
+
 define Package/ntfs-3g-utils/install
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(LN) ../sbin/mkntfs $(1)/opt/sbin/mkfs.ntfs
-	$(INSTALL_DIR) $(1)/opt/bin
+	rm -f $(PKG_INSTALL_DIR)/opt/sbin/mkfs.ntfs
+	$(INSTALL_DIR) $(1)/opt/{bin,sbin}
 	$(FIND) $(PKG_INSTALL_DIR)/opt/bin/ -type f ! -regex '.*[^/]*ntfs-3g[^/]*' -exec $(INSTALL_BIN) {} $(1)/opt/bin/ \;
-	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
+	$(LN) mkntfs $(1)/opt/sbin/mkfs.ntfs
 endef
 
 $(eval $(call BuildPackage,ntfs-3g))
