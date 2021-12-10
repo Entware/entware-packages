@@ -42,8 +42,7 @@ define Package/fail2ban/description
 endef
 
 define Package/fail2ban/conffiles
-/etc/fail2ban/
-/etc/config/fail2ban
+/opt/etc/fail2ban/
 endef
 
 define Py3Package/fail2ban/filespec
@@ -52,27 +51,19 @@ define Py3Package/fail2ban/filespec
 endef
 
 define Py3Package/fail2ban/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/fail2ban-server $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/fail2ban-client $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/fail2ban-regex $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/fail2ban-server $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/fail2ban-client $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/fail2ban-regex $(1)/opt/bin/
 
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/fail2ban.config $(1)/etc/config/fail2ban
-	$(INSTALL_BIN) ./files/firewall.fail2ban $(1)/etc/firewall.fail2ban
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/fail2ban.init $(1)/opt/etc/init.d/fail2ban
 
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/fail2ban.init $(1)/etc/init.d/fail2ban
+	$(INSTALL_DIR) $(1)/opt/etc/fail2ban/
+	$(CP) $(PKG_BUILD_DIR)/config/* $(1)/opt/etc/fail2ban/
 
-	$(INSTALL_DIR) $(1)/etc/fail2ban/
-	$(CP) $(PKG_BUILD_DIR)/config/* $(1)/etc/fail2ban/
-
-	$(INSTALL_DIR) $(1)/etc/fail2ban/fail2ban.d
-	$(INSTALL_DATA) ./files/db.conf $(1)/etc/fail2ban/fail2ban.d/db.conf
-	$(INSTALL_DATA) ./files/uci.conf $(1)/etc/fail2ban/fail2ban.d/uci.conf
-
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/fail2ban.defaults $(1)/etc/uci-defaults/99_fail2ban
+	$(INSTALL_DIR) $(1)/opt/etc/fail2ban/fail2ban.d
+	$(INSTALL_DATA) ./files/db.conf $(1)/opt/etc/fail2ban/fail2ban.d/db.conf
 endef
 
 $(eval $(call Py3Package,fail2ban))
