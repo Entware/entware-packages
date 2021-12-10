@@ -1,0 +1,190 @@
+--- a/fail2ban/client/configreader.py
++++ b/fail2ban/client/configreader.py
+@@ -187,7 +187,7 @@ class ConfigReaderUnshared(SafeConfigPar
+ 	Use ConfigReader instead.
+ 	"""
+ 
+-	DEFAULT_BASEDIR = '/etc/fail2ban'
++	DEFAULT_BASEDIR = '/opt/etc/fail2ban'
+ 	
+ 	def __init__(self, basedir=None, *args, **kwargs):
+ 		SafeConfigParserWithIncludes.__init__(self, *args, **kwargs)
+--- a/fail2ban/client/csocket.py
++++ b/fail2ban/client/csocket.py
+@@ -32,7 +32,7 @@ import sys
+ 
+ class CSocket:
+ 	
+-	def __init__(self, sock="/var/run/fail2ban/fail2ban.sock", timeout=-1):
++	def __init__(self, sock="/opt/var/run/fail2ban/fail2ban.sock", timeout=-1):
+ 		# Create an INET, STREAMing socket
+ 		#self.csock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 		self.__csock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+--- a/fail2ban/client/fail2bancmdline.py
++++ b/fail2ban/client/fail2bancmdline.py
+@@ -58,7 +58,7 @@ class Fail2banCmdLine():
+ 	def resetConf(self):
+ 		self._conf = {
+ 		  "async": False,
+-			"conf": "/etc/fail2ban",
++			"conf": "/opt/etc/fail2ban",
+ 			"force": False,
+ 			"background": True,
+ 			"verbose": 1,
+--- a/fail2ban/client/fail2banreader.py
++++ b/fail2ban/client/fail2banreader.py
+@@ -41,10 +41,10 @@ class Fail2banReader(ConfigReader):
+ 	
+ 	def getEarlyOptions(self):
+ 		opts = [
+-			["string", "socket", "/var/run/fail2ban/fail2ban.sock"],
+-			["string", "pidfile", "/var/run/fail2ban/fail2ban.pid"],
++			["string", "socket", "/opt/var/run/fail2ban/fail2ban.sock"],
++			["string", "pidfile", "/opt/var/run/fail2ban/fail2ban.pid"],
+ 			["string", "loglevel", "INFO"],
+-			["string", "logtarget", "/var/log/fail2ban.log"],
++			["string", "logtarget", "/opt/var/log/fail2ban.log"],
+ 			["string", "syslogsocket", "auto"]
+ 		]
+ 		return ConfigReader.getOptions(self, "Definition", opts)
+@@ -53,7 +53,7 @@ class Fail2banReader(ConfigReader):
+ 		opts = [["string", "loglevel", "INFO" ],
+ 				["string", "logtarget", "STDERR"],
+ 				["string", "syslogsocket", "auto"],
+-				["string", "dbfile", "/var/lib/fail2ban/fail2ban.sqlite3"],
++				["string", "dbfile", "/opt/var/lib/fail2ban/fail2ban.sqlite3"],
+ 				["int",    "dbmaxmatches", None],
+ 				["string", "dbpurgeage", "1d"]]
+ 		self.__opts = ConfigReader.getOptions(self, "Definition", opts)
+--- a/fail2ban/client/fail2banregex.py
++++ b/fail2ban/client/fail2banregex.py
+@@ -111,7 +111,7 @@ class _f2bOptParser(OptionParser):
+ 		return "Usage: " + usage() + "\n" + __doc__ + """
+ LOG:
+   string                a string representing a log line
+-  filename              path to a log file (/var/log/auth.log)
++  filename              path to a log file (/opt/var/log/auth.log)
+   systemd-journal       search systemd journal (systemd-python required),
+                         optionally with backend parameters, see `man jail.conf`
+                         for usage and examples (systemd-journal[journalflags=1]).
+@@ -136,7 +136,7 @@ def get_opt_parser():
+ 				version="%prog " + version)
+ 
+ 	p.add_options([
+-		Option("-c", "--config", default='/etc/fail2ban',
++		Option("-c", "--config", default='/opt/etc/fail2ban',
+ 			   help="set alternate config directory"),
+ 		Option("-d", "--datepattern",
+ 			   help="set custom pattern used to match date/times"),
+--- a/fail2ban/server/asyncserver.py
++++ b/fail2ban/server/asyncserver.py
+@@ -195,7 +195,7 @@ class AsyncServer(asyncore.dispatcher):
+ 	def __init__(self, transmitter):
+ 		asyncore.dispatcher.__init__(self)
+ 		self.__transmitter = transmitter
+-		self.__sock = "/var/run/fail2ban/fail2ban.sock"
++		self.__sock = "/opt/var/run/fail2ban/fail2ban.sock"
+ 		self.__init = False
+ 		self.__active = False
+ 		self.__errCount = {'accept': 0, 'listen': 0}
+--- a/fail2ban/server/server.py
++++ b/fail2ban/server/server.py
+@@ -93,8 +93,8 @@ class Server:
+ 		self.__verbose = None
+ 		self.__syslogSocket = None
+ 		self.__autoSyslogSocketPaths = {
+-			'Darwin':  '/var/run/syslog',
+-			'FreeBSD': '/var/run/log',
++			'Darwin':  '/opt/var/run/syslog',
++			'FreeBSD': '/opt/var/run/log',
+ 			'Linux': '/dev/log',
+ 		}
+ 		self.__prev_signals = {}
+--- a/fail2ban/tests/clientbeautifiertestcase.py
++++ b/fail2ban/tests/clientbeautifiertestcase.py
+@@ -79,7 +79,7 @@ class BeautifierTest(unittest.TestCase):
+ 					("Filter", [
+ 							("Currently failed", 0),
+ 							("Total failed", 0),
+-							("File list", "/var/log/auth.log")
++							("File list", "/opt/var/log/auth.log")
+ 						]
+ 					),
+ 					("Actions", [
+@@ -98,7 +98,7 @@ class BeautifierTest(unittest.TestCase):
+ 		output += "|- Filter\n"
+ 		output += "|  |- Currently failed:	0\n"
+ 		output += "|  |- Total failed:	0\n"
+-		output += "|  `- File list:	/var/log/auth.log\n"
++		output += "|  `- File list:	/opt/var/log/auth.log\n"
+ 		output += "`- Actions\n"
+ 		output += "   |- Currently banned:	3\n"
+ 		output += "   |- Total banned:	3\n"
+@@ -116,8 +116,8 @@ class BeautifierTest(unittest.TestCase):
+ 
+ 	def testLogTarget(self):
+ 		self.b.setInputCmd(["get", "logtarget"])
+-		output = "Current logging target is:\n`- /var/log/fail2ban.log"
+-		self.assertEqual(self.b.beautify("/var/log/fail2ban.log"), output)
++		output = "Current logging target is:\n`- /opt/var/log/fail2ban.log"
++		self.assertEqual(self.b.beautify("/opt/var/log/fail2ban.log"), output)
+ 
+ 	def testLogLevel(self):
+ 		self.b.setInputCmd(["get", "loglevel"])
+@@ -126,7 +126,7 @@ class BeautifierTest(unittest.TestCase):
+ 
+ 	def testDbFile(self):
+ 		self.b.setInputCmd(["get", "dbfile"])
+-		response = "/var/lib/fail2ban/fail2ban.sqlite3"
++		response = "/opt/var/lib/fail2ban/fail2ban.sqlite3"
+ 		output = "Current database file is:\n`- " + response
+ 		self.assertEqual(self.b.beautify(response), output)
+ 		self.assertEqual(self.b.beautify(None), "Database currently disabled")
+@@ -142,18 +142,18 @@ class BeautifierTest(unittest.TestCase):
+ 		response = []
+ 		output = "No file is currently monitored"
+ 		self.assertEqual(self.b.beautify(response), output)
+-		response = ["/var/log/auth.log"]
+-		output = "Current monitored log file(s):\n`- /var/log/auth.log"
++		response = ["/opt/var/log/auth.log"]
++		output = "Current monitored log file(s):\n`- /opt/var/log/auth.log"
+ 		self.assertEqual(self.b.beautify(response), output)
+ 
+-		self.b.setInputCmd(["set", "sshd", "addlogpath", "/var/log/messages"])
+-		response = ["/var/log/messages", "/var/log/auth.log"]
++		self.b.setInputCmd(["set", "sshd", "addlogpath", "/opt/var/log/messages"])
++		response = ["/opt/var/log/messages", "/opt/var/log/auth.log"]
+ 		outputadd = "Current monitored log file(s):\n"
+-		outputadd += "|- /var/log/messages\n`- /var/log/auth.log"
++		outputadd += "|- /opt/var/log/messages\n`- /opt/var/log/auth.log"
+ 		self.assertEqual(self.b.beautify(response), outputadd)
+ 
+-		self.b.setInputCmd(["set", "sshd", "dellogpath", "/var/log/messages"])
+-		response = ["/var/log/auth.log"]
++		self.b.setInputCmd(["set", "sshd", "dellogpath", "/opt/var/log/messages"])
++		response = ["/opt/var/log/auth.log"]
+ 		self.assertEqual(self.b.beautify(response), output)
+ 
+ 	def testLogEncoding(self):
+--- a/fail2ban/tests/databasetestcase.py
++++ b/fail2ban/tests/databasetestcase.py
+@@ -180,7 +180,7 @@ class DatabaseTest(LogCaptureTestCase):
+ 			os.path.join(TEST_FILES_DIR, 'database_v2.db'), self.dbFilename)
+ 		self.db = Fail2BanDb(self.dbFilename)
+ 		self.assertEqual(self.db.getJailNames(), set(['pam-generic']))
+-		self.assertEqual(self.db.getLogPaths(), set(['/var/log/auth.log']))
++		self.assertEqual(self.db.getLogPaths(), set(['/opt/var/log/auth.log']))
+ 		bans = self.db.getBans()
+ 		self.assertEqual(len(bans), 2)
+ 		# compare first ticket completely:
+--- a/fail2ban/tests/utils.py
++++ b/fail2ban/tests/utils.py
+@@ -58,7 +58,7 @@ if not CONFIG_DIR:
+ 	if os.path.exists(os.path.join('config','fail2ban.conf')):
+ 		CONFIG_DIR = 'config'
+ 	else: # pragma: no cover - normally unreachable
+-		CONFIG_DIR = '/etc/fail2ban'
++		CONFIG_DIR = '/opt/etc/fail2ban'
+ 
+ # Indicates that we've stock config:
+ STOCK = os.path.exists(os.path.join(CONFIG_DIR, 'fail2ban.conf'))
