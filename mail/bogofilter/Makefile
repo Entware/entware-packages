@@ -43,22 +43,22 @@ CONFIGURE_ARGS += \
 	--with-included-gsl
 
 define Package/bogofilter/conffiles
-/etc/bogofilter.cf
+/opt/etc/bogofilter.cf
 endef
 
 define Package/bogofilter/install
-	$(INSTALL_DIR)  $(1)/etc/ \
-                        $(1)/usr/bin \
-                        $(1)/usr/sbin
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/bogofilter.cf.example $(1)/etc/bogofilter.cf
-	$(INSTALL_BIN) ./files/postfix-bogofilter $(1)/usr/sbin/postfix-bogofilter
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bf_compact $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bf_copy $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bf_tar $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bogofilter $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bogolexer $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bogotune $(1)/usr/bin/
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/bogoutil $(1)/usr/bin/
+	$(INSTALL_DIR)  $(1)/opt/etc/ \
+                        $(1)/opt/bin \
+                        $(1)/opt/sbin
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/bogofilter.cf.example $(1)/opt/etc/bogofilter.cf
+#	$(INSTALL_BIN) ./files/postfix-bogofilter $(1)/opt/sbin/postfix-bogofilter
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bf_compact $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bf_copy $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bf_tar $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bogofilter $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bogolexer $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bogotune $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/bogoutil $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,bogofilter))
