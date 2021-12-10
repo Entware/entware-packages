@@ -65,26 +65,24 @@ MESON_ARGS+= \
 	-Ddoc=disabled \
 	-Dinstall_kresd_conf=disabled \
 	-Dinstall_root_keys=disabled \
-	-Dkeyfile_default=/etc/knot-resolver/root.keys \
-	-Dprefix=/usr \
+	-Dkeyfile_default=/opt/etc/knot-resolver/root.keys \
+	-Dprefix=/opt \
 	-Dunit_tests=disabled \
 	-Dutils=disabled
 
 define Package/knot-resolver/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kresd $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kresd $(1)/opt/sbin/
 
-	$(INSTALL_DIR) $(1)/usr/lib/knot-resolver
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/knot-resolver/{*.lua,*.so} $(1)/usr/lib/knot-resolver/
-	$(INSTALL_DIR) $(1)/usr/lib/knot-resolver/kres_modules
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/knot-resolver/kres_modules/{*.lua,*.so} $(1)/usr/lib/knot-resolver/kres_modules/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/kresd.init $(1)/etc/init.d/kresd
+	$(INSTALL_DIR) $(1)/opt/lib/knot-resolver
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/knot-resolver/{*.lua,*.so} $(1)/opt/lib/knot-resolver/
+	$(INSTALL_DIR) $(1)/opt/lib/knot-resolver/kres_modules
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/knot-resolver/kres_modules/{*.lua,*.so} $(1)/opt/lib/knot-resolver/kres_modules/
 
-	$(INSTALL_DIR) $(1)/etc/knot-resolver
-	$(CP) $(PKG_INSTALL_DIR)/etc/knot-resolver/root.hints $(1)/etc/knot-resolver/
-	$(CP) ./files/root.keys $(1)/etc/knot-resolver
+	$(INSTALL_DIR) $(1)/opt/etc/knot-resolver
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/knot-resolver/root.hints $(1)/opt/etc/knot-resolver/
+	$(CP) ./files/root.keys $(1)/opt/etc/knot-resolver
 endef
 
 $(eval $(call BuildPackage,knot-resolver))
