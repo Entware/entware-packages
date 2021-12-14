@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=less
 PKG_VERSION:=590
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= @GNU/less \
@@ -41,8 +41,8 @@ define Package/less/description
 endef
 
 define Package/less/install
-	$(INSTALL_DIR) $(1)/opt/libexec
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/less $(1)/opt/libexec/less-gnu
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/less $(1)/opt/bin/less
 endef
 
 $(eval $(call BuildPackage,less))
