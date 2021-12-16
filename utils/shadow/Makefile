@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadow
 PKG_VERSION:=4.8.1
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/shadow-maint/shadow/releases/download/$(PKG_VERSION)
@@ -125,6 +125,8 @@ define Package/shadow-common/conffiles
 /opt/etc/login.defs
 endef
 
+
+#Entware specific: ENCRYPT_METHOD MD5 for comatiblity reasons
 #hack to get libxcrypt working
 TARGET_LDFLAGS:=-L$(STAGING_DIR)/opt/lib/libxcrypt $(TARGET_LDFLAGS)
 
@@ -132,7 +134,7 @@ define Package/shadow-common/install
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/login.defs $(1)/opt/etc/
 	$(SED) 's,SU_NAME,#SU_NAME,g' $(1)/opt/etc/login.defs
-	$(SED) 's,#ENCRYPT_METHOD DES,ENCRYPT_METHOD BCRYPT,g' $(1)/opt/etc/login.defs
+	$(SED) 's,#ENCRYPT_METHOD DES,ENCRYPT_METHOD MD5,g' $(1)/opt/etc/login.defs
 endef
 
 define Package/shadow-utils/install
