@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nfs-kernel-server
 PKG_VERSION:=2.5.4
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 PKG_HASH:=546ce4b51eeebc66e354b6cc6ca0ce509437efbdef0caaf99389534eef0e598b
 
 PKG_SOURCE_URL:=@SF/nfs
@@ -116,7 +116,8 @@ CONFIGURE_ARGS += \
 	--enable-static \
 	--with-rpcgen=internal \
 	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv4 \
-	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv41
+	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv41 \
+	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv4server
 
 ifeq ($(CONFIG_IPV6),n)
 	CONFIGURE_ARGS += --disable-ipv6

@@ -1,25 +1,143 @@
+--- a/support/include/exportfs.h
++++ b/support/include/exportfs.h
+@@ -34,7 +34,7 @@ enum {
+ };
+ 
+ #ifndef EXP_LOCKFILE
+-#define EXP_LOCKFILE "/var/lib/nfs/export-lock"
++#define EXP_LOCKFILE "/opt/var/lib/nfs/export-lock"
+ #endif
+ 
+ typedef struct mclient {
+--- a/support/nfsidmap/libnfsidmap.c
++++ b/support/nfsidmap/libnfsidmap.c
+@@ -72,13 +72,13 @@ uid_t nobody_uid = (uid_t)-1;
+ gid_t nobody_gid = (gid_t)-1;
+ 
+ #ifndef PATH_PLUGINS
+-#define PATH_PLUGINS "/usr/lib/libnfsidmap"
++#define PATH_PLUGINS "/opt/lib/libnfsidmap"
+ #endif
+ #define PLUGIN_INIT_FUNC "libnfsidmap_plugin_init"
+ 
+ 
+ #ifndef PATH_IDMAPDCONF
+-#define PATH_IDMAPDCONF "/etc/idmapd.conf"
++#define PATH_IDMAPDCONF "/opt/etc/idmapd.conf"
+ #endif
+ 
+ #ifndef IDMAPD_DEFAULT_DOMAIN
+--- a/systemd/rpc-pipefs-generator.c
++++ b/systemd/rpc-pipefs-generator.c
+@@ -21,7 +21,7 @@
+ #include "conffile.h"
+ #include "systemd.h"
+ 
+-#define RPC_PIPEFS_DEFAULT "/var/lib/nfs/rpc_pipefs"
++#define RPC_PIPEFS_DEFAULT "/opt/var/lib/nfs/rpc_pipefs"
+ 
+ static int generate_mount_unit(const char *pipefs_path, const char *pipefs_unit,
+ 			       const char *dirname)
 --- a/utils/blkmapd/device-discovery.c
 +++ b/utils/blkmapd/device-discovery.c
-@@ -64,7 +64,7 @@
+@@ -63,8 +63,8 @@
+ #define EVENT_SIZE (sizeof(struct inotify_event))
  #define EVENT_BUFSIZE (1024 * EVENT_SIZE)
  
- #define RPCPIPE_DIR	"/var/lib/nfs/rpc_pipefs"
+-#define RPCPIPE_DIR	"/var/lib/nfs/rpc_pipefs"
 -#define PID_FILE	"/tmp/run/blkmapd.pid"
-+#define PID_FILE	"/opt/run/blkmapd.pid"
++#define RPCPIPE_DIR	"/opt/var/lib/nfs/rpc_pipefs"
++#define PID_FILE	"/opt/var/run/blkmapd.pid"
  
  #define CONF_SAVE(w, f) do {			\
  	char *p = f;				\
 --- a/utils/gssd/gssd.h
 +++ b/utils/gssd/gssd.h
-@@ -44,7 +44,7 @@
+@@ -39,15 +39,15 @@
+ #include <pthread.h>
+ 
+ #ifndef GSSD_PIPEFS_DIR
+-#define GSSD_PIPEFS_DIR		"/var/lib/nfs/rpc_pipefs"
++#define GSSD_PIPEFS_DIR		"/opt/var/lib/nfs/rpc_pipefs"
+ #endif
  #define DNOTIFY_SIGNAL		(SIGRTMIN + 3)
  
  #define GSSD_DEFAULT_CRED_DIR			"/tmp"
 -#define GSSD_USER_CRED_DIR			"/tmp/run/user/%U"
-+#define GSSD_USER_CRED_DIR			"/opt/run/user/%U"
++#define GSSD_USER_CRED_DIR			"/opt/var/run/user/%U"
  #define GSSD_DEFAULT_CRED_PREFIX		"krb5cc"
  #define GSSD_DEFAULT_MACHINE_CRED_SUFFIX	"machine"
- #define GSSD_DEFAULT_KEYTAB_FILE		"/etc/krb5.keytab"
+-#define GSSD_DEFAULT_KEYTAB_FILE		"/etc/krb5.keytab"
++#define GSSD_DEFAULT_KEYTAB_FILE		"/opt/etc/krb5.keytab"
+ #define GSSD_SERVICE_NAME			"nfs"
+ #define RPC_CHAN_BUF_SIZE			32768
+ 
+--- a/utils/gssd/svcgssd.c
++++ b/utils/gssd/svcgssd.c
+@@ -300,7 +300,7 @@ main(int argc, char *argv[])
+ 			printerr(0, "unable to obtain root (machine) credentials\n");
+ 			printerr(0, "do you have a keytab entry for "
+ 				"nfs/<your.host>@<YOUR.REALM> in "
+-				"/etc/krb5.keytab?\n");
++				"/opt/etc/krb5.keytab?\n");
+ 			exit(1);
+ 		}
+ 	} else {
+--- a/utils/idmapd/idmapd.c
++++ b/utils/idmapd/idmapd.c
+@@ -73,7 +73,7 @@
+ #include "nfslib.h"
+ 
+ #ifndef PIPEFS_DIR
+-#define PIPEFS_DIR  "/var/lib/nfs/rpc_pipefs/"
++#define PIPEFS_DIR  "/opt/var/lib/nfs/rpc_pipefs/"
+ #endif
+ 
+ #ifndef NFSD_DIR
+--- a/utils/mount/mount_config.h
++++ b/utils/mount/mount_config.h
+@@ -21,7 +21,7 @@
+ #include "xlog.h"
+ 
+ #ifndef MOUNTOPTS_CONFFILE
+-#define MOUNTOPTS_CONFFILE "/etc/nfsmount.conf"
++#define MOUNTOPTS_CONFFILE "/opt/etc/nfsmount.conf"
+ #endif
+ 
+ extern char *conf_get_mntopts(char *, char *, char *);
+--- a/utils/mount/nfs4mount.c
++++ b/utils/mount/nfs4mount.c
+@@ -56,7 +56,7 @@
+ #if defined(VAR_LOCK_DIR)
+ #define DEFAULT_DIR VAR_LOCK_DIR
+ #else
+-#define DEFAULT_DIR "/var/lock/subsys"
++#define DEFAULT_DIR "/opt/var/lock/subsys"
+ #endif
+ 
+ extern char *progname;
+--- a/utils/mount/Makefile.am
++++ b/utils/mount/Makefile.am
+@@ -2,7 +2,7 @@
+ 
+ # These binaries go in /sbin (not /usr/sbin), and that cannot be
+ # overridden at config time.
+-sbindir = /sbin
++sbindir = @sbindir@
+ 
+ man8_MANS	= mount.nfs.man umount.nfs.man
+ man5_MANS	= nfs.man
+--- a/utils/mount/Makefile.in
++++ b/utils/mount/Makefile.in
+@@ -426,7 +426,7 @@ psdir = @psdir@
+ 
+ # These binaries go in /sbin (not /usr/sbin), and that cannot be
+ # overridden at config time.
+-sbindir = /sbin
++sbindir = @sbindir@
+ sharedstatedir = @sharedstatedir@
+ srcdir = @srcdir@
+ startstatd = @startstatd@
 --- a/utils/statd/sm-notify.c
 +++ b/utils/statd/sm-notify.c
 @@ -913,7 +913,7 @@ static int record_pid(void)
@@ -27,7 +145,7 @@
  
  	(void)snprintf(pid, sizeof(pid), "%d\n", (int)getpid());
 -	fd = open("/tmp/run/sm-notify.pid", O_CREAT|O_EXCL|O_WRONLY, 0600);
-+	fd = open("/opt/run/sm-notify.pid", O_CREAT|O_EXCL|O_WRONLY, 0600);
++	fd = open("/opt/var/run/sm-notify.pid", O_CREAT|O_EXCL|O_WRONLY, 0600);
  	if (fd < 0)
  		return 0;
  
@@ -60,25 +178,3 @@
  			name_p);
  		run_sm_notify(out_port);
  	}
---- a/utils/mount/Makefile.am
-+++ b/utils/mount/Makefile.am
-@@ -2,7 +2,7 @@
- 
- # These binaries go in /sbin (not /usr/sbin), and that cannot be
- # overridden at config time.
--sbindir = /sbin
-+sbindir = @sbindir@
- 
- man8_MANS	= mount.nfs.man umount.nfs.man
- man5_MANS	= nfs.man
---- a/utils/mount/Makefile.in
-+++ b/utils/mount/Makefile.in
-@@ -426,7 +426,7 @@ psdir = @psdir@
- 
- # These binaries go in /sbin (not /usr/sbin), and that cannot be
- # overridden at config time.
--sbindir = /sbin
-+sbindir = @sbindir@
- sharedstatedir = @sharedstatedir@
- srcdir = @srcdir@
- startstatd = @startstatd@
