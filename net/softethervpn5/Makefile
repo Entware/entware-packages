@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=softethervpn5
 PKG_VERSION:=5.02.5180
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_MAINTAINER:=Andy Walsh <andy.walsh44+github@gmail.com>
 PKG_LICENSE:=GPL-2.0
@@ -163,8 +163,8 @@ define Package/softethervpn5-libs/postinst
 #!/bin/sh
 
 echo 'Creating hamcore.se2 archive... '
-GCONV_PATH=/opt/lib/gconv hamcorebuilder /opt/libexec/softethervpn/hamcore \
-/opt/libexec/softethervpn/hamcore.se2 && rm -fr /opt/libexec/softethervpn/hamcore
+GCONV_PATH=/opt/lib/gconv hamcorebuilder /opt/libexec/softethervpn/hamcore.se2 \
+/opt/libexec/softethervpn/hamcore && rm -fr /opt/libexec/softethervpn/hamcore
 endef
 
 define Package/softethervpn5-libs/prerm
