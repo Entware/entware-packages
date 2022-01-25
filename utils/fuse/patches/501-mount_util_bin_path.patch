@@ -1,0 +1,18 @@
+--- a/lib/mount_util.c
++++ b/lib/mount_util.c
+@@ -98,13 +98,13 @@
+ 	if (res == 0) {
+ 		char *env = NULL;
+ 
+ 		sigprocmask(SIG_SETMASK, &oldmask, NULL);
+ 		setuid(geteuid());
+-		execle("/bin/mount", "/bin/mount", "--no-canonicalize", "-i",
++		execle("/opt/bin/mount", "/opt/bin/mount", "--no-canonicalize", "-i",
+ 		       "-f", "-t", type, "-o", opts, fsname, mnt, NULL, &env);
+-		fprintf(stderr, "%s: failed to execute /bin/mount: %s\n",
++		fprintf(stderr, "%s: failed to execute /opt/bin/mount: %s\n",
+ 			progname, strerror(errno));
+ 		exit(1);
+ 	}
+ 	res = waitpid(res, &status, 0);
+ 	if (res == -1)
