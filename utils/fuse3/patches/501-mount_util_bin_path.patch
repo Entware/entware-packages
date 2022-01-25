@@ -1,0 +1,61 @@
+--- a/lib/mount_util.c
++++ b/lib/mount_util.c
+@@ -111,15 +111,15 @@
+ 		if(setuid(geteuid()) == -1) {
+ 			fprintf(stderr, "%s: setuid: %s\n", progname, strerror(errno));
+ 			res = -1;
+ 			goto out_restore;
+ 		}
+ 
+-		execle("/bin/mount", "/bin/mount", "--no-canonicalize", "-i",
++		execle("/opt/bin/mount", "/opt/bin/mount", "--no-canonicalize", "-i",
+ 		       "-f", "-t", type, "-o", opts, fsname, mnt, NULL, &env);
+-		fprintf(stderr, "%s: failed to execute /bin/mount: %s\n",
++		fprintf(stderr, "%s: failed to execute /opt/bin/mount: %s\n",
+ 			progname, strerror(errno));
+ 		exit(1);
+ 	}
+ 	res = waitpid(res, &status, 0);
+ 	if (res == -1)
+ 		fprintf(stderr, "%s: waitpid: %s\n", progname, strerror(errno));
+@@ -171,19 +171,19 @@
+ 			fprintf(stderr, "%s: setuid: %s\n", progname, strerror(errno));
+ 			res = -1;
+ 			goto out_restore;
+ 		}
+ 
+ 		if (lazy) {
+-			execle("/bin/umount", "/bin/umount", "-i", rel_mnt,
++			execle("/opt/bin/umount", "/opt/bin/umount", "-i", rel_mnt,
+ 			       "-l", NULL, &env);
+ 		} else {
+-			execle("/bin/umount", "/bin/umount", "-i", rel_mnt,
++			execle("/opt/bin/umount", "/opt/bin/umount", "-i", rel_mnt,
+ 			       NULL, &env);
+ 		}
+-		fprintf(stderr, "%s: failed to execute /bin/umount: %s\n",
++		fprintf(stderr, "%s: failed to execute /opt/bin/umount: %s\n",
+ 			progname, strerror(errno));
+ 		exit(1);
+ 	}
+ 	res = waitpid(res, &status, 0);
+ 	if (res == -1)
+ 		fprintf(stderr, "%s: waitpid: %s\n", progname, strerror(errno));
+@@ -242,15 +242,15 @@
+ 		if(setuid(geteuid()) == -1) {
+ 			fprintf(stderr, "%s: setuid: %s\n", progname, strerror(errno));
+ 			res = -1;
+ 			goto out_restore;
+ 		}
+ 
+-		execle("/bin/umount", "/bin/umount", "--no-canonicalize", "-i",
++		execle("/opt/bin/umount", "/opt/bin/umount", "--no-canonicalize", "-i",
+ 		       "--fake", mnt, NULL, &env);
+-		fprintf(stderr, "%s: failed to execute /bin/umount: %s\n",
++		fprintf(stderr, "%s: failed to execute /opt/bin/umount: %s\n",
+ 			progname, strerror(errno));
+ 		exit(1);
+ 	}
+ 	res = waitpid(res, &status, 0);
+ 	if (res == -1)
+ 		fprintf(stderr, "%s: waitpid: %s\n", progname, strerror(errno));
