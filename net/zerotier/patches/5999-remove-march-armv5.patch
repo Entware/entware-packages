@@ -1,6 +1,6 @@
 --- a/make-linux.mk
 +++ b/make-linux.mk
-@@ -282,12 +282,12 @@ endif
+@@ -306,12 +306,12 @@ endif
  # ARM32 hell -- use conservative CFLAGS
  ifeq (0,3)
  	ifeq ($(shell if [ -e /usr/bin/dpkg ]; then dpkg --print-architecture; fi),armel)
@@ -10,10 +10,10 @@
 +		override CXXFLAGS+=-mfloat-abi=soft -msoft-float -mno-unaligned-access -marm
  		ZT_USE_ARM32_NEON_ASM_CRYPTO=0
  	else
--		override CFLAGS+=-mfloat-abi=hard -mfpu=vfp -mcpu=arm1176jzf-s -marm -mno-unaligned-access
--		override CXXFLAGS+=-mfloat-abi=hard -mfpu=vfp -mcpu=arm1176jzf-s -fexceptions -marm -mno-unaligned-access
-+		override CFLAGS+=-mfloat-abi=hard -mfpu=vfp -marm -mno-unaligned-access
-+		override CXXFLAGS+=-mfloat-abi=hard -mfpu=vfp -fexceptions -marm -mno-unaligned-access
+-		override CFLAGS+=-mfloat-abi=hard -march=armv6kz -marm -mfpu=vfp -mno-unaligned-access -mtp=cp15 -mcpu=arm1176jzf-s
+-		override CXXFLAGS+=-mfloat-abi=hard -march=armv6kz -marm -mfpu=vfp -fexceptions -mno-unaligned-access -mtp=cp15 -mcpu=arm1176jzf-s
++		override CFLAGS+=-mfloat-abi=hard -marm -mfpu=vfp -mno-unaligned-access
++		override CXXFLAGS+=-mfloat-abi=hard -marm -mfpu=vfp -fexceptions -mno-unaligned-access
  		ZT_USE_ARM32_NEON_ASM_CRYPTO=0
  	endif
  endif
