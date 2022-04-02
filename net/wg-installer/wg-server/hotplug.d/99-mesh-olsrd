@@ -12,5 +12,9 @@ if [ "${slicedint}" != "wg_" ]; then
 fi
 
 if [ "${ACTION}" = "add" ]; then
-	ubus call babeld add_interface '{"ifname":'\""$INTERFACE"\"'}'
+	ubus call olsrd add_interface '{"ifname":'\""$INTERFACE"\"'}'
+fi
+
+if [ "${ACTION}" = "remove" ]; then
+	ubus call olsrd del_interface '{"ifname":'\""$INTERFACE"\"'}'
 fi
