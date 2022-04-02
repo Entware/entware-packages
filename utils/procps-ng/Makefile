@@ -77,7 +77,7 @@ define GenPlugin
    $(call Package/procps-ng/Default)
    DEPENDS:=procps-ng
    TITLE:=Applet $(1) from the procps-ng package
-#   ALTERNATIVES:=200:$(2)/$(1):/usr/libexec/$(1)-procps-ng
+   ALTERNATIVES:=200:$(2)/$(1):/opt/libexec/$(1)-procps-ng
  endef
 
  define Package/procps-ng-$(1)/description
@@ -97,22 +97,16 @@ define Package/procps-ng/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libprocps.so* $(1)/opt/lib/
 endef
 
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
+endef
+
 define BuildPlugin
   define Package/procps-ng-$(1)/install
-	$(INSTALL_DIR) $$(1)$(2)
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)$(2)/$(1) $$(1)$(2)/procps-ng-$(1)
-  endef
-
-  define Package/procps-ng-$(1)/postinst
-#!/bin/sh
-
-ln -sf $(2)/procps-ng-$(1) $(2)/$(1)
-  endef
-
-  define Package/procps-ng-$(1)/postrm
-#!/bin/sh
-
-rm -f $(2)/$(1)
+	$(INSTALL_DIR) $$(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)$(2)/$(1) $$(1)/opt/libexec/$(1)-procps-ng
   endef
 
   $$(eval $$(call BuildPackage,procps-ng-$(1)))
