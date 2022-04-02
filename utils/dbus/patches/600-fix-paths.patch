@@ -44,14 +44,3 @@
    DBusString servicedir_path;
  
    _dbus_string_init_const (&servicedir_path, standard_search_path);
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -472,7 +472,7 @@ endif()
- #### Find socket directories
- if(UNIX)
-     if(NOT $ENV{TMPDIR} STREQUAL "")
--        set(DBUS_SESSION_SOCKET_DIR $ENV{TMPDIR})
-+        set(DBUS_SESSION_SOCKET_DIR /opt/tmp)
-     elseif(NOT $ENV{TEMP} STREQUAL "")
-         set(DBUS_SESSION_SOCKET_DIR $ENV{TEMP})
-     elseif(NOT $ENV{TMP} STREQUAL "")
