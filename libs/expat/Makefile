@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=expat
-PKG_VERSION:=2.4.1
-PKG_RELEASE:=1
+PKG_VERSION:=2.4.7
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/expat
-PKG_HASH:=cf032d0dba9b928636548e32b327a2d66b1aab63c4f4a13dd132c2d1d2f2fb6a
+PKG_HASH:=9875621085300591f1e64c18fd3da3a0eeca4a74f884b9abac2758ad1bd07a7d
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=MIT
@@ -21,7 +21,6 @@ PKG_CPE_ID:=cpe:/a:libexpat:expat
 CMAKE_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
-include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libexpat
@@ -55,5 +54,4 @@ define Package/libexpat/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libexpat.so.* $(1)/opt/lib/
 endef
 
-$(eval $(call HostBuild))
 $(eval $(call BuildPackage,libexpat))
