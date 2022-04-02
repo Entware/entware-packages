@@ -54,16 +54,16 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_LIBDVBCSA_NEON),en,dis)able-neon
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/dvbcsa
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/dvbcsa/*.h $(1)/usr/include/dvbcsa/
+	$(INSTALL_DIR) $(1)/opt/include/dvbcsa
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/dvbcsa/*.h $(1)/opt/include/dvbcsa/
 
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
 endef
 
 define Package/libdvbcsa/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libdvbcsa.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdvbcsa.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libdvbcsa))
