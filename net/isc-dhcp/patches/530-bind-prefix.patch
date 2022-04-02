@@ -1,0 +1,13 @@
+--- a/bind/Makefile.in
++++ b/bind/Makefile.in
+@@ -23,7 +23,9 @@ exec_prefix = @exec_prefix@
+ 
+ bindconfig = --without-openssl --without-libxml2 --without-libjson \
+ 	--without-gssapi --disable-threads --without-lmdb \
+-	--includedir=@includedir@ --libdir=@libdir@  --without-python\
++	--prefix=@prefix@ \
++	--sysconfdir=@sysconfdir@ --localstatedir=@localstatedir@ \
++	--includedir=@includedir@ --libdir=@libdir@ --without-python \
+ 	@BINDLT@ @BINDIOMUX@ @BINDCONFIG@ --enable-full-report
+ 
+ @BIND_ATF_FALSE@cleandirs = ./lib ./include
