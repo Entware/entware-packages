@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dante
 PKG_VERSION:=1.4.3
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.inet.no/dante/files/
@@ -127,6 +127,7 @@ endef
 define Package/socksify/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/socksify $(1)/opt/bin/
+
 ifeq ($(CONFIG_USE_GLIBC),y)
 	$(SED) 's|libdl.so|libdl.so.2|g' $(1)/opt/bin/socksify
 endif
