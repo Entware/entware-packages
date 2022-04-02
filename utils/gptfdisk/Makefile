@@ -9,13 +9,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gptfdisk
 PKG_VERSION:=1.0.8
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
 PKG_HASH:=95d19856f004dabc4b8c342b2612e8d0a9eebdd52004297188369f152e9dc6df
 
-PKG_MAINTAINER:=Alif M. Ahmad <alive4ever@live.com>
+PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
@@ -72,7 +72,7 @@ define Package/fixparts/description
   Master Boot Record (MBR) partition tables
 endef
 
-TARGET_CXXFLAGS += -std=c++11 -ffunction-sections -fdata-sections -fno-rtti -flto
+TARGET_CXXFLAGS += -std=c++11 -ffunction-sections -fdata-sections -fno-rtti -flto -Wno-format-security
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Package/gdisk/install
