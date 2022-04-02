@@ -1,7 +1,11 @@
-commit 0f46facfdba667473ffb57fbda31a145f644af48 (HEAD -> master, origin/master, origin/HEAD)
-Author: Tianling Shen <cnsztl@immortalwrt.org>
-Date:   Mon Dec 6 05:01:17 2021 +0800
+commit 2784618ab57a9533a615eb139e87b920f733c002 (HEAD -> master, origin/master, origin/HEAD)
+Author: Rosen Penev <rosenp@gmail.com>
+Date:   Fri Apr 1 12:14:43 2022 -0700
 
-    yq: Update to 4.16.1
+    glibs: revert "fix compilation with Alpine Linux"
     
-    Signed-off-by: Tianling Shen <cnsztl@immortalwrt.org>
+    This reverts commit 0ce744202ad2a2feaa3b841ce934765416d1339e.
+    
+    Broken everywhere else. A better solution will need to be found.
+    
+    Signed-off-by: Rosen Penev <rosenp@gmail.com>
