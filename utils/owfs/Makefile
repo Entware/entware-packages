@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=owfs
 PKG_VERSION:=3.2p4
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/owfs/owfs/releases/download/v$(PKG_VERSION)
@@ -200,7 +200,6 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_LIBOW_OWTRAFFIC),--enable-owtraffic,--disable-owtraffic)
 
 CONFIGURE_VARS += \
-	LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath-link=$(STAGING_DIR)/opt/lib -Wl,-rpath-link=$(TOOLCHAIN_DIR)/lib" \
 	lt_cv_sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib" \
 	lt_cv_sys_lib_search_path_spec="$(STAGING_DIR)/opt/lib" \
 	shrext_cmds=".so" \
@@ -229,6 +228,7 @@ define Package/owshell/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/owdir $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/owpresent $(1)/opt/bin/
 endef
+
 
 define Package/owserver/install
 	$(INSTALL_DIR) $(1)/opt/bin
