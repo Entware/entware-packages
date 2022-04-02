@@ -7,14 +7,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nss
-PKG_VERSION:=3.69
+PKG_VERSION:=3.76
 PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
     https://download.cdn.mozilla.net/pub/security/$(PKG_NAME)/releases/NSS_$(subst .,_,$(PKG_VERSION))_RTM/src \
     https://archive.mozilla.org/pub/security/$(PKG_NAME)/releases/NSS_$(subst .,_,$(PKG_VERSION))_RTM/src
-PKG_HASH:=c880205a365e0dd488ff29fdea82716ff9fcde9da6f3b703d636f8fc08008799
+PKG_HASH:=1b8e0310add364d2ade40620cde0f1c37f4f00a6999b2d3e7ea8dacda4aa1630
 
 PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
 PKG_LICENCE:=MPL-2.0
@@ -81,7 +81,7 @@ MAKE_FLAGS += \
 	OS_ARCH=Linux \
 	OS_TEST=$(ARCH) \
 	fpic="$(FPIC)" \
-	NSPR_INCLUDE_DIR=$(STAGING_DIR)/usr/include/nspr \
+	NSPR_INCLUDE_DIR=$(STAGING_DIR)/opt/include/nspr \
 	SEED_ONLY_DEV_URANDOM=1 \
 	NS_USE_GCC=1 \
 	FREEBL_NO_DEPEND=1 \
@@ -102,60 +102,60 @@ define Build/Compile
 endef
 
 define Package/libnss/conffiles
-/etc/pki/nssdb
+/opt/etc/pki/nssdb
 endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) \
 	 $(2)/bin \
-	 $(1)/usr/bin \
-	 $(1)/usr/include/nss \
-	 $(1)/usr/lib \
-	 $(1)/usr/lib/pkgconfig
+	 $(1)/opt/bin \
+	 $(1)/opt/include/nss \
+	 $(1)/opt/lib \
+	 $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_BUILD_DIR)/dist/private/nss/*.h \
-	  $(1)/usr/include/nss/
+	  $(1)/opt/include/nss/
 	$(CP) $(PKG_BUILD_DIR)/dist/public/nss/*.h \
-	  $(1)/usr/include/nss/
+	  $(1)/opt/include/nss/
 	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/*.so \
-	  $(1)/usr/lib/
+	  $(1)/opt/lib/
 	$(CP) $(PKG_BUILD_DIR)/nss/config/*.pc \
-	  $(1)/usr/lib/pkgconfig/
+	  $(1)/opt/lib/pkgconfig/
 	$(CP) $(PKG_BUILD_DIR)/nss/config/nss-config \
-	  $(1)/usr/bin/
-	$(SED) 's,^\(prefix\)=.*,\1=$(STAGING_DIR)/usr,g' \
-	  $(1)/usr/bin/nss-config
-	$(LN) ../../usr/bin/nss-config \
+	  $(1)/opt/bin/
+	$(SED) 's,^\(prefix\)=.*,\1=$(STAGING_DIR)/opt,g' \
+	  $(1)/opt/bin/nss-config
+	$(LN) ../../opt/bin/nss-config \
 	  $(2)/bin/
 endef
 
 define Package/nss-utils/install
 	$(INSTALL_DIR) \
-	 $(1)/usr/bin
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/bin/certutil $(1)/usr/bin
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/bin/pk12util $(1)/usr/bin
+	 $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/bin/certutil $(1)/opt/bin
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/bin/pk12util $(1)/opt/bin
 endef
 
 #for now pack only libreswan needed libs
 define Package/libnss/install
 	$(INSTALL_DIR) \
-	 $(1)/usr/lib \
-	 $(1)/etc/pki/nssdb \
-	 $(1)/etc/ipsec.d
+	 $(1)/opt/lib \
+	 $(1)/opt/etc/pki/nssdb \
+	 $(1)/opt/etc/ipsec.d
 
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libfreebl3.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnss3.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnssckbi.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnssutil3.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libsmime3.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libsoftokn3.so $(1)/usr/lib/
-	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libssl3.so $(1)/usr/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libfreebl3.so $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnss3.so $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnssckbi.so $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libnssutil3.so $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libsmime3.so $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libsoftokn3.so $(1)/opt/lib/
+	$(CP) $(PKG_BUILD_DIR)/dist/build_dir/lib/libssl3.so $(1)/opt/lib/
 #	Provide databases with a blank certificate
-	$(CP)	./files/blank-cert9.db $(1)/etc/pki/nssdb/cert9.db
-	$(CP)	./files/blank-key4.db $(1)/etc/pki/nssdb/key4.db
-	$(CP)	./files/system-pkcs11.txt $(1)/etc/pki/nssdb/pkcs11.txt
-	ln -s /etc/pki/nssdb/cert9.db $(1)/etc/ipsec.d/cert9.db
-	ln -s /etc/pki/nssdb/key4.db $(1)/etc/ipsec.d/key4.db
-	ln -s /etc/pki/nssdb/pkcs11.txt $(1)/etc/ipsec.d/pkcs11.txt
+	$(CP)	./files/blank-cert9.db $(1)/opt/etc/pki/nssdb/cert9.db
+	$(CP)	./files/blank-key4.db $(1)/opt/etc/pki/nssdb/key4.db
+	$(CP)	./files/system-pkcs11.txt $(1)/opt/etc/pki/nssdb/pkcs11.txt
+	ln -s /opt/etc/pki/nssdb/cert9.db $(1)/opt/etc/ipsec.d/cert9.db
+	ln -s /opt/etc/pki/nssdb/key4.db $(1)/opt/etc/ipsec.d/key4.db
+	ln -s /opt/etc/pki/nssdb/pkcs11.txt $(1)/opt/etc/ipsec.d/pkcs11.txt
 endef
 
 $(eval $(call BuildPackage,nss-utils))
