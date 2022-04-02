@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tesseract
 PKG_VERSION:=4.1.1
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/tesseract-ocr/tesseract/tar.gz/$(PKG_VERSION)?
@@ -35,6 +35,7 @@ endef
 TARGET_CFLAGS:=$(filter-out -O%,$(TARGET_CFLAGS)) -O3
 
 CMAKE_OPTIONS += \
+	-DAUTO_OPTIMIZE=OFF \
 	-DBUILD_TRAINING_TOOLS=OFF
 
 define Build/InstallDev
