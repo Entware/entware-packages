@@ -35,140 +35,143 @@
  
 --- a/magic/Magdir/commands
 +++ b/magic/Magdir/commands
-@@ -4,20 +4,32 @@
+@@ -3,21 +3,33 @@
+ # $File: commands,v 1.66 2021/07/03 13:50:29 christos Exp $
  # commands:  file(1) magic for various shells and interpreters
  #
- #0	string/w	:			shell archive or script for antique kernel text
-+0	string/wt	#!/opt/bin/sh		POSIX shell script text executable
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/sh		POSIX shell script text executable
+-#0	string/w	:			shell archive or script for antique kernel text
++#0	string/w	:
++0	string/fwt	#!/opt/bin/sh		POSIX shell script text executable
++!:mime	text/x-shellscript			shell archive or script for antique kernel text
+ 0	string/fwt	#!\ /bin/sh		POSIX shell script text executable
  !:mime	text/x-shellscript
-+0	string/wb	#!/opt/bin/sh		POSIX shell script executable (binary data)
++0	string/fwb	#!/opt/bin/sh		POSIX shell script executable (binary data)
 +!:mime	text/x-shellscript
- 0	string/wb	#!\ /bin/sh		POSIX shell script executable (binary data)
+ 0	string/fwb	#!\ /bin/sh		POSIX shell script executable (binary data)
  !:mime	text/x-shellscript
  
-+0	string/wt	#!/opt/bin/csh		C shell script text executable
++0	string/fwt	#!/opt/bin/csh		C shell script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/csh		C shell script text executable
+ 0	string/fwt	#!\ /bin/csh		C shell script text executable
  !:mime	text/x-shellscript
  
  # korn shell magic, sent by George Wu, gwu@clyde.att.com
-+0	string/wt	#!/opt/bin/ksh		Korn shell script text executable
++0	string/fwt	#!/opt/bin/ksh		Korn shell script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/ksh		Korn shell script text executable
+ 0	string/fwt	#!\ /bin/ksh		Korn shell script text executable
  !:mime	text/x-shellscript
-+0	string/wb	#!/opt/bin/ksh		Korn shell script executable (binary data)
++0	string/fwb	#!/opt/bin/ksh		Korn shell script executable (binary data)
 +!:mime	text/x-shellscript
- 0	string/wb	#!\ /bin/ksh		Korn shell script executable (binary data)
+ 0	string/fwb	#!\ /bin/ksh		Korn shell script executable (binary data)
  !:mime	text/x-shellscript
  
-+0	string/wt 	#!/opt/bin/tcsh		Tenex C shell script text executable
++0	string/fwt 	#!/opt/bin/tcsh		Tenex C shell script text executable
 +!:mime	text/x-shellscript
- 0	string/wt 	#!\ /bin/tcsh		Tenex C shell script text executable
+ 0	string/fwt 	#!\ /bin/tcsh		Tenex C shell script text executable
  !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/tcsh	Tenex C shell script text executable
-@@ -29,25 +41,37 @@
+ 0	string/fwt	#!\ /usr/bin/tcsh	Tenex C shell script text executable
+@@ -29,29 +41,41 @@
  
  #
  # zsh/ash/ae/nawk/gawk magic from cameron@cs.unsw.oz.au (Cameron Simpson)
-+0	string/wt	#!/opt/bin/zsh		Paul Falstad's zsh script text executable
++0	string/fwt	#!/opt/bin/zsh		Paul Falstad's zsh script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/zsh		Paul Falstad's zsh script text executable
+ 0	string/fwt	#!\ /bin/zsh		Paul Falstad's zsh script text executable
  !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/zsh	Paul Falstad's zsh script text executable
+ 0	string/fwt	#!\ /usr/bin/zsh	Paul Falstad's zsh script text executable
  !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/local/bin/zsh	Paul Falstad's zsh script text executable
+ 0	string/fwt	#!\ /usr/local/bin/zsh	Paul Falstad's zsh script text executable
  !:mime	text/x-shellscript
 +0	search/1	#!/opt/bin/env\ zsh	Paul Falstad's zsh script text executable
 +!:mime	text/x-shellscript
  0	search/1	#!/usr/bin/env\ zsh	Paul Falstad's zsh script text executable
  !:mime	text/x-shellscript
  
-+0	string/wt	#!/opt/bin/ash		Neil Brown's ash script text executable
++0	string/fwt	#!/opt/bin/ash		Neil Brown's ash script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/local/bin/ash	Neil Brown's ash script text executable
+ 0	string/fwt	#!\ /bin/ash		Neil Brown's ash script text executable
  !:mime	text/x-shellscript
-+0	string/wt	#!/opt/bin/ae		Neil Brown's ae script text executable
+ 0	string/fwt	#!\ /usr/bin/ash	Neil Brown's ash script text executable
+ !:mime	text/x-shellscript
+ 0	string/fwt	#!\ /usr/local/bin/ash	Neil Brown's ash script text executable
+ !:mime	text/x-shellscript
++0	string/fwt	#!/opt/bin/ae		Neil Brown's ae script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/local/bin/ae	Neil Brown's ae script text executable
+ 0	string/fwt	#!\ /usr/local/bin/ae	Neil Brown's ae script text executable
  !:mime	text/x-shellscript
-+0	string/wt	#!/opt/bin/nawk		new awk script text executable
++0	string/fwt	#!/opt/bin/nawk		new awk script text executable
 +!:mime	text/x-nawk
- 0	string/wt	#!\ /bin/nawk		new awk script text executable
+ 0	string/fwt	#!\ /bin/nawk		new awk script text executable
  !:mime	text/x-nawk
- 0	string/wt	#!\ /usr/bin/nawk	new awk script text executable
+ 0	string/fwt	#!\ /usr/bin/nawk	new awk script text executable
  !:mime	text/x-nawk
- 0	string/wt	#!\ /usr/local/bin/nawk	new awk script text executable
+ 0	string/fwt	#!\ /usr/local/bin/nawk	new awk script text executable
  !:mime	text/x-nawk
-+0	string/wt	#!/opt/bin/gawk		GNU awk script text executable
++0	string/fwt	#!/opt/bin/gawk		GNU awk script text executable
 +!:mime	text/x-gawk
- 0	string/wt	#!\ /bin/gawk		GNU awk script text executable
+ 0	string/fwt	#!\ /bin/gawk		GNU awk script text executable
  !:mime	text/x-gawk
  0	string/wt	#!\ /usr/bin/gawk	GNU awk script text executable
-@@ -55,6 +79,8 @@
- 0	string/wt	#!\ /usr/local/bin/gawk	GNU awk script text executable
+@@ -59,6 +83,8 @@
+ 0	string/fwt	#!\ /usr/local/bin/gawk	GNU awk script text executable
  !:mime	text/x-gawk
  #
-+0	string/wt	#!/opt/bin/awk		awk script text executable
++0	string/fwt	#!/opt/bin/awk		awk script text executable
 +!:mime	text/x-awk
- 0	string/wt	#!\ /bin/awk		awk script text executable
+ 0	string/fwt	#!\ /bin/awk		awk script text executable
  !:mime	text/x-awk
- 0	string/wt	#!\ /usr/bin/awk	awk script text executable
-@@ -62,11 +88,16 @@
+ 0	string/fwt	#!\ /usr/bin/awk	awk script text executable
+@@ -66,11 +92,16 @@
  0	regex/4096	=^[\040\t\f\r\n]{0,100}BEGIN[\040\t\f\r\n]{0,100}[{]	awk or perl script text
  
  # AT&T Bell Labs' Plan 9 shell
-+0	string/wt	#!/opt/bin/rc	Plan 9 rc shell script text executable
- 0	string/wt	#!\ /bin/rc	Plan 9 rc shell script text executable
++0	string/fwt	#!/opt/bin/rc	Plan 9 rc shell script text executable
+ 0	string/fwt	#!\ /bin/rc	Plan 9 rc shell script text executable
  
  # bash shell magic, from Peter Tobias (tobias@server.et-inf.fho-emden.de)
-+0	string/wt	#!/opt/bin/bash	Bourne-Again shell script text executable
++0	string/fwt	#!/opt/bin/bash	Bourne-Again shell script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /bin/bash	Bourne-Again shell script text executable
+ 0	string/fwt	#!\ /bin/bash	Bourne-Again shell script text executable
  !:mime	text/x-shellscript
-+0	string/wb	#!/opt/bin/bash	Bourne-Again shell script executable (binary data)
++0	string/fwb	#!/opt/bin/bash	Bourne-Again shell script executable (binary data)
 +!:mime	text/x-shellscript
- 0	string/wb	#!\ /bin/bash	Bourne-Again shell script executable (binary data)
+ 0	string/fwb	#!\ /bin/bash	Bourne-Again shell script executable (binary data)
  !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/bash	Bourne-Again shell script text executable
-@@ -86,23 +117,35 @@
+ 0	string/fwt	#!\ /usr/bin/bash	Bourne-Again shell script text executable
+@@ -90,6 +121,8 @@
  
  # Fish shell magic
  # From: Benjamin Lowry <ben@ben.gmbh>
-+0	string/wt	#!/opt/bin/fish		fish shell script text executable
++0	string/fwt	#!/opt/bin/fish			fish shell script text executable
 +!:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/local/bin/fish		fish shell script text executable
+ 0	string/fwt	#!\ /usr/local/bin/fish		fish shell script text executable
  !:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/fish		fish shell script text executable
- !:mime	text/x-shellscript
-+0	string/wt	#!/opt/bin/env\ fish		fish shell script text executable
-+!:mime	text/x-shellscript
- 0	string/wt	#!\ /usr/bin/env\ fish		fish shell script text executable
- !:mime	text/x-shellscript
+ 0	string/fwt	#!\ /usr/bin/fish		fish shell script text executable
+@@ -100,15 +133,23 @@
+ 0	string/wt	#!\ 	a
+ >&-1	string		x	%s script text executable
  
- 
-+0	search/1/wt	#!/opt/bin/tclsh	Tcl/Tk script text executable
++0	search/1/fwt	#!/opt/bin/tclsh	Tcl/Tk script text executable
 +!:mime  text/x-tcl
- 0	search/1/wt	#!\ /usr/bin/tclsh	Tcl/Tk script text executable
+ 0	search/1/fwt	#!\ /usr/bin/tclsh	Tcl/Tk script text executable
  !:mime  text/x-tcl
  
-+0	search/1/wt	#!/opt/bin/texlua	LuaTex script text executable
++0	search/1/fwt	#!/opt/bin/texlua	LuaTex script text executable
 +!:mime	text/x-luatex
- 0	search/1/wt	#!\ /usr/bin/texlua	LuaTex script text executable
+ 0	search/1/fwt	#!\ /usr/bin/texlua	LuaTex script text executable
  !:mime	text/x-luatex
  
-+0	search/1/wt	#!/opt/bin/luatex	LuaTex script text executable
++0	search/1/fwt	#!/opt/bin/luatex	LuaTex script text executable
 +!:mime	text/x-luatex
- 0	search/1/wt	#!\ /usr/bin/luatex	LuaTex script text executable
+ 0	search/1/fwt	#!\ /usr/bin/luatex	LuaTex script text executable
  !:mime	text/x-luatex
  
-+0	search/1/wt	#!/opt/bin/stap	Systemtap script text executable
++0	search/1/fwt	#!/opt/bin/stap		Systemtap script text executable
 +!:mime  text/x-systemtap
- 0	search/1/wt	#!\ /usr/bin/stap	Systemtap script text executable
+ 0	search/1/fwt	#!\ /usr/bin/stap	Systemtap script text executable
  !:mime  text/x-systemtap
  
-@@ -117,6 +160,9 @@
+@@ -137,6 +178,9 @@
  !:mime	text/x-php
  0	search/1	=<?\r			PHP script text
  !:mime	text/x-php
@@ -178,7 +181,7 @@
  0	search/1/w	#!\ /usr/local/bin/php	PHP script text executable
  !:strength + 10
  !:mime	text/x-php
-@@ -138,6 +184,7 @@
+@@ -158,6 +202,7 @@
  # Type: Pdmenu
  # URL:  https://packages.debian.org/pdmenu
  # From: Edward Betts <edward@debian.org>
@@ -263,7 +266,7 @@
 +++ b/magic/Magdir/python
 @@ -216,12 +216,18 @@
  0	belong		0x610d0d0a	python 3.9 byte-compiled
- !:mime text/x-bytecode.python
+ !:mime application/x-bytecode.python
  
 +0	search/1/w	#!\040/opt/bin/python	Python script text executable
 +!:strength + 15
