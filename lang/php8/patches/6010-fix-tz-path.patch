@@ -1,6 +1,6 @@
 --- a/ext/date/lib/parse_tz.c
 +++ b/ext/date/lib/parse_tz.c
-@@ -458,7 +458,7 @@ void timelib_dump_tzinfo(timelib_tzinfo
+@@ -600,7 +600,7 @@ void timelib_dump_tzinfo(timelib_tzinfo
  #ifdef HAVE_SYSTEM_TZDATA_PREFIX
  #define ZONEINFO_PREFIX HAVE_SYSTEM_TZDATA_PREFIX
  #else
