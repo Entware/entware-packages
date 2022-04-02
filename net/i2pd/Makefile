@@ -5,6 +5,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: keep 2.38.0 version, kernels are too old.
 
 include $(TOPDIR)/rules.mk
 
