@@ -1,37 +1,37 @@
 --- a/cfg/vnstat.conf
 +++ b/cfg/vnstat.conf
-@@ -5,7 +5,7 @@
- Interface ""
+@@ -8,7 +8,7 @@
+ ;Interface ""
  
  # location of the database directory
--DatabaseDir "/var/lib/vnstat"
-+DatabaseDir "/opt/var/lib/vnstat"
+-;DatabaseDir "/var/lib/vnstat"
++;DatabaseDir "/opt/var/lib/vnstat"
  
  # locale (LC_ALL) ("-" = use system locale)
- Locale "-"
-@@ -96,10 +96,10 @@ YearlyYears    -1
- TopDayEntries  20
+ ;Locale "-"
+@@ -106,10 +106,10 @@
+ ;TopDayEntries  20
  
  # how often (in seconds) interface data is updated
--UpdateInterval 20
-+UpdateInterval 60
+-;UpdateInterval 20
++;UpdateInterval 60
  
  # how often (in seconds) interface status changes are checked
--PollInterval 5
-+PollInterval 30
+-;PollInterval 5
++;PollInterval 30
  
  # how often (in minutes) data is saved to database
- SaveInterval 5
-@@ -148,10 +148,10 @@ CreateDirs 1
- UpdateFileOwner 1
+ ;SaveInterval 5
+@@ -158,10 +158,10 @@
+ ;UpdateFileOwner 1
  
  # file used for logging if UseLogging is set to 1
--LogFile "/var/log/vnstat/vnstat.log"
-+LogFile "/opt/var/log/vnstat.log"
+-;LogFile "/var/log/vnstat/vnstat.log"
++;LogFile "/opt/var/log/vnstat/vnstat.log"
  
  # file used as daemon pid / lock file
--PidFile "/var/run/vnstat/vnstat.pid"
-+PidFile "/opt/var/run/vnstat.pid"
+-;PidFile "/var/run/vnstat/vnstat.pid"
++;PidFile "/opt/var/run/vnstat/vnstat.pid"
  
  # 1 = 64-bit, 0 = 32-bit, -1 = old style logic, -2 = automatic detection
- 64bitInterfaceCounters -2
+ ;64bitInterfaceCounters -2
