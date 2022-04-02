@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=freeradius3
 PKG_VERSION:=3_0_21
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=release_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/FreeRADIUS/freeradius-server/archive
@@ -600,7 +600,7 @@ endif
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-python3),)
   CFLAGS+= -fPIC
   CONFIGURE_ARGS+= \
-		--with-modules="rlm_python3" \
+		--with-rlm_python3 \
 		--with-rlm-python3-config-bin="$(STAGING_DIR)/host/bin/python$(PYTHON3_VERSION)-config"
 else
   CONFIGURE_ARGS+= --without-rlm_python3

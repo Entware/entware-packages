@@ -1,0 +1,30 @@
+--- a/src/modules/rlm_python3/configure
++++ b/src/modules/rlm_python3/configure
+@@ -2782,15 +2782,7 @@ $as_echo "$as_me: WARNING: python3-confi
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: ${PYTHON3_CONFIG_BIN}'s cflags were \"${python3_cflags}\"" >&5
+ $as_echo "$as_me: ${PYTHON3_CONFIG_BIN}'s cflags were \"${python3_cflags}\"" >&6;}
+ 
+-																mod_cflags=`echo $python3_cflags | sed -e '\
+-			s/-I/-isystem/g;\
+-			s/-isysroot[ =]\{0,1\}[^-]*//g;\
+-			s/-O[^[[:blank:]]]*//g;\
+-			s/-Wp,-D_FORTIFY_SOURCE=[[:digit:]]//g;\
+-			s/-g[^ ]*//g;\
+-			s/-W[^ ]*//g;\
+-			s/-DNDEBUG[[:blank:]]*//g;
+-			'`
++	mod_cflags=`echo $python3_cflags`
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: Sanitized cflags were \"${mod_cflags}\"" >&5
+ $as_echo "$as_me: Sanitized cflags were \"${mod_cflags}\"" >&6;}
+ 
+--- a/src/modules/stable
++++ b/src/modules/stable
+@@ -24,7 +24,7 @@ rlm_pap
+ rlm_passwd
+ rlm_perl
+ rlm_preprocess
+-rlm_python
++rlm_python3
+ rlm_radutmp
+ rlm_realm
+ rlm_rest
