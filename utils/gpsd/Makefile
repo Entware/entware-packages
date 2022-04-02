@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
 PKG_VERSION:=3.23.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SAVANNAH/$(PKG_NAME)
@@ -87,6 +87,7 @@ define Package/libgps
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=C service library for communicating with the GPS daemon
+  ABI_VERSION:=29
 endef
 
 define Package/libgps/description
@@ -99,6 +100,7 @@ SCONS_VARS += \
 	LINKFLAGS="$(TARGET_LDFLAGS)"
 
 SCONS_OPTIONS += \
+	target_platform=linux \
 	dbus_export=no \
 	tsip=no \
 	fv18=no \
