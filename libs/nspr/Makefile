@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nspr
-PKG_VERSION:=4.32
+PKG_VERSION:=4.33
 PKG_RELEASE:=1
 PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
 PKG_LICENCE:=MPL-2.0
@@ -16,7 +16,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
     https://download.cdn.mozilla.net/pub/$(PKG_NAME)/releases/v$(PKG_VERSION)/src/ \
     https://archive.mozilla.org/pub/$(PKG_NAME)/releases/v$(PKG_VERSION)/src/
-PKG_HASH:=bb6bf4f534b9559cf123dcdc6f9cd8167de950314a90a88b2a329c16836e7f6c
+PKG_HASH:=b23ee315be0e50c2fb1aa374d17f2d2d9146a835b1a79c1918ea15d075a693d7
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -68,20 +68,20 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) \
-	    $(1)/usr/include \
-	    $(1)/usr/lib/ \
-	    $(1)/usr/lib/pkgconfig/ \
-	    $(1)/usr/share/aclocal/
+	    $(1)/opt/include \
+	    $(1)/opt/lib/ \
+	    $(1)/opt/lib/pkgconfig/ \
+	    $(1)/opt/share/aclocal/
 
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/nspr $(1)/usr/include/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* $(1)/usr/lib/pkgconfig/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/share/aclocal/* $(1)/usr/share/aclocal/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/nspr $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/share/aclocal/* $(1)/opt/share/aclocal/
 endef
 
 define Package/nspr/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,nspr))
