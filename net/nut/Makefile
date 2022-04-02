@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.7.4
-PKG_RELEASE:=23
+PKG_RELEASE:=27
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.7/
@@ -495,6 +495,9 @@ $(eval $(call DriverDescription,usb,nutdrv_qx,\
 $(eval $(call DriverDescription,neon,netxml-ups,\
         Driver for NetXML based UPS equipment))
 
+CONFIGURE_VARS += \
+	ac_cv_path_AR=$(TARGET_AR)
+
 CONFIGURE_ARGS += \
 	--sysconfdir=/opt/etc/nut \
 	--datadir=/opt/share/nut \
@@ -513,6 +516,7 @@ CONFIGURE_ARGS += \
 	--without-freeipmi \
 	--$(if $(CONFIG_NUT_SSL),with,without)-ssl $(if $(CONFIG_NUT_SSL),--with-openssl) \
 	--without-libltdl \
+	--without-macosx_ups \
 	--with-statepath=/opt/var/run \
 	--with-drvpath=/opt/lib/nut \
 	--with-user=root \
