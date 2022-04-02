@@ -10,12 +10,12 @@ PKG_RELRO_FULL:=0
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=knot-resolver
-PKG_VERSION:=5.4.2
+PKG_VERSION:=5.4.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://secure.nic.cz/files/knot-resolver
-PKG_HASH:=ea6a219571a752056669bae3f2c0c3ed0bec58af5ab832d505a3ec9c4063a58b
+PKG_HASH:=488729eb93190336b6bca10de0d78ecb7919f77fcab105debc0a644aa7d0a506
 
 PKG_MAINTAINER:=Jan Pavlinec <jan.pavlinec1@gmail.com>
 PKG_LICENSE:=GPL-3.0-later
@@ -79,6 +79,8 @@ define Package/knot-resolver/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/knot-resolver/{*.lua,*.so} $(1)/opt/lib/knot-resolver/
 	$(INSTALL_DIR) $(1)/opt/lib/knot-resolver/kres_modules
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/knot-resolver/kres_modules/{*.lua,*.so} $(1)/opt/lib/knot-resolver/kres_modules/
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/kresd.init $(1)/etc/init.d/kresd
 
 	$(INSTALL_DIR) $(1)/opt/etc/knot-resolver
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/knot-resolver/root.hints $(1)/opt/etc/knot-resolver/
