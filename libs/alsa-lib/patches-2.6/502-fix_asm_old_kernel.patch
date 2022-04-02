@@ -1,6 +1,6 @@
 --- a/include/sound/uapi/asound.h
 +++ b/include/sound/uapi/asound.h
-@@ -876,13 +876,13 @@ struct snd_timer_status {
+@@ -903,13 +903,13 @@ struct snd_timer_status {
  #define SNDRV_TIMER_IOCTL_PAUSE		_IO('T', 0xa3)
  #define SNDRV_TIMER_IOCTL_TREAD64	_IOW('T', 0xa4, int)
  
