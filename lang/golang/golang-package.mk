@@ -32,7 +32,7 @@ include $(GO_INCLUDE_DIR)/golang-values.mk
 #
 #   * Files in any 'testdata' directory
 #
-#   * go.mod and go.sum, in any directory
+#   * go.mod, go.sum and go.work, in any directory
 #
 #   e.g. GO_PKG_INSTALL_EXTRA:=example.toml marshal_test.toml
 #
@@ -126,13 +126,13 @@ include $(GO_INCLUDE_DIR)/golang-values.mk
 
 
 GO_PKG_BUILD_PKG?=$(strip $(GO_PKG))/...
-GO_PKG_INSTALL_BIN_PATH?=/opt/bin
+GO_PKG_INSTALL_BIN_PATH?=/usr/bin
 
 GO_PKG_WORK_DIR_NAME:=.go_work
 GO_PKG_BUILD_DIR=$(PKG_BUILD_DIR)/$(GO_PKG_WORK_DIR_NAME)/build
 GO_PKG_BUILD_BIN_DIR=$(GO_PKG_BUILD_DIR)/bin$(if $(GO_HOST_TARGET_DIFFERENT),/$(GO_OS_ARCH))
 
-GO_PKG_BUILD_DEPENDS_PATH:=/opt/share/gocode
+GO_PKG_BUILD_DEPENDS_PATH:=/usr/share/gocode
 GO_PKG_BUILD_DEPENDS_SRC=$(STAGING_DIR)$(GO_PKG_BUILD_DEPENDS_PATH)/src
 
 ifdef CONFIG_PKG_ASLR_PIE_ALL
@@ -198,9 +198,11 @@ GO_PKG_TARGET_VARS= \
 	GOOS="$(GO_OS)" \
 	GOARCH="$(GO_ARCH)" \
 	GO386="$(GO_386)" \
+	GOAMD64="$(GO_AMD64)" \
 	GOARM="$(GO_ARM)" \
 	GOMIPS="$(GO_MIPS)" \
 	GOMIPS64="$(GO_MIPS64)" \
+	GOPPC64="$(GO_PPC64)" \
 	CGO_ENABLED=1 \
 	CC="$(TARGET_CC)" \
 	CXX="$(TARGET_CXX)" \
