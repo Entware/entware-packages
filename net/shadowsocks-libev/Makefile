@@ -14,7 +14,7 @@ include $(TOPDIR)/rules.mk
 #
 PKG_NAME:=shadowsocks-libev
 PKG_VERSION:=3.3.5
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
@@ -89,15 +89,16 @@ define Package/shadowsocks-libev-ss-rules
   SUBMENU:=Web Servers/Proxies
   TITLE:=shadowsocks-libev ss-rules
   URL:=https://github.com/shadowsocks/shadowsocks-libev
-  DEPENDS:=+shadowsocks-libev-ss-redir +shadowsocks-libev-config
+  DEPENDS:= \
+	   +shadowsocks-libev-ss-redir \
+	   +shadowsocks-libev-config
 endef
 
 define Package/shadowsocks-libev-ss-rules/install
+#	$(INSTALL_DIR) $(1)/usr/share/ss-rules
+#	$(INSTALL_DATA) ./files/ss-rules/* $(1)/usr/share/ss-rules/
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) ./files/ss-rules $(1)/opt/bin
-#	$(INSTALL_DIR) $(1)/etc/uci-defaults
-#	$(INSTALL_DATA) ./files/firewall.ss-rules $(1)/etc
-#	$(INSTALL_BIN) ./files/ss-rules.defaults $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/ss-rules.sh $(1)/opt/bin/ss-rules
 endef
 
 define Build/Prepare
