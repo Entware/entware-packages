@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gerbera
-PKG_VERSION:=1.9.1
+PKG_VERSION:=1.10.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/gerbera/gerbera/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=5d323c6cb4150e3454b8c6e0012f41648441799ba44cb59436b124b54d3fc82b
+PKG_HASH:=bd6c7b2c6380e2e265a998bbc0df9eec14b9c6a65bc91e7f2c0ae0b67fd0c9cf
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
@@ -46,7 +46,7 @@ define Package/gerbera/conffiles
 endef
 
 CMAKE_OPTIONS += \
-	-DCMAKE_LINK_WHAT_YOU_USE=ON \
+	-DCMAKE_LINK_WHAT_YOU_USE=$(if $(CONFIG_HOST_OS_MACOS),OFF,ON) \
 	-DIconv_INCLUDE_DIR=$(ICONV_PREFIX)/include \
 	-DIconv_LIBRARY=$(ICONV_PREFIX)/lib/libiconv.a \
 	-DWITH_MAGIC=ON \
