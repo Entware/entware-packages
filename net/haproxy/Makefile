@@ -10,12 +10,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=haproxy
-PKG_VERSION:=2.4.9
+PKG_VERSION:=2.4.15
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.haproxy.org/download/2.4/src
-PKG_HASH:=d56c7fe3c5afedd1b9a19e1b7f8f954feaf50a9c2f205f99891043858b72a763
+PKG_HASH:=3958b17b7ee80eb79712aaf24f0d83e753683104b36e282a8b3dcd2418e30082
 
 PKG_MAINTAINER:=Thomas Heil <heil@terminal-consulting.de>, \
 		Christian Lachner <gladiac@gmail.com>
@@ -29,31 +29,25 @@ define Package/haproxy/Default
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=The Reliable, High Performance TCP/HTTP Load Balancer
+  TITLE:=TCP/HTTP Load Balancer
   URL:=https://www.haproxy.org/
 endef
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-endef
-
-define Package/haproxy/Default/conffiles
+define Package/haproxy/conffiles
 /opt/etc/haproxy.cfg
 endef
+
+Package/haproxy-nossl/conffiles = $(Package/haproxy/conffiles)
 
 define Package/haproxy/Default/description
  Open source Reliable, High Performance TCP/HTTP Load Balancer.
 endef
 
 define Package/haproxy
+  $(call Package/haproxy/Default)
+  TITLE+=with SSL support
   DEPENDS+= +libpcre +libltdl +zlib +libpthread +liblua5.3 +libopenssl +libncurses +libreadline +libatomic
-  TITLE+= (with SSL support)
   VARIANT:=ssl
-$(call Package/haproxy/Default)
-endef
-
-define Package/haproxy/conffiles
-$(call Package/haproxy/Default/conffiles)
 endef
 
 define Package/haproxy/description
@@ -62,19 +56,15 @@ $(call Package/haproxy/Default/description)
 endef
 
 define Package/haproxy-nossl
-  TITLE+= (without SSL support)
+  $(call Package/haproxy/Default)
+  TITLE+=without SSL support
   VARIANT:=nossl
   DEPENDS+= +libpcre +libltdl +zlib +libpthread +liblua5.3 +libatomic
-  TITLE+= (without SSL support)
-$(call Package/haproxy/Default)
-endef
-
-define Package/haproxy-nossl/conffiles
-$(call Package/haproxy/Default/conffiles)
+  CONFLICTS:=haproxy
 endef
 
 define Package/haproxy-nossl/description
-$(call Package/haproxy/Default/description)
+  $(call Package/haproxy/Default/description)
  This package is built without SSL support.
 endef
 
@@ -102,13 +92,13 @@ define Build/Compile
 		PCREDIR="$(STAGING_DIR)/opt/" \
 		USE_LUA=1 LUA_LIB_NAME="lua5.3" LUA_INC="$(STAGING_DIR)/opt/include/lua5.3" LUA_LIB="$(STAGING_DIR)/opt/lib" \
 		SMALL_OPTS="-DBUFSIZE=16384 -DMAXREWRITE=1030 -DSYSTEM_MAXCONN=165530" \
-		USE_ZLIB=1 USE_PCRE=1 USE_PCRE_JIT=1 USE_PTHREAD_PSHARED=1 USE_PROMEX=1 \
+		USE_ZLIB=1 USE_PCRE=1 USE_PCRE_JIT=1 USE_PTHREAD_PSHARED=1 USE_LIBATOMIC=1 USE_PROMEX=1 \
 		VERSION="$(PKG_VERSION)" SUBVERS="-$(PKG_RELEASE)" \
 		VERDATE="$(shell date -d @$(SOURCE_DATE_EPOCH) '+%Y/%m/%d')" IGNOREGIT=1 \
 		$(ADDON) \
 		CFLAGS="$(TARGET_CFLAGS) -fno-strict-aliasing -Wdeclaration-after-statement -Wno-unused-label -Wno-sign-compare -Wno-unused-parameter -Wno-clobbered -Wno-missing-field-initializers -Wno-cast-function-type -Wno-address-of-packed-member -Wtype-limits -Wshift-negative-value -Wshift-overflow=2 -Wduplicated-cond -Wnull-dereference -fwrapv -fasynchronous-unwind-tables -Wno-null-dereference" \
 		LD="$(TARGET_CC)" \
-		LDFLAGS="$(TARGET_LDFLAGS) -latomic"
+		LDFLAGS="$(TARGET_LDFLAGS)"
 
 	$(MAKE_VARS) $(MAKE) -C $(PKG_BUILD_DIR) \
 		PREFIX="/opt" \
@@ -138,14 +128,13 @@ endef
 Package/haproxy-nossl/install = $(Package/haproxy/install)
 
 define Package/halog
-	MENU:=1
-	$(call Package/haproxy)
-	TITLE+= halog
-	DEPENDS:=haproxy
+  $(call Package/haproxy)
+  TITLE+=halog
+  DEPENDS:=haproxy
 endef
 
 define Package/halog/description
-	HAProxy Log Analyzer
+  HAProxy Log Analyzer
 endef
 
 define Package/halog/install
