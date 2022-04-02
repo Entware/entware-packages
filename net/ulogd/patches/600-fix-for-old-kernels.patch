@@ -1,0 +1,13 @@
+# linux/netlink.h:31:2: error: unknown type name 'sa_family_t'
+#	sa_family_t nl_family; /* AF_NETLINK */
+#	^~~~~~~~~~~
+--- a/output/ulogd_output_XML.c
++++ b/output/ulogd_output_XML.c
+@@ -22,6 +22,7 @@
+ #include <inttypes.h>
+ #include "../config.h"
+ #ifdef BUILD_NFLOG
++#include <sys/socket.h>
+ #include <libnetfilter_log/libnetfilter_log.h>
+ #endif
+ #ifdef BUILD_NFCT
