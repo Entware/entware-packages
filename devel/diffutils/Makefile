@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=diffutils
-PKG_VERSION:=3.7
-PKG_RELEASE:=3
+PKG_VERSION:=3.8
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/diffutils
-PKG_HASH:=b3a7a6221c3dc916085f0d205abf6b8e1ba443d4dd965118da364a1dc1cb3a26
+PKG_HASH:=a6bdd7d1b31266d11c4f4de6c1b748d4607ab0231af5188fc2533d0ae2438fec
 
 PKG_MAINTAINER:=Roger D <rogerdammit@gmail.com>
 PKG_LICENSE:=GPL-3.0
@@ -30,9 +30,9 @@ define Package/diffutils
   DEPENDS:=+USE_GLIBC:librt
   TITLE:=diffutils
   URL:=http://www.gnu.org/software/diffutils/
-#  ALTERNATIVES:=\
-#    200:/usr/bin/cmp:/usr/libexec/cmp-gnu \
-#    200:/usr/bin/diff:/usr/libexec/diff-gnu
+  ALTERNATIVES:=\
+    200:/opt/bin/cmp:/opt/libexec/cmp-gnu \
+    200:/opt/bin/diff:/opt/libexec/diff-gnu
 endef
 
 define Package/diffutils/description
@@ -47,9 +47,9 @@ CONFIGURE_VARS += \
 define Package/diffutils/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{sdiff,diff3} $(1)/opt/bin/
-#	$(INSTALL_DIR) $(1)/usr/libexec
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/diff $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/cmp $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/diff $(1)/opt/libexec/diff-gnu
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/cmp $(1)/opt/libexec/cmp-gnu
 endef
 
 $(eval $(call BuildPackage,diffutils))
