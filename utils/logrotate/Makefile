@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=logrotate
 PKG_VERSION:=3.17.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/logrotate/logrotate/releases/download/$(PKG_VERSION)
@@ -49,6 +49,7 @@ endef
 
 define Package/logrotate/conffiles
 /opt/etc/logrotate.conf
+/opt/etc/logrotate.d
 endef
 
 CONFIGURE_ARGS += \
@@ -68,8 +69,9 @@ endef
 define Package/logrotate/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/logrotate $(1)/opt/sbin/
-	$(INSTALL_DIR) $(1)/opt/etc/logrotate.d
+	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/examples/logrotate.conf $(1)/opt/etc
+	$(INSTALL_DIR) $(1)/opt/etc/logrotate.d
 endef
 
 $(eval $(call BuildPackage,logrotate))
