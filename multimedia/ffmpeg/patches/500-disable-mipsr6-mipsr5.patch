@@ -5,12 +5,14 @@ Fixes following linking error while running configure
 
 --- a/configure
 +++ b/configure
-@@ -5855,8 +5855,6 @@ elif enabled mips; then
-         enabled mips64r2 && check_inline_asm_flags mips64r2 '"dext $0, $0, 0, 1"' '-mips64r2'
-         disabled mips64r6 && disabled mips64r2 && check_inline_asm_flags mips64r1 '"daddi $0, $0, 0"' '-mips64'
+@@ -6015,10 +6015,6 @@ elif enabled mips; then
+ 
+         disable mips32r6 && disable mips32r5 && disable mips32r2
      else
--        enabled mips32r6 && check_inline_asm_flags mips32r6 '"aui $0, $0, 0"' '-mips32r6'
--        enabled mips32r5 && check_inline_asm_flags mips32r5 '"eretnc"' '-mips32r5'
-         enabled mips32r2 && check_inline_asm_flags mips32r2 '"ext $0, $0, 0, 1"' '-mips32r2'
-         disabled mips32r6 && disabled mips32r5 && disabled mips32r2 && check_inline_asm_flags mips32r1 '"addi $0, $0, 0"' '-mips32'
-     fi
+-        enabled mips32r6 && check_inline_asm mips32r6 '"aui $0, $0, 0"' &&
+-            disable mips32r5 && disable mips32r2
+-
+-        enabled mips32r5 && check_inline_asm mips32r5 '"eretnc"'
+         enabled mips32r2 && check_inline_asm mips32r2 '"ext $0, $0, 0, 1"'
+ 
+         disable mips64r6 && disable mips64r5 && disable mips64r2
