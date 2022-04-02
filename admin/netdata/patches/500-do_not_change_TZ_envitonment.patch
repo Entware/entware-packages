@@ -1,12 +1,52 @@
---- a/daemon/main.c
-+++ b/daemon/main.c
-@@ -735,8 +735,8 @@ void set_global_environment() {
+--- a/daemon/analytics.c
++++ b/daemon/analytics.c
+@@ -703,7 +703,7 @@ void get_system_timezone(void)
+     // http://stackoverflow.com/questions/4554271/how-to-avoid-excessive-stat-etc-localtime-calls-in-strftime-on-linux
+     const char *tz = getenv("TZ");
+     if (!tz || !*tz)
+-        setenv("TZ", config_get(CONFIG_SECTION_GLOBAL, "TZ environment variable", ":/etc/localtime"), 0);
++        setenv("TZ", config_get(CONFIG_SECTION_GLOBAL, "TZ environment variable", ":/opt/etc/localtime"), 0);
  
+     char buffer[FILENAME_MAX + 1] = "";
+     const char *timezone = NULL;
+@@ -716,25 +716,25 @@ void get_system_timezone(void)
+     }
+ 
+     // use the contents of /etc/timezone
+-    if (!timezone && !read_file("/etc/timezone", buffer, FILENAME_MAX)) {
++    if (!timezone && !read_file("/opt/etc/timezone", buffer, FILENAME_MAX)) {
+         timezone = buffer;
+-        info("TIMEZONE: using the contents of /etc/timezone");
++        info("TIMEZONE: using the contents of /opt/etc/timezone");
+     }
+ 
+     // read the link /etc/localtime
+     if (!timezone) {
+-        ret = readlink("/etc/localtime", buffer, FILENAME_MAX);
++        ret = readlink("/opt/etc/localtime", buffer, FILENAME_MAX);
+ 
+         if (ret > 0) {
+             buffer[ret] = '\0';
+ 
+-            char *cmp = "/usr/share/zoneinfo/";
++            char *cmp = "/opt/share/zoneinfo/";
+             size_t cmp_len = strlen(cmp);
+ 
+             char *s = strstr(buffer, cmp);
+             if (s && s[cmp_len]) {
+                 timezone = &s[cmp_len];
+-                info("TIMEZONE: using the link of /etc/localtime: '%s'", timezone);
++                info("TIMEZONE: using the link of /opt/etc/localtime: '%s'", timezone);
+             }
+         } else
+             buffer[0] = '\0';
+@@ -908,8 +908,8 @@ void set_global_environment()
      // set the path we need
      char path[1024 + 1], *p = getenv("PATH");
--    if(!p) p = "/bin:/usr/bin";
+     if (!p)
+-        p = "/bin:/usr/bin";
 -    snprintfz(path, 1024, "%s:%s", p, "/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin");
-+    if(!p) p = "/opt/bin:/opt/usr/bin:/bin:/usr/bin";
++        p = "/opt/bin:/opt/usr/bin:/bin:/usr/bin";
 +    snprintfz(path, 1024, "%s:%s", p, "/opt/sbin:/opt/usr/sbin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin");
      setenv("PATH", config_get(CONFIG_SECTION_PLUGINS, "PATH environment variable", path), 1);
  

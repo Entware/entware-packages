@@ -1,0 +1,11 @@
+--- a/system/edit-config.in
++++ b/system/edit-config.in
+@@ -1,6 +1,6 @@
+-#!/usr/bin/env sh
++#!/bin/sh
+ 
+-[ -f /etc/profile ] && . /etc/profile
++[ -f /opt/etc/profile ] && . /opt/etc/profile
+ 
+ file="${1}"
+ 
