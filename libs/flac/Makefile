@@ -4,30 +4,25 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: 002-no-utility.patch removed, flac and utilities added
-#
+# Entware specific: flac and utilities added: -DBUILD_PROGRAMS=ON
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=flac
-PKG_VERSION:=1.3.3
+PKG_VERSION:=1.3.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://downloads.xiph.org/releases/flac/
-PKG_HASH:=213e82bd716c9de6db2f98bcadbc4c24c7e2efe8c75939a1a84e28539c4e1748
+PKG_HASH:=8ff0607e75a322dd7cd6ec48f4f225471404ae2730d0ea945127b1355155e737
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=GFDL-1.2 GPL-2 LGPL-2.1 BSD-3-Clause
 PKG_LICENSE_FILES:=README COPYING.FDL COPYING.GPL COPYING.LGPL COPYING.Xiph
 PKG_CPE_ID:=cpe:/a:flac_project:flac
 
-PKG_FIXUP:=autoreconf
-PKG_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
-PKG_REMOVE_FILES:=autogen.sh aclocal.m4
-
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libflac
   SECTION:=libs
@@ -44,23 +39,22 @@ define Package/flac
   DEPENDS += +libflac
 endef
 
-CONFIGURE_ARGS += \
-	--disable-cpplibs \
-	--disable-sse \
-	--disable-altivec \
-	--disable-doxgen-docs \
-	--disable-local-xmms-plugin \
-	--disable-xmms-plugin \
-	--disable-ogg \
-	--disable-oggtest \
-	--disable-thorough-tests \
-	--disable-examples \
-	--disable-rpath \
-	$(if $(CONFIG_DEBUG),--enable-debug) \
-	--enable-static \
-	--without-pic
+CMAKE_OPTIONS += \
+	-DBUILD_SHARED_LIBS=ON \
+	-DBUILD_CXXLIBS=OFF \
+	-DBUILD_PROGRAMS=ON \
+	-DBUILD_EXAMPLES=OFF \
+	-DBUILD_DOCS=OFF \
+	-DINSTALL_MANPAGES=OFF \
+	-DINSTALL_CMAKE_CONFIG_MODULE=OFF \
+	-DINSTALL_PKGCONFIG_MODULES=ON \
+	-DWITH_OGG=OFF \
+	-DWITH_STACK_PROTECTOR=OFF
 
-TARGET_CFLAGS += $(FPIC)
+ifeq ($(CONFIG_TARGET_x86_2_6),y)
+CMAKE_OPTIONS += \
+	-DCMAKE_ASM_NASM_COMPILER:STRING=""
+endif
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -69,16 +63,13 @@ define Build/InstallDev
 		$(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) \
-		$(PKG_INSTALL_DIR)/opt/lib/libFLAC.{a,so*,la} \
+		$(PKG_INSTALL_DIR)/opt/lib/libFLAC.so* \
 		$(1)/opt/lib/
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* \
 		$(1)/opt/lib/pkgconfig/
-
-	$(INSTALL_DIR) $(1)/opt/share/aclocal/
-	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/opt/share/aclocal/* \
-		$(1)/opt/share/aclocal/
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/flac.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/flac.pc
 endef
 
 define Package/libflac/install
