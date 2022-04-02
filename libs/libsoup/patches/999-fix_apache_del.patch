@@ -1,6 +1,6 @@
 --- a/meson.build
 +++ b/meson.build
-@@ -201,101 +201,6 @@ if not libz_dep.found()
+@@ -206,101 +206,6 @@ if not libz_dep.found()
    endif
  endif
  
