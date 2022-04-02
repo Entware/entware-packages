@@ -10,12 +10,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chrony
-PKG_VERSION:=4.1
-PKG_RELEASE:=2
+PKG_VERSION:=4.2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.tuxfamily.org/chrony/
-PKG_HASH:=ed76f2d3f9347ac6221a91ad4bd553dd0565ac188cd7490d0801d08f7171164c
+PKG_HASH:=273f9fd15c328ed6f3a5f6ba6baec35a421a34a73bb725605329b1712048db9a
 
 PKG_MAINTAINER:=Miroslav Lichvar <mlichvar0@gmail.com>
 PKG_LICENSE:=GPL-2.0
@@ -41,6 +41,7 @@ define Package/chrony
 $(call Package/chrony/Default)
   TITLE+= (without NTS)
   VARIANT:=normal
+  CONFLICTS:=chrony-nts
 endef
 
 define Package/chrony-nts
@@ -82,23 +83,24 @@ CONFIGURE_ARGS+= \
 
 CONFIGURE_VARS+=CPPFLAGS="-DNDEBUG -I$(STAGING_DIR)/opt/include"
 
+TARGET_CFLAGS += -flto
+TARGET_LDFLAGS += -flto
+
 define Package/chrony/install
 	$(INSTALL_DIR) $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/chronyd $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/chronyc $(1)/opt/bin
-#	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
 #	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_DIR) $(1)/opt/etc/chrony
 #	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 #	$(INSTALL_BIN) ./files/chrony.hotplug $(1)/etc/hotplug.d/iface/20-chrony
-#	$(INSTALL_BIN) ./files/chronyd.init $(1)/etc/init.d/chronyd
+	$(INSTALL_BIN) ./files/S06chronyd $(1)/opt/etc/init.d
 #	$(INSTALL_CONF) ./files/chrony.config $(1)/etc/config/chrony
 #	$(INSTALL_CONF) ./files/chrony.conf $(1)/etc/chrony/chrony.conf
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/examples/chrony.conf.* $(1)/opt/etc/chrony/
 	$(INSTALL_DIR) $(1)/opt/var/{lib,log,run}/chrony
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S06chronyd $(1)/opt/etc/init.d
 endef
 
 Package/chrony-nts/install= $(Package/chrony/install)
