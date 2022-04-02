@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ddns-scripts
 PKG_VERSION:=2.8.2
-PKG_RELEASE:=19
+PKG_RELEASE:=23
 
 PKG_LICENSE:=GPL-2.0
 
@@ -129,6 +129,19 @@ define Package/ddns-scripts-noip/description
   Dynamic DNS Client scripts extension for "no-ip.com".
 endef
 
+define Package/ddns-scripts-ns1
+  $(call Package/ddns-scripts/Default)
+  TITLE:=NS1 API
+  DEPENDS:=ddns-scripts +curl
+endef
+
+define Package/ddns-scripts-ns1/description
+  Dynamic DNS Client scripts extension for "ns1.com".
+  It requires:
+  "option username" to be a valid zone for ns1.com
+  "option password" to be a valid API key for ns1.com
+endef
+
 
 define Package/ddns-scripts-nsupdate
   $(call Package/ddns-scripts/Default)
@@ -224,6 +237,20 @@ define Package/ddns-scripts-transip/description
   "option param_opt" to contain the TTL of the DNS record to update
 endef
 
+define Package/ddns-scripts-one
+	$(call Package/ddns-scripts/Default)
+	TITLE:=Extension for one.com Control Panel
+	DEPENDS:=ddns-scripts +curl
+endef
+
+define Package/ddns-scrtips-one/description
+	Dynamic DNS Client scripts extension for "one.com".
+	It requires:
+	"option username" to be a valid Email for one.com Control Panel
+	"option password" to be the matching one.com Control Panel password
+	"option domain" to contain the domain / subdomain
+endef
+
 
 define Build/Configure
 endef
@@ -298,6 +325,8 @@ define Package/ddns-scripts-services/install
 	rm $(1)/usr/share/ddns/default/gandi.net.json
 	rm $(1)/usr/share/ddns/default/pdns.json
 	rm $(1)/usr/share/ddns/default/transip.nl.json
+	rm $(1)/usr/share/ddns/default/ns1.com.json
+	rm $(1)/usr/share/ddns/default/one.com.json
 endef
 
 
@@ -407,6 +436,25 @@ define Package/ddns-scripts-noip/install
 endef
 
 define Package/ddns-scripts-noip/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
+
+
+define Package/ddns-scripts-ns1/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_ns1_com.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/ns1.com.json \
+		$(1)/usr/share/ddns/default
+endef
+
+define Package/ddns-scripts-ns1/prerm
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
 	/etc/init.d/ddns stop
@@ -529,6 +577,25 @@ exit 0
 endef
 
 
+define Package/ddns-scripts-one/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_one_com.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/one.com.json \
+		$(1)/usr/share/ddns/default
+endef
+
+define Package/ddns-scripts-one/prerm
+#!/bin/sh
+if [-z "${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
+
+
 $(eval $(call BuildPackage,ddns-scripts))
 $(eval $(call BuildPackage,ddns-scripts-services))
 $(eval $(call BuildPackage,ddns-scripts-cloudflare))
@@ -543,3 +610,5 @@ $(eval $(call BuildPackage,ddns-scripts-cnkuai))
 $(eval $(call BuildPackage,ddns-scripts-gandi))
 $(eval $(call BuildPackage,ddns-scripts-pdns))
 $(eval $(call BuildPackage,ddns-scripts-transip))
+$(eval $(call BuildPackage,ddns-scripts-ns1))
+$(eval $(call BuildPackage,ddns-scripts-one))
