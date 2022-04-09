@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: LIBNL=0 to avoid undefined NL80211_CHAN_WIDTH_* constants
 
 include $(TOPDIR)/rules.mk
 
@@ -23,13 +24,13 @@ PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-MAKE_FLAGS += DEBUG=1 LIBNL=tiny
+MAKE_FLAGS += DEBUG=1 LIBNL=0
 
 define Package/horst
 	SECTION:=net
 	CATEGORY:=Network
 	SUBMENU:=Wireless
-	DEPENDS:=+libncurses +libnl-tiny
+	DEPENDS:=+libncurses
 	MAINTAINER:=Bruno Randolf <br1@einfach.org>
 	TITLE:=Highly Optimized 802.11 Radio Scanning Tool
 	URL:=http://br1.einfach.org/tech/horst/
