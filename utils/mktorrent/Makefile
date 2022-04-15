@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: -DUSE_LARGE_FILES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mktorrent
 PKG_VERSION:=1.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
@@ -35,6 +36,7 @@ define Package/mktorrent/Description
  mktorrent is a simple command line utility to create BitTorrent metainfo files.
 endef
 
+MAKE_FLAGS += USE_LARGE_FILES=1
 
 define Package/mktorrent/install
 	$(INSTALL_DIR) $(1)/opt/bin
