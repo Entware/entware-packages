@@ -1,28 +1,26 @@
 #
 # Copyright (C) 2015, 2016 gxcreator
 # Copyright (C) 2017 OpenWrt.org
+# Copyright (C) 2021-2022 PurpleI2P team
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: keep 2.38.0 version, kernels are too old.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=i2pd
-PKG_VERSION:=2.38.0
+PKG_VERSION:=2.41.0
 PKG_RELEASE:=1
+PKG_BUILD_PARALLEL:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/PurpleI2P/i2pd/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=8452f5323795a1846d554096c08fffe5ac35897867b93a5079605df8f80a3089
+PKG_HASH:=7b333cd26670903ef0672cf87aa9f895814ce2bbef2e587e69d66ad9427664e6
 
 PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
-
-PKG_BUILD_PARALLEL:=1
-PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -37,47 +35,35 @@ define Package/i2pd
 endef
 
 define Package/i2pd/description
-	I2P (Invisible Internet Protocol) is a universal anonymous network layer. All
-	communications over I2P are anonymous and end-to-end encrypted, participants
-	don't reveal their real IP addresses.
-endef
-
-define Package/i2pd/conffiles
-/opt/etc/i2pd/i2pd.conf
-/opt/etc/i2pd/tunnels.conf
-/opt/etc/i2pd/tunnels.d/
-endef
-
-define Build/Prepare
-	$(Build/Prepare/Default)
-	# race condition
-	cd $(PKG_BUILD_DIR); $(MAKE) mk_obj_dir
+  I2P (Invisible Internet Protocol) is a universal anonymous network layer. All
+  communications over I2P are anonymous and end-to-end encrypted, participants
+  don't reveal their real IP addresses.
 endef
 
 TARGET_LDFLAGS+=-latomic
 
+define Package/i2pd/conffiles
+/opt/etc/config/i2pd
+/opt/etc/i2pd/i2pd.conf
+/opt/etc/i2pd/tunnels.conf
+/opt/etc/i2pd/tunnels.d/*
+endef
+
 define Package/i2pd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/i2pd $(1)/opt/sbin
-#	$(INSTALL_DIR) $(1)/usr/share/i2pd
-#	$(CP) $(PKG_BUILD_DIR)/contrib/certificates  $(1)/usr/share/i2pd
-#	$(INSTALL_DIR) $(1)/etc/config
-#	$(INSTALL_DATA) ./files/i2pd.config $(1)/etc/config/i2pd
-	$(INSTALL_DIR) $(1)/opt/etc/i2pd
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/contrib/i2pd.conf $(1)/opt/etc/i2pd
-	$(SED) ' \
-		s/127.0.0.1/192.168.1.1/g \
-	' $(1)/opt/etc/i2pd/i2pd.conf
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/contrib/tunnels.conf $(1)/opt/etc/i2pd
-	$(INSTALL_DIR) $(1)/opt/etc/i2pd/tunnels.d
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/contrib/tunnels.d/*.conf  $(1)/opt/etc/i2pd/tunnels.d
-	# subscriptions.txt deprecated, see #8088
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S30i2p $(1)/opt/etc/init.d
-	###
-	$(INSTALL_DIR) $(1)/opt/var/lib/i2pd
-	$(CP) $(PKG_BUILD_DIR)/contrib/certificates $(1)/opt/var/lib/i2pd/
-	$(INSTALL_DIR) $(1)/opt/var/log/i2pd
+	$(INSTALL_DIR) $(1)/opt/share/i2pd
+	$(CP) $(PKG_BUILD_DIR)/contrib/certificates  $(1)/opt/share/i2pd
+	$(INSTALL_DIR) $(1)/opt/etc/config
+	$(INSTALL_CONF) ./files/i2pd.config $(1)/opt/etc/config/i2pd
+	$(INSTALL_DIR) $(1)/opt/etc/i2pd
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/contrib/i2pd.conf $(1)/opt/etc/i2pd
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/contrib/tunnels.conf $(1)/opt/etc/i2pd
+	# subscriptions.txt deprecated, see #8088
+	$(INSTALL_DIR) $(1)/opt/etc/i2pd/tunnels.d
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/contrib/tunnels.d/README $(1)/opt/etc/i2pd/tunnels.d
 endef
 
 $(eval $(call BuildPackage,i2pd))
