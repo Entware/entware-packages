@@ -53,7 +53,7 @@ define Package/i2pd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/i2pd $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/i2pd.init-entware $(1)/etc/init.d/S30i2pd
+	$(INSTALL_BIN) ./files/i2pd.init-entware $(1)/opt/etc/init.d/S30i2pd
 	$(INSTALL_DIR) $(1)/opt/share/i2pd
 	$(CP) $(PKG_BUILD_DIR)/contrib/certificates  $(1)/opt/share/i2pd
 	$(INSTALL_DIR) $(1)/opt/etc/config
