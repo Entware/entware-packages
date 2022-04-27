@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# Load configuration from /opt/etc/config/i2pd
+. /opt/etc/config/i2pd
+
+# Use default DATA_DIR if not presented in config
+if [ -z "$DATA_DIR" ]; then
+    DATA_DIR=/opt/var/lib/i2pd
+fi
+
+# Prepage datadir regrading configuration
+if [ ! -d "$DATA_DIR" ]; then
+    mkdir -p "$DATA_DIR"
+    ln -s /opt/share/i2pd/certificates "$DATA_DIR/certificates"
+    ln -s /opt/etc/i2pd/i2pd.conf "$DATA_DIR/i2pd.conf"
+    ln -s /opt/etc/i2pd/tunnels.conf "$DATA_DIR/tunnels.conf"
+    ln -s /opt/etc/i2pd/tunnels.d "$DATA_DIR/tunnels.d"
+fi
+
+if [ -n "$NETDB_DIR" ]; then
+    if [ ! -d "$NETDB_DIR" ]; then
+        mkdir -p "$NETDB_DIR"
+    fi
+    ln -s "$NETDB_DIR" "$DATA_DIR/netDb"
+fi
+
+if [ -n "$ADDRESSBOOK_DIR" ]; then
+    if [ ! -d "$ADDRESSBOOK_DIR" ]; then
+        mkdir -p "$ADDRESSBOOK_DIR"
+    fi
+    ln -s "$ADDRESSBOOK_DIR" "$DATA_DIR/addressbook"
+fi
+
+
+ENABLED=yes
+PROCS=i2pd
+ARGS="--datadir=$DATA_DIR --conf=/opt/etc/i2pd/i2pd.conf --pidfile=/opt/var/run/i2pd.pid --logfile=/opt/var/log/i2pd.log"
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+. /opt/etc/init.d/rc.func

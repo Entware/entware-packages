@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=i2pd
 PKG_VERSION:=2.41.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_BUILD_PARALLEL:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -53,11 +53,11 @@ define Package/i2pd/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/i2pd $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S30i2p $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/i2pd.init-entware $(1)/etc/init.d/S30i2pd
 	$(INSTALL_DIR) $(1)/opt/share/i2pd
 	$(CP) $(PKG_BUILD_DIR)/contrib/certificates  $(1)/opt/share/i2pd
 	$(INSTALL_DIR) $(1)/opt/etc/config
-	$(INSTALL_CONF) ./files/i2pd.config $(1)/opt/etc/config/i2pd
+	$(INSTALL_CONF) ./files/i2pd.config-entware $(1)/opt/etc/config/i2pd
 	$(INSTALL_DIR) $(1)/opt/etc/i2pd
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/contrib/i2pd.conf $(1)/opt/etc/i2pd
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/contrib/tunnels.conf $(1)/opt/etc/i2pd
