@@ -1,6 +1,6 @@
 --- a/deps/v8/src/base/cpu.cc
 +++ b/deps/v8/src/base/cpu.cc
-@@ -143,22 +143,11 @@ static uint32_t ReadELFHWCaps() {
+@@ -195,22 +195,11 @@ static uint32_t ReadELFHWCaps() {
  
  #if V8_HOST_ARCH_MIPS
  int __detect_fp64_mode(void) {
