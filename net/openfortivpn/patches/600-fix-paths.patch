@@ -1,6 +1,6 @@
 --- a/src/ipv4.c
 +++ b/src/ipv4.c
-@@ -623,12 +623,12 @@ static int ipv4_set_route(struct rtentry
+@@ -624,12 +624,12 @@ static int ipv4_set_route(struct rtentry
  	/* we have to use the route command as tool for route manipulation */
  	char cmd[SHOW_ROUTE_BUFFER_SIZE];
  
@@ -16,7 +16,7 @@
  	if (route->rt_flags & RTF_HOST)
  		strcat(cmd, "-host ");
  	else
-@@ -690,12 +690,12 @@ static int ipv4_del_route(struct rtentry
+@@ -691,12 +691,12 @@ static int ipv4_del_route(struct rtentry
  #else
  	char cmd[SHOW_ROUTE_BUFFER_SIZE];
  
