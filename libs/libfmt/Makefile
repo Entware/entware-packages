@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: keep v. 8.1.1 (mkvtoolnix)
 
 include $(TOPDIR)/rules.mk
 
