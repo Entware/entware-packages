@@ -50,8 +50,11 @@ function pvs() {
 	}
 	include("/usr/lib/uvol/blockdev_common.uc");
 	let rootdev = blockdev_common.get_partition(blockdev_common.get_bootdev(), 0);
+	if (!rootdev)
+		return null;
+
 	let tmp = lvm("pvs", "-o", "vg_name", "-S", sprintf("\"pv_name=~^/dev/%s.*\$\"", rootdev));
-	if (tmp.report.pv)
+	if (tmp.report.pv[0])
 		return tmp.report.pv[0].vg_name;
 	else
 		return null;
@@ -112,7 +115,7 @@ function getdev(lv) {
 function lvm_init(ctx) {
 	cursor = ctx.cursor;
 	fs = ctx.fs;
-	if (!fs.access(lvm_exec, "x"))
+	if (type(fs.access) == "function" && !fs.access(lvm_exec, "x"))
 		return false;
 
 	vg_name = pvs();

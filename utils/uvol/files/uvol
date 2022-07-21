@@ -1,4 +1,4 @@
-#!/usr/bin/ucode
+#!/usr/bin/ucode -R
 // SPDX-License-Identifier: GPL-2.0-or-later
 // uvol - storage volume manager for OpenWrt
 //  (c) 2022 Daniel Golle <daniel@makrotopia.org>
@@ -23,13 +23,9 @@ commands:
   status volname		return status of volume
     return code: 0 - volume is ready for use
                  1 - volume is not ready for use
-                 2 - volume doesn'y exist
+                 2 - volume doesn't exist
   write volname size		write to volume from stdin, size in bytes
-"
-
-function help() {
-	printf("%s", help_output);
-);
+";
 
 let fs = require("fs");
 let uci = require("uci");
@@ -68,10 +64,21 @@ if (!backend) {
 	exit(2);
 }
 
-let cmd = shift(ARGV);
+// The below code is needed as older versions of ucode pass the complete cmdline via ARGV
+// Once we can rely in more recent ucode the while loop can be replaced by simply
+// let cmd = shift(ARGV);
+let skip = null;
+let cmd = null;
+let skip_argv = ["/usr/bin/ucode", "-R", "/usr/sbin/uvol"];
+while (skip = shift(ARGV)) {
+	if (skip != shift(skip_argv)) {
+		cmd = skip;
+		break;
+	}
+}
 
 if (!cmd || cmd == "-h" || cmd == "help") {
-	help();
+	printf("%s", help_output);
 	return cmd?0:22;
 }
 
@@ -94,21 +101,19 @@ let legacy_output = function(var) {
 			out += "\n";
 		}
 	} else if (type(var) == "object") {
-		out += join(" ", values(line));
+		out += join(" ", values(var));
+		out += "\n";
+	} else if (type(var) == "string") {
+		out += var;
 		out += "\n";
 	}
 	return out;
 };
 
-if (type(backend[cmd]) == "string") {
-	printf("%s\n", backend[cmd]);
-} else if (type(backend[cmd]) == "function") {
+if (type(backend[cmd]) == "function") {
 	let ret = backend[cmd](...ARGV);
-	if (type(ret) == "int")
+	if (type(ret) == "int") {
 		exit(ret);
-
-	if (type(ret) == "string") {
-		printf("%s\n", ret);
 	} else {
 		if (json_output)
 			printf("%.J\n", ret);

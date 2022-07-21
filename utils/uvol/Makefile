@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=uvol
-PKG_VERSION:=0.7
+PKG_VERSION:=0.8
 PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
@@ -27,12 +27,12 @@ define Package/uvol
   CATEGORY:=Utilities
   SUBMENU:=Disc
   TITLE:=OpenWrt UBI/LVM volume abstraction
-  DEPENDS:=+blockd +ucode +ucode-mod-fs +ucode-mod-uci
+  DEPENDS:=+blockd +ucode +ucode-mod-fs +ucode-mod-math +ucode-mod-uci
   PKGARCH=all
 endef
 
 define Package/uvol/description
-  'uvol' is tool to automate storage volume handling on embedded
+  'uvol' is a tool to automate storage volume handling on embedded
   devices in a generic way.
   Depending on what is available, 'uvol' will use either UBI or LVM2
   as storage backends and transparently offer identical operations on
