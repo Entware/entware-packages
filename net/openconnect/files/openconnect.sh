@@ -1,7 +1,10 @@
 #!/bin/sh
-. /lib/functions.sh
-. ../netifd-proto.sh
-init_proto "$@"
+
+[ -n "$INCLUDE_ONLY" ] || {
+	. /lib/functions.sh
+	. ../netifd-proto.sh
+	init_proto "$@"
+}
 
 append_args() {
 	while [ $# -gt 0 ]; do
@@ -62,16 +65,17 @@ proto_openconnect_setup() {
 		usergroup \
 		username \
 
-	grep -q tun /proc/modules || insmod tun
 	ifname="vpn-$config"
 
 	logger -t openconnect "initializing..."
 
-	logger -t "openconnect" "adding host dependency for $server at $config"
-	for ip in $(resolveip -t 10 "$server"); do
-		logger -t "openconnect" "adding host dependency for $ip at $config"
-		proto_add_host_dependency "$config" "$ip" "$interface"
-	done
+	[ -n "$interface" ] && {
+		logger -t "openconnect" "adding host dependency for $server at $config"
+		for ip in $(resolveip -t 10 "$server"); do
+			logger -t "openconnect" "adding host dependency for $ip at $config"
+			proto_add_host_dependency "$config" "$ip" "$interface"
+		done
+	}
 
 	[ -n "$port" ] && port=":$port"
 
@@ -91,9 +95,9 @@ proto_openconnect_setup() {
 		append_args --no-system-trust
 	}
 
-	if [ "${juniper:-0}" -gt 0 ]; then
-		append_args --juniper
-	fi
+	[ "${juniper:-0}" -gt 0 ] && [ -z "$vpn_protocol" ] && {
+		vpn_protocol="nc"
+	}
 
 	[ -n "$vpn_protocol" ] && {
 		append_args --protocol "$vpn_protocol"
@@ -150,4 +154,6 @@ proto_openconnect_teardown() {
 	proto_kill_command "$config" 2
 }
 
-add_protocol openconnect
+[ -n "$INCLUDE_ONLY" ] || {
+	add_protocol openconnect
+}
