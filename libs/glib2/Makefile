@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=glib2
-PKG_VERSION:=2.70.4
-PKG_RELEASE:=2
+PKG_VERSION:=2.70.5
+PKG_RELEASE:=4
 
 PKG_SOURCE:=glib-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNOME/glib/2.70
-PKG_HASH:=ab3d176f3115dcc4e5d02db795984e04e4f4b48d836252e23e8c468e9d423c33
+PKG_HASH:=f70bf76ebcc84e0705722f038be8e2f9a58d17e1a700810c635fcc18b8974b7e
 
 PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 PKG_LICENSE:=LGPL-2.1-or-later
@@ -22,10 +22,9 @@ PKG_CPE_ID:=cpe:/a:gnome:glib
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/glib-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/glib-$(PKG_VERSION)
-PKG_BUILD_DEPENDS:=libiconv/host
-HOST_BUILD_DEPENDS:=libiconv/host libffi/host pcre/host
+HOST_BUILD_DEPENDS:=libffi/host pcre/host
 PKG_CONFIG_DEPENDS:=CONFIG_BUILD_NLS
-PKG_INSTALL:=1
+PKG_FORTIFY_SOURCE:=0
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -44,12 +43,10 @@ define Package/glib2/description
   The GLib library of C routines
 endef
 
-HOST_LDFLAGS += -Wl,-rpath,$(STAGING_DIR_HOSTPKG)/lib
 TARGET_CFLAGS += -ffunction-sections -fdata-sections
-TARGET_LDFLAGS += -Wl,--gc-sections $(if $(INTL_FULL),-lintl)
+TARGET_LDFLAGS += -Wl,--gc-sections
 
 COMP_ARGS= \
-	-Diconv=external \
 	-Dselinux=disabled \
 	-Dlibmount=disabled \
 	-Dman=false \
@@ -65,7 +62,7 @@ COMP_ARGS= \
 	-Doss_fuzz=disabled \
 	-Dglib_debug=disabled \
 	-Dglib_assert=false \
-	-Dglib_checks=false \
+	-Dglib_checks=true \
 	-Dlibelf=disabled
 
 MESON_HOST_ARGS += $(COMP_ARGS) -Dxattr=false -Ddefault_library=static -Dnls=disabled
@@ -98,10 +95,6 @@ define Build/InstallDev
 		$(1)/opt/lib/
 
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-ifneq ($(INTL_FULL),)
-	$(SED) '/^Libs:/s/$$$$/ -lintl/' \
-		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/glib-2.0.pc
-endif
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
 		$(1)/opt/lib/pkgconfig
