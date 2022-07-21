@@ -7,7 +7,7 @@ configure: failed program was:
 
 --- a/configure
 +++ b/configure
-@@ -78153,7 +78153,7 @@ fi
+@@ -80506,7 +80506,7 @@ fi
  printf %s "checking whether this system supports stdbuf... " >&6; }
  CFLAGS="-fPIC $CFLAGS"
  LDFLAGS="-shared $LDFLAGS"
