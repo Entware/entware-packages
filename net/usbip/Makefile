@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=usbip
-PKG_RELEASE:=14
+PKG_RELEASE:=15
 PKG_LICENSE:=GPL-2.0-only
 
 # Since kernel 2.6.39.1 userspace tools are inside the kernel tree
@@ -88,7 +88,6 @@ define Build/Configure
 	$(call Build/Configure/Default)
 endef
 
-CONFIGURE_VARS+= $(if $(CONFIG_USE_GLIBC),LIBS='-lpthread')
 CFLAGS+="$(TARGET_CFLAGS) -I$(STAGING_DIR)/opt/include"
 
 define Package/usbip/install
