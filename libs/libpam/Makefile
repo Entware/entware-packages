@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libpam
 PKG_VERSION:=1.5.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=Linux-PAM-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/linux-pam/linux-pam/releases/download/v$(PKG_VERSION)
@@ -25,8 +25,6 @@ PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
-PKG_BUILD_DEPENDS:=libxcrypt
-
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libpam
@@ -39,8 +37,6 @@ endef
 define Package/libpam/description
 	The Linux-PAM Pluggable Authentication Modules.
 endef
-
-TARGET_LDFLAGS:=-L$(STAGING_DIR)/opt/lib/libxcrypt $(TARGET_LDFLAGS)
 
 CONFIGURE_ARGS += \
 	--enable-pamlocking \
