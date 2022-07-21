@@ -1,11 +1,9 @@
-commit 2784618ab57a9533a615eb139e87b920f733c002 (HEAD -> master, origin/master, origin/HEAD)
+commit ecd3a8a8de8d73a9e4c1b1b67e42e87f4a22de9d (HEAD -> master, origin/master, origin/HEAD)
 Author: Rosen Penev <rosenp@gmail.com>
-Date:   Fri Apr 1 12:14:43 2022 -0700
+Date:   Tue Jul 19 22:21:22 2022 -0700
 
-    glibs: revert "fix compilation with Alpine Linux"
+    mutt: add PKG_CONFIG_DEPENDS
     
-    This reverts commit 0ce744202ad2a2feaa3b841ce934765416d1339e.
-    
-    Broken everywhere else. A better solution will need to be found.
+    Should fix missing dependencies when manupulating options.
     
     Signed-off-by: Rosen Penev <rosenp@gmail.com>
