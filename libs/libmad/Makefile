@@ -8,35 +8,23 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libmad
-PKG_VERSION:=0.15.1b
-PKG_RELEASE:=5
+PKG_VERSION:=0.16.2
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=@SF/mad \
-	ftp://ftp.mars.org/pub/mpeg/
-PKG_HASH:=bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690
-PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
+PKG_SOURCE_URL:=https://codeload.github.com/tenacityteam/libmad/tar.gz/$(PKG_VERSION)?
+PKG_HASH:=6c14c2f4dcf7fd32e447eef99d6c53faded52e22f95e223e6f58844030851b99
 
-PKG_LICENSE:=GPLv2
+PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
+PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:underbit:mad_libmad
 
-PKG_FIXUP:=autoreconf
-
-PKG_INSTALL:=1
+CMAKE_INSTALL:=1
+PKG_USE_MIPS16:=0
 
 include $(INCLUDE_DIR)/package.mk
-
-FPM:=default
-ifeq ($(ARCH),armeb)
-  FPM:=arm
-endif
-ifeq ($(ARCH),i386)
-  FPM:=intel
-endif
-ifeq ($(ARCH),mipsel)
-  FPM:=mips
-endif
+include $(INCLUDE_DIR)/cmake.mk
 
 define Package/libmad
   SECTION:=libs
@@ -52,24 +40,10 @@ define Package/libmad/description
 	Layer I, Layer II, and Layer III (i.e. MP3) - are fully implemented.
 endef
 
-TARGET_CFLAGS += $(FPIC)
+CMAKE_OPTIONS += \
+	-DOPTIMIZE=SPEED
 
-CONFIGURE_ARGS+= \
-	--enable-shared \
-	--enable-static \
-	--enable-fpm="$(FPM)" \
-	--disable-debugging \
-	--enable-speed \
-
-MAKE_FLAGS+= \
-	CFLAGS="$(TARGET_CFLAGS)" \
-
-define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/mad.h $(1)/opt/include/
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libmad.{a,so*} $(1)/opt/lib/
-endef
+TARGET_CFLAGS:= $(filter-out -O%,$(TARGET_CFLAGS)) -O2
 
 define Package/libmad/install
 	$(INSTALL_DIR) $(1)/opt/lib
