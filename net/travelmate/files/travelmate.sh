@@ -1,6 +1,6 @@
 #!/bin/sh
 # travelmate, a wlan connection manager for travel router
-# Copyright (c) 2016-2021 Dirk Brenken (dev@brenken.org)
+# Copyright (c) 2016-2022 Dirk Brenken (dev@brenken.org)
 # This is free software, licensed under the GNU General Public License v3.
 
 # set (s)hellcheck exceptions
@@ -10,7 +10,7 @@ export LC_ALL=C
 export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 set -o pipefail
 
-trm_ver="2.0.7"
+trm_ver="2.0.9"
 trm_enabled="0"
 trm_debug="0"
 trm_iface=""
@@ -57,7 +57,7 @@ f_env() {
 		return
 	fi
 
-	unset trm_stalist trm_radiolist trm_uplinklist trm_uplinkcfg trm_wpaflags trm_activesta trm_opensta
+	unset trm_stalist trm_radiolist trm_uplinklist trm_vpnifacelist trm_uplinkcfg trm_wpaflags trm_activesta trm_opensta
 
 	trm_sysver="$(ubus -S call system board 2>/dev/null | jsonfilter -q -e '@.model' -e '@.release.description' |
 		awk 'BEGIN{RS="";FS="\n"}{printf "%s, %s",$1,$2}')"
@@ -113,12 +113,14 @@ f_env() {
 	fi
 
 	json_load_file "${trm_rtfile}" >/dev/null 2>&1
-
 	if ! json_select data >/dev/null 2>&1; then
 		: >"${trm_rtfile}"
 		json_init
 		json_add_object "data"
 	fi
+	
+	config_load network
+	config_foreach f_getvpn "interface"
 	f_log "debug" "f_env    ::: auto_sta: ${trm_opensta:-"-"}, wpa_flags: ${trm_wpaflags}, sys_ver: ${trm_sysver}"
 }
 
@@ -180,28 +182,51 @@ f_wifi() {
 # vpn helper function
 #
 f_vpn() {
-	local rc vpn vpn_service vpn_iface vpn_action="${1}"
+	local rc result iface vpn vpn_service vpn_iface vpn_status vpn_action="${1}"
 
 	vpn="$(f_getval "vpn")"
 	vpn_service="$(f_getval "vpnservice")"
 	vpn_iface="$(f_getval "vpniface")"
-	[ -z "${vpn_action}" ] && { [ "${vpn}" = "1" ] && vpn_action="enable" || vpn_action="disable"; }
 
-	if [ -x "${trm_vpnpgm}" ] && [ -n "${vpn_service}" ] && [ -n "${vpn_iface}" ] && [ -f "${trm_ntpfile}" ]; then
-		if { [ "${vpn_action}" = "disable" ] && [ -f "${trm_vpnfile}" ]; } ||
-			{ [ "${vpn}" = "1" ] && [ "${vpn_action}" = "enable" ] && [ ! -f "${trm_vpnfile}" ]; } ||
-			{ [ "${vpn}" != "1" ] && [ "${vpn_action}" = "enable" ] && [ -f "${trm_vpnfile}" ]; }; then
-			"${trm_vpnpgm}" "${vpn}" "${vpn_action}" "${vpn_service}" "${vpn_iface}" >/dev/null 2>&1
-			rc="${?}"
+	if [ ! -f "${trm_vpnfile}" ] || { [ -f "${trm_vpnfile}" ] && [ "${vpn_action}" = "enable" ]; }; then
+		for iface in ${trm_vpnifacelist}; do
+			vpn_status="$(ifstatus "${iface}" | jsonfilter -q -l1 -e '@.up')"
+			if [ "${vpn_status}" = "true" ]; then
+				ifdown "${iface}"
+				f_log "info" "take down vpn interface '${iface}' (initial)"
+			fi
+		done
+		[ -x "/etc/init.d/openvpn" ] && /etc/init.d/openvpn stop
+		if [ -f "/etc/init.d/sysntpd" ]; then
+			/etc/init.d/sysntpd restart >/dev/null 2>&1
 		fi
-		if [ "${vpn}" = "1" ] && [ "${vpn_action}" = "enable" ] && [ "${rc}" = "0" ]; then
-			: >"${trm_vpnfile}"
-		elif { [ "${vpn}" != "1" ] || [ "${vpn_action}" = "disable" ]; } && [ -f "${trm_vpnfile}" ]; then
-			rm -f "${trm_vpnfile}"
+		rm -f "${trm_vpnfile}"
+	elif [ "${vpn}" = "1" ] && [ -n "${vpn_iface}" ] && [ "${vpn_action}" = "enable_keep" ]; then
+		for iface in ${trm_vpnifacelist}; do
+			vpn_status="$(ifstatus "${iface}" | jsonfilter -q -l1 -e '@.up')"
+			if [ "${vpn_status}" = "true" ] && [ "${iface}" != "${vpn_iface}" ]; then
+				ifdown "${iface}"
+				[ -x "/etc/init.d/openvpn" ] && /etc/init.d/openvpn stop
+				f_log "info" "take down vpn interface '${iface}' (switch)"
+				rm -f "${trm_vpnfile}"
+				break
+			fi
+		done
+	fi
+	if [ -x "${trm_vpnpgm}" ] && [ -n "${vpn_service}" ] && [ -n "${vpn_iface}" ]; then
+		if { [ "${vpn_action}" = "disable" ] && [ -f "${trm_vpnfile}" ]; } ||
+			{ [ -f "${trm_ntpfile}" ] && {  [ "${vpn}" = "1" ] && [ "${vpn_action%_*}" = "enable" ] && [ ! -f "${trm_vpnfile}" ]; } ||
+			{ [ "${vpn}" != "1" ] && [ "${vpn_action%_*}" = "enable" ] && [ -f "${trm_vpnfile}" ]; }; }; then
+				result="$(f_net)"
+				if [ "${result}" = "net ok" ] || [ "${vpn_action}" = "disable" ]; then
+					f_log "info" "vpn call '${vpn:-"0"}/${vpn_action}/${vpn_service}/${vpn_iface}'"
+					"${trm_vpnpgm}" "${vpn:-"0"}" "${vpn_action%_*}" "${vpn_service}" "${vpn_iface}" >/dev/null 2>&1
+					rc="${?}"
+				fi
 		fi
 		[ -n "${rc}" ] && f_jsnup
 	fi
-	f_log "debug" "f_vpn    ::: enabled: ${vpn:-"-"}, action: ${vpn_action}, service: ${vpn_service:-"-"}, iface: ${vpn_iface:-"-"}, rc: ${rc:-"-"}, program: ${trm_vpnpgm}"
+	f_log "debug" "f_vpn    ::: enabled: ${vpn:-"-"}, action: ${vpn_action}, service: ${vpn_service:-"-"}, iface: ${vpn_iface:-"-"}, rc: ${rc:-"-"}"
 }
 
 # mac helper function
@@ -291,6 +316,18 @@ f_ctrack() {
 		fi
 	fi
 	f_log "debug" "f_ctrack ::: action: ${action:-"-"}, uplink_config: ${trm_uplinkcfg:-"-"}"
+}
+
+# get logical vpn network interfaces
+#
+f_getvpn() {
+	local proto iface="${1}"
+
+	proto="$(uci_get "network" "${iface}" "proto")"
+	if [ "${proto}" = "none" ] || [ "${proto}" = "wireguard" ]; then
+		trm_vpnifacelist="$(f_trim "${trm_vpnifacelist} ${iface}")"
+	fi
+	f_log "debug" "f_getvpn ::: interface: ${iface:-"-"}, protocol: ${proto:-"-"}, vpn_interfacelist: ${trm_vpnifacelist:-"-"}"
 }
 
 # get wan gateway addresses
@@ -477,7 +514,7 @@ f_addsta() {
 # check net status
 #
 f_net() {
-	local err_msg raw html_raw html_cp json_raw json_ec json_rc json_cp json_ed result="net nok"
+	local err_msg raw json_raw html_raw html_cp js_cp json_ec json_rc json_cp json_ed result="net nok"
 
 	raw="$(${trm_fetch} --user-agent "${trm_useragent}" --referer "http://www.example.com" --header "Cache-Control: no-cache, no-store, must-revalidate, max-age=0" --write-out "%{json}" --silent --max-time $((trm_maxwait / 6)) "${trm_captiveurl}")"
 	json_raw="${raw#*\{}"
@@ -492,8 +529,11 @@ f_net() {
 			else
 				if [ "${json_rc}" = "200" ] || [ "${json_rc}" = "204" ]; then
 					html_cp="$(printf "%s" "${html_raw}" | awk 'match(tolower($0),/^.*<meta[ \t]+http-equiv=['\''"]*refresh.*[ \t;]url=/){print substr(tolower($0),RLENGTH+1)}' | awk 'BEGIN{FS="[:/]"}{printf "%s",$4;exit}')"
+					js_cp="$(printf "%s" "${html_raw}" | awk 'match(tolower($0),/^.*location\.href=['\''"]*/){print substr(tolower($0),RLENGTH+1)}' | awk 'BEGIN{FS="[:/]"}{printf "%s",$4;exit}')"
 					if [ -n "${html_cp}" ]; then
 						result="net cp '${html_cp}'"
+					elif [ -n "${js_cp}" ]; then
+						result="net cp '${js_cp}'"
 					else
 						result="net ok"
 					fi
@@ -514,7 +554,7 @@ f_net() {
 		fi
 	fi
 	printf "%s" "${result}"
-	f_log "debug" "f_net    ::: fetch: ${trm_fetch}, timeout: $((trm_maxwait / 6)), cp (json/html): ${json_cp:-"-"}/${html_cp:-"-"}, result: ${result}, error (rc/msg): ${json_ec}/${err_msg:-"-"}, url: ${trm_captiveurl}, user_agent: ${trm_useragent}"
+	f_log "debug" "f_net    ::: fetch: ${trm_fetch}, timeout: $((trm_maxwait / 6)), cp (json/html/js): ${json_cp:-"-"}/${html_cp:-"-"}/${js_cp:-"-"}, result: ${result}, error (rc/msg): ${json_ec}/${err_msg:-"-"}, url: ${trm_captiveurl}, user_agent: ${trm_useragent}"
 }
 
 # check interface status
@@ -564,15 +604,20 @@ f_check() {
 						if [ "${trm_ifstatus}" = "true" ]; then
 							result="$(f_net)"
 							if [ "${trm_captive}" = "1" ]; then
-								cp_domain="$(printf "%s" "${result}" | awk -F '['\''| ]' '/^net cp/{printf "%s",$4}')"
-								if [ -x "/etc/init.d/dnsmasq" ] && [ -f "/etc/config/dhcp" ] &&
-									[ -n "${cp_domain}" ] && ! uci_get "dhcp" "@dnsmasq[0]" "rebind_domain" | grep -q "${cp_domain}"; then
-									uci_add_list "dhcp" "@dnsmasq[0]" "rebind_domain" "${cp_domain}"
-									uci_commit "dhcp"
-									/etc/init.d/dnsmasq reload
-									f_log "info" "captive portal domain '${cp_domain}' added to to dhcp rebind whitelist"
-								fi
-								if [ -n "${cp_domain}" ] && [ "${trm_captive}" = "1" ]; then
+								while true; do
+									cp_domain="$(printf "%s" "${result}" | awk -F '['\''| ]' '/^net cp/{printf "%s",$4}')"
+									if [ -x "/etc/init.d/dnsmasq" ] && [ -f "/etc/config/dhcp" ] &&
+										[ -n "${cp_domain}" ] && ! uci_get "dhcp" "@dnsmasq[0]" "rebind_domain" | grep -q "${cp_domain}"; then
+										uci_add_list "dhcp" "@dnsmasq[0]" "rebind_domain" "${cp_domain}"
+										uci_commit "dhcp"
+										/etc/init.d/dnsmasq reload
+										f_log "info" "captive portal domain '${cp_domain}' added to to dhcp rebind whitelist"
+									else 
+										break
+									fi
+									result="$(f_net)"
+								done
+								if [ -n "${cp_domain}" ]; then
 									trm_connection="${result:-"-"}/${trm_ifquality}"
 									f_jsnup
 									login_script="$(f_getval "script")"
@@ -595,12 +640,14 @@ f_check() {
 									fi
 								fi
 							fi
-							if [ "${trm_netcheck}" = "1" ] && [ "${result}" = "net nok" ]; then
-								f_log "info" "uplink has no internet"
+							if [ "${result}" = "net nok" ]; then
 								f_vpn "disable"
-								trm_ifstatus="${status}"
-								f_jsnup
-								break
+								if [ "${trm_netcheck}" = "1" ]; then
+									f_log "info" "uplink has no internet"
+									trm_ifstatus="${status}"
+									f_jsnup
+									break
+								fi
 							fi
 							trm_connection="${result:-"-"}/${trm_ifquality}"
 							f_jsnup
@@ -786,11 +833,11 @@ f_main() {
 					if [ -n "${trm_connection}" ] && [ "${radio}" = "${config_radio}" ] && [ "${sta_radio}" = "${config_radio}" ] &&
 						[ "${sta_essid}" = "${config_essid}" ] && [ "${sta_bssid}" = "${config_bssid}" ]; then
 						f_ctrack "refresh"
-						f_log "info" "uplink still in range '${config_radio}/${config_essid}/${config_bssid:-"-"}' with mac '${sta_mac:-"-"}'"
-						f_vpn
+						f_vpn "enable_keep"
+						f_log "debug" "f_main-4 ::: config_radio: ${config_radio}, config_essid: ${config_essid}, config_bssid: ${config_bssid:-"-"}"
 						return 0
 					fi
-					f_log "debug" "f_main-4 ::: sta_radio: ${sta_radio}, sta_essid: \"${sta_essid}\", sta_bssid: ${sta_bssid:-"-"}"
+					f_log "debug" "f_main-5 ::: sta_radio: ${sta_radio}, sta_essid: \"${sta_essid}\", sta_bssid: ${sta_bssid:-"-"}"
 				fi
 				if [ -z "${scan_list}" ]; then
 					scan_dev="$(ubus -S call network.wireless status 2>/dev/null | jsonfilter -q -l1 -e "@.${radio}.interfaces[0].ifname")"
@@ -798,7 +845,7 @@ f_main() {
 						awk 'BEGIN{FS="[[:space:]]"}/Address:/{var1=$NF}/ESSID:/{var2="";for(i=12;i<=NF;i++)if(var2==""){var2=$i}else{var2=var2" "$i}}
 						/Quality:/{split($NF,var0,"/")}/Encryption:/{if($NF=="none"){var3="+"}else{var3="-"};
 						printf "%i %s %s %s\n",(var0[1]*100/var0[2]),var3,var1,var2}' | sort -rn | head -qn "${trm_maxscan}")"
-					f_log "debug" "f_main-5 ::: radio: ${radio}, scan_device: ${scan_dev}, scan_max: ${trm_maxscan}"
+					f_log "debug" "f_main-6 ::: radio: ${radio}, scan_device: ${scan_dev}, scan_max: ${trm_maxscan}"
 					if [ -z "${scan_list}" ]; then
 						f_log "info" "no scan results on '${radio}'"
 						continue 2
@@ -809,7 +856,7 @@ f_main() {
 				#
 				while read -r scan_quality scan_open scan_bssid scan_essid; do
 					if [ -n "${scan_quality}" ] && [ -n "${scan_open}" ] && [ -n "${scan_bssid}" ] && [ -n "${scan_essid}" ]; then
-						f_log "debug" "f_main-6 ::: radio(sta/scan): ${sta_radio}/${radio}, essid(sta/scan): \"${sta_essid}\"/${scan_essid}, bssid(sta/scan): ${sta_bssid}/${scan_bssid}, quality(min/scan): ${trm_minquality}/${scan_quality}, open: ${scan_open}"
+						f_log "debug" "f_main-7 ::: radio(sta/scan): ${sta_radio}/${radio}, essid(sta/scan): \"${sta_essid}\"/${scan_essid}, bssid(sta/scan): ${sta_bssid}/${scan_bssid}, quality(min/scan): ${trm_minquality}/${scan_quality}, open: ${scan_open}"
 						if [ "${scan_quality}" -ge "${trm_minquality}" ]; then
 							if { { [ "${scan_essid}" = "\"${sta_essid}\"" ] && { [ -z "${sta_bssid}" ] || [ "${scan_bssid}" = "${sta_bssid}" ]; }; } ||
 								{ [ "${scan_bssid}" = "${sta_bssid}" ] && [ "${scan_essid}" = "unknown" ]; }; } && [ "${radio}" = "${sta_radio}" ]; then
