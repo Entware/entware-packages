@@ -36,7 +36,7 @@ define Package/kea/Default
 endef
 
 define Package/kea/conffiles
-/etc/kea/
+/opt/etc/kea/
 endef
 
 Package/kea-ctrl/conffiles = $(Package/kea/conffiles)
@@ -192,9 +192,9 @@ endef
 ###### *************************************************************************
 
 CONFIGURE_ARGS += \
-	--with-boost-include="$(STAGING_DIR)/usr" \
-	--with-log4cplus="$(STAGING_DIR)/usr" \
-	--with-openssl="$(STAGING_DIR)/usr" \
+	--with-boost-include="$(STAGING_DIR)/opt" \
+	--with-log4cplus="$(STAGING_DIR)/opt" \
+	--with-openssl="$(STAGING_DIR)/opt" \
 	--without-pic \
 	$(if $(CONFIG_PACKAGE_kea-perfdhcp),--enable-perfdhcp,) \
 	$(if $(CONFIG_PACKAGE_kea-shell),--enable-shell,)
@@ -212,64 +212,66 @@ TARGET_LDFLAGS += \
 	-Wl,--gc-sections,--as-needed
 
 define Package/kea-libs/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so.* $(1)/opt/lib/
 endef
 
 define Package/kea-dhcp4/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/kea
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-dhcp4 $(1)/usr/sbin/kea-dhcp4
-	$(CP) $(PKG_INSTALL_DIR)/etc/kea/kea-dhcp4.conf $(1)/etc/kea/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/kea
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-dhcp4 $(1)/opt/sbin/kea-dhcp4
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/kea/kea-dhcp4.conf $(1)/opt/etc/kea/
 endef
 
 define Package/kea-dhcp6/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/kea
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-dhcp6 $(1)/usr/sbin/kea-dhcp6
-	$(CP) $(PKG_INSTALL_DIR)/etc/kea/kea-dhcp6.conf $(1)/etc/kea/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/kea
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-dhcp6 $(1)/opt/sbin/kea-dhcp6
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/kea/kea-dhcp6.conf $(1)/opt/etc/kea/
 endef
 
 define Package/kea-dhcp-ddns/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/kea
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-dhcp-ddns $(1)/usr/sbin/kea-dhcp-ddns
-	$(CP) $(PKG_INSTALL_DIR)/etc/kea/kea-dhcp-ddns.conf $(1)/etc/kea/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/kea
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-dhcp-ddns $(1)/opt/sbin/kea-dhcp-ddns
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/kea/kea-dhcp-ddns.conf $(1)/opt/etc/kea/
 endef
 
 define Package/kea-admin/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-admin $(1)/usr/sbin/kea-admin
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-admin $(1)/opt/sbin/kea-admin
 endef
 
 define Package/kea-hook-ha/install
-	$(INSTALL_DIR) $(1)/usr/lib/kea/hooks
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/kea/hooks/libdhcp_ha.so $(1)/usr/lib/kea/hooks
+	$(INSTALL_DIR) $(1)/opt/lib/kea/hooks
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/kea/hooks/libdhcp_ha.so $(1)/opt/lib/kea/hooks
 endef
 
 define Package/kea-hook-lease-cmds/install
-	$(INSTALL_DIR) $(1)/usr/lib/kea/hooks
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/kea/hooks/libdhcp_lease_cmds.so $(1)/usr/lib/kea/hooks
+	$(INSTALL_DIR) $(1)/opt/lib/kea/hooks
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/kea/hooks/libdhcp_lease_cmds.so $(1)/opt/lib/kea/hooks
 endef
 
 define Package/kea-ctrl/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/kea
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/keactrl $(1)/usr/sbin/keactrl
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-ctrl-agent $(1)/usr/sbin/kea-ctrl-agent
-	$(CP) $(PKG_INSTALL_DIR)/etc/kea/keactrl.conf $(1)/etc/kea/
-	$(CP) $(PKG_INSTALL_DIR)/etc/kea/kea-ctrl-agent.conf $(1)/etc/kea/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/kea
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/keactrl $(1)/opt/sbin/keactrl
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-ctrl-agent $(1)/opt/sbin/kea-ctrl-agent
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/kea/keactrl.conf $(1)/opt/etc/kea/
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/kea/kea-ctrl-agent.conf $(1)/opt/etc/kea/
 endef
 
 define Package/kea-lfc/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-lfc $(1)/usr/sbin/kea-lfc
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-lfc $(1)/opt/sbin/kea-lfc
 endef
 
 define Package/kea-perfdhcp/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/perfdhcp $(1)/usr/sbin/perfdhcp
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/perfdhcp $(1)/opt/sbin/perfdhcp
 endef
 
 define Package/kea-shell/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/kea-shell $(1)/usr/sbin/kea-shell
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kea-shell $(1)/opt/sbin/kea-shell
+	# Entware specific: fix exec path in scripts
+	$(SED) 's,^#!.*python,#!/opt/bin/python,' $(1)/opt/sbin/kea-shell
 endef
 
 define Package/kea-uci/install
@@ -294,4 +296,4 @@ $(eval $(call BuildPackage,kea-hook-lease-cmds))
 $(eval $(call BuildPackage,kea-lfc))
 $(eval $(call BuildPackage,kea-perfdhcp))
 $(eval $(call BuildPackage,kea-shell))
-$(eval $(call BuildPackage,kea-uci))
+#$(eval $(call BuildPackage,kea-uci))
