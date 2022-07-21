@@ -17,7 +17,6 @@ PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 PKG_LICENSE:=LGPL-2-or-later
 PKG_LICENSE_FILES:=COPYING.LIB
 
-PKG_INSTALL:=1
 PKG_BUILD_DEPENDS:=glib2/host
 
 include $(INCLUDE_DIR)/package.mk
@@ -27,7 +26,7 @@ include $(INCLUDE_DIR)/meson.mk
 define Package/totem-pl-parser
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+glib2 +libxml2
+  DEPENDS:=+glib2 +libxml2 +shared-mime-info
   TITLE:=totem-pl-parser
   URL:=https://gitlab.gnome.org/GNOME/totem-pl-parser
 endef
