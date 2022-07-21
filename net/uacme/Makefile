@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=uacme
 PKG_VERSION:=1.7.1
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/ndilieto/uacme/tar.gz/upstream/$(PKG_VERSION)?
@@ -54,7 +54,7 @@ endef
 
 define Package/uacme-ualpn
   $(call Package/uacme/Default)
-  DEPENDS:=+uacme +libev
+  DEPENDS:=+uacme +PACKAGE_uacme-ualpn:libev
   TITLE:=ualpn for uacme
   URL:=https://github.com/ndilieto/uacme
 endef
