@@ -1,6 +1,6 @@
 --- a/src/core/or/connection_edge.c
 +++ b/src/core/or/connection_edge.c
-@@ -127,6 +127,15 @@
+@@ -129,6 +129,15 @@
  #include <linux/if.h>
  #endif
  
@@ -18,7 +18,7 @@
  #if defined(IP6T_SO_ORIGINAL_DST)
 --- a/src/lib/sandbox/sandbox.c
 +++ b/src/lib/sandbox/sandbox.c
-@@ -79,6 +79,15 @@
+@@ -83,6 +83,15 @@
  #include <linux/netfilter_ipv6/ip6_tables.h>
  #endif
  
