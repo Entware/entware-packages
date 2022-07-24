@@ -1,26 +1,19 @@
-#
-# Copyright (C) 2007 OpenWrt
-# Copyright (C) 2011-2020 Entware
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
-# Entware specific - we use 1.2.x as more compatible
-
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libtorrent-rasterbar
-PKG_VERSION:=1.2.15
-PKG_RELEASE:=1
+PKG_VERSION:=2.0.6
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/arvidn/libtorrent/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=15b41c319955bb4df4be34458b04c483b7b0dbc366a3ac43511d2ca989600d05
-PKG_BUILD_DIR:=$(BUILD_DIR)/libtorrent-$(PKG_VERSION)
+PKG_HASH:=75b17d9db3adf0da5896edeaff4db3879f38ee66be953dc9567089db83a070be
+
+PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
+PKG_LICENSE:=BSD-3-Clause
+PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
-include $(INCLUDE_DIR)/nls.mk
 include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 
 define Package/libtorrent-rasterbar/Default
@@ -32,7 +25,7 @@ define Package/libtorrent-rasterbar
 	$(call Package/libtorrent-rasterbar/Default)
 	SECTION:=libs
 	CATEGORY:=Libraries
-	DEPENDS:=+boost-system +libatomic +libopenssl +libstdcpp $(ICONV_DEPENDS) $(INTL_DEPENDS)
+	DEPENDS:=+boost-system +libatomic +libopenssl +libstdcpp
 endef
 
 define Package/python3-libtorrent
@@ -54,16 +47,31 @@ define Package/python3-libtorrent/description
 	This package contains Python 3 bindings for the libtorrent-rasterbar library.
 endef
 
+define Download/try_signal
+	VERSION:=751a7e5a5be14892bcfdff1e63c653bcbf71cf39
+	SUBDIR:=deps/try_signal
+	FILE:=$(PKG_NAME)-try_signal-$$(VERSION).tar.xz
+	URL:=https://github.com/arvidn/try_signal.git
+	MIRROR_HASH:=32a432e35e81c79f21c49744f00696c112e0deab45d15d91c61ceb63fe25a5f8
+	PROTO:=git
+endef
+$(eval $(call Download,try_signal))
+
+PKG_UNPACK:=$(HOST_TAR) -C $(PKG_BUILD_DIR) --strip-components=1 -xzf $(DL_DIR)/$(PKG_SOURCE)
+
+define Build/Prepare
+	$(Build/Prepare/Default)
+	$(eval $(Download/try_signal))
+	xzcat $(DL_DIR)/$(FILE) | tar -C $(PKG_BUILD_DIR) $(TAR_OPTIONS)
+endef
+
 TARGET_CXXFLAGS += -DBOOST_BIND_GLOBAL_PLACEHOLDERS
 
-TARGET_LDFLAGS += -latomic $(if $(INTL_FULL),-liconv) $(if $(INTL_FULL),-lintl)
+TARGET_LDFLAGS += -latomic
 
 CMAKE_OPTIONS += \
-	-Dpython-bindings:BOOL=ON \
-	-Dboost-python-module-name="python" \
-	-DPYTHON_EXECUTABLE:FILEPATH=$(STAGING_DIR_HOSTPKG)/bin/python$(PYTHON3_VERSION) \
-	-DPYTHON_SITE_PACKAGES="/opt/lib/python$(PYTHON3_VERSION)/site-packages" \
-	-DPYTHON_EXT_SUFFIX=""
+	-Dpython-bindings=ON \
+	-Dpython-egg-info=ON
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
