@@ -80,6 +80,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtorrent-rasterbar.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libtorrent-rasterbar.pc $(1)/opt/lib/pkgconfig/
+	$(SED) 's,-l-pthread,-pthread,g' $(1)/opt/lib/pkgconfig/libtorrent-rasterbar.pc
 endef
 
 define Package/libtorrent-rasterbar/install
