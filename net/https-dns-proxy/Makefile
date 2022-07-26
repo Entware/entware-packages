@@ -33,19 +33,19 @@ It receives regular (UDP) DNS requests and issues them via DoH.
 Please see https://docs.openwrt.melmac.net/https-dns-proxy/ for more information.
 endef
 
-#define Package/https-dns-proxy/conffiles
-#/etc/config/https-dns-proxy
-#endef
+define Package/https-dns-proxy/conffiles
+/opt/etc/config/https-dns-proxy
+endef
 
 define Package/https-dns-proxy/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-#	$(INSTALL_DIR) ${1}/etc/config
+	$(INSTALL_DIR) ${1}/opt/etc/config
 #	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/https_dns_proxy $(1)/opt/sbin/https-dns-proxy
 	$(INSTALL_BIN) ./files/S09https-dns-proxy $(1)/opt/etc/init.d/
 #	$(SED) "s|^\(PKG_VERSION\).*|\1='$(PKG_VERSION)-$(PKG_RELEASE)'|" $(1)/etc/init.d/https-dns-proxy
-#	$(INSTALL_CONF) ./files/https-dns-proxy.config $(1)/etc/config/https-dns-proxy
+	$(INSTALL_CONF) ./files/https-dns-proxy.config $(1)/opt/etc/config/https-dns-proxy
 endef
 
 $(eval $(call BuildPackage,https-dns-proxy))
