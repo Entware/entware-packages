@@ -1,8 +1,10 @@
 #!/bin/sh
 
+[ -f /opt/etc/config/ntpd ] && . /opt/etc/config/ntpd
+
 ENABLED=yes
 PROCS=ntpd
-ARGS="-c /opt/etc/ntp.conf -f /opt/var/spool/ntp/ntp.drift -s /opt/var/spool/ntp -k /opt/etc/ntp -l /opt/var/spool/ntp/ntp.log -g"
+ARGS="-c /opt/etc/ntp.conf -p /opt/var/run/ntpd.pid -g $OPTIONS"
 PREARGS=""
 DESC=$PROCS
 PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
