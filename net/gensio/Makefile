@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: GENSIO_SCTP disabled
 
 include $(TOPDIR)/rules.mk
 
@@ -26,7 +27,6 @@ PYTHON3_PKG_BUILD:=0
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_GENSIO_SSL \
 	CONFIG_GENSIO_WRAP \
-	CONFIG_GENSIO_SCTP \
 	CONFIG_GENSIO_PTHREADS \
 	CONFIG_GENSIO_AVAHI \
 	CONFIG_GENSIO_GLIB \
@@ -34,11 +34,13 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_GENSIO_SSHD
 
 include $(INCLUDE_DIR)/package.mk
+# XXX .libs/libgensioglib.so.0.0.1 ... /ld: cannot find -lintl
+include $(INCLUDE_DIR)/nls.mk
 include ../../lang/python/python3-package.mk
 
 CONFIGURE_ARGS += \
 	--$(if $(CONFIG_GENSIO_SSL),with,without)-openssl \
-	--$(if $(CONFIG_GENSIO_SCTP),with,without)-sctp \
+	--without-sctp \
 	--$(if $(CONFIG_GENSIO_WRAP),with,without)-tcp-wrappers \
 	--$(if $(CONFIG_GENSIO_PTHREADS),with,without)-pthreads \
 	--$(if $(CONFIG_GENSIO_GLIB),with,without)-glib \
@@ -93,7 +95,7 @@ $(call Package/gensio/Default)
   CATEGORY:=Libraries
   ABI_VERSION:=0
   MENU:=1
-  DEPENDS:=+GENSIO_SSL:libopenssl +GENSIO_WRAP:libwrap +(IPV6&&GENSIO_SCTP):libsctp +GENSIO_PTHREADS:libpthread +GENSIO_AVAHI:libavahi-client +GENSIO_TCL:tcl +GENSIO_GLIB:glib2 +GENSIO_SSHD:libpam
+  DEPENDS:=+GENSIO_SSL:libopenssl +GENSIO_WRAP:libwrap +GENSIO_PTHREADS:libpthread +GENSIO_AVAHI:libavahi-client +GENSIO_TCL:tcl +GENSIO_GLIB:glib2 +GENSIO_SSHD:libpam
 endef
 
 define Package/libgensio/description
@@ -156,12 +158,12 @@ $(call Package/gensio/Default/description)
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/gensio/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/include/gensio/* $(1)/usr/include/gensio/
-	$(INSTALL_DIR) $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.{so*,a,la} $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig/
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* $(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR) $(1)/opt/include/gensio/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/gensio/* $(1)/opt/include/gensio/
+	$(INSTALL_DIR) $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.{so*,a,la} $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
 ifneq ($(CONFIG_PACKAGE_python3-gensio),)
 	$(INSTALL_DIR) $(1)/$(PYTHON3_PKG_DIR)
 	$(CP) $(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)/*.{so*,a,la} $(1)/$(PYTHON3_PKG_DIR)
@@ -170,19 +172,19 @@ endif
 endef
 
 define Package/libgensio/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgensio.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensio.so.* $(1)/opt/lib/
 ifeq ($(CONFIG_GENSIO_GLIB),y)
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgensioglib.so.* $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensioglib.so.* $(1)/opt/lib/
 endif
 endef
 
 define Package/gensio-bin/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 ifeq ($(CONFIG_GENSIO_SSHD),y)
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/* $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
 endif
 endef
 
@@ -191,16 +193,16 @@ define Package/python3-gensio/install
 	$(CP) $(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)/*.so* $(1)/$(PYTHON3_PKG_DIR)
 	$(CP) $(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)/*.py* $(1)/$(PYTHON3_PKG_DIR)
 
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgensio_python_swig.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensio_python_swig.so.* $(1)/opt/lib/
 endef
 
 define Package/libgensiocpp/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libgensiocpp.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensiocpp.so.* $(1)/opt/lib/
 endef
 
-#$(eval $(call BuildPackage,libgensio))
-#$(eval $(call BuildPackage,gensio-bin))
-#$(eval $(call BuildPackage,python3-gensio))
-#$(eval $(call BuildPackage,libgensiocpp))
+$(eval $(call BuildPackage,libgensio))
+$(eval $(call BuildPackage,gensio-bin))
+$(eval $(call BuildPackage,python3-gensio))
+$(eval $(call BuildPackage,libgensiocpp))
