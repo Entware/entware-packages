@@ -1,35 +1,40 @@
 #
-# Copyright (C) 2006-2015 OpenWrt.org
+# Copyright (C) 2006-2016 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: downgraded from 3.5.1. The newer versions fail to build on intel
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ser2net
-PKG_VERSION:=2.10.0
-PKG_RELEASE:=2a
+PKG_VERSION:=4.3.6
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/ser2net
-PKG_HASH:=98f6193225338e25f35302fef5e1f16688693ed43e7b3c3e9e09187eb54547ac
+PKG_HASH:=65515c7e9a5289167ae64c4032450904449a87ce20653241022af4f5db2e9510
 
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
-PKG_MAINTAINER:=Nicolas Thill <nico@openwrt.org>
+PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
+CONFIGURE_ARGS += \
+	--with-pam=no \
+	--with-pthreads \
+	--with-sysfs-led-support
+
 define Package/ser2net
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Serial to Network Proxy
   URL:=https://sourceforge.net/projects/ser2net/
+  DEPENDS:=+libgensio +libyaml +libpthread
 endef
 
 define Package/ser2net/description
@@ -38,23 +43,22 @@ define Package/ser2net/description
 endef
 
 define Package/ser2net/conffiles
+/opt/etc/ser2net/ser2net.yaml
 /opt/etc/ser2net.conf
 endef
 
-
-# GCC can't find includes from toolchain folder when STAGING_DIR is set.
-
-define Build/Compile
-	$(SED) 's,^COMPILE = ,COMPILE = STAGING_DIR="" ,g' $(PKG_BUILD_DIR)/Makefile
-	$(call Build/Compile/Default)
-endef
-
-
 define Package/ser2net/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/ser2net $(1)/opt/sbin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/ser2net $(1)/opt/sbin/
+
 	$(INSTALL_DIR) $(1)/opt/etc
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/ser2net.conf $(1)/opt/etc/
+	$(INSTALL_CONF) ./files/ser2net.conf $(1)/opt/etc/
+
+	$(INSTALL_DIR) $(1)/opt/etc/ser2net
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/ser2net.yaml $(1)/opt/etc/ser2net
+
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S50ser2net $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,ser2net))
