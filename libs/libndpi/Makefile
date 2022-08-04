@@ -27,7 +27,7 @@ PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-ifeq ($(LIBNDPI_NDPIREADER),)
+ifeq ($(CONFIG_LIBNDPI_NDPIREADER),)
 CONFIGURE_ARGS += --with-only-libndpi
 endif
 
@@ -95,27 +95,27 @@ config LIBNDPI_MAXMINDDB
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/ndpi
+	$(INSTALL_DIR) $(1)/opt/include/ndpi
 	$(CP) $(PKG_BUILD_DIR)/src/include/*.h \
-		$(1)/usr/include/ndpi/
+		$(1)/opt/include/ndpi/
 
-	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_BUILD_DIR)/src/lib/libndpi.so* \
-		$(1)/usr/lib/
+		$(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_BUILD_DIR)/libndpi.pc \
-		$(1)/usr/lib/pkgconfig/
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libndpi/install
-	$(INSTALL_DIR) $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) $(PKG_BUILD_DIR)/src/lib/libndpi.so* \
-		$(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/bin/
-ifneq ($(LIBNDPI_NDPIREADER),)
+		$(1)/opt/lib/
+ifneq ($(CONFIG_LIBNDPI_NDPIREADER),)
+	$(INSTALL_DIR) $(1)/opt/bin/
 	$(CP) $(PKG_BUILD_DIR)/example/ndpiReader \
-		$(1)/usr/bin/
+		$(1)/opt/bin/
 endif
 endef
 
