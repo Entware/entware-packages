@@ -4,17 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: keep 5.8 version, kernels are too old; openssl support enabled, more binaries added to snmp-utils
+# Entware specific: openssl support enabled, more binaries added to snmp-utils
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-snmp
-PKG_VERSION:=5.8
-PKG_RELEASE:=2a
+PKG_VERSION:=5.9.1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
-PKG_HASH:=b2fc3500840ebe532734c4786b0da4ef0a5f67e51ef4c86b3345d697e4976adf
+PKG_HASH:=eb7fd4a44de6cddbffd9a92a85ad1309e5c1054fb9d5a7dd93079c8953f48c3f
 PKG_MAINTAINER:=Stijn Tintel <stijn@linux-ipv6.be>
 PKG_LICENSE:=MIT BSD-3-Clause-Clear
 PKG_CPE_ID:=cpe:/a:net-snmp:net-snmp
