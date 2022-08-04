@@ -1,0 +1,22 @@
+--- a/lib/sendserver.c
++++ b/lib/sendserver.c
+@@ -25,11 +25,6 @@
+ # include <gnutls/crypto.h>
+ #endif
+ 
+-#if defined(__linux__)
+-#include <linux/in6.h>
+-#endif
+-
+-
+ #define SCLOSE(fd) if (sfuncs->close_fd) sfuncs->close_fd(fd)
+ 
+ static void rc_random_vector(unsigned char *);
+@@ -565,6 +560,7 @@ int rc_send_server_ctx(rc_handle * rh, R
+ 		char *non_temp_addr = rc_conf_str(rh, "use-public-addr");
+ 		if (non_temp_addr && (strcasecmp(non_temp_addr, "true") == 0)) {
+ #if defined(__linux__)
++#include <linux/in6.h>
+ 			int sock_opt = IPV6_PREFER_SRC_PUBLIC;
+ 			if (setsockopt(sockfd, IPPROTO_IPV6, IPV6_ADDR_PREFERENCES, 
+ 					&sock_opt, sizeof(sock_opt)) != 0) {

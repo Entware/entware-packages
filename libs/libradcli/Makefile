@@ -19,6 +19,9 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/radcli-$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_RADCLI_TLS
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libradcli
@@ -37,6 +40,10 @@ define Package/libradcli/decription
   compatible with it.
 endef
 
+define Package/libradcli/config
+  source "$(SOURCE)/Config.in"
+endef
+
 CONFIGURE_ARGS+= \
 	--enable-legacy-compat
 
@@ -45,32 +52,32 @@ CONFIGURE_ARGS += --without-tls
 endif
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/radcli
+	$(INSTALL_DIR) $(1)/opt/include/radcli
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/radcli/radcli.h \
-		$(PKG_INSTALL_DIR)/usr/include/radcli/version.h \
-		$(1)/usr/include/radcli
+		$(PKG_INSTALL_DIR)/opt/include/radcli/radcli.h \
+		$(PKG_INSTALL_DIR)/opt/include/radcli/version.h \
+		$(1)/opt/include/radcli
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/include/freeradius-client.h \
-		$(1)/usr/include/
-	$(INSTALL_DIR) $(1)/usr/lib
+		$(PKG_INSTALL_DIR)/opt/include/freeradius-client.h \
+		$(1)/opt/include/
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libradcli.so* \
-		$(PKG_INSTALL_DIR)/usr/lib/libfreeradius-client.so \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/libradcli.so* \
+		$(PKG_INSTALL_DIR)/opt/lib/libfreeradius-client.so \
+		$(1)/opt/lib/
 endef
 
 define Package/libradcli/conffiles
-/etc/radcli/radiusclient.conf
+/opt/etc/radcli/radiusclient.conf
 endef
 
 define Package/libradcli/install
-	$(INSTALL_DIR) $(1)/etc/radcli
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/etc/radiusclient.conf $(1)/etc/radcli/
-	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/etc/radcli
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/etc/radiusclient.conf $(1)/opt/etc/radcli/
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libradcli.so.* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/libradcli.so.* \
+		$(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libradcli))
