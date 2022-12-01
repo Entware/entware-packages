@@ -1,0 +1,11 @@
+--- a/botocore/credentials.py
++++ b/botocore/credentials.py
+@@ -1116,7 +1116,7 @@ class BotoProvider(CredentialProvider):
+     CANONICAL_NAME = 'Boto2Config'
+ 
+     BOTO_CONFIG_ENV = 'BOTO_CONFIG'
+-    DEFAULT_CONFIG_FILENAMES = ['/etc/boto.cfg', '~/.boto']
++    DEFAULT_CONFIG_FILENAMES = ['/opt/etc/boto.cfg', '~/.boto']
+     ACCESS_KEY = 'aws_access_key_id'
+     SECRET_KEY = 'aws_secret_access_key'
+ 
