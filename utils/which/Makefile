@@ -22,7 +22,7 @@ define Package/which
   CATEGORY:=Utilities
   TITLE:=which utility - full version
   URL:=https://carlowood.github.io/which/
-  ALTERNATIVES:=300:/usr/bin/which:/usr/libexec/which-gnu
+  ALTERNATIVES:=300:/opt/bin/which:/opt/libexec/which-gnu
 endef
 
 define Package/which/description
@@ -30,8 +30,8 @@ define Package/which/description
 endef
 
 define Package/which/install
-	$(INSTALL_DIR) $(1)/usr/libexec
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/which $(1)/usr/libexec/which-gnu
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/which $(1)/opt/libexec/which-gnu
 endef
 
 $(eval $(call BuildPackage,which))
