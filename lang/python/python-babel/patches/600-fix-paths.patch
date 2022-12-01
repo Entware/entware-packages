@@ -1,0 +1,11 @@
+--- a/babel/localtime/_unix.py
++++ b/babel/localtime/_unix.py
+@@ -47,7 +47,7 @@ def _get_localzone(_root='/'):
+     # zone on operating systems like OS X.  On OS X especially this is the
+     # only one that actually works.
+     try:
+-        link_dst = os.readlink('/etc/localtime')
++        link_dst = os.readlink('/opt/etc/localtime')
+     except OSError:
+         pass
+     else:
