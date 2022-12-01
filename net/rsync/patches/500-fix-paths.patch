@@ -1,0 +1,17 @@
+--- a/support/rrsync
++++ b/support/rrsync
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python3
++#!/opt/bin/python3
+ 
+ # Restricts rsync to subdirectory declared in .ssh/authorized_keys.  See
+ # the rrsync man page for details of how to make use of this script.
+@@ -10,7 +10,7 @@
+ 
+ # You may configure these 2 values to your liking.  See also the section of
+ # short & long options if you want to disable any options that rsync accepts.
+-RSYNC = '/usr/bin/rsync'
++RSYNC = '/opt/bin/rsync'
+ LOGFILE = 'rrsync.log' # NOTE: the file must exist for a line to be appended!
+ 
+ # The following options are mainly the options that a client rsync can send
