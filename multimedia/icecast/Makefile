@@ -44,6 +44,8 @@ define Package/icecast/description
 	interaction.
 endef
 
+TARGET_CPPFLAGS += -I$(STAGING_DIR)/opt/include/libxml2
+
 CONFIGURE_ARGS+= \
 	--enable-yp \
 	--with-openssl="no" \
