@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bison
 PKG_VERSION:=3.8.2
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
@@ -24,20 +24,28 @@ define Package/bison
   SECTION:=devel
   CATEGORY:=Development
   TITLE:=bison
-  URL:=http://www.gnu.org/software/bison/
+  URL:=https://www.gnu.org/software/bison/
 endef
 
 define Package/bison/description
   Bison is a general-purpose parser generator
 endef
 
-CONFIGURE_ARGS += --enable-threads=posix --disable-nls
+CONFIGURE_ARGS += \
+	--enable-threads=posix \
+	--disable-nls
+
+# FIXME "bison: m4 subprocess failed: no such file or directory"
+define Build/Configure
+	$(call Build/Configure/Default)
+	$(SED) 's,$(STAGING_DIR_HOST)/bin/m4,/opt/bin/m4,' \
+		$(PKG_BUILD_DIR)/lib/config.h
+endef
 
 define Package/bison/install
-	$(INSTALL_DIR) $(1)/usr/bin/
-	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/bin/bison \
-		$(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/bison $(1)/opt/bin
+	$(INSTALL_BIN) ./files/yacc $(1)/opt/bin/yacc
 endef
 
 $(eval $(call BuildPackage,bison))
