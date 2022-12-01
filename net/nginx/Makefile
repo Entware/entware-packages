@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nginx
 PKG_VERSION:=1.21.3
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=nginx-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nginx.org/download/
@@ -32,6 +32,7 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_NGINX_STUB_STATUS \
 	CONFIG_NGINX_HTTP_CHARSET \
 	CONFIG_NGINX_HTTP_GZIP \
+	CONFIG_NGINX_HTTP_GZIP_STATIC \
 	CONFIG_NGINX_HTTP_SSI \
 	CONFIG_NGINX_HTTP_USERID \
 	CONFIG_NGINX_HTTP_ACCESS \
@@ -150,6 +151,9 @@ ifneq ($(BUILD_VARIANT),all-module)
   endif
   ifneq ($(CONFIG_NGINX_HTTP_GZIP),y)
     ADDITIONAL_MODULES += --without-http_gzip_module
+  endif
+  ifeq ($(CONFIG_NGINX_HTTP_GZIP_STATIC),y)
+    ADDITIONAL_MODULES += --with-http_gzip_static_module
   endif
   ifneq ($(CONFIG_NGINX_HTTP_SSI),y)
     ADDITIONAL_MODULES += --without-http_ssi_module
@@ -325,10 +329,6 @@ endef
 
 TARGET_CFLAGS += -fvisibility=hidden -ffunction-sections -fdata-sections -DNGX_LUA_NO_BY_LUA_BLOCK
 TARGET_LDFLAGS += -Wl,--gc-sections
-
-ifeq ($(CONFIG_GCC_USE_VERSION_7),y)
-TARGET_CFLAGS += -Wimplicit-fallthrough=0
-endif
 
 ifeq ($(CONFIG_NGINX_LUA),y)
   CONFIGURE_VARS += LUA_INC=$(STAGING_DIR)/opt/include \
