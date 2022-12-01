@@ -1,0 +1,11 @@
+--- a/src/vfs/fish/fish.c
++++ b/src/vfs/fish/fish.c
+@@ -542,7 +542,7 @@ fish_open_archive_pipeopen (struct vfs_s
+     }
+ 
+     argv[i++] = super->path_element->host;
+-    argv[i++] = "echo FISH:; /bin/sh";
++    argv[i++] = "echo FISH:; $SHELL";
+     argv[i++] = NULL;
+ 
+     fish_pipeopen (super, xsh, argv);

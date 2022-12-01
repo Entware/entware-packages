@@ -121,6 +121,7 @@ endif
 	$(SED) 's,$(STAGING_DIR_HOSTPKG)/bin,/opt/bin,g' $(1)/opt/lib/mc/extfs.d/*
 	$(SED) 's,$(STAGING_DIR_HOST)/bin,/opt/bin,g' $(1)/opt/share/mc/syntax/Syntax
 	$(SED) 's,$(STAGING_DIR_HOSTPKG)/bin,/opt/bin,g' $(1)/opt/share/mc/syntax/Syntax
+	$(SED) 's,^#!.*python,#!/opt/bin/python,' $(1)/opt/lib/mc/extfs.d/uc1541
 endef
 
 define Package/mc/conffiles
