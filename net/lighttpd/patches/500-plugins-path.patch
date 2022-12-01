@@ -29,7 +29,7 @@
  ##
  ## Path to the rrdtool database. You can override this in conditionals.
  ##
--rrdtool.db-name            = "/var/lib/lighttpd/lighttpd.rrd"
+-rrdtool.db-name            = home_dir + "/lighttpd.rrd"
 +rrdtool.db-name            = "/opt/var/lib/lighttpd/lighttpd.rrd"
  
  ##
