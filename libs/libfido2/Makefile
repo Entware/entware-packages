@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libfido2
-PKG_VERSION:=1.8.0
+PKG_VERSION:=1.12.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/Yubico/libfido2/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=554291188f24ab595cb947f9d2b6ec40ce5afe39d9257c1e2cd0bdef8bf7fd1d
+PKG_HASH:=813d6d25116143d16d2e96791718a74825da16b774a8d093d96f06ae1730d9c5
 
 PKG_MAINTAINER:=Linos Giannopoulos <linosgian00+openwrt@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -31,7 +31,7 @@ define Package/libfido2
   TITLE:=FIDO2 Library
   URL:=https://github.com/Yubico/libfido2
   ABI_VERSION:=1
-  DEPENDS += +libcbor +libopenssl +libudev +zlib
+  DEPENDS:=+libcbor +libopenssl +libudev +zlib
 endef
 
 define Package/libfido2/description
@@ -49,6 +49,12 @@ CMAKE_OPTIONS += \
 	-DFUZZ=OFF \
 	-DLIBFUZZER=OFF \
 	-DUSE_HIDAPI=OFF
+
+# XXX linux/nfc.h since Linux 3.1
+ifeq ($(CONFIG_LINUX_2_6_36),y)
+CMAKE_OPTIONS += \
+	-DNFC_LINUX=OFF
+endif
 
 define Package/libfido2/install
 	$(INSTALL_DIR) $(1)/opt/lib
