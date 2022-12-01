@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netcat
 PKG_VERSION:=0.7.1
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
@@ -26,6 +26,7 @@ define Package/netcat
   CATEGORY:=Network
   TITLE:=A feature-rich network debugging and exploration tool.
   URL:=http://netcat.sourceforge.net/
+  ALTERNATIVES:=300:/opt/bin/nc:/opt/bin/netcat
 endef
 
 define Package/netcat/description
