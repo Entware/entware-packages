@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pyopenssl
 PKG_VERSION:=21.0.0
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PYPI_NAME:=pyOpenSSL
 PKG_HASH:=5e2d8c5e46d0d865ae933bef5230090bdaf5506281e9eec60fa250ee80600cb3

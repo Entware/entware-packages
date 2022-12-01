@@ -1,0 +1,18 @@
+--- a/src/OpenSSL/SSL.py
++++ b/src/OpenSSL/SSL.py
+@@ -244,6 +244,7 @@ SSL_CB_HANDSHAKE_DONE = _lib.SSL_CB_HAND
+ 
+ # Taken from https://golang.org/src/crypto/x509/root_linux.go
+ _CERTIFICATE_FILE_LOCATIONS = [
++    "/opt/etc/ssl/certs/ca-certificates.crt",  # Entware
+     "/etc/ssl/certs/ca-certificates.crt",  # Debian/Ubuntu/Gentoo etc.
+     "/etc/pki/tls/certs/ca-bundle.crt",  # Fedora/RHEL 6
+     "/etc/ssl/ca-bundle.pem",  # OpenSUSE
+@@ -252,6 +253,7 @@ _CERTIFICATE_FILE_LOCATIONS = [
+ ]
+ 
+ _CERTIFICATE_PATH_LOCATIONS = [
++    "/opt/etc/ssl/certs",  # Entware
+     "/etc/ssl/certs",  # SLES10/SLES11
+ ]
+ 
