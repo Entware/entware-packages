@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: postinst & postrm added, because some applets does not have alternatives in opkg
 
 include $(TOPDIR)/rules.mk
 
