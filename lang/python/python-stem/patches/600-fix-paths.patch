@@ -1,0 +1,78 @@
+--- a/stem/connection.py
++++ b/stem/connection.py
+@@ -209,7 +209,7 @@ COMMON_TOR_COMMANDS = (
+ )
+ 
+ 
+-def connect(control_port = ('127.0.0.1', 'default'), control_socket = '/var/run/tor/control', password = None, password_prompt = False, chroot_path = None, controller = stem.control.Controller):
++def connect(control_port = ('127.0.0.1', 'default'), control_socket = '/opt/var/run/tor/control', password = None, password_prompt = False, chroot_path = None, controller = stem.control.Controller):
+   """
+   Convenience function for quickly getting a control connection. This is very
+   handy for debugging or CLI setup, handling setup and prompting for a password
+@@ -324,7 +324,7 @@ def connect_port(address = '127.0.0.1',
+   return _connect_auth(control_port, password, True, chroot_path, controller)
+ 
+ 
+-def connect_socket_file(path = '/var/run/tor/control', password = None, chroot_path = None, controller = stem.control.Controller):
++def connect_socket_file(path = '/opt/var/run/tor/control', password = None, chroot_path = None, controller = stem.control.Controller):
+   """
+   Convenience function for quickly getting a control connection. For more
+   information see the :func:`~stem.connection.connect_port` function.
+--- a/stem/control.py
++++ b/stem/control.py
+@@ -1035,7 +1035,7 @@ class Controller(BaseController):
+     return Controller(control_port)
+ 
+   @staticmethod
+-  def from_socket_file(path = '/var/run/tor/control'):
++  def from_socket_file(path = '/opt/var/run/tor/control'):
+     """
+     Constructs a :class:`~stem.socket.ControlSocketFile` based Controller.
+ 
+@@ -2436,8 +2436,8 @@ class Controller(BaseController):
+ 
+       default_lines = (
+         'Log notice stdout',
+-        'Log notice file /var/log/tor/log',
+-        'DataDirectory /home/%s/.tor' % self.get_user('undefined'),
++        'Log notice file /opt/var/log/tor/log',
++        'DataDirectory /opt/home/%s/.tor' % self.get_user('undefined'),
+         'HiddenServiceStatistics 0',
+       )
+ 
+@@ -2580,11 +2580,11 @@ class Controller(BaseController):
+     ::
+ 
+       {
+-        "/var/lib/tor/hidden_service_empty/": {
++        "/opt/var/lib/tor/hidden_service_empty/": {
+           "HiddenServicePort": [
+           ]
+         },
+-        "/var/lib/tor/hidden_service_with_two_ports/": {
++        "/opt/var/lib/tor/hidden_service_with_two_ports/": {
+           "HiddenServiceAuthorizeClient": "stealth a, b",
+           "HiddenServicePort": [
+             (8020, "127.0.0.1", 8020),  # the ports order is kept
+--- a/stem/interpreter/arguments.py
++++ b/stem/interpreter/arguments.py
+@@ -16,7 +16,7 @@ DEFAULT_ARGS = {
+   'control_address': '127.0.0.1',
+   'control_port': 'default',
+   'user_provided_port': False,
+-  'control_socket': '/var/run/tor/control',
++  'control_socket': '/opt/var/run/tor/control',
+   'user_provided_socket': False,
+   'tor_path': 'tor',
+   'run_cmd': None,
+--- a/stem/socket.py
++++ b/stem/socket.py
+@@ -546,7 +546,7 @@ class ControlSocketFile(ControlSocket):
+   :var str path: filesystem path of the socket we connect to
+   """
+ 
+-  def __init__(self, path = '/var/run/tor/control', connect = True):
++  def __init__(self, path = '/opt/var/run/tor/control', connect = True):
+     """
+     ControlSocketFile constructor.
+ 
