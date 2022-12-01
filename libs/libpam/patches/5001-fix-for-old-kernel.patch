@@ -21,7 +21,7 @@
      struct user_limits_struct limits[RLIM_NLIMITS];
      const char *conf_file;
      int utmp_after_pam_call;
-@@ -554,8 +560,10 @@ process_limit (const pam_handle_t *pamh,
+@@ -589,8 +595,10 @@ process_limit (const pam_handle_t *pamh,
  	pl->flag_numsyslogins = 1;
      } else if (strcmp(lim_item, "priority") == 0) {
  	limit_item = LIMIT_PRI;
@@ -32,7 +32,7 @@
      } else {
          pam_syslog(pamh, LOG_DEBUG, "unknown limit item '%s'", lim_item);
          return;
-@@ -693,8 +701,10 @@ process_limit (const pam_handle_t *pamh,
+@@ -742,8 +750,10 @@ process_limit (const pam_handle_t *pamh,
  
  	if (limit_item == LIMIT_PRI) {
  	    pl->priority = int_value;
@@ -43,7 +43,7 @@
  	} else {
  	    if (pl->login_limit_def < source) {
  		return;
-@@ -1015,12 +1025,14 @@ static int setup_limits(pam_handle_t *pa
+@@ -1064,12 +1074,14 @@ static int setup_limits(pam_handle_t *pa
          retval |= LOGIN_ERR;
      }
  
@@ -58,3 +58,15 @@
  
      return retval;
  }
+--- a/modules/pam_setquota/pam_setquota.c
++++ b/modules/pam_setquota/pam_setquota.c
+@@ -9,7 +9,9 @@
+ */
+ 
+ #include <sys/types.h>
++#if defined __GLIBC__ && __GLIBC_MINOR__ > 23
+ #include <sys/quota.h>
++#endif
+ #include <linux/quota.h>
+ #include <pwd.h>
+ #include <syslog.h>
