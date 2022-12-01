@@ -35,6 +35,9 @@ define Package/google-authenticator-libpam/description
     Google Authenticator PAM module
 endef
 
+# XXX aarch64: undefined reference to `dl*'
+TARGET_LDFLAGS += -ldl
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib/security
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/security/* $(1)/opt/lib/security/
