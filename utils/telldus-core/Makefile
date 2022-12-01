@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=telldus-core
 PKG_VERSION:=2.1.2
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://download.telldus.com/TellStick/Software/telldus-core/
@@ -49,7 +49,7 @@ define Package/telldus-core/description
 endef
 
 define Package/telldus-core/conffiles
-/etc/tellstick.conf
+/opt/etc/tellstick.conf
 endef
 
 CMAKE_OPTIONS += \
@@ -58,17 +58,19 @@ CMAKE_OPTIONS += \
 	-DGENERATE_MAN=0
 
 define Package/telldus-core/install
-	$(INSTALL_DIR)  $(1)/usr/bin
-	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/usr/bin/tdtool $(1)/usr/bin
-	$(INSTALL_DIR)  $(1)/usr/sbin
-	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/usr/sbin/telldusd $(1)/usr/sbin
-	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/usr/sbin/tdadmin $(1)/usr/sbin
-	$(INSTALL_DIR)  $(1)/usr/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libtelldus* $(1)/usr/lib
-	$(INSTALL_DIR)  $(1)/etc/config
-	$(INSTALL_CONF) ./files/tellstick.conf $(1)/etc
-	$(INSTALL_DIR)  $(1)/etc/init.d
-	$(INSTALL_BIN)  ./files/telldusd $(1)/etc/init.d
+	$(INSTALL_DIR)  $(1)/opt/bin
+	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/opt/bin/tdtool $(1)/opt/bin
+	$(INSTALL_DIR)  $(1)/opt/sbin
+	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/opt/sbin/telldusd $(1)/opt/sbin
+	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/opt/sbin/tdadmin $(1)/opt/sbin
+	$(INSTALL_DIR)  $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtelldus* $(1)/opt/lib
+	$(INSTALL_DIR)  $(1)/opt/etc
+	$(INSTALL_CONF) ./files/tellstick.conf $(1)/opt/etc
+	$(INSTALL_DIR)  $(1)/opt/etc/init.d
+	$(INSTALL_BIN)  ./files/S99telldusd $(1)/opt/etc/init.d
+	$(INSTALL_DIR)  $(1)/opt/var/state
+	$(CP) $(PKG_INSTALL_DIR)/opt/var/state/telldus-core.conf $(1)/opt/var/state
 endef
 
 $(eval $(call BuildPackage,telldus-core))

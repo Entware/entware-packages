@@ -1,0 +1,40 @@
+--- a/service/CMakeLists.txt
++++ b/service/CMakeLists.txt
+@@ -93,12 +93,12 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+ ######## Configurable options for the platform  ########
+ 
+ IF (UNIX AND NOT APPLE)
+-	SET(SCRIPT_PATH "/usr/local/share/telldus/scripts" CACHE PATH "The paths for scripts to execute on sensor events")
+-	SET(SYSCONF_INSTALL_DIR "/etc" CACHE PATH "The sysconfig install dir (default prefix/etc)" )
++	SET(SCRIPT_PATH "/opt/share/telldus/scripts" CACHE PATH "The paths for scripts to execute on sensor events")
++	SET(SYSCONF_INSTALL_DIR "/opt/etc" CACHE PATH "The sysconfig install dir (default prefix/etc)" )
+ 	IF (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+ 		SET(DEFAULT_STATE_INSTALL_DIR "/var/spool")
+ 	ELSE ()
+-		SET(DEFAULT_STATE_INSTALL_DIR "/tmp/state") # OpenWrt has var as symlink to tmp
++		SET(DEFAULT_STATE_INSTALL_DIR "/opt/var/state") # OpenWrt has var as symlink to tmp
+ 	ENDIF ()
+ 	SET(STATE_INSTALL_DIR "${DEFAULT_STATE_INSTALL_DIR}" CACHE PATH "The directory to store state information of the devices")
+ 
+--- a/service/main_unix.cpp
++++ b/service/main_unix.cpp
+@@ -21,7 +21,7 @@
+ #include "service/Log.h"
+ 
+ #define DAEMON_NAME "telldusd"
+-#define PID_FILE "/var/run/" DAEMON_NAME ".pid"
++#define PID_FILE "/opt/var/run/" DAEMON_NAME ".pid"
+ 
+ TelldusMain tm;
+ 
+--- a/tdadmin/CMakeLists.txt
++++ b/tdadmin/CMakeLists.txt
+@@ -54,7 +54,7 @@ ENDIF (UNIX)
+ INSTALL(TARGETS tdadmin RUNTIME DESTINATION sbin)
+ 
+ IF (UNIX AND NOT APPLE)
+-	SET(UDEV_RULES_DIR	"/etc/udev/rules.d" CACHE PATH "The directory where udev store its rules" )
++	SET(UDEV_RULES_DIR	"/opt/etc/udev/rules.d" CACHE PATH "The directory where udev store its rules" )
+ 	CONFIGURE_FILE(
+ 		${CMAKE_CURRENT_SOURCE_DIR}/05-tellstick.rules
+ 		${CMAKE_BINARY_DIR}/parsed/05-tellstick.rules
