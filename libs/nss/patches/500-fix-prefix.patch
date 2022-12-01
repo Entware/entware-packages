@@ -1,0 +1,11 @@
+--- a/nss/config/Makefile
++++ b/nss/config/Makefile
+@@ -6,7 +6,7 @@ include $(CORE_DEPTH)/coreconf/config.mk
+ NSS_MAJOR_VERSION = `grep "NSS_VMAJOR" ../lib/nss/nss.h | awk '{print $$3}'`
+ NSS_MINOR_VERSION = `grep "NSS_VMINOR" ../lib/nss/nss.h | awk '{print $$3}'`
+ NSS_PATCH_VERSION = `grep "NSS_VPATCH" ../lib/nss/nss.h | awk '{print $$3}'`
+-PREFIX = /usr
++PREFIX = /opt
+ 
+ all: export libs
+ 
