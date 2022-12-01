@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
 PKG_VERSION:=1.33.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -103,8 +103,8 @@ define Package/netdata/install
 	# Entware specific: fix exec path in scripts
 	$(SED) 's,^#!.*bash,#!/opt/bin/bash,' $(1)/opt/etc/tc-qos-helper.sh
 	$(FIND) $(1)/opt/lib/netdata -type f | $(XARGS) $(SED) \
-		's,^#!.*bash,#!/opt/bin/bash,; \
-		s,^#!.*env sh,#!/bin/sh,'
+		's,^#!.*bash,#!/opt/bin/bash,;s,^#!.*env sh,#!/bin/sh,; \
+		s,^#!.*python,#!/opt/bin/python,'
 endef
 
 $(eval $(call BuildPackage,netdata))

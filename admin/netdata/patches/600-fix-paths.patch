@@ -1,0 +1,36 @@
+--- a/daemon/unit_test.c
++++ b/daemon/unit_test.c
+@@ -1256,8 +1256,10 @@ int check_strdupz_path_subpath() {
+     } checks[] = {
+             { "",                "",            "."                     },
+             { "/",               "",            "/"                     },
++            { "/opt/etc/netdata", "",		"/opt/etc/netdata"	},
+             { "/etc/netdata",    "",            "/etc/netdata"          },
+             { "/etc/netdata///", "",            "/etc/netdata"          },
++            { "/opt/etc/netdata///", "health.d", "/opt/etc/netdata/health.d" },
+             { "/etc/netdata///", "health.d",    "/etc/netdata/health.d" },
+             { "/etc/netdata///", "///health.d", "/etc/netdata/health.d" },
+             { "/etc/netdata",    "///health.d", "/etc/netdata/health.d" },
+--- a/database/sqlite/sqlite3.c
++++ b/database/sqlite/sqlite3.c
+@@ -39861,6 +39861,7 @@ static const char *unixTempFileDir(void)
+   static const char *azDirs[] = {
+      0,
+      0,
++     "/opt/tmp",
+      "/var/tmp",
+      "/usr/tmp",
+      "/tmp",
+--- a/streaming/rrdpush.c
++++ b/streaming/rrdpush.c
+@@ -106,8 +106,8 @@ int rrdpush_init() {
+         }
+     }
+ 
+-    netdata_ssl_ca_path = appconfig_get(&stream_config, CONFIG_SECTION_STREAM, "CApath", "/etc/ssl/certs/");
+-    netdata_ssl_ca_file = appconfig_get(&stream_config, CONFIG_SECTION_STREAM, "CAfile", "/etc/ssl/certs/certs.pem");
++    netdata_ssl_ca_path = appconfig_get(&stream_config, CONFIG_SECTION_STREAM, "CApath", "/opt/etc/ssl/certs/");
++    netdata_ssl_ca_file = appconfig_get(&stream_config, CONFIG_SECTION_STREAM, "CAfile", "/opt/etc/ssl/certs/certs.pem");
+ #endif
+ 
+     return default_rrdpush_enabled;
