@@ -157,7 +157,7 @@ append_routes() {
 		octets=$((($prefix + 7) / 8))
 		compacted="$(echo "$network" | cut -d. -f1-$octets)"
 
-		string="${string:+, }$(explode "$prefix.$compacted.$router")"
+		string="${string:+, }$(explode "$prefix${compacted:+.$compacted}.$router")"
 	done
 
 	echo " option classless-ipv4-route $string;"
@@ -463,12 +463,17 @@ general_config() {
 			create_empty_zone "$mynet.in-addr.arpa"
 		done
 
+		local need_reload=
+
+		cp -p $conf_local_file ${conf_local_file}_
+
 		cat <<EOF > $conf_local_file
 zone "$domain" {
-  type master;
-  file "$dyndir/db.$domain";
-  allow-update { key $session_key_name; };
-  allow-transfer { key $session_key_name; };
+	type master;
+	file "$dyndir/db.$domain";
+	update-policy {
+		grant $session_key_name zonesub any;
+	};
 };
 
 EOF
@@ -477,16 +482,20 @@ EOF
 			mynet="$(rev_str "$mynet" ".")"
 			cat <<EOF >> $conf_local_file
 zone "$mynet.in-addr.arpa" {
-  type master;
-  file "$dyndir/db.$mynet.in-addr.arpa";
-  allow-update { key $session_key_name; };
-  allow-transfer { key $session_key_name; };
+	type master;
+	file "$dyndir/db.$mynet.in-addr.arpa";
+	update-policy {
+		grant $session_key_name zonesub any;
+	};
 };
 
 EOF
 		done
 
-		/etc/init.d/named reload
+		cmp -s $conf_local_file ${conf_local_file}_ || need_reload=1
+		rm -f ${conf_local_file}_
+
+		[ -n "$need_reload" ] && /etc/init.d/named reload
 		sleep 1
 
 		cat <<EOF
@@ -504,7 +513,7 @@ include "$session_key_file";
 
 zone $domain. {
 	primary 127.0.0.1;
-	key local-ddns;
+	key $session_key_name;
 }
 
 EOF
@@ -514,7 +523,7 @@ EOF
 			cat <<EOF
 zone $mynet.in-addr.arpa. {
 	primary 127.0.0.1;
-	key local-ddns;
+	key $session_key_name;
 }
 
 EOF
