@@ -1,0 +1,10 @@
+--- a/third_party/heimdal/lib/sqlite/sqlite3.c
++++ b/third_party/heimdal/lib/sqlite/sqlite3.c
+@@ -39360,6 +39360,7 @@ static const char *unixTempFileDir(void)
+   static const char *azDirs[] = {
+      0,
+      0,
++     "/opt/tmp",
+      "/var/tmp",
+      "/usr/tmp",
+      "/tmp",

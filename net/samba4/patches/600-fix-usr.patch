@@ -1,0 +1,44 @@
+--- a/lib/param/loadparm.c
++++ b/lib/param/loadparm.c
+@@ -2715,7 +2715,7 @@ struct loadparm_context *loadparm_init(T
+ 				  "tls priority",
+ 				  "NORMAL:-VERS-SSL3.0");
+ 
+-	lpcfg_do_global_parameter(lp_ctx, "nsupdate command", "/usr/bin/nsupdate -g");
++	lpcfg_do_global_parameter(lp_ctx, "nsupdate command", "/opt/bin/nsupdate -g");
+ 
+         lpcfg_do_global_parameter(lp_ctx, "allow dns updates", "secure only");
+ 	lpcfg_do_global_parameter(lp_ctx, "dns zone scavenging", "False");
+--- a/source4/torture/rpc/spoolss.c
++++ b/source4/torture/rpc/spoolss.c
+@@ -8606,7 +8606,7 @@ static bool torture_rpc_spoolss_printer_
+ 	t->driver.info8.dependent_files->string[6] = "cupsps6.dll";
+ 	t->driver.info8.dependent_files->string[7] = "cupsui6.dll";
+ 
+-	t->driver.local.driver_directory= "/usr/share/cups/drivers";
++	t->driver.local.driver_directory= "/opt/share/cups/drivers";
+ 
+ 	t->info2.portname		= "LPT1:";
+ 
+--- a/source4/torture/smb2/block.c
++++ b/source4/torture/smb2/block.c
+@@ -60,7 +60,7 @@ static bool run_cmd(const char *cmd)
+ static const char *iptables_command(struct torture_context *tctx)
+ {
+ 	return torture_setting_string(tctx, "iptables_command",
+-				      "/usr/sbin/iptables");
++				      "/opt/sbin/iptables");
+ }
+ 
+ char *escape_shell_string(const char *src);
+--- a/third_party/heimdal/lib/hcrypto/evp-pkcs11.c
++++ b/third_party/heimdal/lib/hcrypto/evp-pkcs11.c
+@@ -63,7 +63,7 @@
+  * XXX Also, we should pick an appropriate shared object based on 32- vs
+  * 64-bits.
+  */
+-# define PKCS11_MODULE_PATH "/usr/lib/pkcs11/PKCS11_API.so"
++# define PKCS11_MODULE_PATH "/opt/lib/pkcs11/PKCS11_API.so"
+ #endif
+ 
+ static CK_FUNCTION_LIST_PTR p11_module;

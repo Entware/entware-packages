@@ -1,0 +1,22 @@
+--- a/examples/nss/wbtest.c
++++ b/examples/nss/wbtest.c
+@@ -91,7 +91,7 @@ static int nss_test_users(struct nss_sta
+ int main(int argc, char *argv[])
+ {	
+ 	struct nss_state nss;
+-	const char *so_path = "/lib/libnss_winbind.so";
++	const char *so_path = "/opt/lib/libnss_winbind.so";
+ 	int ret;
+ 
+ 	if (argc > 1) {
+--- a/nsswitch/nsstest.c
++++ b/nsswitch/nsstest.c
+@@ -23,7 +23,7 @@
+ 
+ #define SAFE_FREE(x) do { if ((x) != NULL) {free(x); (x)=NULL;} } while(0)
+ 
+-static const char *so_path = "/lib/libnss_winbind.so";
++static const char *so_path = "/opt/lib/libnss_winbind.so";
+ static const char *nss_name = "winbind";
+ static int nss_errno;
+ static NSS_STATUS last_error;
