@@ -1,8 +1,8 @@
 --- a/mkfs/main.c
 +++ b/mkfs/main.c
-@@ -53,6 +53,10 @@
- #include "common/units.h"
- #include "check/qgroup-verify.h"
+@@ -56,6 +56,10 @@
+ #include "mkfs/common.h"
+ #include "mkfs/rootdir.h"
  
 +#ifndef LINUX_VERSION_CODE
 +#include <linux/version.h>
@@ -11,18 +11,18 @@
  struct mkfs_allocation {
  	u64 data;
  	u64 metadata;
-@@ -1349,11 +1353,14 @@ int BOX_MAIN(mkfs)(int argc, char **argv
+@@ -1464,11 +1468,14 @@ int BOX_MAIN(mkfs)(int argc, char **argv
  	if (ret)
  		goto error;
  
 +/* <linux/blkzoned.h> since Linux 4.10 */
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
- 	if (zoned && (!zoned_profile_supported(metadata_profile) ||
- 		      !zoned_profile_supported(data_profile))) {
+ 	if (opt_zoned && (!zoned_profile_supported(BTRFS_BLOCK_GROUP_METADATA | metadata_profile) ||
+ 		      !zoned_profile_supported(BTRFS_BLOCK_GROUP_DATA | data_profile))) {
  		error("zoned mode does not yet support RAID/DUP profiles, please specify '-d single -m single' manually");
  		goto error;
  	}
 +#endif /* <linux/blkzoned.h> since Linux 4.10 */
  
- 	dev_cnt--;
- 
+ 	t_prepare = calloc(device_count, sizeof(*t_prepare));
+ 	prepare_ctx = calloc(device_count, sizeof(*prepare_ctx));
