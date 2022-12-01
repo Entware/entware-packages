@@ -1,0 +1,70 @@
+--- a/dateutil/parser/_parser.py
++++ b/dateutil/parser/_parser.py
+@@ -607,7 +607,7 @@ class parser(object):
+                 datetime.datetime(2012, 1, 19, 17, 21, tzinfo=tzoffset(u'BRST', -7200))
+                 >>> parse("2012-01-19 17:21:00 CST", tzinfos=tzinfos)
+                 datetime.datetime(2012, 1, 19, 17, 21,
+-                                  tzinfo=tzfile('/usr/share/zoneinfo/America/Chicago'))
++                                  tzinfo=tzfile('/opt/share/zoneinfo/America/Chicago'))
+ 
+             This parameter is ignored if ``ignoretz`` is set.
+ 
+@@ -1313,7 +1313,7 @@ def parse(timestr, parserinfo=None, **kw
+             datetime.datetime(2012, 1, 19, 17, 21, tzinfo=tzoffset(u'BRST', -7200))
+             >>> parse("2012-01-19 17:21:00 CST", tzinfos=tzinfos)
+             datetime.datetime(2012, 1, 19, 17, 21,
+-                              tzinfo=tzfile('/usr/share/zoneinfo/America/Chicago'))
++                              tzinfo=tzfile('/opt/share/zoneinfo/America/Chicago'))
+ 
+         This parameter is ignored if ``ignoretz`` is set.
+ 
+--- a/dateutil/tz/tz.py
++++ b/dateutil/tz/tz.py
+@@ -2,7 +2,7 @@
+ """
+ This module offers timezone implementations subclassing the abstract
+ :py:class:`datetime.tzinfo` type. There are classes to handle tzfile format
+-files (usually are in :file:`/etc/localtime`, :file:`/usr/share/zoneinfo`,
++files (usually are in :file:`/opt/etc/localtime`, :file:`/opt/share/zoneinfo`,
+ etc), TZ environment string (in all known formats), given ranges (with help
+ from relative deltas), local machine timezone, fixed offset timezone, and UTC
+ timezone.
+@@ -427,7 +427,7 @@ class tzfile(_tzinfo):
+ 
+         >>> NYC = gettz('America/New_York')
+         >>> NYC
+-        tzfile('/usr/share/zoneinfo/America/New_York')
++        tzfile('/opt/share/zoneinfo/America/New_York')
+ 
+         >>> print(datetime(2016, 1, 3, tzinfo=NYC))     # EST
+         2016-01-03 00:00:00-05:00
+@@ -1457,8 +1457,9 @@ class tzical(object):
+ 
+ 
+ if sys.platform != "win32":
+-    TZFILES = ["/etc/localtime", "localtime"]
+-    TZPATHS = ["/usr/share/zoneinfo",
++    TZFILES = ["/opt/etc/localtime", "/etc/localtime", "localtime"]
++    TZPATHS = ["/opt/share/zoneinfo",
++               "/usr/share/zoneinfo",
+                "/usr/lib/zoneinfo",
+                "/usr/share/lib/zoneinfo",
+                "/etc/zoneinfo"]
+@@ -1486,7 +1487,7 @@ def __get_gettz():
+         .. code-block:: python3
+ 
+             >>> gettz()
+-            tzfile('/etc/localtime')
++            tzfile('/opt/etc/localtime')
+ 
+         This function is also the preferred way to map IANA tz database keys
+         to :class:`tzfile` objects:
+@@ -1494,7 +1495,7 @@ def __get_gettz():
+         .. code-block:: python3
+ 
+             >>> gettz('Pacific/Kiritimati')
+-            tzfile('/usr/share/zoneinfo/Pacific/Kiritimati')
++            tzfile('/opt/share/zoneinfo/Pacific/Kiritimati')
+ 
+         On Windows, the standard is extended to include the Windows-specific
+         zone names provided by the operating system:
