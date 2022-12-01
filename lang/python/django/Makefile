@@ -8,11 +8,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=django
-PKG_VERSION:=4.0.5
-PKG_RELEASE:=1
+PKG_VERSION:=4.1.1
+PKG_RELEASE:=$(AUTORELEASE)
 
 PYPI_NAME:=Django
-PKG_HASH:=f7431a5de7277966f3785557c3928433347d998c1e6459324501378a291e5aab
+PKG_HASH:=a153ffd5143bf26a877bfae2f4ec736ebd8924a46600ca089ad96b54a1d4e28e
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Peter Stadler <peter.stadler@student.uibk.ac.at>
 PKG_LICENSE:=BSD-3-Clause
@@ -41,6 +41,8 @@ endef
 define Py3Package/python3-django/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/django-admin $(1)/opt/bin
+	$(call Python3/FixShebang, \
+		$(PKG_INSTALL_DIR)$(PYTHON3_PKG_DIR)/django/conf/project_template/manage.py-tpl)
 endef
 
 $(eval $(call Py3Package,python3-django))
