@@ -1,15 +1,6 @@
 --- a/wsd.c
 +++ b/wsd.c
-@@ -73,7 +73,7 @@ static char wsd_sequence[UUIDLEN], wsd_e
- 
- static void set_seed(void)
- {
--	FILE *fp = fopen("/etc/machine-id", "r");
-+	FILE *fp = fopen("/opt/etc/machine-id", "r");
- 	unsigned long seed;
- 
- 	time((time_t *)&seed);
-@@ -108,7 +108,7 @@ static void uuid_random(char *uuid, size
+@@ -125,7 +125,7 @@ static void uuid_random(char *uuid, size
  
  static void uuid_endpoint(char uuid[UUIDLEN])
  {
@@ -18,12 +9,12 @@
  	int c, i = 0;
  
  	if (!fp) {
-@@ -116,7 +116,7 @@ static void uuid_endpoint(char uuid[UUID
+@@ -142,7 +142,7 @@ static void uuid_endpoint(char uuid[UUID
  	}
  
  	if (!fp) {
--		DEBUG(0, W, "Can't open required '/etc/machine-id' or '/proc/sys/kernel/random/boot_id'");
-+		DEBUG(0, W, "Can't open required '/opt/etc/machine-id' or '/proc/sys/kernel/random/boot_id'");
+-		DEBUG(0, W, "Can't open or file empty, required '/etc/machine-id' or '/proc/sys/kernel/random/boot_id'");
++		DEBUG(0, W, "Can't open or file empty, required '/opt/etc/machine-id' or '/proc/sys/kernel/random/boot_id'");
  		return;
  	}
  
