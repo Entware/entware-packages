@@ -61,7 +61,7 @@
    fprintf(f,"#include \"strings_def.h\"\n");
 --- a/cmake/install_layout.cmake
 +++ b/cmake/install_layout.cmake
-@@ -88,7 +88,7 @@ IF(UNIX)
+@@ -86,7 +86,7 @@ IF(UNIX)
    ELSEIF(INSTALL_LAYOUT MATCHES "SVR4")
      SET(default_prefix "/opt/mysql/mysql")
    ELSE()
@@ -70,7 +70,7 @@
    ENDIF()
    IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
      SET(CMAKE_INSTALL_PREFIX ${default_prefix}
-@@ -110,7 +110,7 @@ SET(INSTALL_SBINDIR_STANDALONE
+@@ -108,7 +108,7 @@ SET(INSTALL_SBINDIR_STANDALONE
  SET(INSTALL_SCRIPTDIR_STANDALONE        "scripts")
  #
  SET(INSTALL_LIBDIR_STANDALONE           "lib")
@@ -79,7 +79,7 @@
  #
  SET(INSTALL_INCLUDEDIR_STANDALONE       "include/mysql")
  #
-@@ -127,7 +127,7 @@ SET(INSTALL_SUPPORTFILESDIR_STANDALONE
+@@ -125,7 +125,7 @@ SET(INSTALL_SUPPORTFILESDIR_STANDALONE
  #
  SET(INSTALL_MYSQLDATADIR_STANDALONE     "data")
  
@@ -90,17 +90,17 @@
  #
 --- a/client/mysql_plugin.c
 +++ b/client/mysql_plugin.c
-@@ -585,8 +585,7 @@ static int search_paths(const char *base
+@@ -603,8 +603,7 @@ static int search_paths(const char *base
    int i= 0;
  
    static const char *paths[]= {
 -    "", "/share/",  "/scripts/", "/bin/", "/sbin/", "/libexec/",
 -    "/mysql/", "/sql/",
-+    "", "/opt/share/",  "/opt/scripts/", "/opt/bin/", "/opt/sbin/", "/opt/libexec/"
++    "", "/opt/share/",  "/opt/bin/", "/opt/sbin/", "/opt/libexec/"
    };
    for (i = 0 ; i < (int)array_elements(paths); i++)
    {
-@@ -977,9 +976,8 @@ static int find_tool(const char *tool_na
+@@ -1003,9 +1002,8 @@ static int find_tool(const char *tool_na
    int i= 0;
  
    const char *paths[]= {
@@ -125,7 +125,7 @@
  /*
 --- a/scripts/CMakeLists.txt
 +++ b/scripts/CMakeLists.txt
-@@ -186,7 +186,7 @@ ENDIF(UNIX)
+@@ -187,7 +187,7 @@ ENDIF(UNIX)
  # the documentation, so better not change this.
  
  IF(INSTALL_LAYOUT MATCHES "STANDALONE")
@@ -136,7 +136,7 @@
    SET(scriptdir ${prefix}/${INSTALL_BINDIR})
 --- a/scripts/mysql_install_db.sh
 +++ b/scripts/mysql_install_db.sh
-@@ -363,8 +363,8 @@ then
+@@ -374,8 +374,8 @@ then
    if test -z "$plugindir"
    then
      echo "Could not find plugin directory." >&2
