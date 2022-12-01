@@ -17,13 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+# XXX Entware specific: keep GCC-8.4.0
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
@@ -75,8 +77,13 @@ ifeq ($(CONFIG_INCLUDE_STATIC_LIBSTDC),y)
 	COPY_STATIC_LIBSTDC=cp -a $(TOOLCHAIN_DIR)/lib/libstdc++.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 endif
 
+### FIXME %G %L <= 8.x; %G >= 10.x
 ifeq ($(CONFIG_INCLUDE_STATIC_LINK_SPEC),y)
+  ifeq ($(CONFIG_GCC_USE_VERSION_8),y)
 	INSTALL_STATIC_SPEC=g++ -dumpspecs |sed s/--start-group}\ %G\ %L\ /--start-group}\ %G\ %L\ -lstdc++\ -lgcc_pic\ / >/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
+  else
+	INSTALL_STATIC_SPEC=g++ -dumpspecs |sed s/--start-group}\ %G\ %{!nolibc:%L}\ /--start-group}\ %G\ %{!nolibc:%L}\ -lstdc++\ -lgcc_pic\ / >/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
+  endif
 	REMOVE_STATIC_SPEC=rm /opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
 endif
 
@@ -232,6 +239,14 @@ define Package/gcc/install
 	echo 'export LDFLAGS=$(ENVLDFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	echo 'export CFLAGS=$(ENVCFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	chmod +x $(1)/opt/bin/gcc_env.sh
+	# XXX fix path
+	$(SED) 's,/usr/include,/opt/include,' \
+		$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/install-tools/mkheaders.conf
+	# XXX cleanup *.la/*.py
+	$(SED) 's,^dependency_libs=.*,dependency_libs='\'' -L/opt/lib -lm'\'',' \
+		$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/liblto_plugin.la
+	$(SED) 's,$(TOOLCHAIN_DIR)/$(REAL_GNU_TARGET_NAME),/opt,;s,$(TOOLCHAIN_DIR),/opt,' \
+			$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/*.py
 endef
 
 define Package/gcc/postinst
