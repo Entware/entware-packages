@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tar
 PKG_VERSION:=1.34
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/tar
@@ -20,8 +20,15 @@ PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:gnu:tar
 
-PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
+PKG_BUILD_PARALLEL:=1
+PKG_CONFIG_DEPENDS:= \
+	CONFIG_PACKAGE_TAR_POSIX_ACL \
+	CONFIG_PACKAGE_TAR_XATTR \
+	CONFIG_PACKAGE_TAR_BZIP2 \
+	CONFIG_PACKAGE_TAR_GZIP \
+	CONFIG_PACKAGE_TAR_XZ \
+	CONFIG_PACKAGE_TAR_ZSTD
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -33,7 +40,7 @@ define Package/tar
   TITLE:=GNU tar
   URL:=https://www.gnu.org/software/tar/
   MENU:=1
-#  ALTERNATIVES:=300:/bin/tar:/usr/libexec/tar-gnu
+  ALTERNATIVES:=300:/opt/bin/tar:/opt/libexec/tar-gnu
 endef
 
 define Package/tar/config
@@ -53,7 +60,7 @@ define Package/tar/config
 			default y
 
 		config PACKAGE_TAR_GZIP
-			bool "tar: Enable seamless gzip support"
+			bool "tar: Enable seamless gzip support. Needed for sysupgrade."
 			default y
 
 		config PACKAGE_TAR_XZ
@@ -93,8 +100,8 @@ MAKE_FLAGS += \
 	LDFLAGS="$(TARGET_LDFLAGS)"
 
 define Package/tar/install
-	$(INSTALL_DIR) $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tar $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/tar $(1)/opt/libexec/tar-gnu
 endef
 
 $(eval $(call BuildPackage,tar))
