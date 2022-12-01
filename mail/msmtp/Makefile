@@ -76,9 +76,9 @@ define Package/msmtp-mta
 $(call Package/msmtp/Default)
   TITLE+= (as MTA)
   DEPENDS+=+msmtp
-#  ALTERNATIVES:=\
-#	100:/usr/sbin/sendmail:/usr/bin/msmtp \
-#	100:/usr/lib/sendmail:/usr/bin/msmtp
+  ALTERNATIVES:=\
+	100:/opt/sbin/sendmail:/opt/bin/msmtp \
+	100:/opt/lib/sendmail:/opt/bin/msmtp
 endef
 
 define Package/msmtp-mta/description
@@ -123,8 +123,6 @@ endef
 
 define Package/msmtp-mta/install
 	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/lib
-	ln -sf ../bin/msmtp $(1)/opt/sbin/sendmail
-	ln -sf ../bin/msmtp $(1)/opt/lib/sendmail
 endef
 
 Package/msmtp-nossl/conffiles = $(Package/msmtp/conffiles)
