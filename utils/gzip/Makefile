@@ -29,10 +29,10 @@ define Package/gzip
   TITLE:=gzip (GNU zip) is a compression utility.
   URL:=https://www.gnu.org/software/gzip/
   MAINTAINER:=Christian Beier <dontmind@freeshell.org>
-#  ALTERNATIVES:=\
-#    300:/bin/gunzip:/usr/libexec/gunzip-gnu \
-#    300:/bin/gzip:/usr/libexec/gzip-gnu \
-#    300:/bin/zcat:/usr/libexec/zcat-gnu
+  ALTERNATIVES:=\
+    300:/opt/bin/gunzip:/opt/libexec/gunzip-gnu \
+    300:/opt/bin/gzip:/opt/libexec/gzip-gnu \
+    300:/opt/bin/zcat:/opt/libexec/zcat-gnu
 endef
 
 define Package/gzip/description
@@ -46,8 +46,10 @@ CONFIGURE_VARS += \
 
 define Package/gzip/install
 	$(SED) 's,/bin/bash,/bin/sh,g' $(PKG_INSTALL_DIR)/opt/bin/{gunzip,zcat}
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{gunzip,gzip,zcat} $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/gunzip $(1)/opt/libexec/gunzip-gnu
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/gzip $(1)/opt/libexec/gzip-gnu
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/zcat $(1)/opt/libexec/zcat-gnu
 endef
 
 $(eval $(call BuildPackage,gzip))
