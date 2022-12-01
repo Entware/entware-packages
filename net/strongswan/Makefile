@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=strongswan
-PKG_VERSION:=5.9.6
-PKG_RELEASE:=2
+PKG_VERSION:=5.9.8
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.strongswan.org/ https://download2.strongswan.org/
-PKG_HASH:=91d0978ac448912759b85452d8ff0d578aafd4507aaf4f1c1719f9d0c7318ab7
+PKG_HASH:=d3303a43c0bd7b75a12b64855e8edcb53696f06190364f26d1533bde1f2e453c
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Philip Prindeville <philipp@redfish-solutions.com>, Noel Kuntze <noel.kuntze@thermi.consulting>
 PKG_CPE_ID:=cpe:/a:strongswan:strongswan
@@ -169,6 +169,7 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-des \
 	+strongswan-mod-dhcp \
 	+strongswan-mod-dnskey \
+	+strongswan-mod-drbg \
 	+strongswan-mod-duplicheck \
 	+strongswan-mod-eap-identity \
 	+strongswan-mod-eap-md5 \
@@ -183,6 +184,7 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-gmp \
 	+strongswan-mod-ha \
 	+strongswan-mod-hmac \
+	+strongswan-mod-kdf \
 	+strongswan-mod-kernel-netlink \
 	+strongswan-mod-ldap \
 	+strongswan-mod-led \
@@ -227,7 +229,6 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-xauth-generic \
 	+strongswan-mod-xcbc \
 	+strongswan-pki \
-	+strongswan-scepclient \
 	+strongswan-swanctl \
 	@DEVEL
 endef
@@ -255,8 +256,10 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-fips-prf \
 	+strongswan-mod-gmp \
 	+strongswan-mod-hmac \
+	@(PACKAGE_strongswan-mod-kdf||PACKAGE_strongswan-mod-openssl||PACKAGE_strongswan-mod-wolfssl) \
 	+strongswan-mod-kernel-netlink \
 	+strongswan-mod-md5 \
+	+strongswan-mod-mgf1 \
 	+strongswan-mod-nonce \
 	+strongswan-mod-pem \
 	+strongswan-mod-pgp \
@@ -293,8 +296,10 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-des \
 	+strongswan-mod-gmpdh \
 	+strongswan-mod-hmac \
+	@(PACKAGE_strongswan-mod-kdf||PACKAGE_strongswan-mod-openssl||PACKAGE_strongswan-mod-wolfssl) \
 	+strongswan-mod-kernel-netlink \
 	+strongswan-mod-md5 \
+	+strongswan-mod-mgf1 \
 	+strongswan-mod-nonce \
 	+strongswan-mod-pubkey \
 	+strongswan-mod-random \
@@ -320,7 +325,9 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-aes \
 	+strongswan-mod-gmp \
 	+strongswan-mod-hmac \
+	@(PACKAGE_strongswan-mod-kdf||PACKAGE_strongswan-mod-openssl||PACKAGE_strongswan-mod-wolfssl) \
 	+strongswan-mod-kernel-netlink \
+	+strongswan-mod-mgf1 \
 	+strongswan-mod-nonce \
 	+strongswan-mod-pubkey \
 	+strongswan-mod-random \
@@ -384,23 +391,12 @@ endef
 define Package/strongswan-pki
 $(call Package/strongswan/Default)
   TITLE+= PKI tool
-  DEPENDS:= strongswan
+  DEPENDS:= strongswan strongswan-libtls
 endef
 
 define Package/strongswan-pki/description
 $(call Package/strongswan/description/Default)
  This package contains the pki tool.
-endef
-
-define Package/strongswan-scepclient
-$(call Package/strongswan/Default)
-  TITLE+= SCEP client
-  DEPENDS:= strongswan
-endef
-
-define Package/strongswan-scepclient/description
-$(call Package/strongswan/description/Default)
- This package contains the SCEP client.
 endef
 
 define Package/strongswan-swanctl
@@ -461,11 +457,11 @@ CONFIGURE_ARGS+= \
 	--disable-scripts \
 	--disable-static \
 	--disable-fast \
+	--enable-mgf1 \
 	--enable-mediation \
 	--with-systemdsystemunitdir=no \
 	$(if $(CONFIG_PACKAGE_strongswan-charon-cmd),--enable-cmd,--disable-cmd) \
 	$(if $(CONFIG_PACKAGE_strongswan-pki),--enable-pki,--disable-pki) \
-	$(if $(CONFIG_PACKAGE_strongswan-scepclient),--enable-scepclient,--disable-scepclient) \
 	--with-piddir=/opt/var/run \
 	--with-random-device=/dev/random \
 	--with-urandom-device=/dev/urandom \
@@ -549,13 +545,6 @@ define Package/strongswan-pki/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/strongswan.d/pki.conf $(1)/opt/etc/strongswan.d/
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/pki $(1)/opt/bin/
-endef
-
-define Package/strongswan-scepclient/install
-	$(INSTALL_DIR) $(1)/opt/etc/strongswan.d
-	$(CP) $(PKG_INSTALL_DIR)/opt/etc/strongswan.d/scepclient.conf $(1)/opt/etc/strongswan.d/
-	$(INSTALL_DIR) $(1)/opt/lib/ipsec
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/ipsec/scepclient $(1)/opt/lib/ipsec/
 endef
 
 define Package/strongswan-swanctl/conffiles
@@ -644,7 +633,6 @@ $(eval $(call BuildPackage,strongswan-charon-cmd))
 $(eval $(call BuildPackage,strongswan-ipsec))
 $(eval $(call BuildPackage,strongswan-libnttfft))
 $(eval $(call BuildPackage,strongswan-pki))
-$(eval $(call BuildPackage,strongswan-scepclient))
 $(eval $(call BuildPackage,strongswan-swanctl))
 $(eval $(call BuildPackage,strongswan-gencerts))
 $(eval $(call BuildPackage,strongswan-libtls))
@@ -668,6 +656,7 @@ $(eval $(call BuildPlugin,curve25519,Curve25519 Diffie-Hellman,))
 $(eval $(call BuildPlugin,des,DES crypto,))
 $(eval $(call BuildPlugin,dhcp,DHCP based attribute provider,))
 $(eval $(call BuildPlugin,dnskey,DNS RR key decoding,))
+$(eval $(call BuildPlugin,drbg,Deterministic random bit generator,,))
 $(eval $(call BuildPlugin,duplicheck,advanced duplicate checking,))
 $(eval $(call BuildPlugin,eap-identity,EAP identity helper,))
 $(eval $(call BuildPlugin,eap-md5,EAP MD5 (CHAP) EAP auth,))
@@ -683,6 +672,7 @@ $(eval $(call BuildPlugin,gmp,libgmp,+PACKAGE_strongswan-mod-gmp:libgmp))
 $(eval $(call BuildPlugin,gmpdh,DH-Groups; no libgmp dep,))
 $(eval $(call BuildPlugin,ha,high availability cluster,))
 $(eval $(call BuildPlugin,hmac,HMAC crypto,))
+$(eval $(call BuildPlugin,kdf,KDF/PRF+,))
 $(eval $(call BuildPlugin,kernel-libipsec,libipsec kernel interface,))
 $(eval $(call BuildPlugin,kernel-netlink,netlink kernel interface,))
 $(eval $(call BuildPlugin,ldap,LDAP,+PACKAGE_strongswan-mod-ldap:libopenldap))
