@@ -1,6 +1,23 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -450,7 +450,7 @@ zone_identifier_unix (void)
+@@ -515,13 +515,13 @@ zone_identifier_illumos (void)
+ static const gchar *
+ zone_info_base_dir (void)
+ {
+-  if (g_file_test ("/usr/share/zoneinfo", G_FILE_TEST_IS_DIR))
+-    return "/usr/share/zoneinfo";     /* Most distros */
++  if (g_file_test ("/opt/share/zoneinfo", G_FILE_TEST_IS_DIR))
++    return "/opt/share/zoneinfo";     /* Most distros */
+   else if (g_file_test ("/usr/share/lib/zoneinfo", G_FILE_TEST_IS_DIR))
+     return "/usr/share/lib/zoneinfo"; /* Illumos distros */
+ 
+   /* need a better fallback case */
+-  return "/usr/share/zoneinfo";
++  return "/opt/share/zoneinfo";
+ }
+ 
+ static gchar *
+@@ -534,7 +534,7 @@ zone_identifier_unix (void)
    const gchar *tzdir;
  
    /* Resolve the actual timezone pointed to by /etc/localtime. */
@@ -9,7 +26,7 @@
    if (resolved_identifier == NULL)
      {
        gboolean not_a_symlink = g_error_matches (read_link_err,
-@@ -480,14 +480,14 @@ zone_identifier_unix (void)
+@@ -573,7 +573,7 @@ zone_identifier_unix (void)
    else
      {
        /* Resolve relative path */
@@ -18,24 +35,7 @@
        g_free (resolved_identifier);
        resolved_identifier = g_steal_pointer (&canonical_path);
      }
- 
-   tzdir = g_getenv ("TZDIR");
-   if (tzdir == NULL)
--    tzdir = "/usr/share/zoneinfo";
-+    tzdir = "/opt/share/zoneinfo";
- 
-   /* Strip the prefix and slashes if possible. */
-   if (g_str_has_prefix (resolved_identifier, tzdir))
-@@ -520,7 +520,7 @@ zone_info_unix (const gchar *identifier,
- 
-   tzdir = g_getenv ("TZDIR");
-   if (tzdir == NULL)
--    tzdir = "/usr/share/zoneinfo";
-+    tzdir = "/opt/share/zoneinfo";
- 
-   /* identifier can be a relative or absolute path name;
-      if relative, it is interpreted starting from /usr/share/zoneinfo
-@@ -541,7 +541,7 @@ zone_info_unix (const gchar *identifier,
+@@ -634,7 +634,7 @@ zone_info_unix (const gchar *identifier,
        if (resolved_identifier == NULL)
          goto out;
  
