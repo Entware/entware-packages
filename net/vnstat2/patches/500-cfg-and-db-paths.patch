@@ -1,6 +1,6 @@
 --- a/src/cfg.c
 +++ b/src/cfg.c
-@@ -479,10 +479,8 @@ int opencfgfile(const char *cfgfile, FIL
+@@ -481,10 +481,8 @@ int opencfgfile(const char *cfgfile, FIL
  		/* try to open first available config file */
  		if (tryhome && (*fd = fopen(buffer, "r")) != NULL) {
  			strncpy_nt(cfg.cfgfile, buffer, 512);
@@ -24,7 +24,7 @@
  #endif
  #endif
  
-@@ -240,8 +240,8 @@ and most can be changed later from the c
+@@ -244,8 +244,8 @@ and most can be changed later from the c
  #define USELOGGING 2
  #define CREATEDIRS 1
  #define UPDATEFILEOWNER 1
