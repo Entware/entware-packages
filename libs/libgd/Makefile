@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libgd
 PKG_VERSION:=2.3.2
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/$(PKG_NAME)/$(PKG_NAME)/releases/download/gd-$(PKG_VERSION)/
@@ -26,7 +26,7 @@ include $(INCLUDE_DIR)/cmake.mk
 define Package/libgd/default
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libjpeg +libpng +libwebp +LIBGD_TIFF:libtiff +LIBGD_FREETYPE:libfreetype
+  DEPENDS:=+libjpeg +libpng +libwebp
   TITLE:=The GD graphics library
   URL:=https://libgd.github.io/
 endef
@@ -36,6 +36,7 @@ define Package/libgd
   MENU:=1
   DEPENDS+=+LIBGD_TIFF:libtiff +LIBGD_FREETYPE:libfreetype
   VARIANT:=default
+  CONFLICTS:=libgd-full
 endef
 
 define Package/libgd-full
@@ -43,6 +44,7 @@ define Package/libgd-full
   DEPENDS+=+libtiff +libfreetype
   TITLE+=(full)
   VARIANT:=full
+  PROVIDES:=libgd
 endef
 
 define Package/libgd/description/default
