@@ -87,31 +87,31 @@ CONFIGURE_ARGS+= \
 	--with-python=python$(PYTHON3_VERSION) \
 	--without-tcl \
 	--without-gpm-support \
-	--with-colorsfile=/etc/newt/palette
+	--with-colorsfile=/opt/etc/newt/palette
 
 CONFIGURE_VARS += $(if $(CONFIG_BUILD_NLS),ac_cv_lib_c_gettext=no)
 
 MAKE_VARS+= PYTHON_CONFIG_PATH="$(STAGING_DIR)/host/bin"
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/newt.h $(1)/usr/include/
+	$(INSTALL_DIR) $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/newt.h $(1)/opt/include/
 
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libnewt.{a,so*} $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnewt.{a,so*} $(1)/opt/lib/
 
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libnewt.pc $(1)/usr/lib/pkgconfig/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libnewt.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libnewt/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libnewt.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libnewt.so* $(1)/opt/lib/
 endef
 
 define Package/whiptail/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/whiptail $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/whiptail $(1)/opt/bin/
 endef
 
 # Don't install files from usr/bin

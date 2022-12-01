@@ -1,0 +1,11 @@
+--- a/nls.h
++++ b/nls.h
+@@ -1,7 +1,7 @@
+ 
+ 
+ #ifndef LOCALEDIR
+-#define LOCALEDIR "/usr/share/locale"
++#define LOCALEDIR "/opt/share/locale"
+ #endif
+ 
+ # include <locale.h>
