@@ -4,14 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: battery, madwifi, write_log plugins added;
-# dhcpleases, ipstatistics, iptables, iwinfo, routeros, snmp6, plugins removed.
+# Entware specific:	battery, madwifi, write_log plugins added;
+#			dhcpleases,  iwinfo, routeros, snmp6 plugins removed.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.12.0
-PKG_RELEASE:=17
+PKG_RELEASE:=18
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -66,8 +66,6 @@ COLLECTD_PLUGINS_DISABLED:= \
 	ipc \
 	ipmi \
 	ipstats \
-	ipstatistics \
-	iptables \
 	ipvs \
 	iwinfo \
 	java \
@@ -162,6 +160,8 @@ COLLECTD_PLUGINS_SELECTED:= \
 	filecount \
 	fscache \
 	interface \
+	ipstatistics \
+	iptables \
 	irq \
 	load \
 	logfile \
@@ -367,8 +367,6 @@ define Package/collectd/install
 
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libcollectdclient.so.* $(1)/opt/lib/
-
-	$(INSTALL_DIR) $(1)/opt/var/run/collectd
 endef
 
 # 1: plugin name
@@ -482,8 +480,8 @@ $(eval $(call BuildPlugin,exec,process exec input,exec,))
 $(eval $(call BuildPlugin,filecount,file count input,filecount,))
 $(eval $(call BuildPlugin,fscache,file-system based caching framework input,fscache,))
 $(eval $(call BuildPlugin,interface,network interfaces input,interface,))
-#$(eval $(call BuildPlugin,ipstatistics,ipstatistics input,ipstatistics,))
-#$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables +libip4tc +libip6tc))
+$(eval $(call BuildPlugin,ipstatistics,ipstatistics input,ipstatistics,))
+$(eval $(call BuildPlugin,iptables,iptables status input,iptables,+PACKAGE_collectd-mod-iptables:iptables))
 $(eval $(call BuildPlugin,irq,interrupt usage input,irq,))
 #$(eval $(call BuildPlugin,iwinfo,libiwinfo wireless statistics,iwinfo,+PACKAGE_collectd-mod-iwinfo:libiwinfo))
 $(eval $(call BuildPlugin,load,system load input,load,))
@@ -538,4 +536,4 @@ $(eval $(call BuildPlugin,write-http,HTTP POST output,write_http,+PACKAGE_collec
 $(eval $(call BuildPlugin,write-log,Log output,write_log,))
 
 #$(eval $(call BuildScriptPlugin,sqm,SQM/qdisc collection,sqm_collectd,+PACKAGE_collectd-mod-sqm:collectd-mod-exec))
-$(eval $(call BuildScriptLuaPlugin,ltq-dsl,Lantiq DSL collection,dsl,@TARGET_lantiq_xrx200 +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))
+#$(eval $(call BuildScriptLuaPlugin,ltq-dsl,Lantiq DSL collection,dsl,ltq-dsl-app +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))

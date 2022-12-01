@@ -1,0 +1,33 @@
+--- a/src/collectd.conf.in
++++ b/src/collectd.conf.in
+@@ -14,7 +14,7 @@
+ #FQDNLookup   true
+ #BaseDir     "@localstatedir@/lib/@PACKAGE_NAME@"
+ #PIDFile     "@localstatedir@/run/@PACKAGE_NAME@.pid"
+-#PluginDir   "@libdir@/@PACKAGE_NAME@"
++#PluginDir   "@prefix@/lib/@PACKAGE_NAME@"
+ #TypesDB     "@prefix@/share/@PACKAGE_NAME@/types.db"
+ 
+ #----------------------------------------------------------------------------#
+--- a/src/sensors.c
++++ b/src/sensors.c
+@@ -60,7 +60,7 @@ typedef struct featurelist {
+ } featurelist_t;
+ 
+ #ifndef SENSORS_CONF_PATH
+-#define SENSORS_CONF_PATH "/etc/sensors.conf"
++#define SENSORS_CONF_PATH PREFIX "/etc/sensors.conf"
+ #endif
+ static char *conffile = SENSORS_CONF_PATH;
+ /* #endif SENSORS_API_VERSION < 0x400 */
+--- a/src/uuid.c
++++ b/src/uuid.c
+@@ -144,7 +144,7 @@ static char *uuid_get_local(void) {
+   char *uuid;
+ 
+   /* Check /etc/uuid / UUIDFile before any other method. */
+-  if ((uuid = uuid_get_from_file(uuidfile ? uuidfile : "/etc/uuid")) != NULL)
++  if ((uuid = uuid_get_from_file(uuidfile ? uuidfile : "/opt/etc/uuid")) != NULL)
+     return uuid;
+ 
+ #if defined(__APPLE__)
