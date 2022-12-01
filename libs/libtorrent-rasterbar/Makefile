@@ -1,20 +1,22 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libtorrent-rasterbar
-PKG_VERSION:=2.0.6
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_VERSION:=2.0.7
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/arvidn/libtorrent/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=75b17d9db3adf0da5896edeaff4db3879f38ee66be953dc9567089db83a070be
+PKG_HASH:=1c8209fdf765be7bc989e9cbd1d9dc3d5a6a57cb979205e73e925c9c72ebe8ce
 
 PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=COPYING
 
+PYTHON3_PKG_BUILD:=0
+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
-include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
+include ../../lang/python/python3-package.mk
 
 define Package/libtorrent-rasterbar/Default
 	TITLE:=Rasterbar BitTorrent library
@@ -67,7 +69,7 @@ endef
 
 TARGET_CXXFLAGS += -DBOOST_BIND_GLOBAL_PLACEHOLDERS
 
-TARGET_LDFLAGS += -latomic
+TARGET_LDFLAGS += -latomic -pthread
 
 CMAKE_OPTIONS += \
 	-Dpython-bindings=ON \
@@ -80,7 +82,6 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libtorrent-rasterbar.so* $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libtorrent-rasterbar.pc $(1)/opt/lib/pkgconfig/
-	$(SED) 's,-l-pthread,-pthread,g' $(1)/opt/lib/pkgconfig/libtorrent-rasterbar.pc
 endef
 
 define Package/libtorrent-rasterbar/install
@@ -89,8 +90,8 @@ define Package/libtorrent-rasterbar/install
 endef
 
 define Package/python3-libtorrent/install
-	$(INSTALL_DIR) $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/site-packages/*.so $(1)/opt/lib/python$(PYTHON3_VERSION)/site-packages
+	$(INSTALL_DIR) $(1)$(PYTHON3_PKG_DIR)
+	$(CP) $(PKG_INSTALL_DIR)$(PYTHON3_PKG_DIR)/* $(1)$(PYTHON3_PKG_DIR)
 endef
 
 $(eval $(call BuildPackage,libtorrent-rasterbar))
