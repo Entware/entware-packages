@@ -90,6 +90,8 @@ define Package/luasocket5.3/install
 	$(MAKE) -C $(PKG_BUILD_DIR)/src \
 		DESTDIR="$(1)" \
 		LUAV=$(LUA_VERSION) \
+		LUAINC_linux_base=/opt \
+		LUAPREFIX_linux=/opt \
 		install
 endef
 
