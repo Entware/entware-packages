@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=grep
-PKG_VERSION:=3.7
+PKG_VERSION:=3.8
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/grep
-PKG_HASH:=5c10da312460aec721984d5d83246d24520ec438dd48d7ab5a05dbc0d6d6823c
+PKG_HASH:=498d7cc1b4fb081904d87343febb73475cf771e424fb7e6141aff66013abc382
 
 PKG_MAINTAINER:=Julen Landa Alustiza <julen@zokormazo.info>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -31,12 +31,12 @@ define Package/grep
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=grep search utility - full version
-  DEPENDS:=+libpcre
+  DEPENDS:=+libpcre2
   URL:=https://www.gnu.org/software/grep/
-#  ALTERNATIVES:=\
-#    300:/bin/egrep:/usr/libexec/egrep-gnu \
-#    300:/bin/fgrep:/usr/libexec/fgrep-gnu \
-#    300:/bin/grep:/usr/libexec/grep-gnu
+  ALTERNATIVES:= \
+    300:/opt/bin/egrep:/opt/libexec/egrep-gnu \
+    300:/opt/bin/fgrep:/opt/libexec/fgrep-gnu \
+    300:/opt/bin/grep:/opt/libexec/grep-gnu
 endef
 
 define Package/grep/description
@@ -46,10 +46,12 @@ prints the matching lines.
 endef
 
 define Package/grep/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/egrep $(1)/opt/libexec/egrep-gnu
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/fgrep $(1)/opt/libexec/fgrep-gnu
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/grep $(1)/opt/libexec/grep-gnu
 	# Entware specific: fix exec path in scripts
-	$(SED) 's,^#!.*bash,#!/bin/sh,' $(1)/opt/bin/{e,f}grep
+	$(SED) 's,^#!.*bash,#!/bin/sh,' $(1)/opt/libexec/{e,f}grep-gnu
 endef
 
 $(eval $(call BuildPackage,grep))
