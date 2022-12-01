@@ -1,6 +1,6 @@
 --- a/src/util/locale_utils.cc
 +++ b/src/util/locale_utils.cc
-@@ -86,10 +86,6 @@ const char *locale_charset( void )
+@@ -83,10 +83,6 @@ const char *locale_charset( void )
  
  bool is_utf8_locale( void ) {
    /* Verify locale calls for UTF-8 */
