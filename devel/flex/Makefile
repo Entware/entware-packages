@@ -28,19 +28,26 @@ define Package/flex
   CATEGORY:=Development
   TITLE:=flex
   URL:=https://github.com/westes/flex
+  ALTERNATIVES:=200:/opt/bin/lex:/opt/bin/flex
 endef
 
 define Package/flex/description
   flex is a tool for generating scanners: programs which recognize lexical patterns in text
 endef
 
-CONFIGURE_ARGS += --disable-shared --disable-bootstrap
+CONFIGURE_ARGS += \
+	--disable-shared \
+	--disable-bootstrap
+
+define Build/InstallDev
+	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/* $(1)/opt/lib/
+endef
 
 define Package/flex/install
-	$(INSTALL_DIR) $(1)/usr/bin/
-	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/bin/flex \
-		$(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/flex{,++} $(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,flex))
