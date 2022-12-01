@@ -36,7 +36,7 @@
  ## Log messages above this level (debug, info, *warn, error, none)
  ## If you set it to none, logging will be disabled
  loglevel = none
-@@ -101,7 +101,7 @@ ipv6 = false
+@@ -117,7 +117,7 @@ published = true
  ## Uncomment and set to 'false' to disable Web Console
  enabled = true
  ## Address and port service will listen on
@@ -45,7 +45,7 @@
  port = 7070
  ## Path to web console, default "/"
  # webroot = /
-@@ -118,7 +118,7 @@ port = 7070
+@@ -134,7 +134,7 @@ port = 7070
  ## Uncomment and set to 'false' to disable HTTP Proxy
  enabled = true
  ## Address and port service will listen on
@@ -54,7 +54,7 @@
  port = 4444
  ## Optional keys file for proxy local destination
  # keys = http-proxy-keys.dat
-@@ -132,7 +132,7 @@ port = 4444
+@@ -148,7 +148,7 @@ port = 4444
  ## Uncomment and set to 'false' to disable SOCKS Proxy
  enabled = true
  ## Address and port service will listen on
