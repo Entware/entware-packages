@@ -112,6 +112,11 @@ define Python3/DeleteEmptyDirs
 	$(FIND) $(1) -mindepth 1 -empty -type d -not -path '$(1)/CONTROL' -not -path '$(1)/CONTROL/*' -delete
 endef
 
+# $(1) => target directory
+define Python3/DeletePycacheDirs
+	$(FIND) $(1) -path '*/__pycache__/*' -delete
+	$(FIND) $(1) -type d -name __pycache__ -delete
+endef
 
 # Py3Package
 
@@ -172,6 +177,7 @@ define Py3Package
 	$$(call Python3/CompileAll,$$(1))
 	$$(call Python3/DeleteSourceFiles,$$(1))
 	$$(call Python3/DeleteEmptyDirs,$$(1))
+	$$(call Python3/DeletePycacheDirs,$$(1))
 	if [ -d "$$(1)/opt/bin" ]; then \
 		$$(call Python3/FixShebang,$$(1)/opt/bin/*) ; \
 	fi
@@ -182,6 +188,7 @@ define Py3Package
 	$$(call Py3Package/ProcessFilespec,$(1),$(PKG_INSTALL_DIR),$$(1))
 	$$(call Python3/DeleteNonSourceFiles,$$(1))
 	$$(call Python3/DeleteEmptyDirs,$$(1))
+	$$(call Python3/DeletePycacheDirs,$$(1))
     endef
   endif # Package/$(1)/install
 endef
@@ -210,7 +217,7 @@ define Py3Build/CheckHostPipVersionMatch
 		if ! grep -q "$(PYPI_NAME)==$(PKG_VERSION)" $(python3_mk_path)host-pip-requirements/*.txt ; then \
 			printf "\nPlease update version of $(PYPI_NAME) to $(PKG_VERSION) in 'host-pip-requirements'/\n\n" ; \
 			exit 1 ; \
-		fi \
+		fi ; \
 	fi
 endef
 endif
