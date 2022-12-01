@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libxml2
-PKG_VERSION:=2.9.14
-PKG_RELEASE:=1
+PKG_VERSION:=2.10.3
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNOME/libxml2/$(basename $(PKG_VERSION))
-PKG_HASH:=60d74a257d1ccec0475e749cba2f21559e48139efba6ff28224357c7c798dfee
+PKG_HASH:=5d2cc3d78bec3dbe212a9d7fa629ada25a7da928af432c93060ff5c17ee28a9c
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
@@ -21,7 +21,6 @@ PKG_CPE_ID:=cpe:/a:xmlsoft:libxml2
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 
-PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=0
 
@@ -77,7 +76,6 @@ CONFIGURE_ARGS += \
 	--with-c14n \
 	--without-catalog \
 	--with-debug \
-	--without-docbook \
 	--with-html \
 	--without-ftp \
 	--without-http \
@@ -100,6 +98,7 @@ CONFIGURE_ARGS += \
 	--with-xpath \
 	--with-xptr \
 	--with-zlib=$(STAGING_DIR)/opt \
+	--with-iconv$(if $(ICONV_PREFIX),="$(ICONV_PREFIX)") \
 	--without-lzma
 
 HOST_CONFIGURE_ARGS += \
@@ -109,7 +108,6 @@ HOST_CONFIGURE_ARGS += \
 	--with-c14n \
 	--without-catalog \
 	--with-debug \
-	--without-docbook \
 	--with-html \
 	--without-ftp \
 	--without-http \
@@ -174,7 +172,7 @@ endef
 define Package/libxml2-dev/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/xml2-config $(1)/opt/bin/
-	$(SED) "s,$(STAGING_DIR),,g" $(1)/opt/bin/xml2-config
+	$(SED) "s,$(STAGING_DIR),,g;s,/lib/libiconv-full,,g" $(1)/opt/bin/xml2-config
 
 	$(INSTALL_DIR) $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
@@ -184,7 +182,7 @@ define Package/libxml2-dev/install
 
 	$(INSTALL_DIR) $(1)/opt/lib/{cmake,pkgconfig}
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/{cmake,pkgconfig} $(1)/opt/lib/
-	$(SED) "s,$(STAGING_DIR),,g" $(1)/opt/lib/pkgconfig/*.pc
+	$(SED) "s,$(STAGING_DIR),,g;s,/lib/libiconv-full,,g" $(1)/opt/lib/pkgconfig/*.pc
 
 	$(INSTALL_DIR) $(1)/opt/share/aclocal
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/aclocal/* $(1)/opt/share/aclocal
