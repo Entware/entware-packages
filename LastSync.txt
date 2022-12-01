@@ -1,9 +1,8 @@
-commit ecd3a8a8de8d73a9e4c1b1b67e42e87f4a22de9d (HEAD -> master, origin/master, origin/HEAD)
-Author: Rosen Penev <rosenp@gmail.com>
-Date:   Tue Jul 19 22:21:22 2022 -0700
+commit b41a0152371202e951115b49c22ebf30e67f1850 (HEAD -> master, origin/master, origin/HEAD)
+Merge: 04c805b4c a69413099
+Author: Hannu Nyman <hannu.nyman@iki.fi>
+Date:   Wed Nov 30 17:35:08 2022 +0200
 
-    mutt: add PKG_CONFIG_DEPENDS
+    Merge pull request #19992 from hnyman/wget
     
-    Should fix missing dependencies when manupulating options.
-    
-    Signed-off-by: Rosen Penev <rosenp@gmail.com>
+    wget: update to 1.21.3
