@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=jmespath
 PKG_VERSION:=0.9.3
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PYPI_NAME:=$(PKG_NAME)
 PKG_HASH:=6a81d4c9aa62caf061cb517b4d9ad1dd300374cd4706997aff9cd6aedd61fc64
@@ -26,6 +26,12 @@ endef
 define Package/python3-jmespath/description
   JMESPath (pronounced “james path”) allows you to declaratively specify how to extract
   elements from a JSON document.
+endef
+
+# XXX Entware specific: skip bite-code
+define Build/Prepare
+	$(Build/Prepare/Default)
+	mv $(PKG_BUILD_DIR)/bin/jp.py $(PKG_BUILD_DIR)/bin/jp
 endef
 
 $(eval $(call Py3Package,python3-jmespath))
