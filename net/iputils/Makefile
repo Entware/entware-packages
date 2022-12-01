@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=iputils
 PKG_VERSION:=20190709
-PKG_RELEASE:=1b
+PKG_RELEASE:=1c
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/iputils/iputils/tar.gz/s$(PKG_VERSION)?
@@ -55,6 +55,12 @@ define Package/iputils-ping
   $(call Package/iputils/Default)
   TITLE:=iputils-ping
 #  DEPENDS:=+kmod-crypto-md5
+  ALTERNATIVES:=300:/opt/bin/ping:/opt/libexec/iputils-ping
+ ifdef CONFIG_PING_LEGACY_SYMLINKS
+  ALTERNATIVES+= \
+		200:/opt/bin/ping4:/opt/bin/ping \
+		200:/opt/bin/ping6:/opt/bin/ping
+ endif
 endef
 
 define Package/iputils-ping/config
@@ -66,12 +72,8 @@ define Package/iputils-ping/description
 endef
 
 define Package/iputils-ping/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_SUID) $(PKG_INSTALL_DIR)/opt/bin/ping $(1)/opt/bin/
-ifdef CONFIG_PING_LEGACY_SYMLINKS
-	ln -s ping $(1)/opt/bin/ping4
-	ln -s ping $(1)/opt/bin/ping6
-endif
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_SUID) $(PKG_INSTALL_DIR)/opt/bin/ping $(1)/opt/libexec/iputils-ping
 endef
 
 ### arping
@@ -79,6 +81,7 @@ endef
 define Package/iputils-arping
   $(call Package/iputils/Default)
   TITLE:=iputils-arping
+  ALTERNATIVES:=300:/opt/sbin/arping:/opt/libexec/iputils-arping
 endef
 
 define Package/iputils-arping/description
@@ -86,8 +89,8 @@ define Package/iputils-arping/description
 endef
 
 define Package/iputils-arping/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/arping $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/arping $(1)/opt/libexec/iputils-arping
 endef
 
 ### clockdiff
