@@ -85,7 +85,7 @@ endef
 #export USE_MUSL=YES
 # BUG: outdated host/include/elf.h
 HOST_CFLAGS += $(FPIC) -DAT_HWCAP2=26
-TARGET_CFLAGS += $(FPIC)
+TARGET_CFLAGS += $(FPIC) $(if $(CONFIG_OPENSSL_ENGINE),,-DOPENSSL_NO_ENGINE)
 CMAKE_OPTIONS += -DICONV_LIB_PATH="$(ICONV_PREFIX)/lib"
 
 # static build for host (hamcorebuilder), avoid -fpic on ncurses/host and shared libs can't be found on host
