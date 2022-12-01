@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=kmod
 PKG_VERSION:=27
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/kernel/kmod
@@ -39,13 +39,13 @@ endef
 define Package/kmod
 $(call Package/kmod/Default)
   TITLE+= (tools)
-#  ALTERNATIVES:=\
-#    200:/sbin/depmod:/sbin/kmod \
-#    200:/sbin/insmod:/sbin/kmod \
-#    200:/sbin/lsmod:/sbin/kmod \
-#    200:/sbin/modinfo:/sbin/kmod \
-#    200:/sbin/modprobe:/sbin/kmod \
-#    200:/sbin/rmmod:/sbin/kmod
+  ALTERNATIVES:=\
+    200:/opt/sbin/depmod:/opt/sbin/kmod \
+    200:/opt/sbin/insmod:/opt/sbin/kmod \
+    200:/opt/sbin/lsmod:/opt/sbin/kmod \
+    200:/opt/sbin/modinfo:/opt/sbin/kmod \
+    200:/opt/sbin/modprobe:/opt/sbin/kmod \
+    200:/opt/sbin/rmmod:/opt/sbin/kmod
 endef
 
 define Package/kmod/description
@@ -54,21 +54,9 @@ Linux kernel module handling
  insert, remove, list, check properties, resolve dependencies and aliases.
 endef
 
-LEGACY_BINARIES:= \
-	depmod \
-	insmod \
-	lsmod \
-	modinfo \
-	modprobe \
-	rmmod
-
 define Package/kmod/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/kmod $(1)/opt/sbin
-
-	for b in $(LEGACY_BINARIES); do \
-		$(LN) kmod $(1)/opt/sbin/$$$$b ; \
-	done
 endef
 
 
