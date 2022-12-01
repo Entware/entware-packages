@@ -1,0 +1,393 @@
+--- a/common/argparse.c
++++ b/common/argparse.c
+@@ -1738,7 +1738,7 @@ gnupg_argparser (gnupg_argparse_t *arg,
+           s = confname;
+         xfree (arg->internal->confname);
+         arg->internal->confname = make_filename_try
+-          (confdir.sys? confdir.sys : "/etc", s, NULL);
++          (confdir.sys? confdir.sys : "/opt/etc", s, NULL);
+         xfree (tmpname);
+         if (!arg->internal->confname)
+           return (arg->r_opt = ARGPARSE_OUT_OF_CORE);
+--- a/common/homedir.c
++++ b/common/homedir.c
+@@ -475,7 +475,7 @@ unix_rootdir (int want_sysconfdir)
+                   log_info ("error reading symlink '%s': %s\n",
+                             MYPROC_SELF_EXE, gpg_strerror (err));
+                   xfree  (buffer);
+-                  buffer = xstrconcat (name, "/bin/gpgconf", NULL);
++                  buffer = xstrconcat (name, "/opt/bin/gpgconf", NULL);
+                   log_info ("trying fallback '%s'\n", buffer);
+                 }
+               break;
+@@ -514,7 +514,7 @@ unix_rootdir (int want_sysconfdir)
+         {
+           /* Strip one part and expect the file below a bin dir.  */
+           *p = 0;
+-          p = xstrconcat (buffer, "/bin/gpgconf.ctl", NULL);
++          p = xstrconcat (buffer, "/opt/bin/gpgconf.ctl", NULL);
+           xfree (buffer);
+           buffer = p;
+         }
+@@ -935,13 +935,13 @@ _gnupg_socketdir_internal (int skip_chec
+ 
+   static const char * const bases[] = {
+ #ifdef USE_RUN_GNUPG_USER_SOCKET
+-    "/run/gnupg",
++    "/opt/var/run/gnupg",
+ #endif
+-    "/run",
++    "/opt/var/run",
+ #ifdef USE_RUN_GNUPG_USER_SOCKET
+-    "/var/run/gnupg",
++    "/opt/var/run/gnupg",
+ #endif
+-    "/var/run",
++    "/opt/var/run",
+     NULL
+   };
+   int i;
+--- a/common/t-exectool.c
++++ b/common/t-exectool.c
+@@ -39,8 +39,8 @@ static void
+ test_executing_true (void)
+ {
+   gpg_error_t err;
+-  const char *pgmname     = "/bin/true";
+-  const char *alt_pgmname = "/usr/bin/true";
++  const char *pgmname     = "/opt/bin/true";
++  const char *alt_pgmname[] = { "/opt/bin/true", "/bin/true" };
+   const char *argv[]     = { NULL, NULL };
+   char *result;
+   size_t len;
+@@ -73,8 +73,8 @@ static void
+ test_executing_false (void)
+ {
+   gpg_error_t err;
+-  const char *pgmname     = "/bin/false";
+-  const char *alt_pgmname = "/usr/bin/false";
++  const char *pgmname     = "/opt/bin/false";
++  const char *alt_pgmname[] = { "/opt/bin/false", "/bin/false" };
+   const char *argv[]     = { NULL, NULL };
+   char *result;
+   size_t len;
+@@ -102,7 +102,7 @@ static void
+ test_executing_cat (const char *vector)
+ {
+   gpg_error_t err;
+-  const char *argv[] = { "/bin/cat", NULL };
++  const char *argv[] = { "/opt/bin/cat", "/bin/cat", NULL };
+   char *result;
+   size_t len;
+ 
+@@ -136,7 +136,7 @@ static void
+ test_catting_cat (void)
+ {
+   gpg_error_t err;
+-  const char *argv[] = { "/bin/cat", "/bin/cat", NULL };
++  const char *argv[] = { "/opt/bin/cat", "/bin/cat", NULL };
+   char *result;
+   size_t len;
+   estream_t in;
+--- a/dirmngr/certcache.c
++++ b/dirmngr/certcache.c
+@@ -705,11 +705,11 @@ load_certs_from_system (void)
+ #ifdef DEFAULT_TRUST_STORE_FILE
+     { DEFAULT_TRUST_STORE_FILE }
+ #else
+-    { "/etc/ssl/ca-bundle.pem" },
+-    { "/etc/ssl/certs/ca-certificates.crt" },
+-    { "/etc/pki/tls/cert.pem" },
+-    { "/usr/local/share/certs/ca-root-nss.crt" },
+-    { "/etc/ssl/cert.pem" }
++    { "/opt/etc/ssl/ca-bundle.pem" },
++    { "/opt/etc/ssl/certs/ca-certificates.crt" },
++    { "/opt/etc/pki/tls/cert.pem" },
++    { "/opt/share/certs/ca-root-nss.crt" },
++    { "/opt/etc/ssl/cert.pem" }
+ #endif /*!DEFAULT_TRUST_STORE_FILE*/
+   };
+   int idx;
+--- a/dirmngr/dirmngr.c
++++ b/dirmngr/dirmngr.c
+@@ -1190,13 +1190,13 @@ main (int argc, char **argv)
+           log_info (_("Note: '%s' is not considered an option\n"), argv[i]);
+     }
+ 
+-  if (!gnupg_access ("/etc/"DIRMNGR_NAME, F_OK)
+-      && !strncmp (gnupg_homedir (), "/etc/", 5))
++  if (!gnupg_access ("/opt/etc/"DIRMNGR_NAME, F_OK)
++      && !strncmp (gnupg_homedir (), "/opt/etc/", 5))
+     log_info
+       ("NOTE: DirMngr is now a proper part of %s.  The configuration and"
+        " other directory names changed.  Please check that no other version"
+        " of dirmngr is still installed.  To disable this warning, remove the"
+-       " directory '/etc/dirmngr'.\n", GNUPG_NAME);
++       " directory '/opt/etc/dirmngr'.\n", GNUPG_NAME);
+ 
+   if (gnupg_faked_time_p ())
+     {
+--- a/dirmngr/dns.c
++++ b/dirmngr/dns.c
+@@ -5444,7 +5444,7 @@ struct dns_resolv_conf *dns_resconf_loca
+ 			goto error;
+ 	}
+ 
+-	if ((error = dns_nssconf_loadpath(resconf, "/etc/nsswitch.conf"))) {
++	if ((error = dns_nssconf_loadpath(resconf, "/opt/etc/nsswitch.conf"))) {
+ 		if (error != ENOENT)
+ 			goto error;
+ 	}
+@@ -10497,7 +10497,7 @@ static struct dns_resolv_conf *resconf(v
+ 	}
+ 
+ 	if (!MAIN.nssconf.count) {
+-		path = "/etc/nsswitch.conf";
++		path = "/opt/etc/nsswitch.conf";
+ 
+ 		if (!(error = dns_nssconf_loadpath(*resconf, path)))
+ 			MAIN.nssconf.path[MAIN.nssconf.count++] = path;
+--- a/dirmngr/dns-stuff.c
++++ b/dirmngr/dns-stuff.c
+@@ -553,7 +553,7 @@ libdns_init (void)
+           goto leave;
+         }
+ 
+-      fname = "/etc/nsswitch.conf";
++      fname = "/opt/etc/nsswitch.conf";
+       err = libdns_error_to_gpg_error
+         (dns_nssconf_loadpath (ld.resolv_conf, fname));
+       if (err)
+--- a/g10/photoid.c
++++ b/g10/photoid.c
+@@ -293,7 +293,7 @@ get_default_photo_command(void)
+       return "xdg-open %I";
+     }
+   else
+-    return "/bin/true";
++    return "/opt/bin/true";
+ #endif
+ }
+ #endif
+--- a/g13/call-syshelp.c
++++ b/g13/call-syshelp.c
+@@ -136,7 +136,7 @@ start_syshelp (ctrl_t ctrl, assuan_conte
+     argv[2] = "gnupg-g13-syshelp";
+     argv[3] = NULL;
+ 
+-    err = assuan_pipe_connect (ctx, "/usr/bin/userv", argv,
++    err = assuan_pipe_connect (ctx, "/opt/bin/userv", argv,
+                                no_close_list, NULL, NULL, 0);
+   }
+   if (err)
+--- a/g13/sh-blockdev.c
++++ b/g13/sh-blockdev.c
+@@ -53,7 +53,7 @@ sh_blockdev_getsz (const char *name, uns
+   argv[0] = "--getsz";
+   argv[1] = name;
+   argv[2] = NULL;
+-  err = gnupg_exec_tool ("/sbin/blockdev", argv, NULL, &result, NULL);
++  err = gnupg_exec_tool ("/opt/sbin/blockdev", argv, NULL, &result, NULL);
+   if (!err)
+     {
+       gpg_err_set_errno (0);
+@@ -86,7 +86,7 @@ sh_is_empty_partition (const char *name)
+   argv[3] = "UUID";
+   argv[4] = name;
+   argv[5] = NULL;
+-  err = gnupg_exec_tool ("/sbin/blkid", argv, NULL, &buffer, NULL);
++  err = gnupg_exec_tool ("/opt/sbin/blkid", argv, NULL, &buffer, NULL);
+   if (err)
+     return gpg_error (GPG_ERR_FALSE);
+   if (*buffer)
+@@ -103,7 +103,7 @@ sh_is_empty_partition (const char *name)
+   argv[3] = "PARTUUID";
+   argv[4] = name;
+   argv[5] = NULL;
+-  err = gnupg_exec_tool ("/sbin/blkid", argv, NULL, &buffer, NULL);
++  err = gnupg_exec_tool ("/opt/sbin/blkid", argv, NULL, &buffer, NULL);
+   if (err)
+     return gpg_error (GPG_ERR_FALSE);
+   if (!*buffer)
+--- a/g13/sh-dmcrypt.c
++++ b/g13/sh-dmcrypt.c
+@@ -115,7 +115,7 @@ check_blockdev (const char *devname, int
+ 
+     argv[0] = "deps";
+     argv[1] = NULL;
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, NULL, &result, NULL);
+   }
+   if (err)
+     {
+@@ -440,7 +440,7 @@ sh_dmcrypt_create_container (ctrl_t ctrl
+     argv[2] = NULL;
+     log_debug ("now running \"dmsetup create %s\"\n", targetname);
+     log_debug ("  with table='%s'\"\n", table);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, table, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, table, &result, NULL);
+   }
+   if (err)
+     {
+@@ -683,7 +683,7 @@ sh_dmcrypt_mount_container (ctrl_t ctrl,
+     argv[1] = targetname;
+     argv[2] = NULL;
+     log_debug ("now running \"dmsetup create %s\"\n", targetname);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, table, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, table, &result, NULL);
+   }
+   if (err)
+     {
+@@ -706,7 +706,7 @@ sh_dmcrypt_mount_container (ctrl_t ctrl,
+       argv[2] = NULL;
+       log_debug ("now running \"mount %s %s\"\n",
+                  targetname_abs, ctrl->devti->mountpoint);
+-      err = gnupg_exec_tool ("/bin/mount", argv, NULL, &result, NULL);
++      err = gnupg_exec_tool ("/opt/bin/mount", argv, NULL, &result, NULL);
+       if (err)
+         {
+           log_error ("error running mount: %s\n", gpg_strerror (err));
+@@ -773,7 +773,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+     argv[0] = targetname_abs;
+     argv[1] = NULL;
+     log_debug ("now running \"umount %s\"\n", targetname_abs);
+-    err = gnupg_exec_tool ("/bin/umount", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/bin/umount", argv, NULL, &result, NULL);
+   }
+   if (err)
+     {
+@@ -786,7 +786,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+           argv[0] = "-mv";
+           argv[1] = targetname_abs;
+           argv[2] = NULL;
+-          gnupg_exec_tool ("/bin/fuser", argv, NULL, &result, NULL);
++          gnupg_exec_tool ("/opt/bin/fuser", argv, NULL, &result, NULL);
+         }
+       goto leave;
+     }
+@@ -803,7 +803,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+     argv[1] = targetname_abs;
+     argv[2] = NULL;
+     log_debug ("now running \"dmsetup remove %s\"\n", targetname_abs);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, NULL, &result, NULL);
+   }
+   if (err)
+     {
+@@ -872,7 +872,7 @@ sh_dmcrypt_suspend_container (ctrl_t ctr
+     argv[1] = targetname;
+     argv[2] = NULL;
+     log_debug ("now running \"dmsetup suspend %s\"\n", targetname);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, NULL, &result, NULL);
+   }
+   if (err)
+     {
+@@ -895,7 +895,7 @@ sh_dmcrypt_suspend_container (ctrl_t ctr
+     argv[3] = "key wipe";
+     argv[4] = NULL;
+     log_debug ("now running \"dmsetup message %s 0 key wipe\"\n", targetname);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, NULL, &result, NULL);
+   }
+   if (err)
+     {
+@@ -995,7 +995,7 @@ sh_dmcrypt_resume_container (ctrl_t ctrl
+     argv[2] = "0";
+     argv[3] = NULL;
+     log_debug ("now running \"dmsetup message %s 0 [key set]\"\n", targetname);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, hexkey, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, hexkey, &result, NULL);
+   }
+   wipememory (hexkey, sizeof hexkey);
+   if (err)
+@@ -1017,7 +1017,7 @@ sh_dmcrypt_resume_container (ctrl_t ctrl
+     argv[1] = targetname;
+     argv[2] = NULL;
+     log_debug ("now running \"dmsetup resume %s\"\n", targetname);
+-    err = gnupg_exec_tool ("/sbin/dmsetup", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/sbin/dmsetup", argv, NULL, &result, NULL);
+   }
+   if (err)
+     {
+--- a/tools/addgnupghome
++++ b/tools/addgnupghome
+@@ -70,10 +70,10 @@ one_user () {
+         return
+     fi
+     for f in $filelist; do
+-        if [ -d /etc/skel/.gnupg/$f ]; then
++        if [ -d /opt/etc/skel/.gnupg/$f ]; then
+             mkdir $f
+         else
+-            cp /etc/skel/.gnupg/$f $f
++            cp /opt/etc/skel/.gnupg/$f $f
+         fi
+         if ! chown $user $f ; then
+             error "error changing ownership of \`$f'"
+@@ -98,15 +98,15 @@ fi
+ if getent --help </dev/null >/dev/null 2>&1 ; then
+     cat_passwd='getent passwd'
+ else
+-    cat_passwd='cat /etc/passwd'
+-    info "please note that only users from /etc/passwd are checked"
++    cat_passwd='cat /opt/etc/passwd'
++    info "please note that only users from /opt/etc/passwd are checked"
+ fi
+ 
+-if [ ! -d /etc/skel/.gnupg ]; then
+-    error "skeleton directory \`/etc/skel/.gnupg' does not exist"
++if [ ! -d /opt/etc/skel/.gnupg ]; then
++    error "skeleton directory \`/opt/etc/skel/.gnupg' does not exist"
+     exit 1
+ fi
+-cd "/etc/skel/.gnupg" || (error "error cd-ing to \`/etc/skel/.gnupg'"; exit 1)
++cd "/opt/etc/skel/.gnupg" || (error "error cd-ing to \`/opt/etc/skel/.gnupg'"; exit 1)
+ filelist=$(find . \( -type f -o -type d \) '!' -name '*~' '!' -name . -print)
+ 
+ 
+--- a/tools/applygnupgdefaults
++++ b/tools/applygnupgdefaults
+@@ -41,16 +41,16 @@ errorfile=$(mktemp "/tmp/$PGM.log.XXXXXX
+ if getent --help </dev/null >/dev/null 2>&1 ; then
+     cat_passwd='getent passwd'
+ else
+-    cat_passwd='cat /etc/passwd'
+-    info "please note that only users from /etc/passwd are processed"
++    cat_passwd='cat /opt/etc/passwd'
++    info "please note that only users from /opt/etc/passwd are processed"
+ fi
+ 
+-if [ ! -f /etc/gnupg/gpgconf.conf ]; then
+-    error "global configuration file \`/etc/gnupg/gpgconf.conf' does not exist"
++if [ ! -f /opt/etc/gnupg/gpgconf.conf ]; then
++    error "global configuration file \`/opt/etc/gnupg/gpgconf.conf' does not exist"
+     exit 1
+ fi
+-if [ ! -f /etc/shells ]; then
+-    error "missing file \`/etc/shells'"
++if [ ! -f /opt/etc/shells ]; then
++    error "missing file \`/opt/etc/shells'"
+     exit 1
+ fi
+ 
+@@ -62,7 +62,7 @@ fi
+ ${cat_passwd} \
+   | while IFS=: read -r user dmy_a uid dmy_c dmy_d home shell dmy_rest; do
+     # Process only entries with a valid login shell
+-    grep </etc/shells "^$shell" 2>/dev/null >/dev/null || continue
++    grep </opt/etc/shells "^$shell" 2>/dev/null >/dev/null || continue
+     # and with an pre-existing gnupg home directory
+     [ -d "$home/.gnupg" ] || continue
+     # but not root
+--- a/tools/gpg-wks-server.c
++++ b/tools/gpg-wks-server.c
+@@ -310,7 +310,7 @@ main (int argc, char **argv)
+     opt.gpg_program = gnupg_module_name (GNUPG_MODULE_NAME_GPG);
+ 
+   if (!opt.directory)
+-    opt.directory = "/var/lib/gnupg/wks";
++    opt.directory = "/opt/var/lib/gnupg/wks";
+ 
+   /* Check for syntax errors in the --header option to avoid later
+    * error messages with a not easy to find cause */
