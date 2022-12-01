@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-tools
 PKG_VERSION:=2.10
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://sourceforge.net/projects/net-tools/files/
@@ -22,7 +22,7 @@ PKG_MAINTAINER:=Stijn Segers <borromini.reg@protonmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
-PKG_INSTALL:=1
+#PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -46,7 +46,16 @@ define Package/net-tools
   TITLE:=net-tools utilities
   URL:=http://net-tools.sourceforge.net/
   PROVIDES:=route
-#  ALTERNATIVES:=300:/sbin/route:/usr/libexec/net-tools-route
+  ALTERNATIVES:= \
+	100:/opt/bin/dnsdomainname:/opt/libexec/hostname-net-tools \
+	100:/opt/bin/domainname:/opt/libexec/hostname-net-tools \
+	100:/opt/bin/nisdomainname:/opt/libexec/hostname-net-tools \
+	100:/opt/bin/ypdomainname:/opt/libexec/hostname-net-tools \
+	300:/opt/bin/hostname:/opt/libexec/hostname-net-tools \
+	300:/opt/bin/netstat:/opt/libexec/netstat-net-tools \
+	300:/opt/sbin/ifconfig:/opt/libexec/ifconfig-net-tools \
+	300:/opt/sbin/iptunnel:/opt/libexec/iptunnel-net-tools \
+	300:/opt/sbin/route:/opt/libexec/route-net-tools
 endef
 
 define Package/net-tools/description
@@ -65,10 +74,20 @@ define Package/mii-tool/install
 endef
 
 define Package/net-tools/install
-	$(INSTALL_DIR) $(1)/opt
-	$(CP) $(PKG_INSTALL_DIR)/{bin,sbin} $(1)/opt
-	$(RM) $(1)/opt/sbin/mii-tool
-	mv $(1)/opt/bin/ifconfig $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/hostname $(1)/opt/libexec/hostname-net-tools
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ifconfig $(1)/opt/libexec/ifconfig-net-tools
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/iptunnel $(1)/opt/libexec/iptunnel-net-tools
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/netstat $(1)/opt/libexec/netstat-net-tools
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/route $(1)/opt/libexec/route-net-tools
+
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/arp $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ipmaddr $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nameif $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/plipconfig $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/rarp $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/slattach $(1)/opt/sbin
 endef
 
 $(eval $(call BuildPackage,mii-tool))
