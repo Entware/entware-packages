@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=make
 PKG_VERSION:=4.3
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE_URL:=@GNU/make
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz

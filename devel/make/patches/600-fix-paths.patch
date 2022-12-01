@@ -1,0 +1,22 @@
+--- a/src/read.c
++++ b/src/read.c
+@@ -109,6 +109,8 @@ static const char *default_include_direc
+ #endif
+     INCLUDEDIR,
+ #ifndef _AMIGA
++    "/opt/include",
++    "/opt/usr/include",
+     "/usr/gnu/include",
+     "/usr/local/include",
+     "/usr/include",
+--- a/src/remake.c
++++ b/src/remake.c
+@@ -1601,6 +1601,8 @@ library_search (const char *lib, FILE_TI
+   static const char *dirs[] =
+     {
+ #ifndef _AMIGA
++      "/opt/lib",
++      "/opt/usr/lib",
+       "/lib",
+       "/usr/lib",
+ #endif
