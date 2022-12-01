@@ -23,7 +23,7 @@ include $(INCLUDE_DIR)/cmake.mk
 
 CMAKE_OPTIONS += \
 	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DINSTALL_INC_DIR=/usr/include/minizip \
+	-DINSTALL_INC_DIR=/opt/include/minizip \
 	-DBUILD_SHARED_LIBS=ON \
 	-DMZ_BZIP2=OFF \
 	-DMZ_COMPAT=ON \
@@ -55,16 +55,16 @@ define Package/minizip/description
 endef
 
 define Package/minizip/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libminizip.so.* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libminizip.so.* $(1)/opt/lib/
 endef
 
 TARGET_CXXFLAGS += -flto
 
 define Build/InstallDev
 	$(call Build/InstallDev/cmake,$(1))
-	$(SED) 's,/usr/include,$$$${prefix}/include,g' $(1)/usr/lib/pkgconfig/minizip.pc
-	$(SED) 's,/usr/lib,$$$${exec_prefix}/lib,g' $(1)/usr/lib/pkgconfig/minizip.pc
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/minizip.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/minizip.pc
 endef
 
 $(eval $(call BuildPackage,minizip))
