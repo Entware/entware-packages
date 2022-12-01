@@ -1,0 +1,33 @@
+--- a/setup.py
++++ b/setup.py
+@@ -71,18 +71,18 @@ what-you-see-is-what-you-get plaintext m
+         'console_scripts': ['docutils=docutils.__main__:main']
+     },
+     'scripts': [
+-        'tools/rst2html.py',
+-        'tools/rst2html4.py',
+-        'tools/rst2html5.py',
+-        'tools/rst2s5.py',
+-        'tools/rst2latex.py',
+-        'tools/rst2xetex.py',
+-        'tools/rst2man.py',
+-        'tools/rst2xml.py',
+-        'tools/rst2pseudoxml.py',
+-        'tools/rstpep2html.py',
+-        'tools/rst2odt.py',
+-        'tools/rst2odt_prepstyles.py',
++        'tools/rst2html',
++        'tools/rst2html4',
++        'tools/rst2html5',
++        'tools/rst2s5',
++        'tools/rst2latex',
++        'tools/rst2xetex',
++        'tools/rst2man',
++        'tools/rst2xml',
++        'tools/rst2pseudoxml',
++        'tools/rstpep2html',
++        'tools/rst2odt',
++        'tools/rst2odt_prepstyles',
+     ],
+     'classifiers': [
+         'Development Status :: 4 - Beta',

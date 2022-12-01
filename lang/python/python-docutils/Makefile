@@ -1,11 +1,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=docutils
-PKG_VERSION:=0.14
-PKG_RELEASE:=2
+PKG_VERSION:=0.19
+PKG_RELEASE:=1
 
 PYPI_NAME:=$(PKG_NAME)
-PKG_HASH:=51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274
+PKG_HASH:=33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6
 
 PKG_MAINTAINER:=Daniel Danzberger <daniel@dd-wrt.com>
 PKG_LICENSE:=MIT
@@ -30,6 +30,15 @@ an easy-to-read, what-you-see-is-what-you-get plaintext markup syntax.
 endef
 
 PYTHON3_PKG_SETUP_ARGS:=
+
+# XXX Entware specific: skip bite-code
+define Build/Prepare
+	$(Build/Prepare/Default)
+	cd $(PKG_BUILD_DIR)/tools; \
+	for scr in rst*.py; do \
+		mv $$$$scr `basename $$$$scr .py` ; \
+	done
+endef
 
 $(eval $(call Py3Package,python3-docutils))
 $(eval $(call BuildPackage,python3-docutils))
