@@ -1,23 +1,23 @@
 --- a/bus/config-parser.c
 +++ b/bus/config-parser.c
-@@ -3707,7 +3707,7 @@ static const char *test_session_service_
-          NULL, /* XDG_DATA_HOME-based */
+@@ -3708,6 +3708,7 @@ static const char *test_session_service_
           NULL, /* XDG_DATA_DIRS-based */
           NULL, /* XDG_DATA_DIRS-based */
--         DBUS_DATADIR "/dbus-1/services",
+          DBUS_DATADIR "/dbus-1/services",
 +         "/opt/share/dbus-1/services",
  #endif
           NULL
          };
-@@ -3951,10 +3951,7 @@ out:
+@@ -3951,10 +3952,9 @@ out:
  #ifndef DBUS_WIN
  static const char *test_system_service_dir_matches[] = 
          {
 -         "/usr/local/share/dbus-1/system-services",
 -         "/usr/share/dbus-1/system-services",
--         DBUS_DATADIR"/dbus-1/system-services",
--         "/lib/dbus-1/system-services",
 +         "/opt/share/dbus-1/system-services",
+          DBUS_DATADIR"/dbus-1/system-services",
+-         "/lib/dbus-1/system-services",
++         "/opt/lib/dbus-1/system-services",
           NULL
          };
  
@@ -32,15 +32,27 @@
          goto oom;
      }
  
-@@ -1505,10 +1505,7 @@ _dbus_get_standard_system_servicedirs (D
+@@ -1505,10 +1505,9 @@ _dbus_get_standard_system_servicedirs (D
     * be available.
     */
    static const char standard_search_path[] =
 -    "/usr/local/share:"
 -    "/usr/share:"
--    DBUS_DATADIR ":"
++    "/opt/share:"
+     DBUS_DATADIR ":"
 -    "/lib";
-+    "/opt/share:";
++    "/opt/lib";
    DBusString servicedir_path;
  
    _dbus_string_init_const (&servicedir_path, standard_search_path);
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -512,7 +512,7 @@ if(WIN32)
+ else(WIN32)
+     set(DBUS_SESSION_BUS_LISTEN_ADDRESS "unix:tmpdir=${DBUS_SESSION_SOCKET_DIR}" CACHE STRING "session bus default listening address")
+     set(DBUS_SESSION_BUS_CONNECT_ADDRESS "autolaunch:" CACHE STRING "session bus fallback address for clients")
+-    set(sysconfdir "/usr/share")
++    set(sysconfdir "/opt/share")
+     set(configdir ${sysconfdir}/dbus-1 )
+     set(DBUS_SYSTEM_CONFIG_FILE  ${configdir}/system.conf)
+     set(DBUS_SESSION_CONFIG_FILE ${configdir}/session.conf)

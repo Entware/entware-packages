@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dbus
 PKG_VERSION:=1.13.18
-PKG_RELEASE:=8
+PKG_RELEASE:=8a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://dbus.freedesktop.org/releases/dbus
@@ -103,7 +103,7 @@ CONFIGURE_ARGS += \
 	--disable-x11-autolaunch \
 	--with-session-socket-dir=/opt/tmp \
 	--with-system-socket=/opt/var/run/dbus/system_bus_socket \
-	--with-system-pid-file=/opt/var/run/dbus.pid \
+	--with-system-pid-file=/opt/var/run/dbus/dbus.pid \
 	--with-dbus-user=root \
 	--without-x \
 	--enable-qt-help=no \
