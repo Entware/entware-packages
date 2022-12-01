@@ -9,12 +9,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=miniupnpd
-PKG_VERSION:=2.2.3
-PKG_RELEASE:=3
 
-PKG_SOURCE_URL:=https://miniupnp.tuxfamily.org/files
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=f89c310ce9575183af3fec61af65e548f85114133df8caaaa9e204c13b7a9da5
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/miniupnp/miniupnp.git
+PKG_SOURCE_DATE:=2022-08-31
+PKG_SOURCE_VERSION:=68c8ec508a421f4f4af67a63e3eb6f497d2531e1
+PKG_MIRROR_HASH:=68a3170ec73149c4cf4855b1ce6e031557cc12bff85a58421bb94785daaf225d
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_VERSION)/miniupnpd
+
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=BSD-3-Clause
@@ -26,6 +29,9 @@ PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/version.mk
+
+TAR_OPTIONS+= --strip-components 1
+TAR_CMD=$(HOST_TAR) -C $(1)/.. $(TAR_OPTIONS)
 
 define Package/miniupnpd/Default
   SECTION:=net
@@ -108,6 +114,12 @@ endef
 
 define Package/miniupnpd-nftables/install
 	$(call Package/miniupnpd/install/Default,$1)
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DIR) $(1)/usr/share/miniupnpd
+	$(INSTALL_BIN) ./files/miniupnpd.defaults.nftables $(1)/etc/uci-defaults/99-miniupnpd
+	$(INSTALL_DATA) ./files/firewall4.include $(1)/usr/share/miniupnpd/firewall.include
+	$(INSTALL_DIR) $(1)/usr/share/nftables.d
+	$(CP) ./files/nftables.d/* $(1)/usr/share/nftables.d/
 endef
 
 $(eval $(call BuildPackage,miniupnpd-iptables))

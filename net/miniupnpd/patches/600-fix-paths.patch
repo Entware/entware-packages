@@ -25,9 +25,9 @@
  	gzip -f $(DESTDIR)$(MANINSTALLDIR)/miniupnpd.8
 --- a/Makefile.linux_nft
 +++ b/Makefile.linux_nft
-@@ -39,9 +39,9 @@ CP = cp
- DOXYGEN ?= doxygen
- 
+@@ -41,9 +41,9 @@ DOXYGEN ?= doxygen
+ DEPFLAGS = -MM -MG -MT $(patsubst %.d,%.o,$@) -MT $@
+ # -M : with system headers, -MM : without
  
 -INSTALLPREFIX ?= $(PREFIX)/usr
 +INSTALLPREFIX ?= /opt
@@ -37,20 +37,14 @@
  MANINSTALLDIR = $(INSTALLPREFIX)/share/man/man8
  
  include config.mk
-@@ -127,12 +127,12 @@ install:	miniupnpd $(SRCDIR)/miniupnpd.8
- 	$(INSTALL) $(SRCDIR)/netfilter_nft/scripts/nft_removeall.sh $(DESTDIR)$(ETCINSTALLDIR)
- 	$(INSTALL) $(SRCDIR)/netfilter_nft/scripts/nft_flush.sh $(DESTDIR)$(ETCINSTALLDIR)
- 	$(INSTALL) $(SRCDIR)/netfilter_nft/scripts/nft_delete_chain.sh $(DESTDIR)$(ETCINSTALLDIR)
--	$(INSTALL) --mode=0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
-+	$(INSTALL) -m 0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
+@@ -132,8 +132,8 @@ install:	miniupnpd $(SRCDIR)/miniupnpd.8
+ 	$(INSTALL) $(SRCDIR)/netfilter_nft/scripts/miniupnpd_functions.sh $(DESTDIR)$(ETCINSTALLDIR)
+ 	$(INSTALL) --mode=0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
  	sed -i -e "s/^uuid=[-0-9a-f]*/uuid=$(UUID)/" $(DESTDIR)$(ETCINSTALLDIR)/miniupnpd.conf
 -	$(INSTALL) -d $(DESTDIR)$(PREFIX)/etc/init.d
 -	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)$(PREFIX)/etc/init.d/miniupnpd
-+	$(INSTALL) -d $(DESTDIR)/opt/etc/init.d
-+	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)/opt/etc/init.d/miniupnpd
++	$(INSTALL) -d $(DESTDIR)/$(INSTALLPREFIX)/etc/init.d
++	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)/$(INSTALLPREFIX)/etc/init.d/miniupnpd
  	$(INSTALL) -d $(DESTDIR)$(MANINSTALLDIR)
--	$(INSTALL) --mode=0644 miniupnpd.8 $(DESTDIR)$(MANINSTALLDIR)
-+	$(INSTALL) -m 0644 miniupnpd.8 $(DESTDIR)$(MANINSTALLDIR)
+ 	$(INSTALL) --mode=0644 $(SRCDIR)/miniupnpd.8 $(DESTDIR)$(MANINSTALLDIR)
  	gzip -f $(DESTDIR)$(MANINSTALLDIR)/miniupnpd.8
- 
- include $(SRCDIR)/check.mk
