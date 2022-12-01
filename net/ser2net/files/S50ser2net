@@ -2,7 +2,7 @@
 
 ENABLED=yes
 PROCS=ser2net
-ARGS="-P /opt/var/run/ser2net.pid"
+ARGS="-u -P /opt/var/run/ser2net.pid"
 PREARGS=""
 DESC=$PROCS
 PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
