@@ -1,0 +1,68 @@
+--- a/git-instaweb.sh
++++ b/git-instaweb.sh
+@@ -85,7 +85,7 @@ resolve_full_httpd () {
+ 		# these days and those are not in most users $PATHs
+ 		# in addition, we may have generated a server script
+ 		# in $fqgitdir/gitweb.
+-		for i in /usr/local/sbin /usr/sbin "$root" "$fqgitdir/gitweb"
++		for i in /opt/sbin /opt/usr/sbin "$root" "$fqgitdir/gitweb"
+ 		do
+ 			if test -x "$i/$httpd_only"
+ 			then
+@@ -334,9 +334,9 @@ EOF
+ 
+ apache2_conf () {
+ 	for candidate in \
+-		/etc/httpd \
+-		/usr/lib/apache2 \
+-		/usr/lib/httpd ;
++		/opt/etc/httpd \
++		/opt/lib/apache2 \
++		/opt/lib/httpd ;
+ 	do
+ 		if test -d "$candidate/modules"
+ 		then
+--- a/git-send-email.perl
++++ b/git-send-email.perl
+@@ -1066,7 +1066,7 @@ if (defined $reply_to) {
+ }
+ 
+ if (!defined $sendmail_cmd && !defined $smtp_server) {
+-	my @sendmail_paths = qw( /usr/sbin/sendmail /usr/lib/sendmail );
++	my @sendmail_paths = qw( /opt/sbin/sendmail /opt/lib/sendmail );
+ 	push @sendmail_paths, map {"$_/sendmail"} split /:/, $ENV{PATH};
+ 	foreach (@sendmail_paths) {
+ 		if (-x $_) {
+--- a/gitweb/gitweb.perl
++++ b/gitweb/gitweb.perl
+@@ -3946,7 +3946,7 @@ sub mimetype_guess {
+ 		}
+ 		$mime = mimetype_guess_file($filename, $file);
+ 	}
+-	$mime ||= mimetype_guess_file($filename, '/etc/mime.types');
++	$mime ||= mimetype_guess_file($filename, '/opt/etc/mime.types');
+ 	return $mime;
+ }
+ 
+--- a/gitweb/Makefile
++++ b/gitweb/Makefile
+@@ -12,15 +12,15 @@ all::
+ 
+ prefix ?= $(HOME)
+ bindir ?= $(prefix)/bin
+-gitwebdir ?= /var/www/cgi-bin
++gitwebdir ?= /opt/share/www/cgi-bin
+ 
+ RM ?= rm -f
+ INSTALL ?= install
+ 
+ # default configuration for gitweb
+ GITWEB_CONFIG = gitweb_config.perl
+-GITWEB_CONFIG_SYSTEM = /etc/gitweb.conf
+-GITWEB_CONFIG_COMMON = /etc/gitweb-common.conf
++GITWEB_CONFIG_SYSTEM = /opt/etc/gitweb.conf
++GITWEB_CONFIG_COMMON = /opt/etc/gitweb-common.conf
+ GITWEB_HOME_LINK_STR = projects
+ GITWEB_SITENAME =
+ GITWEB_PROJECTROOT = /pub/git
+
