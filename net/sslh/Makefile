@@ -30,6 +30,15 @@ define Package/sslh
   URL:=https://rutschle.net/tech/sslh/README.html
 endef
 
+define Package/sslh/config
+    config SSLH_SELECT
+        bool "Use sslh-select"
+        depends on PACKAGE_sslh
+        help
+            Use sslh-select instead of sslh-fork.
+        default n
+endef
+
 define Package/sslh/conffiles
 /opt/etc/sslh.conf
 endef
@@ -39,7 +48,11 @@ MAKE_FLAGS += \
 
 define Package/sslh/install
 	$(INSTALL_DIR) $(1)/opt/sbin
+ifeq ($(CONFIG_SSLH_SELECT),y)
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sslh-select $(1)/opt/sbin/sslh
+else
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sslh-fork $(1)/opt/sbin/sslh
+endif
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) files/S14$(PKG_NAME) $(1)/opt/etc/init.d
 #	$(INSTALL_DIR) $(1)/etc/config
