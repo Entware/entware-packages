@@ -1,0 +1,36 @@
+--- a/etc/smartdns/smartdns.conf
++++ b/etc/smartdns/smartdns.conf
+@@ -133,7 +133,7 @@ cache-size 16384
+ # log-size: size of each log file, support k,m,g
+ # log-num: number of logs
+ log-level info
+-# log-file /var/log/smartdns/smartdns.log
++# log-file /opt/var/log/smartdns/smartdns.log
+ # log-size 128k
+ # log-num 2
+ 
+@@ -142,20 +142,20 @@ log-level info
+ # audit-enable yes
+ # audit-SOA [yes|no]: enable or disable log soa result.
+ # audit-size size of each audit file, support k,m,g
+-# audit-file /var/log/smartdns-audit.log
++# audit-file /opt/var/log/smartdns-audit.log
+ # audit-size 128k
+ # audit-num 2
+ 
+ # Support reading dnsmasq dhcp file to resolve local hostname
+-# dnsmasq-lease-file /var/lib/misc/dnsmasq.leases
++# dnsmasq-lease-file /opt/var/lib/misc/dnsmasq.leases
+ 
+ # certificate file
+ # ca-file [file]
+-# ca-file /etc/ssl/certs/ca-certificates.crt
++# ca-file /opt/etc/ssl/certs/ca-certificates.crt
+ 
+ # certificate path
+ # ca-path [path]
+-# ca-path /etc/ss/certs
++# ca-path /opt/etc/ss/certs
+ 
+ # remote udp dns server list
+ # server [IP]:[PORT] [-blacklist-ip] [-whitelist-ip] [-check-edns] [-group [group] ...] [-exclude-default-group]
