@@ -1,0 +1,11 @@
+--- a/tools/gtlsshd.c
++++ b/tools/gtlsshd.c
+@@ -50,7 +50,7 @@
+ #include "gtlssh.h"
+ 
+ /* Default the program to this path. */
+-#define STANDARD_PATH "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
++#define STANDARD_PATH "/opt/usr/bin:/opt/bin:/opt/usr/sbin:/opt/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+ 
+ unsigned int debug;
+ bool oneshot;

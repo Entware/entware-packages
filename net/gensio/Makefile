@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gensio
 PKG_VERSION:=2.4.2
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/ser2net
@@ -33,6 +33,8 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_GENSIO_TCL \
 	CONFIG_GENSIO_SSHD
 
+PKG_BUILD_DEPENDS:=PACKAGE_python3-gensio:swig/host
+
 include $(INCLUDE_DIR)/package.mk
 # XXX .libs/libgensioglib.so.0.0.1 ... /ld: cannot find -lintl
 include $(INCLUDE_DIR)/nls.mk
@@ -44,10 +46,13 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_GENSIO_WRAP),with,without)-tcp-wrappers \
 	--$(if $(CONFIG_GENSIO_PTHREADS),with,without)-pthreads \
 	--$(if $(CONFIG_GENSIO_GLIB),with,without)-glib \
-	--$(if $(CONFIG_GENSIO_TCL),with,without)-tcl \
+	--$(if $(CONFIG_GENSIO_TCL),with-tcl \
+		--with-tclcflags=-I$(STAGING_DIR)/opt/include \
+		--with-tcllibs=-ltcl8.5,without-tcl) \
 	--without-openipmi \
 	--with-cplusplus \
-	--disable-doc
+	--disable-doc \
+	--with-uucp-locking=/opt/var/lock
 
 CONFIGURE_VARS += \
 	ac_cv_lib_avahi_client_avahi_client_new=$(if $(CONFIG_GENSIO_AVAHI),yes,no) \
@@ -132,8 +137,8 @@ $(call Package/gensio/Default)
   TITLE+= (Python3-bindings)
   SECTION:=lang
   CATEGORY:=Languages
-  BUILD_DEPENDS:=+swig +python3
-  DEPENDS:=+python3-light +libgensio
+  SUBMENU:=Python
+  DEPENDS:=+PACKAGE_python3-gensio:python3-light +libgensio
 endef
 
 define Package/python3-gensio/description
@@ -148,7 +153,7 @@ $(call Package/gensio/Default)
   SECTION:=libs
   CATEGORY:=Libraries
   ABI_VERSION:=0
-  DEPENDS:=+libgensio +libstdcpp
+  DEPENDS:=+libgensio +PACKAGE_libgensiocpp:libstdcpp
 endef
 
 define Package/libgensiocpp/description
@@ -177,11 +182,16 @@ define Package/libgensio/install
 ifeq ($(CONFIG_GENSIO_GLIB),y)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensioglib.so.* $(1)/opt/lib/
 endif
+ifeq ($(CONFIG_GENSIO_TCL),y)
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensiotcl.so.* $(1)/opt/lib/
+endif
 endef
 
 define Package/gensio-bin/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+	# FIXME remove python script
+	rm $(1)/opt/bin/greflector
 ifeq ($(CONFIG_GENSIO_SSHD),y)
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/* $(1)/opt/sbin/
@@ -189,6 +199,11 @@ endif
 endef
 
 define Package/python3-gensio/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/greflector $(1)/opt/bin/
+	# XXX Entware specific: fix exec path
+	$(SED) 's,^#!.*python,#!/opt/bin/python,' $(1)/opt/bin/greflector
+
 	$(INSTALL_DIR) $(1)/$(PYTHON3_PKG_DIR)
 	$(CP) $(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)/*.so* $(1)/$(PYTHON3_PKG_DIR)
 	$(CP) $(PKG_INSTALL_DIR)/$(PYTHON3_PKG_DIR)/*.py* $(1)/$(PYTHON3_PKG_DIR)
