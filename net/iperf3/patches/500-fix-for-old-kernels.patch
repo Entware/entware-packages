@@ -1,0 +1,16 @@
+# aarch64:
+# */include/linux/in6.h:30:8: error: redefinition of 'struct in6_addr'
+# */include/linux/in6.h:41:8: error: redefinition of 'struct sockaddr_in6'
+# */include/linux/in6.h:49:8: error: redefinition of 'struct ipv6_mreq'
+
+--- a/src/flowlabel.h
++++ b/src/flowlabel.h
+@@ -31,7 +31,7 @@
+ #include <linux/types.h>
+ #include <linux/version.h>
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,11,0)
+ #include <linux/in6.h>
+ #else
+ #ifndef __ANDROID__
