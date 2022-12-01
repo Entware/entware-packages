@@ -82,7 +82,7 @@
  		if( !ret )
 --- a/configure.ac
 +++ b/configure.ac
-@@ -643,7 +643,22 @@ AC_ARG_ENABLE(lto,
+@@ -647,7 +647,22 @@ AC_ARG_ENABLE(lto,
          ]
  )
  

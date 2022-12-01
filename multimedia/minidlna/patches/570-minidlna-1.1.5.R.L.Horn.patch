@@ -274,7 +274,7 @@
  LDFLAGS_SAVE="$LDFLAGS"
  for dir in "" /usr/local $SEARCH_DIR; do
      if test -n "$dir"; then
-@@ -483,6 +488,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
+@@ -487,6 +492,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
           AM_CONDITIONAL(HAVE_AVAHI, false),
          -lavahi-client -lavahi-common)
  
