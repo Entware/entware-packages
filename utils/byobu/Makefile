@@ -68,33 +68,36 @@ $(call Package/byobu/description)
 endef
 
 define Package/byobu/install
-	$(INSTALL_DIR) $(1)/etc
-	$(CP) $(PKG_INSTALL_DIR)/etc/* $(1)/etc/
+	# XXX Entware specific: fix /bin/sh
+	$(FIND) $(PKG_INSTALL_DIR) -type f | $(XARGS) $(SED) 's,^#!/bin/sh,#!/opt/bin/sh,'
 
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/byobu* $(1)/usr/bin/
-	$(LN) byobu $(1)/usr/bin/byobu-screen
-	$(LN) byobu $(1)/usr/bin/byobu-tmux
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc/* $(1)/opt/etc/
 
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/byobu $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/byobu* $(1)/opt/bin/
+	$(LN) byobu $(1)/opt/bin/byobu-screen
+	$(LN) byobu $(1)/opt/bin/byobu-tmux
 
-	$(INSTALL_DIR) $(1)/usr/share/byobu
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/byobu $(1)/opt/lib/
+
+	$(INSTALL_DIR) $(1)/opt/share/byobu
 	for i in keybindings profiles status windows; do \
-		$(CP) $(PKG_INSTALL_DIR)/usr/share/byobu/$$$$i $(1)/usr/share/byobu/ ; \
+		$(CP) $(PKG_INSTALL_DIR)/opt/share/byobu/$$$$i $(1)/opt/share/byobu/ ; \
 	done
 
-	$(INSTALL_DIR) $(1)/usr/share/doc
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/doc/byobu $(1)/usr/share/doc/
+	$(INSTALL_DIR) $(1)/opt/share/doc
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/doc/byobu $(1)/opt/share/doc/
 endef
 
 define Package/byobu-utils/install
-	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_DIR) $(1)/opt/bin
 	for i in col1 ctail manifest purge-old-kernels vigpg wifi-status; do \
-		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/$$$$i $(1)/usr/bin/ ; \
+		$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/$$$$i $(1)/opt/bin/ ; \
 	done
 	for i in col2 col3 col4 col5 col6 col7 col8 col9 NF; do \
-		$(LN) col1 $(1)/usr/bin/$$$$i ; \
+		$(LN) col1 $(1)/opt/bin/$$$$i ; \
 	done
 endef
 

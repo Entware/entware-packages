@@ -1,0 +1,526 @@
+--- a/etc/byobu/socketdir
++++ b/etc/byobu/socketdir
+@@ -8,4 +8,4 @@
+ #  * the variable name is SOCKETDIR
+ #  * there is no space around the "="
+ #  * and that the path value is quoted
+-SOCKETDIR="/var/run/screen"
++SOCKETDIR="/opt/var/run/screen"
+--- a/etc/profile.d/Z97-byobu.sh.in
++++ b/etc/profile.d/Z97-byobu.sh.in
+@@ -18,14 +18,14 @@
+ # Allow any user to opt into auto-launching byobu by setting LC_BYOBU=1
+ # Apologies for borrowing the LC_BYOBU namespace, but:
+ #  a) it's reasonable to assume that no one else is using LC_BYOBU
+-#  b) LC_* is sent and receieved by most /etc/ssh/ssh*_config
++#  b) LC_* is sent and receieved by most /opt/etc/ssh/ssh*_config
+ 
+ if [ -r "@prefix@/bin/byobu-launch" ]; then
+ 	if [ "$LC_BYOBU" = "0" ]; then
+ 		true
+ 	elif [ "$LC_BYOBU" = "1" ]; then
+ 		. @prefix@/bin/byobu-launch
+-	elif [ -e "/etc/byobu/autolaunch" ]; then
++	elif [ -e "/opt/etc/byobu/autolaunch" ]; then
+ 		. @prefix@/bin/byobu-launch
+ 	elif [ "$LC_TERMTYPE" = "byobu" ]; then
+ 		. @prefix@/bin/byobu-launch
+--- a/usr/bin/byobu-disable-prompt.in
++++ b/usr/bin/byobu-disable-prompt.in
+@@ -27,7 +27,7 @@ PKG="byobu"
+ $BYOBU_SED_INLINE -e "/#byobu-prompt#$/d" "$HOME/.bashrc"
+ 
+ if [ "$1" != "--no-reload" ]; then
+-	if [ -n "$TMUX" ] && [ "$SHELL" = "/bin/bash" ]; then
++	if [ -n "$TMUX" ] && [ "$SHELL" = "/opt/bin/bash" ]; then
+ 		tmux send-keys " . ~/.bashrc" \; send-keys Enter
+ 	else
+ 		echo
+--- a/usr/bin/byobu-enable-prompt.in
++++ b/usr/bin/byobu-enable-prompt.in
+@@ -17,7 +17,7 @@
+ #    You should have received a copy of the GNU General Public License
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-[ "$SHELL" = "/bin/bash" ] || exit 1
++[ "$SHELL" = "/opt/bin/bash" ] || exit 1
+ 
+ PKG="byobu"
+ [ -r "$HOME/.byoburc" ] && . "$HOME/.byoburc"
+--- a/usr/bin/byobu-janitor.in
++++ b/usr/bin/byobu-janitor.in
+@@ -116,17 +116,17 @@ fi
+ killall -u $USER byobu-statusd >/dev/null 2>&1 || true
+ 
+ # Clean up flag (new and old)
+-rm -f "$FLAG" "/var/run/screen/S-$USER/$PKG.reload-required"
++rm -f "$FLAG" "/opt/var/run/screen/S-$USER/$PKG.reload-required"
+ 
+ # Affects: Upgrades from <= byobu 5.50, install byobu prompt if using stock bashrc
+-if [ -r /etc/skel/.bashrc ] && [ -r "$HOME/.bashrc" ] && [ -w "$HOME/.bashrc" ] && \
++if [ -r /opt/etc/skel/.bashrc ] && [ -r "$HOME/.bashrc" ] && [ -w "$HOME/.bashrc" ] && \
+ 		! (grep -qs "#byobu-prompt#$" "$HOME/.bashrc") && ! [ -e "$BYOBU_CONFIG_DIR/prompt" ]; then
+ 	if eval $BYOBU_TEST diff >/dev/null 2>&1; then
+-		if  diff /etc/skel/.bashrc "$HOME/.bashrc" >/dev/null 2>&1; then
++		if  diff /opt/etc/skel/.bashrc "$HOME/.bashrc" >/dev/null 2>&1; then
+ 			printf "[ -r $BYOBU_CONFIG_DIR/prompt ] && . $BYOBU_CONFIG_DIR/prompt   #byobu-prompt#\n" >> "$HOME/.bashrc"
+ 		fi
+ 	elif eval $BYOBU_TEST md5sum >/dev/null 2>&1; then
+-		if [ "$(cat /etc/skel/.bashrc | md5sum)" = "$(cat $HOME/.bashrc | md5sum)" ]; then
++		if [ "$(cat /opt/etc/skel/.bashrc | md5sum)" = "$(cat $HOME/.bashrc | md5sum)" ]; then
+ 			printf "[ -r $BYOBU_CONFIG_DIR/prompt ] && . $BYOBU_CONFIG_DIR/prompt   #byobu-prompt#\n" >> "$HOME/.bashrc"
+ 		fi
+ 	fi
+--- a/usr/bin/byobu-launcher-install.in
++++ b/usr/bin/byobu-launcher-install.in
+@@ -56,7 +56,7 @@ install_launcher_fish() {
+ $PKG-launcher-uninstall || true
+ 
+ # Handle bourne shells, if not set globally in /etc/profile.d
+-if [ ! -h "/etc/profile.d/Z97-$PKG.sh" ]; then
++if [ ! -h "/opt/etc/profile.d/Z97-$PKG.sh" ]; then
+ 	# Install in $HOME/.profile unconditionally
+ 	install_launcher "$HOME/.profile"
+ 	# Now, install in any shell-specific profiles, if they exist
+--- a/usr/bin/byobu-shell.in
++++ b/usr/bin/byobu-shell.in
+@@ -25,7 +25,7 @@ PKG="byobu"
+ FLAG="$BYOBU_CONFIG_DIR/.welcome-displayed"
+ 
+ # Find a MOTD, seems that they're moving around
+-for i in /etc/motd /run/motd.dynamic /run/motd; do
++for i in /opt/etc/motd /etc/motd /run/motd.dynamic /run/motd; do
+ 	[ -r $i ] && [ ! -e "$HOME"/.hushlogin ] && cat $i && break
+ done
+ 
+--- a/usr/bin/byobu-status.in
++++ b/usr/bin/byobu-status.in
+@@ -40,7 +40,7 @@ done
+ case "$BYOBU_BACKEND" in
+ 	screen)
+ 		# Reload profile, if necessary
+-		if [ -e "/var/run/screen/S-$USER/$PKG.reload-required" ] || [ -e "$BYOBU_RUN_DIR/reload-required" ]; then
++		if [ -e "/opt/var/run/screen/S-$USER/$PKG.reload-required" ] || [ -e "$BYOBU_RUN_DIR/reload-required" ]; then
+ 			if [ -r "$BYOBU_CONFIG_DIR/profile" ]; then
+ 				# If the forced janitorial steps succeed, try a profile reload
+ 				byobu-janitor --force && screen -X at 0 source "$BYOBU_CONFIG_DIR/profile" >/dev/null 2>&1
+--- a/usr/bin/byobu-ugraph.in
++++ b/usr/bin/byobu-ugraph.in
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ #---------------------------------------------------------------------
+ # Script to display a byobu notification "history graph".
+ #
+@@ -86,7 +86,7 @@ Examples:
+ 
+   Using $script_name just to rotate log and display the graph
+ 
+-    file=/tmp/load.dat
++    file=/opt/tmp/load.dat
+     awk '{ print \$1}' /proc/loadavg >> \$file
+     # Note: we need to specify what we consider to be a "reasonable" maximum load
+     $script_name -m 3.0 -f \$file
+@@ -189,7 +189,7 @@ if [ -z "$file" ]
+ then
+   # we could go cryptic+safe by calling tempfile(1), but that then
+   # makes it very difficult to find in case of need.
+-  file=/tmp/${USER}-${script_name}-$$.dat
++  file=/opt/tmp/${USER}-${script_name}-$$.dat
+ fi
+ 
+ [ -z "$min" ]    && min=$min_default
+--- a/usr/bin/byobu-ulevel.in
++++ b/usr/bin/byobu-ulevel.in
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ #---------------------------------------------------------------------
+ # Script to display unicode characters representing the level of
+ # some indicator.
+--- a/usr/bin/byobu.in
++++ b/usr/bin/byobu.in
+@@ -93,7 +93,7 @@ if [ "$#" = "1" ]; then
+ fi
+ 
+ # Check if we're being autolaunched, and this user explicitly does not want it.
+-if [ "$0" = "/etc/profile.d/Z97-$PKG.sh" ] && [ -r "$BYOBU_CONFIG_DIR/disable-autolaunch" ]; then
++if [ "$0" = "/opt/etc/profile.d/Z97-$PKG.sh" ] && [ -r "$BYOBU_CONFIG_DIR/disable-autolaunch" ]; then
+ 	exit 0
+ fi
+ 
+--- a/usr/lib/byobu/apport
++++ b/usr/lib/byobu/apport
+@@ -20,15 +20,15 @@
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ __apport_detail() {
+-	for i in /var/crash/*.crash; do
++	for i in /opt/var/crash/*.crash; do
+ 		if [ -f "$i" ]; then
+ 			printf "\nTo file bugs on the existing crash reports, run:\n"
+ 			which apport-cli >/dev/null || printf "  sudo apt-get install apport\n"
+-			for i in /var/crash/*.crash; do
++			for i in /opt/var/crash/*.crash; do
+ 				printf "  apport-cli $i\n"
+ 			done
+ 			printf "\nTo clear the pending reports:\n"
+-			printf "  rm -f /var/crash/*.crash\n\n"
++			printf "  rm -f /opt/var/crash/*.crash\n\n"
+ 			return
+ 		fi
+ 	done
+@@ -37,7 +37,7 @@ __apport_detail() {
+ 
+ __apport() {
+ 	# Print {!} if a /var/crash/*.crash file exists
+-	for i in /var/crash/*.crash; do
++	for i in /opt/var/crash/*.crash; do
+ 		if [ -f "$i" ]; then
+ 			color y k; printf "{!}"; color --
+ 			return
+--- a/usr/lib/byobu/disk
++++ b/usr/lib/byobu/disk
+@@ -28,7 +28,7 @@ __disk() {
+ 	# Default to /, but let users override
+ 	MP="$MONITORED_DISK"
+ 	[ -n "$MP" ] || {
+-		grep -q ' /overlay ' /proc/mounts && MP=/overlay || MP=/
++		grep -q ' /opt ' /proc/mounts && MP=/opt || MP=/
+ 	}
+ 	case $MP in
+ 		/dev/*) MP=$(awk '$1 == m { print $2; exit(0); }' "m=$MP" /proc/mounts);;
+--- a/usr/lib/byobu/disk_io
++++ b/usr/lib/byobu/disk_io
+@@ -44,7 +44,7 @@ __disk_io() {
+ 	# Default to disk providing /, but let users override with MONITORED_DISK
+ 	local mount_point="$MONITORED_DISK"
+ 	[ -n "$mount_point" ] || {
+-		grep -q ' /overlay ' /proc/mounts && mount_point=/overlay || mount_point=/
++		grep -q ' /opt ' /proc/mounts && mount_point=/opt || mount_point=/
+ 	}
+ 	# By default, we won't bug the user with the display of network traffic
+ 	# below DISK_IO_THRESHOLD in kB/s; override in $BYOBU_CONFIG_DIR/status
+--- a/usr/lib/byobu/include/common
++++ b/usr/lib/byobu/include/common
+@@ -29,7 +29,7 @@ if [ -z "${BYOBU_INCLUDED_LIBS}" ]; then
+ 
+ 	# If the backend is already set (eg. running `byobu-tmux`), do nothing.
+ 	if [ -z "${BYOBU_BACKEND}" ]; then
+-		[ -r "/etc/$PKG/backend" ] && . "/etc/$PKG/backend"
++		[ -r "/opt/etc/$PKG/backend" ] && . "/opt/etc/$PKG/backend"
+ 		[ -r "$BYOBU_CONFIG_DIR/backend" ] && . "$BYOBU_CONFIG_DIR/backend"
+ 		# Just in case there's no config file at all
+ 		if [ -z "${BYOBU_BACKEND}" ]; then
+--- a/usr/lib/byobu/include/config.py.in
++++ b/usr/lib/byobu/include/config.py.in
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python3
++#!/opt/bin/python3
+ #
+ #    config.py
+ #    Copyright (C) 2008 Canonical Ltd.
+@@ -52,7 +52,7 @@ USER = os.getenv("USER")
+ BYOBU_CONFIG_DIR = os.getenv("BYOBU_CONFIG_DIR", HOME + "/.byobu")
+ BYOBU_RUN_DIR = os.getenv("BYOBU_RUN_DIR", HOME + "/.cache/byobu")
+ BYOBU_BACKEND = os.getenv("BYOBU_BACKEND", "tmux")
+-BYOBU_SOCKETDIR = os.getenv("SOCKETDIR", "/var/run/screen")
++BYOBU_SOCKETDIR = os.getenv("SOCKETDIR", "/opt/var/run/screen")
+ BYOBU_PREFIX = os.getenv("BYOBU_PREFIX", "@prefix@")
+ SHARE = BYOBU_PREFIX + '/share/' + PKG
+ DOC = BYOBU_PREFIX + '/share/doc/' + PKG
+@@ -365,7 +365,7 @@ def autolaunch():
+ 				return 1
+ 	except Exception:
+ 		return 0
+-	if os.path.exists("/etc/profile.d/Z97-%s.sh" % PKG):
++	if os.path.exists("/opt/etc/profile.d/Z97-%s.sh" % PKG):
+ 		return 1
+ 	return 0
+ 
+--- a/usr/lib/byobu/include/constants
++++ b/usr/lib/byobu/include/constants
+@@ -27,7 +27,7 @@ PCT="%"
+ 
+ # Support two different backends (screen/tmux)
+ if [ -z "$BYOBU_BACKEND" ]; then
+-	[ -r "/etc/byobu/backend" ] && . "/etc/byobu/backend"
++	[ -r "/opt/etc/byobu/backend" ] && . "/opt/etc/byobu/backend"
+ 	[ -r "$BYOBU_CONFIG_DIR/backend" ] && . "$BYOBU_CONFIG_DIR/backend"
+ fi
+ case "$BYOBU_BACKEND" in
+--- a/usr/lib/byobu/include/dirs.in
++++ b/usr/lib/byobu/include/dirs.in
+@@ -43,7 +43,7 @@ fi
+ [ -d "$BYOBU_CONFIG_DIR" ] || mkdir -p "$BYOBU_CONFIG_DIR/bin"
+ 
+ # Grab the global, then local socket directory
+-[ -r "/etc/$PKG/socketdir" ] && . "/etc/$PKG/socketdir"
++[ -r "/opt/etc/$PKG/socketdir" ] && . "/opt/etc/$PKG/socketdir"
+ [ -r "$BYOBU_CONFIG_DIR/socketdir" ] && . "$BYOBU_CONFIG_DIR/socketdir"
+ 
+ # Create and export the runtime cache directory
+--- a/usr/lib/byobu/include/mondrian
++++ b/usr/lib/byobu/include/mondrian
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ # N.B.: Use bash for $RANDOM
+ #
+ #    mondrian: randomly generate some Modrian art in tmux
+--- a/usr/lib/byobu/include/notify_osd
++++ b/usr/lib/byobu/include/notify_osd
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/opt/bin/perl
+ #
+ #    notify_osd: perform some string manipulation on notify-osd messages
+ #                 and then send to the screen message window
+@@ -41,8 +41,8 @@ while (<STDIN>) {
+ 	$msg =~ s/\s+/ /g;		# collapse multi-whitespace into one
+ 	$msg =~ s/\s+$//g;		# strip trailing whitespace
+ 	$msg =~ s/^\s+//g;		# strip leading whitespace
+-	system("/usr/bin/screen", "-X", "-S", "$ARGV[0]", "at", "*", "msgwait", "$sleep");
+-	system("/usr/bin/screen", "-X", "-S", "$ARGV[0]", "at", "*", "echo", "[$msg]");
++	system("/opt/bin/screen", "-X", "-S", "$ARGV[0]", "at", "*", "msgwait", "$sleep");
++	system("/opt/bin/screen", "-X", "-S", "$ARGV[0]", "at", "*", "echo", "[$msg]");
+ 	sleep($sleep);
+-	system("/usr/bin/screen", "-X", "-S", "$ARGV[0]", "at", "*", "msgwait", "0");
++	system("/opt/bin/screen", "-X", "-S", "$ARGV[0]", "at", "*", "msgwait", "0");
+ }
+--- a/usr/lib/byobu/include/select-session.py
++++ b/usr/lib/byobu/include/select-session.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python3
++#!/opt/bin/python3
+ #
+ #    select-session.py
+ #    Copyright (C) 2010 Canonical Ltd.
+@@ -33,7 +33,7 @@ except Exception:
+ 
+ 
+ PKG = "byobu"
+-SHELL = os.getenv("SHELL", "/bin/bash")
++SHELL = os.getenv("SHELL", "/opt/bin/bash")
+ HOME = os.getenv("HOME")
+ BYOBU_CONFIG_DIR = os.getenv("BYOBU_CONFIG_DIR", HOME + "/.byobu")
+ BYOBU_BACKEND = os.getenv("BYOBU_BACKEND", "tmux")
+--- a/usr/lib/byobu/include/shutil
++++ b/usr/lib/byobu/include/shutil
+@@ -303,9 +303,9 @@ get_network_interface() {
+ 	elif eval $BYOBU_TEST route >/dev/null 2>&1; then
+ 		# Route command on path
+ 		_RET=$(route get default|grep interface:|awk '{print $2}')
+-	elif [ -x "/sbin/route" ]; then
++	elif [ -x "/opt/sbin/route" ]; then
+ 		# Mac OSX, shell out to the route command
+-		_RET=$(/sbin/route get default|grep interface:|awk '{print $2}')
++		_RET=$(/opt/sbin/route get default|grep interface:|awk '{print $2}')
+ 	fi
+ }
+ 
+--- a/usr/lib/byobu/ip_address
++++ b/usr/lib/byobu/ip_address
+@@ -20,9 +20,9 @@
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ __ip_address_detail() {
+-	if [ -x /sbin/ip ]; then
+-		/sbin/ip -4 addr list
+-		/sbin/ip -6 addr list
++	if [ -x /opt/sbin/ip ]; then
++		/opt/sbin/ip -4 addr list
++		/opt/sbin/ip -6 addr list
+ 	fi
+ }
+ 
+@@ -45,8 +45,8 @@ __ip_address() {
+ 				sleep 0.02
+ 			else
+ 				# Background an update
+-				if [ -x /sbin/ip ]; then
+-					LC_ALL=C /sbin/ip -6 addr list dev "$interface" scope global </dev/null >"$cache" 2>/dev/null &
++				if [ -x /opt/sbin/ip ]; then
++					LC_ALL=C /opt/sbin/ip -6 addr list dev "$interface" scope global </dev/null >"$cache" 2>/dev/null &
+ 				elif eval $BYOBU_TEST ifconfig >/dev/null 2>&1; then
+ 					LC_ALL=c ifconfig "$interface" | grep "inet6 " | awk '{print $2}' | sed -e "s/%.*//" >"$cache" 2>/dev/null &
+ 
+@@ -69,8 +69,8 @@ __ip_address() {
+ 				sleep 0.02
+ 				[ -s "$cache" ] && read ipaddr < "$cache"
+ 			else
+-				if [ -x /sbin/ip ]; then
+-					ipaddr=$(LC_ALL=C /sbin/ip -4 addr list dev "$interface" scope global 2>/dev/null)
++				if [ -x /opt/sbin/ip ]; then
++					ipaddr=$(LC_ALL=C /opt/sbin/ip -4 addr list dev "$interface" scope global 2>/dev/null)
+ 					ipaddr=${ipaddr#* inet }
+ 					ipaddr=${ipaddr%%/*}
+ 				elif eval $BYOBU_TEST ifconfig >/dev/null 2>&1; then
+--- a/usr/lib/byobu/mail
++++ b/usr/lib/byobu/mail
+@@ -19,7 +19,7 @@
+ #    You should have received a copy of the GNU General Public License
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-MAILFILE="/var/spool/mail/$USER"
++MAILFILE="/opt/var/spool/mail/$USER"
+ 
+ __mail_detail() {
+ 	[ ! -d "$MAILFILE" ] && [ -s "$MAILFILE" ] && ls -alF "$MAILFILE" 2>&1
+--- a/usr/lib/byobu/network
++++ b/usr/lib/byobu/network
+@@ -21,7 +21,7 @@
+ 
+ __network_detail() {
+ 	get_network_interface; local interface="$_RET"
+-	LC_ALL=C /sbin/ip addr show "$interface" | $BYOBU_SED 's/\s*$//'
++	LC_ALL=C /opt/sbin/ip addr show "$interface" | $BYOBU_SED 's/\s*$//'
+ }
+ 
+ __network() {
+--- a/usr/lib/byobu/reboot_required
++++ b/usr/lib/byobu/reboot_required
+@@ -19,10 +19,10 @@
+ #    You should have received a copy of the GNU General Public License
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-REBOOT_FLAG="/var/run/reboot-required"
++REBOOT_FLAG="/opt/var/run/reboot-required"
+ RELOAD_FLAG="$BYOBU_RUN_DIR/reload-required"
+-POWERNAP_FLAG="/var/run/powernap/powersave"
+-UNATTENDED_UPGRADE_FLAG="/var/run/unattended-upgrades.pid"
++POWERNAP_FLAG="/opt/var/run/powernap/powersave"
++UNATTENDED_UPGRADE_FLAG="/opt/var/run/unattended-upgrades.pid"
+ 
+ __reboot_required_detail() {
+ 		[ -e "$REBOOT_FLAG" ] && ls -alF "$REBOOT_FLAG" 2>&1
+--- a/usr/lib/byobu/services
++++ b/usr/lib/byobu/services
+@@ -36,9 +36,9 @@ service_running() {
+ 				false
+ 			;;
+ 		esac
+-	elif [ -f "/etc/init.d/$1" ]; then
++	elif [ -f "/opt/etc/init.d/$1" ]; then
+ 		# Fall back to sysvinit
+-		/etc/init.d/$1 status >/dev/null 2>&1
++		/opt/etc/init.d/$1 status >/dev/null 2>&1
+ 	else
+ 		false
+ 	fi
+--- a/usr/lib/byobu/time_binary
++++ b/usr/lib/byobu/time_binary
+@@ -1,4 +1,4 @@
+-#!/bin/bash -e
++#!/opt/bin/bash -e
+ #---------------------------------------------------------------------
+ # Script to display a "binary clock" using unicode characters from the
+ # braille block.
+--- a/usr/lib/byobu/updates_available
++++ b/usr/lib/byobu/updates_available
+@@ -115,9 +115,9 @@ ___update_needed() {
+ 		return 1
+ 	elif eval $BYOBU_TEST opkg >/dev/null; then
+ 		# OpenWrt
+-		[ ! -e /var/lock/opkg.lock ] || return 1
+-		if [ -d /var/opkg-lists ]; then
+-			[ /var/opkg-lists -nt "$mycache" ]
++		[ ! -e /opt/var/lock/opkg.lock ] || return 1
++		if [ -d /opt/var/opkg-lists ]; then
++			[ /opt/var/opkg-lists -nt "$mycache" ]
+ 			return $?
+ 		else
+ 			local u s
+--- a/usr/lib/byobu/uptime
++++ b/usr/lib/byobu/uptime
+@@ -30,9 +30,9 @@ __uptime() {
+ 	if [ -r /proc/uptime ]; then
+ 		read u idle < /proc/uptime
+ 		u=${u%.*}
+-	elif [ -x /usr/sbin/sysctl ]; then
++	elif [ -x /opt/sbin/sysctl ]; then
+ 		# MacOS support
+-		u=$(/usr/sbin/sysctl -n kern.boottime | cut -f4 -d' ' | cut -d',' -f1)
++		u=$(/opt/sbin/sysctl -n kern.boottime | cut -f4 -d' ' | cut -d',' -f1)
+ 		u=$(($(date +%s) - $u))
+ 	fi
+ 	if [ "$u" ]; then
+--- a/usr/lib/byobu/users
++++ b/usr/lib/byobu/users
+@@ -27,7 +27,7 @@ __users_detail() {
+ 
+ __users() {
+ 	local count=0 f pid
+-	for f in /var/run/dropbear.*.pid; do
++	for f in /opt/var/run/dropbear.*.pid; do
+ 		read pid < "$f"
+ 		count=$(($count + $(pgrep -P "$pid" | wc -l)))
+ 	done
+@@ -37,7 +37,7 @@ __users() {
+ 	else
+ 		# Note: we'd like to use pgrep -c, however, this isn't available in
+ 		# busybox and some distro's pgrep (and it doesn't exit non-zero).
+-		count=$(pgrep -f "^sshd:.*@|^/usr/sbin/sshd -i" | wc -l) || return
++		count=$(pgrep -f "^sshd:.*@|^/opt/sbin/sshd -i" | wc -l) || return
+ 	fi
+ 	fi
+ 	if [ $count -gt 0 ]; then
+--- a/usr/lib/byobu/whoami
++++ b/usr/lib/byobu/whoami
+@@ -33,7 +33,7 @@ __whoami_detail() {
+ 	if eval $BYOBU_TEST getent >/dev/null 2>&1; then
+ 		getent -- passwd "$user"
+ 	else
+-		grep "^$user:" /etc/passwd
++		grep "^$user:" /opt/etc/passwd
+ 	fi
+ }
+ 
+--- a/usr/share/byobu/status/statusrc
++++ b/usr/share/byobu/status/statusrc
+@@ -36,8 +36,8 @@
+ # and your lsb_release is "precise", only "p" will be displayed
+ #RELEASE_ABBREVIATED=1
+ 
+-# Default: /overlay
+-#MONITORED_DISK=/overlay
++# Default: /
++#MONITORED_DISK=/opt
+ 
+ # Minimum disk throughput that triggers the notification (in kB/s)
+ # Default: 50
+--- a/usr/share/byobu/tests/byobu-time-notifications.in
++++ b/usr/share/byobu/tests/byobu-time-notifications.in
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ #
+ #    byobu-time-notifications: performance testing of byobu's status scripts
+ #
+@@ -26,7 +26,7 @@ export BYOBU_PREFIX
+ 
+ loop() {
+ 	for j in $(seq 1 $RUNS); do
+-		usr/lib/$PKG/$1 >/dev/null 2>&1
++		opt/lib/$PKG/$1 >/dev/null 2>&1
+ 	done
+ }
+ 
+@@ -34,7 +34,7 @@ TIMEFORMAT="%R"
+ if [ -n "$1" ]; then
+ 	list="$1"
+ else
+-	list=$(ls /usr/lib/$PKG/)
++	list=$(ls /opt/lib/$PKG/)
+ fi
+ for i in $list; do
+ 	case "$i" in
+@@ -42,7 +42,7 @@ for i in $list; do
+ 			continue
+ 		;;
+ 	esac
+-	freq=`grep "byobu-status $i$" /usr/share/$PKG/profiles/common | awk '{print $3}'`
++	freq=`grep "byobu-status $i$" /opt/share/$PKG/profiles/common | awk '{print $3}'`
+ 	printf "%s" "$i $freq "
+ 	time loop $i
+ done
