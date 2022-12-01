@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=squid
 PKG_VERSION:=4.17
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www2.pl.squid-cache.org/Versions/v4/ \
@@ -66,16 +66,6 @@ define Package/squid-mod-cachemgr
   DEPENDS:=squid
   TITLE:=Web based proxy manager and reporting tool
 endef
-
-ifeq ($(or $(CONFIG_GCC_USE_VERSION_7),$(CONFIG_GCC_USE_VERSION_9)),y)
-TARGET_CFLAGS += \
-	-Werror=format-truncation=0
-endif
-
-ifeq ($(CONFIG_GCC_USE_VERSION_9),y)
-TARGET_CFLAGS += \
-	-Wno-error=class-memaccess
-endif
 
 CONFIGURE_ARGS += \
 	BUILDCXX=$(HOSTCXX_NOCACHE) \
