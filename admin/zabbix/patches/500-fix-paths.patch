@@ -1,0 +1,40 @@
+--- a/ui/locale/add_new_language.sh
++++ b/ui/locale/add_new_language.sh
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ 
+ function run
+ {
+--- a/ui/locale/make_mo.sh
++++ b/ui/locale/make_mo.sh
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ 
+ while read pofile; do
+         msgfmt --use-fuzzy -c -o ${pofile%po}mo $pofile || exit $?
+--- a/ui/locale/update_po.sh
++++ b/ui/locale/update_po.sh
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ function show_help
+ {
+ 	echo "$(basename $0) [--cleanup]"
+--- a/ui/vendor/bin/yaml-lint
++++ b/ui/vendor/bin/yaml-lint
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env sh
++#!/bin/sh
+ 
+ dir=$(cd "${0%[/\\]*}" > /dev/null; cd "../symfony/yaml/Resources/bin" && pwd)
+ 
+--- a/ui/vendor/symfony/yaml/Resources/bin/yaml-lint
++++ b/ui/vendor/symfony/yaml/Resources/bin/yaml-lint
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env php
++#!/opt/bin/php
+ <?php
+ 
+ /*
