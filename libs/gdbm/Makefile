@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gdbm
 PKG_VERSION:=1.21
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/gdbm
@@ -39,7 +39,8 @@ endef
 
 CONFIGURE_ARGS += \
 	--enable-libgdbm-compat \
-	--enable-shared
+	--enable-shared \
+	--without-readline
 
 define Build/Compile
 	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
