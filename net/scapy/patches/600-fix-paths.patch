@@ -1,0 +1,49 @@
+--- a/scapy/data.py
++++ b/scapy/data.py
+@@ -517,7 +517,7 @@ else:
+     TCP_SERVICES, UDP_SERVICES = load_services("/etc/services")
+     MANUFDB = ManufDA()
+     manuf_path = select_path(
+-        ['/usr', '/usr/local', '/opt', '/opt/wireshark',
++        ['/opt', '/usr', '/usr/local', '/opt/wireshark',
+          '/Applications/Wireshark.app/Contents/Resources'],
+         "share/wireshark/manuf"
+     )
+--- a/scapy/modules/nmap.py
++++ b/scapy/modules/nmap.py
+@@ -34,7 +34,7 @@ import scapy.libs.six as six
+ if WINDOWS:
+     conf.nmap_base = os.environ["ProgramFiles"] + "\\nmap\\nmap-os-fingerprints"  # noqa: E501
+ else:
+-    conf.nmap_base = "/usr/share/nmap/nmap-os-fingerprints"
++    conf.nmap_base = "/opt/share/nmap/nmap-os-fingerprints"
+ 
+ 
+ ######################
+--- a/scapy/modules/p0f.py
++++ b/scapy/modules/p0f.py
+@@ -24,7 +24,7 @@ from scapy.volatile import RandByte, Ran
+ from scapy.error import warning
+ from scapy.libs.six import integer_types, string_types
+ 
+-_p0fpaths = ["/etc/p0f", "/usr/share/p0f", "/opt/local"]
++_p0fpaths = ["/opt/share", "/etc/p0f", "/usr/share/p0f"]
+ conf.p0f_base = select_path(_p0fpaths, "p0f.fp")
+ 
+ MIN_TCP4 = 40  # Min size of IPv4/TCP headers
+--- a/scapy/volatile.py
++++ b/scapy/volatile.py
+@@ -1063,10 +1063,13 @@ class RandSingString(RandSingularity):
+                         "%00",
+                         "\\",
+                         "../../../../../../../../../../../../../../../../../etc/passwd",  # noqa: E501
++                        "%2e%2e%2f" * 20 + "opt/etc/passwd",
+                         "%2e%2e%2f" * 20 + "etc/passwd",
+                         "%252e%252e%252f" * 20 + "boot.ini",
++                        "..%c0%af" * 20 + "opt/etc/passwd",
+                         "..%c0%af" * 20 + "etc/passwd",
+                         "..%c0%af" * 20 + "boot.ini",
++                        "//opt/etc/passwd",
+                         "//etc/passwd",
+                         r"..\..\..\..\..\..\..\..\..\..\..\..\..\..\..\..\..\boot.ini",  # noqa: E501
+                         "AUX:",
