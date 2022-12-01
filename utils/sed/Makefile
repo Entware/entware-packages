@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sed
-PKG_VERSION:=4.8
-PKG_RELEASE:=3
+PKG_VERSION:=4.9
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/sed
-PKG_HASH:=f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633
+PKG_HASH:=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181
 
 PKG_MAINTAINER:=Russell Senior <russell@personaltelco.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -31,7 +31,7 @@ define Package/sed
   TITLE:=sed stream editor utility - full version
   DEPENDS:=+libpcre
   URL:=https://www.gnu.org/software/sed/
-#  ALTERNATIVES:=300:/bin/sed:/usr/libexec/sed-gnu
+  ALTERNATIVES:=300:/opt/bin/sed:/opt/libexec/sed-gnu
 endef
 
 define Package/sed/description
@@ -47,8 +47,8 @@ CONFIGURE_ARGS += \
 	--without-selinux
 
 define Package/sed/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sed $(1)/opt/libexec/sed-gnu
 endef
 
 $(eval $(call BuildPackage,sed))
