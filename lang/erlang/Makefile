@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=erlang
 PKG_VERSION:=24.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=otp_src_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= http://www.erlang.org/download/
@@ -349,7 +349,8 @@ define Package/erlang/install
 		$(CP) $(PKG_INSTALL_DIR)/opt/bin/$$$$f $(1)/opt/bin/ ; \
 	done
 	$(INSTALL_DIR) $(1)/opt/lib/erlang/bin
-	for f in erl erlc escript run_erl start start.boot start.script start_clean.boot start_erl start_sasl.boot to_erl; do \
+	# XXX missing symlink epmd
+	for f in epmd erl erlc escript run_erl start start.boot start.script start_clean.boot start_erl start_sasl.boot to_erl; do \
 		$(CP) $(PKG_INSTALL_DIR)/opt/lib/erlang/bin/$$$$f $(1)/opt/lib/erlang/bin/ ; \
 	done
 	$(INSTALL_DIR) $(1)/opt/lib/erlang/lib
