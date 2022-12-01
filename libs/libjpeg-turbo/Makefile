@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libjpeg-turbo
-PKG_VERSION:=2.1.2
+PKG_VERSION:=2.1.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
-PKG_HASH:=09b96cb8cbff9ea556a9c2d173485fd19488844d55276ed4f42240e1e2073ce5
+PKG_HASH:=d3ed26a1131a13686dfca4935e520eb7c90ae76fbc45d98bb50a8dc86230342b
 
 PKG_MAINTAINER:=Rosen Penev <rosenp@gmail.com>
 PKG_LICENSE:=BSD-3-Clause IJG zlib
@@ -77,8 +77,6 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc $(1)/opt/lib/pkgconfig/
 	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libjpeg.pc
 	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libjpeg.pc
-	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/libturbojpeg.pc
-	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/libturbojpeg.pc
 endef
 
 define Package/libjpeg-turbo/install
