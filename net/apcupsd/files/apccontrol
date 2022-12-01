@@ -29,7 +29,7 @@ WALL=true
 # Concatenate all output from this script to the events file
 #  Note, the following kills the script in a power fail situation
 #   where the disks are mounted read-only.
-# exec >>/var/log/apcupsd.events 2>&1
+# exec >>/opt/var/log/apcupsd.events 2>&1
 
 #
 # This piece is to substitute the default behaviour with your own script,
