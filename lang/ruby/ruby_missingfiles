@@ -7,18 +7,18 @@ function list_staging_files {
 	cd "$1"; find \
 		\( \( -name "root-*" -or -name "packages" -or -name "stamp" -or -name "pkginfo" -or -name "host" -or -name man \) -prune \) -or -true \
 		\( -path "*ruby*" -or -name "erb" -or -name "gem" -or -name "irb" -or -name "rake" -or -name "rdoc" -or -name "ri" -or -name "testrb"  -or -name "racc" -or -name "racc2y" -or -name "y2racc" \) \
-		-not -path "*/usr/lib/ruby/gems/*/cache/*" \
+		-not -path "*/opt/lib/ruby/gems/*/cache/*" \
 		-not -name "*test_case.rb" \
 		-not -name "*.rdoc" \
 		-not -name "*.doc" \
 		-not -name "*.md" \
 		-not -name "*.txt" \
 		-not -name "*.travis.yml" \
-		-not -regex ".*/usr/lib/ruby/gems/[^/]*/gems/[^/]*/benchmark/.*" \
-		-not -regex ".*/usr/lib/ruby/gems/[^/]*/gems/[^/]*/evaluation/.*" \
-		-not -regex ".*/usr/lib/ruby/gems/[^/]*/gems/[^/]*/sample/.*" \
-		-not -regex ".*/usr/lib/ruby/gems/[^/]*/gems/[^/]*/test/.*" \
-		-not -regex ".*/usr/lib/ruby/gems/[^/]*/gems/[^/]*/doc/.*" \
+		-not -regex ".*/opt/lib/ruby/gems/[^/]*/gems/[^/]*/benchmark/.*" \
+		-not -regex ".*/opt/lib/ruby/gems/[^/]*/gems/[^/]*/evaluation/.*" \
+		-not -regex ".*/opt/lib/ruby/gems/[^/]*/gems/[^/]*/sample/.*" \
+		-not -regex ".*/opt/lib/ruby/gems/[^/]*/gems/[^/]*/test/.*" \
+		-not -regex ".*/opt/lib/ruby/gems/[^/]*/gems/[^/]*/doc/.*" \
 		-not -type d \
 		-print | sort
 }
@@ -26,7 +26,7 @@ function list_staging_files {
 function list_ipkg_files {
 	for OPKG; do
 		tar --to-stdout -xzf "$OPKG" ./data.tar.gz | tar tzv | grep -v ^d | sed -e 's,.* \./,./,;s/ -> .*//'
-	done | sort -u | grep -v ./usr/lib/ruby/ruby...-bin
+	done | sort -u | grep -v ./opt/lib/ruby/ruby...-bin
 }
 
 
