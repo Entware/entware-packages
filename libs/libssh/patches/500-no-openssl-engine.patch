@@ -1,0 +1,90 @@
+--- a/include/libssh/crypto.h
++++ b/include/libssh/crypto.h
+@@ -224,7 +224,9 @@ int sshkdf_derive_key(struct ssh_crypto_
+ 
+ int secure_memcmp(const void *s1, const void *s2, size_t n);
+ #ifdef HAVE_LIBCRYPTO
++#ifndef OPENSSL_NO_ENGINE
+ ENGINE *pki_get_engine(void);
++#endif /* OPENSSL_NO_ENGINE */
+ #endif /* HAVE_LIBCRYPTO */
+ 
+ #endif /* _CRYPTO_H_ */
+--- a/src/libcrypto.c
++++ b/src/libcrypto.c
+@@ -53,7 +53,11 @@
+ #include <openssl/core_names.h>
+ #endif /* OPENSSL_VERSION_NUMBER */
+ #include <openssl/rand.h>
++#ifndef OPENSSL_NO_ENGINE
+ #include <openssl/engine.h>
++#else
++#include <openssl/err.h>
++#endif /* OPENSSL_NO_ENGINE */
+ 
+ #include "libcrypto-compat.h"
+ 
+@@ -85,7 +89,9 @@
+ 
+ static int libcrypto_initialized = 0;
+ 
++#ifndef OPENSSL_NO_ENGINE
+ static ENGINE *engine = NULL;
++#endif /* OPENSSL_NO_ENGINE */
+ 
+ void ssh_reseed(void){
+ #ifndef _WIN32
+@@ -95,6 +101,7 @@ void ssh_reseed(void){
+ #endif
+ }
+ 
++#ifndef OPENSSL_NO_ENGINE
+ ENGINE *pki_get_engine(void)
+ {
+     int ok;
+@@ -124,6 +131,7 @@ ENGINE *pki_get_engine(void)
+     }
+     return engine;
+ }
++#endif /* OPENSSL_NO_ENGINE */
+ 
+ #ifdef HAVE_OPENSSL_ECC
+ static const EVP_MD *nid_to_evpmd(int nid)
+--- a/src/pki_crypto.c
++++ b/src/pki_crypto.c
+@@ -33,7 +33,9 @@
+ 
+ #include <openssl/pem.h>
+ #include <openssl/evp.h>
++#ifndef OPENSSL_NO_ENGINE
+ #include <openssl/engine.h>
++#endif /* OPENSSL_NO_ENGINE */
+ #include <openssl/err.h>
+ #if OPENSSL_VERSION_NUMBER < 0x30000000L
+ #include <openssl/dsa.h>
+@@ -3442,7 +3444,9 @@ int pki_uri_import(const char *uri_name,
+                      ssh_key *nkey,
+                      enum ssh_key_e key_type)
+ {
++#ifndef OPENSSL_NO_ENGINE
+     ENGINE *engine = NULL;
++#endif /* OPENSSL_NO_ENGINE */
+     EVP_PKEY *pkey = NULL;
+ #if OPENSSL_VERSION_NUMBER < 0x30000000L
+     RSA *rsa = NULL;
+@@ -3460,6 +3464,7 @@ int pki_uri_import(const char *uri_name,
+     enum ssh_keytypes_e type = SSH_KEYTYPE_UNKNOWN;
+ 
+     /* Do the init only once */
++#ifndef OPENSSL_NO_ENGINE
+     engine = pki_get_engine();
+     if (engine == NULL) {
+         SSH_LOG(SSH_LOG_WARN, "Failed to initialize engine");
+@@ -3490,6 +3495,7 @@ int pki_uri_import(const char *uri_name,
+                 "Invalid key type: %d", key_type);
+         goto fail;
+     }
++#endif /* OPENSSL_NO_ENGINE */
+ 
+     key = ssh_key_new();
+     if (key == NULL) {

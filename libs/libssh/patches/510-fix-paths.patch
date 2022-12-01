@@ -1,0 +1,76 @@
+--- a/DefineOptions.cmake
++++ b/DefineOptions.cmake
+@@ -50,11 +50,11 @@ if (WITH_ABI_BREAK)
+ endif (WITH_ABI_BREAK)
+ 
+ if (NOT GLOBAL_BIND_CONFIG)
+-  set(GLOBAL_BIND_CONFIG "/etc/ssh/libssh_server_config")
++  set(GLOBAL_BIND_CONFIG "/opt/etc/ssh/libssh_server_config")
+ endif (NOT GLOBAL_BIND_CONFIG)
+ 
+ if (NOT GLOBAL_CLIENT_CONFIG)
+-  set(GLOBAL_CLIENT_CONFIG "/etc/ssh/ssh_config")
++  set(GLOBAL_CLIENT_CONFIG "/opt/etc/ssh/ssh_config")
+ endif (NOT GLOBAL_CLIENT_CONFIG)
+ 
+ if (FUZZ_TESTING)
+--- a/src/config.c
++++ b/src/config.c
+@@ -534,13 +534,13 @@ ssh_config_make_absolute(ssh_session ses
+     /* relative path */
+     if (global) {
+         /* Parsing global config */
+-        outlen = strlen(path) + strlen("/etc/ssh/") + 1;
++        outlen = strlen(path) + strlen("/opt/etc/ssh/") + 1;
+         out = malloc(outlen);
+         if (out == NULL) {
+             ssh_set_error_oom(session);
+             return NULL;
+         }
+-        rv = snprintf(out, outlen, "/etc/ssh/%s", path);
++        rv = snprintf(out, outlen, "/opt/etc/ssh/%s", path);
+         if (rv < 1) {
+             free(out);
+             return NULL;
+--- a/src/dh-gex.c
++++ b/src/dh-gex.c
+@@ -314,7 +314,7 @@ error:
+ 
+ #ifdef WITH_SERVER
+ 
+-#define MODULI_FILE "/etc/ssh/moduli"
++#define MODULI_FILE "/opt/etc/ssh/moduli"
+ /* 2     "Safe" prime; (p-1)/2 is also prime. */
+ #define SAFE_PRIME 2
+ /* 0x04  Probabilistic Miller-Rabin primality tests. */
+--- a/src/options.c
++++ b/src/options.c
+@@ -684,7 +684,7 @@ int ssh_options_set(ssh_session session,
+             SAFE_FREE(session->opts.global_knownhosts);
+             if (v == NULL) {
+                 session->opts.global_knownhosts =
+-                    strdup("/etc/ssh/ssh_known_hosts");
++                    strdup("/opt/etc/ssh/ssh_known_hosts");
+                 if (session->opts.global_knownhosts == NULL) {
+                     ssh_set_error_oom(session);
+                     return -1;
+@@ -1507,7 +1507,7 @@ int ssh_options_apply(ssh_session sessio
+     session->opts.knownhosts = tmp;
+ 
+     if (session->opts.global_knownhosts == NULL) {
+-        tmp = strdup("/etc/ssh/ssh_known_hosts");
++        tmp = strdup("/opt/etc/ssh/ssh_known_hosts");
+     } else {
+         tmp = ssh_path_expand_escape(session, session->opts.global_knownhosts);
+     }
+--- a/src/socket.c
++++ b/src/socket.c
+@@ -908,7 +908,7 @@ ssh_execute_command(const char *command,
+     if (shell == NULL || shell[0] == '\0') {
+         /* Fall back to bash. There are issues with dash or
+          * whatever people tend to link to /bin/sh */
+-        shell = "/bin/bash";
++        shell = "$SHELL";
+     }
+     args[0] = shell;
+ 
