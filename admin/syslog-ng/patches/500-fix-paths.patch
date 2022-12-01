@@ -1,0 +1,91 @@
+--- a/contrib/syslog-ng-debun
++++ b/contrib/syslog-ng-debun
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+-#!/bin/bash
++#!/opt/bin/bash
+ 
+ ### syslog-ng-debun: syslog debug bundle generator
+ ### Written/Copyright: Gyorgy Pasztor <pasztor@linux.gyakg.u-szeged.hu>, (c) 2014-2016.
+@@ -49,11 +49,11 @@ netstatnlp () { netstat -nlp ; }
+ netstatlunp () { netstat -lunp ; }
+ netstatpunt () { netstat -punt ; }
+ netstatpn () { netstat -pn ; }
+-netstatsu="netstat -su"
+-binprefix=/opt/syslog-ng
+-absscldirs="/usr/share/syslog-ng/include/scl"
++netstatsu="netstat -u"
++binprefix=/opt
++absscldirs="/opt/share/syslog-ng/include/scl"
+ relscldirs="share/include/scl share/syslog-ng/include/scl"
+-workdir=/tmp
++workdir=/opt/tmp
+ lsof="lsof -p"
+ no_lsof_fallback() { echo "No lsof in path."; }
+ pscmd="ps auxwwwwwf"
+@@ -64,7 +64,7 @@ dfk="df -k"
+ dfh="df -h"
+ dfi="df -i"
+ duks="du -ks"
+-grepq="fgrep -q"
++grepq="grep -F -q"
+ lddcmd="ldd"
+ topcmd () { top -b -n 1 -c >"${1}"; }
+ opensslcmd="openssl"
+@@ -89,7 +89,7 @@ getsyslogpids () { pidof syslog-ng ; }
+ os_hash_helper () { find . '!' \( -name debun.manifest -o -name syslog-ng.debun.txt \) -type f -print0 | xargs -0 md5sum ; }
+ dfk_parser () { tail -1 | while read FS ALL USED AVAIL UPERC MP; do if echo ${AVAIL} | ${grepq} '%'; then echo ${USED} ; else echo ${AVAIL} ; fi done ; }
+ trace="strace -s256 -ff -ttT -f"
+-initfile="/etc/init.d/syslog-ng"
++initfile="/opt/etc/init.d/S01syslog-ng"
+ service_stop="${initfile} stop"
+ service_start="${initfile} start"
+ service_status="${initfile} status"
+@@ -417,7 +417,7 @@ acquire_network_info () {
+ 		printf "Failed\n"
+ 	fi
+ 	printf "Getting DNS resolution-related information: "
+-	[ -f /etc/nsswitch.conf ] && cp /etc/nsswitch.conf ${tmpdir}/sys.nsswitch.conf
++	[ -f /opt/etc/nsswitch.conf ] && cp /opt/etc/nsswitch.conf ${tmpdir}/sys.nsswitch.conf
+ 	[ -f /etc/resolv.conf ] && cp /etc/resolv.conf ${tmpdir}/sys.resolv.conf
+ 	[ -f /etc/hosts ] && cp /etc/hosts ${tmpdir}/sys.hosts
+ 	printf "Done\n"
+@@ -933,13 +933,13 @@ acquire_running_syslog_config() {
+ }
+ 
+ fhs_set_linux () {
+-	confdir=/etc/syslog-ng
+-	vardir=/var/lib/syslog-ng
+-	piddir=/var/lib/syslog-ng
+-	syslogbin=/usr/sbin/syslog-ng
+-	syslogngctlbin=/usr/sbin/syslog-ng-ctl
+-	syslogngquerybin=/usr/sbin/syslog-ng-query
+-	syslogrealbin=/usr/sbin/syslog-ng
++	confdir=/opt/etc
++	vardir=/opt/var
++	piddir=/opt/var/run/syslog-ng
++	syslogbin=/opt/sbin/syslog-ng
++	syslogngctlbin=/opt/sbin/syslog-ng-ctl
++	syslogngquerybin=/opt/sbin/syslog-ng-query
++	syslogrealbin=/opt/sbin/syslog-ng
+ }
+ 
+ fhs_set_unix () {
+@@ -1149,7 +1149,7 @@ detect_env_linux () {
+ 		dist="SUSE LINUX"
+ 	else
+ 		echo "Unknown or unsupported Linux distribution!"
+-		cat /etc/*release /etc/*version >${tmpdir}/sys.linux.os-release 2>/dev/null
++		cat /opt/etc/*release /etc/*release /etc/*version >${tmpdir}/sys.linux.os-release 2>/dev/null
+ 	fi
+ }
+ 
+@@ -1162,7 +1162,7 @@ detect_env () {
+ 	if [ -x /opt/syslog-ng/bin/loggen ] ; then
+ 		syslogfhs=unix
+ 		echo "Unix-like FHS detected"
+-	elif [ -d /etc/syslog-ng/ ]; then
++	elif [ -x /opt/bin/loggen ]; then
+ 		syslogfhs=linux
+ 		echo "Linux-type FHS detected"
+ 	else
