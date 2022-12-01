@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=apinger
 PKG_SOURCE_DATE:=2015-04-09
 PKG_SOURCE_VERSION:=78eb328721ba1a10571c19df95acddcb5f0c17c8
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/Jajcus/apinger
@@ -62,5 +62,23 @@ define Package/apinger/install
 	$(INSTALL_BIN) ./files/S80apinger $(1)/opt/etc/init.d/
 endef
 
+define Package/apinger-rrd
+  SECTION:=net
+  CATEGORY:=Network
+  DEPENDS:=+apinger +rrdtool1 +rrdcgi1
+  TITLE:=Apinger RRD Graphs
+  URL:=https://github.com/Jajcus/apinger
+endef
+
+define Package/apinger-rrd/description
+	Generate RRD Graphs from Apinger Data
+endef
+
+define Package/apinger-rrd/install
+	$(INSTALL_DIR) $(1)/usr/libexec/apinger/rpc
+	$(INSTALL_DATA) ./files/graphs.sh $(1)/usr/libexec/apinger/rpc
+endef
+
 $(eval $(call BuildPackage,apinger))
+#$(eval $(call BuildPackage,apinger-rrd))
 
