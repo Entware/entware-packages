@@ -50,3 +50,27 @@
  	sed \
  	-e 's,@VERSION\@,$(VERSION),g' \
  	-e 's,@prefix\@,$(PREFIX),g' \
+--- a/key.dns_resolver.c
++++ b/key.dns_resolver.c
+@@ -46,7 +46,7 @@ static const char key_type[] = "dns_reso
+ static const char a_query_type[] = "a";
+ static const char aaaa_query_type[] = "aaaa";
+ static const char afsdb_query_type[] = "afsdb";
+-static const char *config_file = "/etc/keyutils/key.dns_resolver.conf";
++static const char *config_file = "/opt/etc/keyutils/key.dns_resolver.conf";
+ static bool config_specified = false;
+ key_serial_t key;
+ static int verbose;
+--- a/request-key.c
++++ b/request-key.c
+@@ -278,8 +278,8 @@ inaccessible:
+ static void lookup_action(struct parameters *params)
+ {
+ 	if (!xlocaldirs) {
+-		scan_conf_dir(params, "/etc/request-key.d");
+-		scan_conf_file(params, AT_FDCWD, "/etc/request-key.conf");
++		scan_conf_dir(params, "/opt/etc/request-key.d");
++		scan_conf_file(params, AT_FDCWD, "/opt/etc/request-key.conf");
+ 	} else {
+ 		scan_conf_dir(params, "request-key.d");
+ 		scan_conf_file(params, AT_FDCWD, "request-key.conf");
