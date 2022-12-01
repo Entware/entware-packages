@@ -98,6 +98,9 @@ define Package/zsh/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/net/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/net/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/param/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/param/
+	# XXX Entware specific: fix exec path in scripts
+	$(FIND) $(1)/opt/share/zsh/$(PKG_VERSION)/functions -type f | \
+		$(XARGS) $(SED) 's,^#!.*zsh,#!/opt/bin/zsh,'
 endef
 
 $(eval $(call BuildPackage,zsh))
