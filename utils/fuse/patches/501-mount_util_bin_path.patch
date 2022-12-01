@@ -1,8 +1,6 @@
 --- a/lib/mount_util.c
 +++ b/lib/mount_util.c
-@@ -98,13 +98,13 @@
- 	if (res == 0) {
- 		char *env = NULL;
+@@ -100,9 +100,9 @@ static int add_mount(const char *prognam
  
  		sigprocmask(SIG_SETMASK, &oldmask, NULL);
  		setuid(geteuid());
@@ -14,5 +12,3 @@
  			progname, strerror(errno));
  		exit(1);
  	}
- 	res = waitpid(res, &status, 0);
- 	if (res == -1)

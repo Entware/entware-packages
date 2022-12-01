@@ -10,7 +10,7 @@ include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=fuse
 PKG_VERSION:=2.9.9
-PKG_RELEASE:=2a
+PKG_RELEASE:=2b
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/libfuse/libfuse/releases/download/$(PKG_NAME)-$(PKG_VERSION)
@@ -19,6 +19,7 @@ PKG_HASH:=d0e69d5d608cc22ff4843791ad097f554dd32540ddc9bed7638cc6fea7c1b4b5
 PKG_MAINTAINER:=
 PKG_CPE_ID:=cpe:/a:fuse_project:fuse
 
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
@@ -93,7 +94,7 @@ endef
 
 define Package/fuse-utils/install
 	$(INSTALL_DIR) $(1)/opt/sbin
-	$(CP) $(PKG_INSTALL_DIR)/sbin/mount.fuse $(1)/opt/sbin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/sbin/mount.fuse $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/{fusermount,ulockmgr_server} $(1)/opt/bin/
 endef
