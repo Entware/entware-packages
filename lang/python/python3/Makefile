@@ -17,7 +17,7 @@ PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=8437efd5b106ef0a75aabfbf23d880625120a73a86a22ade4d2e2e68d7b74486
+PKG_HASH:=6eed8415b7516fb2f260906db5d48dd4c06acc0cb24a7d6cc15296a604dcdc48
 
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=PSF-2.0
@@ -306,7 +306,8 @@ define Py3Package/python3-base/install
 		$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/_sysconfigdata.py
   # XXX
 	$(SED) 's,$(STAGING_DIR),,g;s,$(TOOLCHAIN_DIR),/opt,g;s,$(STAGING_DIR_HOST),/opt,g; \
-		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g' \
+		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g; \
+		s,-L$(PKG_BUILD_DIR),,g' \
 			$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/_sysconfigdata.py
 endef
 
@@ -336,14 +337,10 @@ HOST_MAKE_VARS += \
 	USE_PYTHON_CONFIG_PY=1
 endif
 
-# FIXME: remove when removing patch '028-host-python-support-ssl-with-libressl.patch'
-#HOST_CFLAGS += \
-#	-DOPENWRT_HOST_BUILD
-
 HOST_CONFIGURE_ARGS+= \
 	--enable-optimizations \
 	--with-ensurepip=upgrade \
-	--with-system-expat=$(STAGING_DIR_HOSTPKG) \
+	--with-system-expat=$(STAGING_DIR_HOST) \
 	--with-ssl-default-suites=openssl \
 	--without-cxx-main \
 	--without-pymalloc \

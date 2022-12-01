@@ -1,0 +1,44 @@
+--- a/Lib/ctypes/util.py
++++ b/Lib/ctypes/util.py
+@@ -286,7 +286,7 @@ elif os.name == "posix":
+             regex = r'\s+(lib%s\.[^\s]+)\s+\(%s'
+             regex = os.fsencode(regex % (re.escape(name), abi_type))
+             try:
+-                with subprocess.Popen(['/sbin/ldconfig', '-p'],
++                with subprocess.Popen(['/opt/sbin/ldconfig', '-p'],
+                                       stdin=subprocess.DEVNULL,
+                                       stderr=subprocess.DEVNULL,
+                                       stdout=subprocess.PIPE,
+--- a/Lib/posixpath.py
++++ b/Lib/posixpath.py
+@@ -18,7 +18,7 @@ pardir = '..'
+ extsep = '.'
+ sep = '/'
+ pathsep = ':'
+-defpath = '/bin:/usr/bin'
++defpath = '/opt/bin:/opt/usr/bin:/bin:/usr/bin'
+ altsep = None
+ devnull = '/dev/null'
+ 
+--- a/Lib/tempfile.py
++++ b/Lib/tempfile.py
+@@ -170,7 +170,7 @@ def _candidate_tempdir_list():
+                          _os.path.expandvars(r'%SYSTEMROOT%\Temp'),
+                          r'c:\temp', r'c:\tmp', r'\temp', r'\tmp' ])
+     else:
+-        dirlist.extend([ '/tmp', '/var/tmp', '/usr/tmp' ])
++        dirlist.extend([ '/opt/tmp', '/opt/var/tmp', '/tmp', '/var/tmp', '/usr/tmp' ])
+ 
+     # As a last resort, the current directory.
+     try:
+--- a/Lib/uuid.py
++++ b/Lib/uuid.py
+@@ -361,7 +361,7 @@ def _get_command_stdout(command, *args):
+ 
+     try:
+         path_dirs = os.environ.get('PATH', os.defpath).split(os.pathsep)
+-        path_dirs.extend(['/sbin', '/usr/sbin'])
++        path_dirs.extend(['/opt/sbin', '/opt/usr/sbin', '/sbin', '/usr/sbin'])
+         executable = shutil.which(command, path=os.pathsep.join(path_dirs))
+         if executable is None:
+             return None
