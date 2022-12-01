@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -155,7 +155,7 @@ endif ()
+ 
+ # PkgConfig
+ set(prefix      ${CMAKE_INSTALL_PREFIX})
+-set(exec_prefix ${CMAKE_INSTALL_PREFIX}/bin)
++set(exec_prefix ${CMAKE_INSTALL_PREFIX})
+ set(includedir  ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME})
+ 
+ if(${UNIX})
