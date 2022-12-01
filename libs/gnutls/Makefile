@@ -6,13 +6,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gnutls
-PKG_VERSION:=3.7.6
+PKG_VERSION:=3.7.8
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7
-PKG_HASH:=77065719a345bfb18faa250134be4c53bef70c1bd61f6c0c23ceb8b44f0262ff
+PKG_HASH:=c58ad39af0670efe6a8aee5e3a8b2331a1200418b64b7c51977fb396d4617114
 
 PKG_MAINTAINER:=Nikos Mavrogiannopoulos <nmav@gnutls.org>
 PKG_LICENSE:=LGPL-2.1-or-later
@@ -104,7 +104,7 @@ endef
 define Package/libgnutls-dane
 $(call Package/gnutls/Default)
   TITLE+= (libgnutls-dane library)
-  DEPENDS:= +libgnutls +libunbound
+  DEPENDS:= +libgnutls +PACKAGE_libgnutls-dane:libunbound
 endef
 
 define Package/libgnutls/description
