@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=psmisc
 PKG_VERSION:=23.4
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/psmisc
@@ -26,7 +26,7 @@ define Package/psmisc
   TITLE:=proc utilities
   URL:=https://gitlab.com/psmisc/psmisc/
   DEPENDS:=+libncurses
-#  ALTERNATIVES:=300:/usr/bin/killall:/usr/libexec/killall
+  ALTERNATIVES:=300:/opt/bin/killall:/opt/libexec/killall
 endef
 
 define Package/psmisc/description
@@ -56,9 +56,9 @@ MAKE_FLAGS += \
 
 define Package/psmisc/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/opt/bin/{fuser,killall,prtstat,pstree,$(PEEK)pslog} \
-		$(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{fuser,prtstat,pstree,$(PEEK)pslog} $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/killall $(1)/opt/libexec
 endef
 
 $(eval $(call BuildPackage,psmisc))
