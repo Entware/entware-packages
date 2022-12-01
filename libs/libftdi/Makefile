@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libftdi
 PKG_VERSION:=0.20
-PKG_RELEASE:=7
+PKG_RELEASE:=7a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.intra2net.com/en/developer/libftdi/download/
