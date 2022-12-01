@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libowfat
 PKG_VERSION:=0.32
-PKG_RELEASE:=4
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.fefe.de/libowfat
@@ -39,6 +39,7 @@ LOWFAT_MAKEOPTS = $(TARGET_CONFIGURE_OPTS) \
 	CFLAGS="$(TARGET_CFLAGS) -I$(PKG_BUILD_DIR) -I$(STAGING_DIR)/opt/include" \
 	CCC="$(TARGET_CC)" \
 	CROSS="$(TARGET_CROSS)" \
+	CFLAGS_OPT="$(TARGET_CFLAGS) -I$(PKG_BUILD_DIR) -I$(STAGING_DIR)/opt/include" \
 	DEBUG="$(DEBUG)" \
 	VERSION="$(PKG_VERSION)" \
 	OS="Linux"
