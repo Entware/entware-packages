@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=php
-PKG_VERSION:=8.1.7
-PKG_RELEASE:=2
+PKG_VERSION:=8.1.13
+PKG_RELEASE:=1
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 PKG_LICENSE:=PHP-3.01
@@ -16,7 +16,7 @@ PKG_CPE_ID:=cpe:/a:php:php
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://www.php.net/distributions/
-PKG_HASH:=f042322f1b5a9f7c2decb84b7086ef676896c2f7178739b9672afafa964ed0e5
+PKG_HASH:=b15ef0ccdd6760825604b3c4e3e73558dcf87c75ef1d68ef4289d8fd261ac856
 
 PKG_BUILD_PARALLEL:=1
 PKG_USE_MIPS16:=0
@@ -33,7 +33,7 @@ PHP8_MODULES= \
 	mbstring mysqli mysqlnd \
 	opcache openssl \
 	pcntl pdo pdo-mysql pdo-pgsql pdo-sqlite pgsql phar \
-	session shmop simplexml snmp soap sockets sqlite3 sysvmsg sysvsem sysvshm \
+	session shmop simplexml snmp soap sockets sodium sqlite3 sysvmsg sysvsem sysvshm \
 	tokenizer \
 	xml xmlreader xmlwriter \
 	zip
@@ -418,6 +418,12 @@ else
   CONFIGURE_ARGS+= --disable-sockets
 endif
 
+ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-sodium),)
+  CONFIGURE_ARGS+= --with-sodium=shared,"$(STAGING_DIR)/opt"
+else
+  CONFIGURE_ARGS+= --without-sodium
+endif
+
 ifneq ($(SDK)$(CONFIG_PACKAGE_php8-mod-sqlite3),)
   CONFIGURE_ARGS+= --with-sqlite3=shared
 else
@@ -661,6 +667,7 @@ $(eval $(call BuildModule,simplexml,SimpleXML,+@PHP8_LIBXML +PACKAGE_php8-mod-si
 $(eval $(call BuildModule,snmp,SNMP,+PACKAGE_php8-mod-snmp:libnetsnmp +PACKAGE_php8-mod-snmp:libopenssl))
 $(eval $(call BuildModule,soap,SOAP,+@PHP8_LIBXML +PACKAGE_php8-mod-soap:libxml2))
 $(eval $(call BuildModule,sockets,Sockets))
+$(eval $(call BuildModule,sodium,Sodium,+PACKAGE_php8-mod-sodium:libsodium,30))
 $(eval $(call BuildModule,sqlite3,SQLite3,+PACKAGE_php8-mod-sqlite3:libsqlite3))
 $(eval $(call BuildModule,sysvmsg,System V messages))
 $(eval $(call BuildModule,sysvsem,System V shared memory))
