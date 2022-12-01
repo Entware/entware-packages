@@ -1,0 +1,32 @@
+--- a/src/utils/pa-info
++++ b/src/utils/pa-info
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/opt/bin/bash
+ 
+ # This file is part of PulseAudio.
+ #
+@@ -40,7 +40,7 @@ function jacks_do {
+ function alsa_info_do {
+ 	alsa_info=$(which alsa-info.sh)
+ 	[ $alsa_info ] || alsa_info=$(which alsa-info)
+-	[ $alsa_info ] || alsa_info='/usr/share/alsa-base/alsa-info.sh'
++	[ $alsa_info ] || alsa_info='/opt/share/alsa-base/alsa-info.sh'
+ 	[ -f $alsa_info ] && {
+ 		$alsa_info --stdout
+ 		return
+@@ -62,10 +62,10 @@ cmds=(
+ 	'pulseaudio --version'
+ 	'pactl info'
+ 	'pactl list'
+-	'cat /etc/pulse/daemon.conf'
+-	'cat /etc/pulse/client.conf'
+-	'cat /etc/pulse/default.pa'
+-	'cat /etc/pulse/system.pa'
++	'cat /opt/etc/pulse/daemon.conf'
++	'cat /opt/etc/pulse/client.conf'
++	'cat /opt/etc/pulse/default.pa'
++	'cat /opt/etc/pulse/system.pa'
+ 	'ls -alt /dev/snd/*'
+ 	'lsof /dev/snd/*'
+ 	'jacks_do'
