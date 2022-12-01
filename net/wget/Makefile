@@ -8,18 +8,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=wget
-PKG_VERSION:=1.21.2
+PKG_VERSION:=1.21.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
-PKG_HASH:=e6d4c76be82c676dd7e8c61a29b2ac8510ae108a810b5d1d18fc9a1d2c9a2497
+PKG_HASH:=5726bb8bc5ca0f6dc7110f6416e4bb7019e2d2ff5bf93d1ca2ffcc6656f220e5
 
-PKG_MAINTAINER:=Peter Wagner <tripolar@gmx.at>
+PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:gnu:wget
 
+PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
@@ -49,7 +50,7 @@ $(call Package/wget/Default)
   DEPENDS+= +libopenssl +librt
   TITLE+= (with SSL support)
   VARIANT:=ssl
-#  ALTERNATIVES:=300:/usr/bin/wget:/usr/libexec/wget-ssl
+  ALTERNATIVES:=300:/opt/bin/wget:/opt/libexec/wget-ssl
 endef
 
 define Package/wget-ssl/description
@@ -61,7 +62,7 @@ define Package/wget-nossl
 $(call Package/wget/Default)
   TITLE+= (without SSL support)
   VARIANT:=nossl
-#  ALTERNATIVES:=300:/usr/bin/wget:/usr/libexec/wget-nossl
+  ALTERNATIVES:=300:/opt/bin/wget:/opt/libexec/wget-nossl
 endef
 
 define Package/wget-nossl/description
@@ -96,14 +97,13 @@ ifeq ($(BUILD_VARIANT),nossl)
 endif
 
 define Package/wget-ssl/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/wget $(1)/opt/bin/wget-ssl
-	$(LN) wget-ssl $(1)/opt/bin/wget
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/wget $(1)/opt/libexec/wget-ssl
 endef
 
 define Package/wget-nossl/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/wget $(1)/opt/bin/wget-nossl
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/wget $(1)/opt/libexec/wget-nossl
 endef
 
 $(eval $(call BuildPackage,wget-ssl))
