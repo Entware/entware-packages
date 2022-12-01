@@ -49,20 +49,20 @@ MESON_ARGS += \
 	-Dnls=false
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/include/p11-kit-1/p11-kit/
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/p11-kit-1/p11-kit/* $(1)/usr/include/p11-kit-1/p11-kit/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libp11-kit.so* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/p11-kit-1.pc $(1)/usr/lib/pkgconfig/p11-kit-1.pc
+	$(INSTALL_DIR) $(1)/opt/include/p11-kit-1/p11-kit/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/p11-kit-1/p11-kit/* $(1)/opt/include/p11-kit-1/p11-kit/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libp11-kit.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/p11-kit-1.pc $(1)/opt/lib/pkgconfig/p11-kit-1.pc
 endef
 
 define Package/p11-kit/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libp11-kit.so.* $(1)/usr/lib/
-	$(INSTALL_DIR) $(1)/etc/pkcs11/modules/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libp11-kit.so.* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/etc/pkcs11/modules/
 ifneq ($(CONFIG_PACKAGE_libopensc),)
-	$(CP) ./files/opensc.module $(1)/etc/pkcs11/modules/
+	$(CP) ./files/opensc.module $(1)/opt/etc/pkcs11/modules/
 endif
 endef
 

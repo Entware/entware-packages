@@ -1,0 +1,11 @@
+--- a/common/runtime.c
++++ b/common/runtime.c
+@@ -48,7 +48,7 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
+-static const char * const _p11_runtime_bases_default[] = { "/run", "/var/run", NULL };
++static const char * const _p11_runtime_bases_default[] = { "/opt/var/run", "/run", "/var/run", NULL };
+ const char * const *_p11_runtime_bases = _p11_runtime_bases_default;
+ #endif
+ 
