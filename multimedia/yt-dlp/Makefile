@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=yt-dlp
 PKG_VERSION:=2022.9.1
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PYPI_NAME:=yt-dlp
 PKG_HASH:=bc74ee255790043e458197aaf25c6c104fefc9fcda4458f652619447ab4ae0d7
@@ -30,6 +30,8 @@ define Package/yt-dlp
     +python3-openssl \
     +python3-sqlite3 \
     +python3-urllib \
+    +python3-logging \
+    +python3-uuid \
     +python3-xml
 endef
 
