@@ -1,16 +1,16 @@
 This patch is only needed for old kernels that do not have SOCK_CLOEXEC flag - used in tomato and keenetic
 --- a/src/fdevent.c
 +++ b/src/fdevent.c
-@@ -20,12 +20,22 @@
- #include <winsock2.h>
- #endif
+@@ -21,12 +21,22 @@
+ #include "ck.h"
+ #define force_assert(x) ck_assert(x)
  
 +#ifndef LINUX_VERSION_CODE
 +#include <linux/version.h>
 +#endif
 +
 +/* SOCK_CLOEXEC & SOCK_NONBLOCK since Linux 2.6.27 */
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,36)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,27)
  #ifdef SOCK_CLOEXEC
  static int use_sock_cloexec;
  #endif
