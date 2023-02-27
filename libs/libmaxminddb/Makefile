@@ -42,6 +42,8 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libmaxminddb.so* $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libmaxminddb.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libmaxminddb/install
