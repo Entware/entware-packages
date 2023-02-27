@@ -14,15 +14,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ruby
-PKG_VERSION:=3.1.2
-PKG_RELEASE:=2
+PKG_VERSION:=3.1.3
+PKG_RELEASE:=1
 
 # First two numbes
 PKG_ABI_VERSION:=$(subst $(space),.,$(wordlist 1, 2, $(subst .,$(space),$(PKG_VERSION))))
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://cache.ruby-lang.org/pub/ruby/$(PKG_ABI_VERSION)/
-PKG_HASH:=ca10d017f8a1b6d247556622c841fc56b90c03b1803f87198da1e4fd3ec3bf2a
+PKG_HASH:=4ee161939826bcdfdafa757cf8e293a7f14e357f62be7144f040335cc8c7371a
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=COPYING
@@ -74,8 +74,7 @@ CONFIGURE_ARGS += \
 	--with-bundled-sha1\
 	--with-bundled-md5\
 	--with-bundled-rmd160\
-	--with-bundled-sha2 \
-
+	--with-bundled-sha2
 endif
 
 # JIT requires a local cc installed and it is currently pointing to a wrong
@@ -182,12 +181,12 @@ define Package/ruby/install
 	$(INSTALL_DIR) $(1)/opt/lib/ruby/vendor_ruby/$(PKG_ABI_VERSION)
 	$(INSTALL_DIR) $(1)/opt/lib/ruby/site_ruby/$(PKG_ABI_VERSION)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ruby $(1)/opt/lib/ruby/ruby$(PKG_ABI_VERSION)-bin
-	#$(INSTALL_BIN) ./files/ruby $(1)/opt/bin/ruby
+	#$(INSTALL_BIN) ./files/ruby $(1)/usr/bin/ruby
 	$(LN) /opt/lib/ruby/ruby$(PKG_ABI_VERSION)-bin $(1)/opt/bin/ruby
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ruby/vendor_ruby/$(PKG_ABI_VERSION)/* $(1)/opt/lib/ruby/vendor_ruby/$(PKG_ABI_VERSION)/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ruby/site_ruby/$(PKG_ABI_VERSION)/* $(1)/opt/lib/ruby/site_ruby/$(PKG_ABI_VERSION)/
-	#$(SED) "s%@RUBY_LIBPATH@%/opt/lib/ruby/$(PKG_ABI_VERSION)%" $(1)/opt/bin/ruby
-	#$(SED) "s%@RUBY_BINPATH@%/opt/lib/ruby/ruby$(PKG_ABI_VERSION)-bin%" $(1)/opt/bin/ruby
+	#$(SED) "s%@RUBY_LIBPATH@%/usr/lib/ruby/$(PKG_ABI_VERSION)%" $(1)/usr/bin/ruby
+	#$(SED) "s%@RUBY_BINPATH@%/usr/lib/ruby/ruby$(PKG_ABI_VERSION)-bin%" $(1)/usr/bin/ruby
 endef
 
 define Package/libruby
