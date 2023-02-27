@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 include ../python3-version.mk
 
 PKG_NAME:=python3
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
@@ -278,7 +278,6 @@ define Py3Package/python3-light/filespec
 +|/opt/lib/python$(PYTHON3_VERSION)
 -|/opt/lib/python$(PYTHON3_VERSION)/distutils/cygwinccompiler.py
 -|/opt/lib/python$(PYTHON3_VERSION)/distutils/command/wininst*
--|/opt/lib/python$(PYTHON3_VERSION)/ensurepip
 -|/opt/lib/python$(PYTHON3_VERSION)/idlelib
 -|/opt/lib/python$(PYTHON3_VERSION)/tkinter
 -|/opt/lib/python$(PYTHON3_VERSION)/turtledemo
