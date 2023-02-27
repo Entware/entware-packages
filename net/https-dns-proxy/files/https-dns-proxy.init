@@ -127,6 +127,11 @@ append_bootstrap() {
 	[ "$ipv6_resolvers_only" -eq 0 ] && xappend '-4'
 }
 
+boot() {
+	ubus -t 30 wait_for network.interface 2>/dev/null
+	rc_procd start_service 'on_boot'
+}
+
 start_instance() {
 	local cfg="$1" param listen_addr listen_port ipv6_resolvers_only p url
 
@@ -153,6 +158,7 @@ start_instance() {
 	procd_set_param stdout 1
 	procd_set_param respawn
 	procd_open_data
+	procd_add_mdns_service "$packageName" 'udp' "$port" "DNS over HTTPS proxy"
 	json_add_string url "$url"
 	if [ "$force_dns" -ne 0 ]; then
 		json_add_array firewall
@@ -279,7 +285,7 @@ service_triggers() {
 
 service_started() { procd_set_config_changed firewall; }
 service_stopped() { procd_set_config_changed firewall; }
-restart() { procd_send_signal "$packageName"; }
+restart() { procd_send_signal "$packageName"; rc_procd start_service; }
 
 dnsmasq_doh_server() {
 	local cfg="$1" param="$2" address="${3:-127.0.0.1}" port="$4" i
