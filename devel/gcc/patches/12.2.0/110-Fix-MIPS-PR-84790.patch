@@ -3,9 +3,9 @@ MIPS16 functions have a static assembler prologue which clobbers
 registers v0 and v1. Add these register clobbers to function call
 instructions.
 
---- a/gcc/config/mips/mips.c
-+++ b/gcc/config/mips/mips.c
-@@ -3132,6 +3132,12 @@ mips_emit_call_insn (rtx pattern, rtx or
+--- a/gcc/config/mips/mips.cc
++++ b/gcc/config/mips/mips.cc
+@@ -3134,6 +3134,12 @@ mips_emit_call_insn (rtx pattern, rtx or
        emit_insn (gen_update_got_version ());
      }
  

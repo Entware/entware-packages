@@ -18,14 +18,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
-# XXX Entware specific: keep GCC-8.4.0
+# XXX Entware specific: keep GCC-8.4.0; drop GCC-10.3.0
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
-PKG_RELEASE:=2
+PKG_RELEASE:=5
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
@@ -40,12 +40,12 @@ ifeq ($(PKG_VERSION),8.4.0)
 	PKG_HASH:=e30a6e52d10e1f27ed55104ad233c30bd1e99cfb5ff98ab022dc941edd1b2dd4
 endif
 
-ifeq ($(PKG_VERSION),10.3.0)
-	PKG_HASH:=64f404c1a650f27fc33da242e1f2df54952e3963a49e06e73f6940f3223ac344
-endif
-
 ifeq ($(PKG_VERSION),11.3.0)
 	PKG_HASH:=b47cf2818691f5b1e21df2bb38c795fac2cfbd640ede2d0a5e1c89e338a3ac39
+endif
+
+ifeq ($(PKG_VERSION),12.2.0)
+	PKG_HASH:=e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff
 endif
 
 PATCH_DIR=./patches/$(GCC_VERSION)
@@ -249,6 +249,7 @@ define Package/gcc/install
 			$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/*.py
 endef
 
+#ifeq ($(CONFIG_INCLUDE_STATIC_LINK_SPEC),y)
 define Package/gcc/postinst
 #!/bin/sh
 
@@ -263,5 +264,6 @@ define Package/gcc/postrm
 
 $(REMOVE_STATIC_SPEC)
 endef
+#endif
 
 $(eval $(call BuildPackage,gcc))
