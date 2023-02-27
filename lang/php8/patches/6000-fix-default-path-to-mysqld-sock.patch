@@ -1,6 +1,6 @@
 --- a/ext/mysqlnd/mysqlnd_connection.c
 +++ b/ext/mysqlnd/mysqlnd_connection.c
-@@ -524,7 +524,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_sc
+@@ -523,7 +523,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_sc
  	if (hostname.l == sizeof("localhost") - 1 && !strncasecmp(hostname.s, "localhost", hostname.l)) {
  		DBG_INF_FMT("socket=%s", socket_or_pipe->s? socket_or_pipe->s:"n/a");
  		if (!socket_or_pipe->s) {
