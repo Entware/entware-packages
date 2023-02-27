@@ -34,6 +34,7 @@ define Package/sysstat
   TITLE:=Sysstat performance monitoring tools
   URL:=http://pagesperso-orange.fr/sebastien.godard/index.html
   DEPENDS:=+coreutils-date +findutils +xz $(INTL_DEPENDS)
+  ALTERNATIVES:=300:/opt/bin/iostat:/opt/libexec/iostat-sysstat
 endef
 
 define Package/sysstat/description
@@ -62,11 +63,14 @@ CONFIGURE_VARS += \
 	sa_dir="/opt/var/log/sysstat" \
 	conf_dir="/opt/etc/sysstat"
 
+# XXX Entware specific: added iostat alternative to busybox iostat
 define Package/sysstat/install
 	$(INSTALL_DIR) $(1)/opt/lib/sysstat
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/sysstat/{sadc,sa1,sa2} $(1)/opt/lib/sysstat/
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{sar,sadf,iostat,mpstat,pidstat} $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{sar,sadf,mpstat,pidstat} $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/iostat $(1)/opt/libexec/iostat-sysstat
 	$(INSTALL_DIR) $(1)/opt/etc/sysstat
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/sysstat/sysstat{,.ioconf} $(1)/opt/etc/sysstat/
 	$(INSTALL_DIR) $(1)/opt/var/log/sysstat
