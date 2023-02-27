@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=opendkim
 PKG_VERSION:=2.10.3
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
@@ -31,7 +31,7 @@ define Package/opendkim
   DEPENDS:=+libopendkim
   TITLE:=Open source milter for providing DKIM service
   URL:=http://opendkim.org/
-#  USERID:=opendkim:opendkim
+  USERID:=opendkim:opendkim
 endef
 
 define Package/opendkim/description
@@ -62,15 +62,15 @@ define Package/opendkim-tools/description
   opendkim-genzone, opendkim-testkey and opendkim-testmsg tools.
 endef
 
-TARGET_CFLAGS += $(FPIC)
-
 CONFIGURE_ARGS += \
+	--enable-bundled-strl \
 	--without-db \
 	--without-gcov \
 	--without-gprof \
 	--without-lcov \
+	--without-libbsd \
 	--with-milter=$(STAGING_DIR)/opt \
-	--enable-bundled-strl
+	--with-pic
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/lib $(1)/opt/sbin
