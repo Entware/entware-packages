@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=krb5
-PKG_VERSION:=1.19.3
+PKG_VERSION:=1.20.1
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
@@ -18,8 +18,8 @@ PKG_LICENSE_FILES:=NOTICE
 PKG_CPE_ID:=cpe:/a:mit:kerberos
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://web.mit.edu/kerberos/dist/krb5/1.19
-PKG_HASH:=56d04863cfddc9d9eb7af17556e043e3537d41c6e545610778676cf551b9dcd0
+PKG_SOURCE_URL:=https://web.mit.edu/kerberos/dist/krb5/1.20
+PKG_HASH:=704aed49b19eb5a7178b34b2873620ec299db08752d6a8574f95d41879ab8851
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
@@ -134,7 +134,7 @@ endef
 # Removed some server-side software to reduce package size. This should be
 # put in a separate package if needed.
 define Package/krb5-server/install
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
+#	$(INSTALL_DIR) $(1)/etc/init.d
 #	$(INSTALL_BIN) ./files/krb5kdc $(1)/etc/init.d/krb5kdc
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/kadmin.local $(1)/opt/sbin
