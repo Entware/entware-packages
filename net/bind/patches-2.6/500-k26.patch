@@ -1,6 +1,6 @@
 --- a/lib/isc/netmgr/netmgr.c
 +++ b/lib/isc/netmgr/netmgr.c
-@@ -3306,7 +3306,7 @@ isc__nm_socket_connectiontimeout(uv_os_s
+@@ -3411,7 +3411,7 @@ isc__nm_socket_connectiontimeout(uv_os_s
  	if (setsockopt(fd, IPPROTO_TCP, TIMEOUT_OPTNAME, &timeout,
  		       sizeof(timeout)) == -1)
  	{
