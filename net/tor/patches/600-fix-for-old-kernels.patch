@@ -1,6 +1,6 @@
 --- a/src/core/or/connection_edge.c
 +++ b/src/core/or/connection_edge.c
-@@ -129,6 +129,15 @@
+@@ -130,6 +130,15 @@
  #include <linux/if.h>
  #endif
  
