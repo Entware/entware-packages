@@ -5,7 +5,7 @@
  
  testserdisp: $(LIB_DIR)/$(LIB_STATIC) $(OBJECTS)
 -	$(CC) -o testserdisp $(OBJECTS) $(LIB_SERDISP) $(EXTRA_LIBS_STATIC)
-+	$(CC) $(LDFLAGS) -o testserdisp $(OBJECTS) $(LIB_SERDISP) $(EXTRA_LIBS_STATIC)
++	$(CC) -o testserdisp $(OBJECTS) $(LIB_SERDISP) $(EXTRA_LIBS_STATIC) $(LDFLAGS)
  
  clean:
  	/bin/rm -f $(OBJECTS) $(LIB_OBJECTS) $(LIB_DIR)/*.a $(LIB_DIR)/*.so*
