@@ -1,8 +1,10 @@
-commit b41a0152371202e951115b49c22ebf30e67f1850 (HEAD -> master, origin/master, origin/HEAD)
-Merge: 04c805b4c a69413099
-Author: Hannu Nyman <hannu.nyman@iki.fi>
-Date:   Wed Nov 30 17:35:08 2022 +0200
+commit 0ca0faafc449aadaff2682f3a87b5be12b068e46 (HEAD -> master, origin/master, origin/HEAD)
+Author: Hirokazu MORIKAWA <morikw2@gmail.com>
+Date:   Thu Feb 23 11:29:42 2023 +0900
 
-    Merge pull request #19992 from hnyman/wget
+    node: bump to v18.14.2
     
-    wget: update to 1.21.3
+    Update to v18.14.2
+    Support for OpenSSL v3.0.x
+    
+    Signed-off-by: Hirokazu MORIKAWA <morikw2@gmail.com>
