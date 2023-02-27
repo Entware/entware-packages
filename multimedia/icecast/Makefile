@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=icecast
 PKG_VERSION:=2.4.4
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://downloads.xiph.org/releases/icecast/
@@ -44,8 +44,6 @@ define Package/icecast/description
 	interaction.
 endef
 
-TARGET_CPPFLAGS += -I$(STAGING_DIR)/opt/include/libxml2
-
 CONFIGURE_ARGS+= \
 	--enable-yp \
 	--with-openssl="no" \
@@ -57,6 +55,7 @@ CONFIGURE_ARGS+= \
 	--with-vorbis="$(STAGING_DIR)/opt" \
 	--with-xslt-config="$(STAGING_DIR)/opt/bin/xslt-config"
 
+TARGET_CFLAGS+= -I$(STAGING_DIR)/opt/include/libxml2
 
 # Manually edit configure in case both vorbis and tremor host packages are installed
 define Build/Configure
