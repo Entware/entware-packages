@@ -1,0 +1,19 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = lib intl src po man testsuite
++SUBDIRS = lib src
+ EXTRA_DIST = check.lrzsz COMPATABILITY README.cvs README.isdn4linux \
+ 	README.gettext rpmrc buildrpm systype.in fastcheck.sh README.tests \
+ 	beos-runpiped.c fastcheck.beos
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -92,7 +92,7 @@ USE_NLS = @USE_NLS@
+ VERSION = @VERSION@
+ l = @l@
+ 
+-SUBDIRS = lib intl src po man testsuite
++SUBDIRS = lib src
+ EXTRA_DIST = check.lrzsz COMPATABILITY README.cvs README.isdn4linux 	README.gettext rpmrc buildrpm systype.in fastcheck.sh README.tests 	beos-runpiped.c fastcheck.beos
+ 
+ noinst_SCRIPTS = systype
