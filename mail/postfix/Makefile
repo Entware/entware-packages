@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=postfix
 PKG_VERSION:=3.5.8
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -40,9 +40,9 @@ define Package/postfix
   SECTION:=mail
   CATEGORY:=Mail
   TITLE:=Postfix Mail Transmit Agent
-#  USERID:= \
-#  	postfix=25:postfix=25 \
-#  	postdrop=26:postdrop=26
+  USERID:= \
+  	postfix=25:postfix=25 \
+  	postdrop=26:postdrop=26
   URL:=http://www.postfix.org/
   DEPENDS:=+POSTFIX_CDB:tinycdb +POSTFIX_TLS:libopenssl +POSTFIX_SASL:libsasl2 +POSTFIX_LDAP:libopenldap +POSTFIX_DB:libdb47 +POSTFIX_SQLITE:libsqlite3 +POSTFIX_MYSQL:libmysqlclient +POSTFIX_PGSQL:libpq +POSTFIX_EAI:icu +POSTFIX_PCRE:libpcre
   MENU:=1
