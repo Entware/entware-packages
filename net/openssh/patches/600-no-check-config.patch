@@ -1,6 +1,6 @@
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -382,7 +382,7 @@ distprep: catman-do depend-check
+@@ -377,7 +377,7 @@ distprep: catman-do depend-check
  	$(AUTORECONF)
  	-rm -rf autom4te.cache .depend.bak
  

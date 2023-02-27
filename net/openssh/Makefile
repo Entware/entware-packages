@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
-PKG_VERSION:=9.0p1
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_VERSION:=9.2p1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
 		https://ftp.spline.de/pub/OpenBSD/OpenSSH/portable/
-PKG_HASH:=03974302161e9ecce32153cfa10012f1e65c8f3750f573a73ab1befd5972a28a
+PKG_HASH:=3f66dbf1655fb45f50e1c56da62ab01218c228807b21338d634ebcdf9d71cf46
 
 PKG_LICENSE:=BSD ISC
 PKG_LICENSE_FILES:=LICENCE
@@ -36,7 +36,6 @@ define Package/openssh/Default
 	MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 	URL:=http://www.openssh.com/
 	SUBMENU:=SSH
-	VARIANT:=without-pam
 endef
 
 define Package/openssh-moduli
@@ -89,6 +88,7 @@ define Package/openssh-server
 	DEPENDS+= +openssh-keygen +OPENSSH_LIBFIDO2:libfido2
 	TITLE+= server
 	USERID:=sshd=22:sshd=22
+	VARIANT:=without-pam
 endef
 
 define Package/openssh-server/config
@@ -175,7 +175,7 @@ CONFIGURE_ARGS += \
 	--with-stackprotect \
 	--with$(if $(CONFIG_OPENSSL_ENGINE),,out)-ssl-engine \
 	--with$(if $(CONFIG_OPENSSH_LIBFIDO2),,out)-security-key-builtin
-	
+
 ifeq ($(BUILD_VARIANT),with-pam)
 CONFIGURE_ARGS += \
 	--with-pam
@@ -185,6 +185,10 @@ CONFIGURE_ARGS += \
 endif
 
 CONFIGURE_VARS += LD="$(TARGET_CC)" PATH_PASSWD_PROG="/bin/passwd"
+
+CONFIGURE_VARS += \
+	ac_cv_func_getentropy=no \
+	ac_cv_func_getrandom=no
 
 ifeq ($(BUILD_VARIANT),with-pam)
 TARGET_LDFLAGS += -lpthread
