@@ -43,27 +43,30 @@ define Package/upmpdcli/config
 endef
 
 define Package/upmpdcli/conffiles
-/etc/config/upmpdcli
+/opt/etc/upmpdcli.conf
 endef
 
 define Package/upmpdcli/install
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/etc/upmpdcli.conf $(1)/etc/
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/upmpdcli.config $(1)/etc/config/upmpdcli
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/upmpdcli $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/upmpdcli.conf $(1)/opt/etc/
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/upmpdcli.config $(1)/etc/config/upmpdcli
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/upmpdcli $(1)/opt/bin/
 ifeq ($(CONFIG_PACKAGE_UPMPDCLI_SCCTL),y)
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/scctl $(1)/usr/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/scctl $(1)/opt/bin/
 endif
-	$(INSTALL_DIR) $(1)/usr/share/upmpdcli
+	$(INSTALL_DIR) $(1)/opt/share/upmpdcli
 ifneq ($(CONFIG_PACKAGE_UPMPDCLI_SC_WEB_INTERFACE),y)
-	$(RM) -rf $(PKG_INSTALL_DIR)/usr/share/upmpdcli/web
+	$(RM) -rf $(PKG_INSTALL_DIR)/opt/share/upmpdcli/web
 endif
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/upmpdcli $(1)/usr/share/
-	$(INSTALL_DATA) ./files/upmpdcli.png $(1)/usr/share/upmpdcli/icon.png
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/upmpdcli.init $(1)/etc/init.d/upmpdcli
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/upmpdcli $(1)/opt/share/
+	$(INSTALL_DATA) ./files/upmpdcli.png $(1)/opt/share/upmpdcli/icon.png
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S95upmpdcli $(1)/opt/etc/init.d
+	# XXX Entware specific: fix exec path in scripts
+	$(FIND) $(1)/opt/share -type f | $(XARGS) $(SED) \
+		's,^#!.*python,#!/opt/bin/python,'
 endef
 
 $(eval $(call BuildPackage,upmpdcli))
