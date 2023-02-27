@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# XXX Entware specific: downgrade (https://sourceforge.net/p/emailrelay/bugs/52/)
 
 include $(TOPDIR)/rules.mk
 
