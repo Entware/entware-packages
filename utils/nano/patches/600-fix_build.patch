@@ -17,7 +17,7 @@
  
 --- a/lib/wchar.in.h
 +++ b/lib/wchar.in.h
-@@ -131,16 +131,16 @@
+@@ -138,16 +138,16 @@
  
  
  /* Define wint_t and WEOF.  (Also done in wctype.in.h.)  */
@@ -37,7 +37,7 @@
  #  if !GNULIB_defined_wint_t
  #   if @HAVE_CRTDEFS_H@
  #    include <crtdefs.h>
-@@ -156,7 +156,7 @@ typedef unsigned int rpl_wint_t;
+@@ -163,7 +163,7 @@ typedef unsigned int rpl_wint_t;
  # ifndef WEOF
  #  define WEOF ((wint_t) -1)
  # endif

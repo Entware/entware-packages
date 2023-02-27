@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
-PKG_VERSION:=7.0
+PKG_VERSION:=7.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/nano
-PKG_HASH:=8dd6eac38b2b8786d82681f0e1afd84f6b75210d17391b6443c437e451552149
+PKG_HASH:=86f3442768bd2873cec693f83cdf80b4b444ad3cc14760b74361474fc87a4526
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
@@ -95,7 +95,6 @@ else ifeq ($(BUILD_VARIANT),plus)
 # plus variant with some features included
   CONFIGURE_ARGS += \
 	--enable-help \
-	--enable-justify \
 	--enable-linenumbers \
 	--enable-multibuffer \
 	--enable-nanorc \
@@ -105,6 +104,7 @@ else ifeq ($(BUILD_VARIANT),plus)
 	--disable-comment \
 	--disable-extra \
 	--disable-histories \
+	--disable-justify \
 	--disable-libmagic \
 	--disable-mouse \
 	--disable-operatingdir \
