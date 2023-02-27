@@ -5,7 +5,7 @@
  	@if test -z "$${TVHEADEND_FILE_CACHE}"; then \
  		printf "WGET            $(1)\n"; \
 -		wget --no-verbose --no-check-certificate -O $(2) $(1); \
-+		$$(wget --no-verbose --no-check-certificate -O $(2) $(1) || curl $(1) -o $(2)); \
++		[ -f $(2) ] || $$(wget --no-verbose --no-check-certificate -O $(2) $(1) || curl $(1) -o $(2)); \
  	else \
  		file=$$(basename $(2)); \
  		cp "$$TVHEADEND_FILE_CACHE/$${file}" $(2); \
