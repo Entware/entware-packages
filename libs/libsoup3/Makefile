@@ -49,26 +49,26 @@ Libsoup is an HTTP library implementation in C
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/{lib/pkgconfig,include/libsoup-3.0/libsoup}
+	$(INSTALL_DIR) $(1)/opt/{lib/pkgconfig,include/libsoup-3.0/libsoup}
 
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libsoup-3.0.so* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/libsoup-3.0.so* \
+		$(1)/opt/lib/
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/* \
-		$(1)/usr/lib/pkgconfig/
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* \
+		$(1)/opt/lib/pkgconfig/
 
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/include/libsoup-3.0/libsoup/*.h \
-		$(1)/usr/include/libsoup-3.0/libsoup/
+		$(PKG_INSTALL_DIR)/opt/include/libsoup-3.0/libsoup/*.h \
+		$(1)/opt/include/libsoup-3.0/libsoup/
 endef
 
 define Package/libsoup3/install
-	$(INSTALL_DIR) $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) \
-		$(PKG_INSTALL_DIR)/usr/lib/libsoup-3.0.* \
-		$(1)/usr/lib/
+		$(PKG_INSTALL_DIR)/opt/lib/libsoup-3.0.* \
+		$(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libsoup3))
