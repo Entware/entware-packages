@@ -1,0 +1,935 @@
+diff -Naur cryptography-3.4.8.orig/docs/conf.py cryptography-3.4.8/docs/conf.py
+--- cryptography-3.4.8.orig/docs/conf.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/docs/conf.py	2023-03-17 19:59:01.129254348 +0300
+@@ -198,6 +198,10 @@
+     r"https://info.isl.ntt.co.jp/crypt/eng/camellia/",
+     # Inconsistent small DH params they seem incapable of fixing
+     r"https://www.secg.org/sec1-v2.pdf",
++    # Incomplete cert chain
++    r"https://e-trust.gosuslugi.ru",
++    # Expired cert (1 week at time of writing)
++    r"https://www.cosic.esat.kuleuven.be",
+ ]
+ 
+ autosectionlabel_prefix_document = True
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/build_openssl.py cryptography-3.4.8/src/_cffi_src/build_openssl.py
+--- cryptography-3.4.8.orig/src/_cffi_src/build_openssl.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/build_openssl.py	2022-02-17 13:55:36.000000000 +0300
+@@ -79,6 +79,8 @@
+     modules=[
+         # This goes first so we can define some cryptography-wide symbols.
+         "cryptography",
++        # Provider comes early as well so we define OSSL_LIB_CTX
++        "provider",
+         "aes",
+         "asn1",
+         "bignum",
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/openssl/cryptography.py cryptography-3.4.8/src/_cffi_src/openssl/cryptography.py
+--- cryptography-3.4.8.orig/src/_cffi_src/openssl/cryptography.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/openssl/cryptography.py	2022-02-17 13:55:36.000000000 +0300
+@@ -34,6 +34,8 @@
+ 
+ #define CRYPTOGRAPHY_OPENSSL_110F_OR_GREATER \
+     (OPENSSL_VERSION_NUMBER >= 0x1010006f && !CRYPTOGRAPHY_IS_LIBRESSL)
++#define CRYPTOGRAPHY_OPENSSL_300_OR_GREATER \
++    (OPENSSL_VERSION_NUMBER >= 0x30000000 && !CRYPTOGRAPHY_IS_LIBRESSL)
+ 
+ #define CRYPTOGRAPHY_OPENSSL_LESS_THAN_110J \
+     (OPENSSL_VERSION_NUMBER < 0x101000af || CRYPTOGRAPHY_IS_LIBRESSL)
+@@ -53,6 +55,7 @@
+ 
+ TYPES = """
+ static const int CRYPTOGRAPHY_OPENSSL_110F_OR_GREATER;
++static const int CRYPTOGRAPHY_OPENSSL_300_OR_GREATER;
+ 
+ static const int CRYPTOGRAPHY_OPENSSL_LESS_THAN_111;
+ static const int CRYPTOGRAPHY_OPENSSL_LESS_THAN_111B;
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/openssl/dh.py cryptography-3.4.8/src/_cffi_src/openssl/dh.py
+--- cryptography-3.4.8.orig/src/_cffi_src/openssl/dh.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/openssl/dh.py	2022-02-17 13:55:36.000000000 +0300
+@@ -18,7 +18,6 @@
+ void DH_free(DH *);
+ int DH_size(const DH *);
+ int DH_generate_key(DH *);
+-int DH_compute_key(unsigned char *, const BIGNUM *, DH *);
+ DH *DHparams_dup(DH *);
+ 
+ /* added in 1.1.0 when the DH struct was opaqued */
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/openssl/err.py cryptography-3.4.8/src/_cffi_src/openssl/err.py
+--- cryptography-3.4.8.orig/src/_cffi_src/openssl/err.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/openssl/err.py	2022-02-17 13:55:36.000000000 +0300
+@@ -18,6 +18,7 @@
+ 
+ static const int ERR_LIB_EVP;
+ static const int ERR_LIB_PEM;
++static const int ERR_LIB_PROV;
+ static const int ERR_LIB_ASN1;
+ static const int ERR_LIB_PKCS12;
+ 
+@@ -39,10 +40,14 @@
+ void ERR_put_error(int, int, int, const char *, int);
+ 
+ int ERR_GET_LIB(unsigned long);
+-int ERR_GET_FUNC(unsigned long);
+ int ERR_GET_REASON(unsigned long);
+ 
+ """
+ 
+ CUSTOMIZATIONS = """
++/* This define is tied to provider support and is conditionally
++   removed if Cryptography_HAS_PROVIDERS is false */
++#ifndef ERR_LIB_PROV
++#define ERR_LIB_PROV 0
++#endif
+ """
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/openssl/evp.py cryptography-3.4.8/src/_cffi_src/openssl/evp.py
+--- cryptography-3.4.8.orig/src/_cffi_src/openssl/evp.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/openssl/evp.py	2022-02-17 13:55:36.000000000 +0300
+@@ -36,6 +36,7 @@
+ static const int Cryptography_HAS_ONESHOT_EVP_DIGEST_SIGN_VERIFY;
+ static const long Cryptography_HAS_RAW_KEY;
+ static const long Cryptography_HAS_EVP_DIGESTFINAL_XOF;
++static const long Cryptography_HAS_300_FIPS;
+ """
+ 
+ FUNCTIONS = """
+@@ -165,6 +166,9 @@
+                                       size_t);
+ int EVP_PKEY_get_raw_private_key(const EVP_PKEY *, unsigned char *, size_t *);
+ int EVP_PKEY_get_raw_public_key(const EVP_PKEY *, unsigned char *, size_t *);
++
++int EVP_default_properties_is_fips_enabled(OSSL_LIB_CTX *);
++int EVP_default_properties_enable_fips(OSSL_LIB_CTX *, int);
+ """
+ 
+ CUSTOMIZATIONS = """
+@@ -269,4 +273,12 @@
+ #ifndef EVP_PKEY_POLY1305
+ #define EVP_PKEY_POLY1305 NID_poly1305
+ #endif
++
++#if CRYPTOGRAPHY_OPENSSL_300_OR_GREATER
++static const long Cryptography_HAS_300_FIPS = 1;
++#else
++static const long Cryptography_HAS_300_FIPS = 0;
++int (*EVP_default_properties_is_fips_enabled)(OSSL_LIB_CTX *) = NULL;
++int (*EVP_default_properties_enable_fips)(OSSL_LIB_CTX *, int) = NULL;
++#endif
+ """
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/openssl/fips.py cryptography-3.4.8/src/_cffi_src/openssl/fips.py
+--- cryptography-3.4.8.orig/src/_cffi_src/openssl/fips.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/openssl/fips.py	2022-02-17 13:55:36.000000000 +0300
+@@ -17,7 +17,7 @@
+ """
+ 
+ CUSTOMIZATIONS = """
+-#if CRYPTOGRAPHY_IS_LIBRESSL
++#if CRYPTOGRAPHY_IS_LIBRESSL || CRYPTOGRAPHY_OPENSSL_300_OR_GREATER
+ static const long Cryptography_HAS_FIPS = 0;
+ int (*FIPS_mode_set)(int) = NULL;
+ int (*FIPS_mode)(void) = NULL;
+diff -Naur cryptography-3.4.8.orig/src/_cffi_src/openssl/provider.py cryptography-3.4.8/src/_cffi_src/openssl/provider.py
+--- cryptography-3.4.8.orig/src/_cffi_src/openssl/provider.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/_cffi_src/openssl/provider.py	2022-02-17 13:55:36.000000000 +0300
+@@ -0,0 +1,40 @@
++# This file is dual licensed under the terms of the Apache License, Version
++# 2.0, and the BSD License. See the LICENSE file in the root of this repository
++# for complete details.
++
++
++INCLUDES = """
++#if CRYPTOGRAPHY_OPENSSL_300_OR_GREATER
++#include <openssl/provider.h>
++#include <openssl/proverr.h>
++#endif
++"""
++
++TYPES = """
++static const long Cryptography_HAS_PROVIDERS;
++
++typedef ... OSSL_PROVIDER;
++typedef ... OSSL_LIB_CTX;
++
++static const long PROV_R_BAD_DECRYPT;
++static const long PROV_R_WRONG_FINAL_BLOCK_LENGTH;
++"""
++
++FUNCTIONS = """
++OSSL_PROVIDER *OSSL_PROVIDER_load(OSSL_LIB_CTX *, const char *);
++int OSSL_PROVIDER_unload(OSSL_PROVIDER *prov);
++"""
++
++CUSTOMIZATIONS = """
++#if CRYPTOGRAPHY_OPENSSL_300_OR_GREATER
++static const long Cryptography_HAS_PROVIDERS = 1;
++#else
++static const long Cryptography_HAS_PROVIDERS = 0;
++typedef void OSSL_PROVIDER;
++typedef void OSSL_LIB_CTX;
++static const long PROV_R_BAD_DECRYPT = 0;
++static const long PROV_R_WRONG_FINAL_BLOCK_LENGTH = 0;
++OSSL_PROVIDER *(*OSSL_PROVIDER_load)(OSSL_LIB_CTX *, const char *) = NULL;
++int (*OSSL_PROVIDER_unload)(OSSL_PROVIDER *) = NULL;
++#endif
++"""
+diff -Naur cryptography-3.4.8.orig/src/cryptography/__about__.py cryptography-3.4.8/src/cryptography/__about__.py
+--- cryptography-3.4.8.orig/src/cryptography/__about__.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/__about__.py	2022-02-17 13:55:36.000000000 +0300
+@@ -21,7 +21,7 @@
+ )
+ __uri__ = "https://github.com/pyca/cryptography"
+ 
+-__version__ = "3.4.8"
++__version__ = "3.4.7"
+ 
+ __author__ = "The Python Cryptographic Authority and individual contributors"
+ __email__ = "cryptography-dev@python.org"
+diff -Naur cryptography-3.4.8.orig/src/cryptography/exceptions.py cryptography-3.4.8/src/cryptography/exceptions.py
+--- cryptography-3.4.8.orig/src/cryptography/exceptions.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/exceptions.py	2022-02-17 13:55:36.000000000 +0300
+@@ -3,10 +3,10 @@
+ # for complete details.
+ 
+ 
+-from enum import Enum
++from cryptography import utils
+ 
+ 
+-class _Reasons(Enum):
++class _Reasons(utils.Enum):
+     BACKEND_MISSING_INTERFACE = 0
+     UNSUPPORTED_HASH = 1
+     UNSUPPORTED_CIPHER = 2
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/backend.py cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/backend.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/backend.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/backend.py	2022-02-17 13:55:36.000000000 +0300
+@@ -6,6 +6,7 @@
+ import collections
+ import contextlib
+ import itertools
++import typing
+ import warnings
+ from contextlib import contextmanager
+ 
+@@ -195,8 +196,9 @@
+         b"aes-256-gcm",
+     }
+     _fips_ciphers = (AES, TripleDES)
++    # Sometimes SHA1 is still permissible. That logic is contained
++    # within the various *_supported methods.
+     _fips_hashes = (
+-        hashes.SHA1,
+         hashes.SHA224,
+         hashes.SHA256,
+         hashes.SHA384,
+@@ -210,6 +212,12 @@
+         hashes.SHAKE128,
+         hashes.SHAKE256,
+     )
++    _fips_ecdh_curves = (
++        ec.SECP224R1,
++        ec.SECP256R1,
++        ec.SECP384R1,
++        ec.SECP521R1,
++    )
+     _fips_rsa_min_key_size = 2048
+     _fips_rsa_min_public_exponent = 65537
+     _fips_dsa_min_modulus = 1 << 2048
+@@ -237,17 +245,34 @@
+         if self._lib.Cryptography_HAS_EVP_PKEY_DHX:
+             self._dh_types.append(self._lib.EVP_PKEY_DHX)
+ 
++    def __repr__(self):
++        return "<OpenSSLBackend(version: {}, FIPS: {})>".format(
++            self.openssl_version_text(), self._fips_enabled
++        )
++
+     def openssl_assert(self, ok, errors=None):
+         return binding._openssl_assert(self._lib, ok, errors=errors)
+ 
+     def _is_fips_enabled(self):
+-        fips_mode = getattr(self._lib, "FIPS_mode", lambda: 0)
+-        mode = fips_mode()
++        if self._lib.Cryptography_HAS_300_FIPS:
++            mode = self._lib.EVP_default_properties_is_fips_enabled(
++                self._ffi.NULL
++            )
++        else:
++            mode = getattr(self._lib, "FIPS_mode", lambda: 0)()
++
+         if mode == 0:
+             # OpenSSL without FIPS pushes an error on the error stack
+             self._lib.ERR_clear_error()
+         return bool(mode)
+ 
++    def _enable_fips(self):
++        # This function enables FIPS mode for OpenSSL 3.0.0 on installs that
++        # have the FIPS provider installed properly.
++        self._binding._enable_fips()
++        assert self._is_fips_enabled()
++        self._fips_enabled = self._is_fips_enabled()
++
+     def activate_builtin_random(self):
+         if self._lib.CRYPTOGRAPHY_NEEDS_OSRANDOM_ENGINE:
+             # Obtain a new structural reference.
+@@ -342,15 +367,32 @@
+         evp_md = self._evp_md_from_algorithm(algorithm)
+         return evp_md != self._ffi.NULL
+ 
++    def scrypt_supported(self):
++        if self._fips_enabled:
++            return False
++        else:
++            return self._lib.Cryptography_HAS_SCRYPT == 1
++
+     def hmac_supported(self, algorithm):
++        # FIPS mode still allows SHA1 for HMAC
++        if self._fips_enabled and isinstance(algorithm, hashes.SHA1):
++            return True
++
+         return self.hash_supported(algorithm)
+ 
+     def create_hash_ctx(self, algorithm):
+         return _HashContext(self, algorithm)
+ 
+     def cipher_supported(self, cipher, mode):
+-        if self._fips_enabled and not isinstance(cipher, self._fips_ciphers):
+-            return False
++        if self._fips_enabled:
++            # FIPS mode requires AES or TripleDES, but only CBC/ECB allowed
++            # in TripleDES mode.
++            if not isinstance(cipher, self._fips_ciphers) or (
++                isinstance(cipher, TripleDES)
++                and not isinstance(mode, (CBC, ECB))
++            ):
++                return False
++
+         try:
+             adapter = self._cipher_registry[type(cipher), type(mode)]
+         except KeyError:
+@@ -766,7 +808,13 @@
+         if isinstance(padding, PKCS1v15):
+             return True
+         elif isinstance(padding, PSS) and isinstance(padding._mgf, MGF1):
+-            return self.hash_supported(padding._mgf._algorithm)
++            # SHA1 is permissible in MGF1 in FIPS
++            if self._fips_enabled and isinstance(
++                padding._mgf._algorithm, hashes.SHA1
++            ):
++                return True
++            else:
++                return self.hash_supported(padding._mgf._algorithm)
+         elif isinstance(padding, OAEP) and isinstance(padding._mgf, MGF1):
+             return (
+                 self._oaep_hash_supported(padding._mgf._algorithm)
+@@ -1280,6 +1328,11 @@
+     def _evp_pkey_from_der_traditional_key(self, bio_data, password):
+         key = self._lib.d2i_PrivateKey_bio(bio_data.bio, self._ffi.NULL)
+         if key != self._ffi.NULL:
++            # In OpenSSL 3.0.0-alpha15 there exist scenarios where the key will
++            # successfully load but errors are still put on the stack. Tracked
++            # as https://github.com/openssl/openssl/issues/14996
++            self._consume_errors()
++
+             key = self._ffi.gc(key, self._lib.EVP_PKEY_free)
+             if password is not None:
+                 raise TypeError(
+@@ -1447,6 +1500,11 @@
+             else:
+                 self._handle_key_loading_error()
+ 
++        # In OpenSSL 3.0.0-alpha15 there exist scenarios where the key will
++        # successfully load but errors are still put on the stack. Tracked
++        # as https://github.com/openssl/openssl/issues/14996
++        self._consume_errors()
++
+         evp_pkey = self._ffi.gc(evp_pkey, self._lib.EVP_PKEY_free)
+ 
+         if password is not None and userdata.called == 0:
+@@ -1469,11 +1527,22 @@
+                 "incorrect format or it may be encrypted with an unsupported "
+                 "algorithm."
+             )
+-        elif errors[0]._lib_reason_match(
+-            self._lib.ERR_LIB_EVP, self._lib.EVP_R_BAD_DECRYPT
+-        ) or errors[0]._lib_reason_match(
+-            self._lib.ERR_LIB_PKCS12,
+-            self._lib.PKCS12_R_PKCS12_CIPHERFINAL_ERROR,
++
++        elif (
++            errors[0]._lib_reason_match(
++                self._lib.ERR_LIB_EVP, self._lib.EVP_R_BAD_DECRYPT
++            )
++            or errors[0]._lib_reason_match(
++                self._lib.ERR_LIB_PKCS12,
++                self._lib.PKCS12_R_PKCS12_CIPHERFINAL_ERROR,
++            )
++            or (
++                self._lib.Cryptography_HAS_PROVIDERS
++                and errors[0]._lib_reason_match(
++                    self._lib.ERR_LIB_PROV,
++                    self._lib.PROV_R_BAD_DECRYPT,
++                )
++            )
+         ):
+             raise ValueError("Bad decrypt. Incorrect password?")
+ 
+@@ -1487,10 +1556,12 @@
+             raise ValueError("Unsupported public key algorithm.")
+ 
+         else:
++            errors = binding._errors_with_text(errors)
+             raise ValueError(
+                 "Could not deserialize key data. The data may be in an "
+                 "incorrect format or it may be encrypted with an unsupported "
+-                "algorithm."
++                "algorithm.",
++                errors,
+             )
+ 
+     def elliptic_curve_supported(self, curve):
+@@ -1772,6 +1843,11 @@
+         return _OCSPResponse(self, ocsp_resp)
+ 
+     def elliptic_curve_exchange_algorithm_supported(self, algorithm, curve):
++        if self._fips_enabled and not isinstance(
++            curve, self._fips_ecdh_curves
++        ):
++            return False
++
+         return self.elliptic_curve_supported(curve) and isinstance(
+             algorithm, ec.ECDH
+         )
+@@ -2519,7 +2595,16 @@
+         if sk_x509_ptr[0] != self._ffi.NULL:
+             sk_x509 = self._ffi.gc(sk_x509_ptr[0], self._lib.sk_X509_free)
+             num = self._lib.sk_X509_num(sk_x509_ptr[0])
+-            for i in range(num):
++
++            # In OpenSSL < 3.0.0 PKCS12 parsing reverses the order of the
++            # certificates.
++            indices: typing.Iterable[int]
++            if self._lib.CRYPTOGRAPHY_OPENSSL_300_OR_GREATER:
++                indices = range(num)
++            else:
++                indices = reversed(range(num))
++
++            for i in indices:
+                 x509 = self._lib.sk_X509_value(sk_x509, i)
+                 self.openssl_assert(x509 != self._ffi.NULL)
+                 x509 = self._ffi.gc(x509, self._lib.X509_free)
+@@ -2562,9 +2647,7 @@
+             sk_x509 = self._lib.sk_X509_new_null()
+             sk_x509 = self._ffi.gc(sk_x509, self._lib.sk_X509_free)
+ 
+-            # reverse the list when building the stack so that they're encoded
+-            # in the order they were originally provided. it is a mystery
+-            for ca in reversed(cas):
++            for ca in cas:
+                 res = self._lib.sk_X509_push(sk_x509, ca._x509)
+                 backend.openssl_assert(res >= 1)
+ 
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/ciphers.py cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/ciphers.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/ciphers.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/ciphers.py	2022-02-17 13:55:36.000000000 +0300
+@@ -145,7 +145,13 @@
+             res = self._backend._lib.EVP_CipherUpdate(
+                 self._ctx, outbuf, outlen, inbuf, inlen
+             )
+-            self._backend.openssl_assert(res != 0)
++            if res == 0 and isinstance(self._mode, modes.XTS):
++                raise ValueError(
++                    "In XTS mode you must supply at least a full block in the "
++                    "first update call. For AES this is 16 bytes."
++                )
++            else:
++                self._backend.openssl_assert(res != 0)
+             data_processed += inlen
+             total_out += outlen[0]
+ 
+@@ -174,6 +180,13 @@
+                 errors[0]._lib_reason_match(
+                     self._backend._lib.ERR_LIB_EVP,
+                     self._backend._lib.EVP_R_DATA_NOT_MULTIPLE_OF_BLOCK_LENGTH,
++                )
++                or (
++                    self._backend._lib.Cryptography_HAS_PROVIDERS
++                    and errors[0]._lib_reason_match(
++                        self._backend._lib.ERR_LIB_PROV,
++                        self._backend._lib.PROV_R_WRONG_FINAL_BLOCK_LENGTH,
++                    )
+                 ),
+                 errors=errors,
+             )
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/dh.py cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/dh.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/dh.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/dh.py	2022-02-17 13:55:36.000000000 +0300
+@@ -127,35 +127,48 @@
+         )
+ 
+     def exchange(self, peer_public_key: dh.DHPublicKey) -> bytes:
+-        buf = self._backend._ffi.new("unsigned char[]", self._key_size_bytes)
+-        pub_key = self._backend._ffi.new("BIGNUM **")
+-        self._backend._lib.DH_get0_key(
+-            peer_public_key._dh_cdata,  # type: ignore[attr-defined]
+-            pub_key,
+-            self._backend._ffi.NULL,
++        if not isinstance(peer_public_key, _DHPublicKey):
++            raise TypeError("peer_public_key must be a DHPublicKey")
++
++        ctx = self._backend._lib.EVP_PKEY_CTX_new(
++            self._evp_pkey, self._backend._ffi.NULL
++        )
++        self._backend.openssl_assert(ctx != self._backend._ffi.NULL)
++        ctx = self._backend._ffi.gc(ctx, self._backend._lib.EVP_PKEY_CTX_free)
++        res = self._backend._lib.EVP_PKEY_derive_init(ctx)
++        self._backend.openssl_assert(res == 1)
++        res = self._backend._lib.EVP_PKEY_derive_set_peer(
++            ctx, peer_public_key._evp_pkey
+         )
+-        self._backend.openssl_assert(pub_key[0] != self._backend._ffi.NULL)
+-        res = self._backend._lib.DH_compute_key(
+-            buf, pub_key[0], self._dh_cdata
++        # Invalid kex errors here in OpenSSL 3.0 because checks were moved
++        # to EVP_PKEY_derive_set_peer
++        self._exchange_assert(res == 1)
++        keylen = self._backend._ffi.new("size_t *")
++        res = self._backend._lib.EVP_PKEY_derive(
++            ctx, self._backend._ffi.NULL, keylen
+         )
++        # Invalid kex errors here in OpenSSL < 3
++        self._exchange_assert(res == 1)
++        self._backend.openssl_assert(keylen[0] > 0)
++        buf = self._backend._ffi.new("unsigned char[]", keylen[0])
++        res = self._backend._lib.EVP_PKEY_derive(ctx, buf, keylen)
++        self._backend.openssl_assert(res == 1)
++
++        key = self._backend._ffi.buffer(buf, keylen[0])[:]
++        pad = self._key_size_bytes - len(key)
++
++        if pad > 0:
++            key = (b"\x00" * pad) + key
++
++        return key
+ 
+-        if res == -1:
++    def _exchange_assert(self, ok):
++        if not ok:
+             errors_with_text = self._backend._consume_errors_with_text()
+             raise ValueError(
+-                "Error computing shared key. Public key is likely invalid "
+-                "for this exchange.",
++                "Error computing shared key.",
+                 errors_with_text,
+             )
+-        else:
+-            self._backend.openssl_assert(res >= 1)
+-
+-            key = self._backend._ffi.buffer(buf)[:res]
+-            pad = self._key_size_bytes - len(key)
+-
+-            if pad > 0:
+-                key = (b"\x00" * pad) + key
+-
+-            return key
+ 
+     def public_key(self) -> dh.DHPublicKey:
+         dh_cdata = _dh_params_dup(self._dh_cdata, self._backend)
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/poly1305.py cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/poly1305.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/backends/openssl/poly1305.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/backends/openssl/poly1305.py	2022-02-17 13:55:36.000000000 +0300
+@@ -51,7 +51,7 @@
+ 
+     def finalize(self):
+         buf = self._backend._ffi.new("unsigned char[]", _POLY1305_TAG_SIZE)
+-        outlen = self._backend._ffi.new("size_t *")
++        outlen = self._backend._ffi.new("size_t *", _POLY1305_TAG_SIZE)
+         res = self._backend._lib.EVP_DigestSignFinal(self._ctx, buf, outlen)
+         self._backend.openssl_assert(res != 0)
+         self._backend.openssl_assert(outlen[0] == _POLY1305_TAG_SIZE)
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/bindings/openssl/binding.py cryptography-3.4.8/src/cryptography/hazmat/bindings/openssl/binding.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/bindings/openssl/binding.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/bindings/openssl/binding.py	2022-02-17 13:55:36.000000000 +0300
+@@ -15,15 +15,14 @@
+ from cryptography.hazmat.bindings.openssl._conditional import CONDITIONAL_NAMES
+ 
+ _OpenSSLErrorWithText = collections.namedtuple(
+-    "_OpenSSLErrorWithText", ["code", "lib", "func", "reason", "reason_text"]
++    "_OpenSSLErrorWithText", ["code", "lib", "reason", "reason_text"]
+ )
+ 
+ 
+ class _OpenSSLError(object):
+-    def __init__(self, code, lib, func, reason):
++    def __init__(self, code, lib, reason):
+         self._code = code
+         self._lib = lib
+-        self._func = func
+         self._reason = reason
+ 
+     def _lib_reason_match(self, lib, reason):
+@@ -31,7 +30,6 @@
+ 
+     code = utils.read_only_property("_code")
+     lib = utils.read_only_property("_lib")
+-    func = utils.read_only_property("_func")
+     reason = utils.read_only_property("_reason")
+ 
+ 
+@@ -43,10 +41,9 @@
+             break
+ 
+         err_lib = lib.ERR_GET_LIB(code)
+-        err_func = lib.ERR_GET_FUNC(code)
+         err_reason = lib.ERR_GET_REASON(code)
+ 
+-        errors.append(_OpenSSLError(code, err_lib, err_func, err_reason))
++        errors.append(_OpenSSLError(code, err_lib, err_reason))
+ 
+     return errors
+ 
+@@ -60,7 +57,7 @@
+ 
+         errors_with_text.append(
+             _OpenSSLErrorWithText(
+-                err.code, err.lib, err.func, err.reason, err_text_reason
++                err.code, err.lib, err.reason, err_text_reason
+             )
+         )
+ 
+@@ -113,10 +110,28 @@
+     ffi = ffi
+     _lib_loaded = False
+     _init_lock = threading.Lock()
++    _legacy_provider: typing.Any = None
++    _default_provider: typing.Any = None
+ 
+     def __init__(self):
+         self._ensure_ffi_initialized()
+ 
++    def _enable_fips(self):
++        # This function enables FIPS mode for OpenSSL 3.0.0 on installs that
++        # have the FIPS provider installed properly.
++        _openssl_assert(self.lib, self.lib.CRYPTOGRAPHY_OPENSSL_300_OR_GREATER)
++        self._base_provider = self.lib.OSSL_PROVIDER_load(
++            self.ffi.NULL, b"base"
++        )
++        _openssl_assert(self.lib, self._base_provider != self.ffi.NULL)
++        self.lib._fips_provider = self.lib.OSSL_PROVIDER_load(
++            self.ffi.NULL, b"fips"
++        )
++        _openssl_assert(self.lib, self.lib._fips_provider != self.ffi.NULL)
++
++        res = self.lib.EVP_default_properties_enable_fips(self.ffi.NULL, 1)
++        _openssl_assert(self.lib, res == 1)
++
+     @classmethod
+     def _register_osrandom_engine(cls):
+         # Clear any errors extant in the queue before we start. In many
+@@ -140,6 +155,24 @@
+                 # adds all ciphers/digests for EVP
+                 cls.lib.OpenSSL_add_all_algorithms()
+                 cls._register_osrandom_engine()
++                # As of OpenSSL 3.0.0 we must register a legacy cipher provider
++                # to get RC2 (needed for junk asymmetric private key
++                # serialization), RC4, Blowfish, IDEA, SEED, etc. These things
++                # are ugly legacy, but we aren't going to get rid of them
++                # any time soon.
++                if cls.lib.CRYPTOGRAPHY_OPENSSL_300_OR_GREATER:
++                    cls._legacy_provider = cls.lib.OSSL_PROVIDER_load(
++                        cls.ffi.NULL, b"legacy"
++                    )
++                    _openssl_assert(
++                        cls.lib, cls._legacy_provider != cls.ffi.NULL
++                    )
++                    cls._default_provider = cls.lib.OSSL_PROVIDER_load(
++                        cls.ffi.NULL, b"default"
++                    )
++                    _openssl_assert(
++                        cls.lib, cls._default_provider != cls.ffi.NULL
++                    )
+ 
+     @classmethod
+     def init_static_locks(cls):
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/bindings/openssl/_conditional.py cryptography-3.4.8/src/cryptography/hazmat/bindings/openssl/_conditional.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/bindings/openssl/_conditional.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/bindings/openssl/_conditional.py	2022-02-17 13:55:36.000000000 +0300
+@@ -270,6 +270,23 @@
+     ]
+ 
+ 
++def cryptography_has_providers():
++    return [
++        "OSSL_PROVIDER_load",
++        "OSSL_PROVIDER_unload",
++        "ERR_LIB_PROV",
++        "PROV_R_WRONG_FINAL_BLOCK_LENGTH",
++        "PROV_R_BAD_DECRYPT",
++    ]
++
++
++def cryptography_has_300_fips():
++    return [
++        "EVP_default_properties_is_fips_enabled",
++        "EVP_default_properties_enable_fips",
++    ]
++
++
+ # This is a mapping of
+ # {condition: function-returning-names-dependent-on-that-condition} so we can
+ # loop over them and delete unsupported names at runtime. It will be removed
+@@ -318,4 +335,6 @@
+     "Cryptography_HAS_VERIFIED_CHAIN": cryptography_has_verified_chain,
+     "Cryptography_HAS_SRTP": cryptography_has_srtp,
+     "Cryptography_HAS_GET_PROTO_VERSION": cryptography_has_get_proto_version,
++    "Cryptography_HAS_PROVIDERS": cryptography_has_providers,
++    "Cryptography_HAS_300_FIPS": cryptography_has_300_fips,
+ }
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/primitives/kdf/kbkdf.py cryptography-3.4.8/src/cryptography/hazmat/primitives/kdf/kbkdf.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/primitives/kdf/kbkdf.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/primitives/kdf/kbkdf.py	2022-02-17 13:55:36.000000000 +0300
+@@ -4,7 +4,6 @@
+ 
+ 
+ import typing
+-from enum import Enum
+ 
+ from cryptography import utils
+ from cryptography.exceptions import (
+@@ -19,11 +18,11 @@
+ from cryptography.hazmat.primitives.kdf import KeyDerivationFunction
+ 
+ 
+-class Mode(Enum):
++class Mode(utils.Enum):
+     CounterMode = "ctr"
+ 
+ 
+-class CounterLocation(Enum):
++class CounterLocation(utils.Enum):
+     BeforeFixed = "before_fixed"
+     AfterFixed = "after_fixed"
+ 
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/primitives/serialization/pkcs7.py cryptography-3.4.8/src/cryptography/hazmat/primitives/serialization/pkcs7.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/primitives/serialization/pkcs7.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/primitives/serialization/pkcs7.py	2022-02-17 13:55:36.000000000 +0300
+@@ -3,8 +3,8 @@
+ # for complete details.
+ 
+ import typing
+-from enum import Enum
+ 
++from cryptography import utils
+ from cryptography import x509
+ from cryptography.hazmat.backends import _get_backend
+ from cryptography.hazmat.primitives import hashes, serialization
+@@ -35,7 +35,7 @@
+ ]
+ 
+ 
+-class PKCS7Options(Enum):
++class PKCS7Options(utils.Enum):
+     Text = "Add text/plain MIME type"
+     Binary = "Don't translate input data into canonical MIME format"
+     DetachedSignature = "Don't embed data in the PKCS7 structure"
+diff -Naur cryptography-3.4.8.orig/src/cryptography/hazmat/primitives/_serialization.py cryptography-3.4.8/src/cryptography/hazmat/primitives/_serialization.py
+--- cryptography-3.4.8.orig/src/cryptography/hazmat/primitives/_serialization.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/hazmat/primitives/_serialization.py	2022-02-17 13:55:36.000000000 +0300
+@@ -3,13 +3,14 @@
+ # for complete details.
+ 
+ import abc
+-from enum import Enum
++
++from cryptography import utils
+ 
+ # This exists to break an import cycle. These classes are normally accessible
+ # from the serialization module.
+ 
+ 
+-class Encoding(Enum):
++class Encoding(utils.Enum):
+     PEM = "PEM"
+     DER = "DER"
+     OpenSSH = "OpenSSH"
+@@ -18,14 +19,14 @@
+     SMIME = "S/MIME"
+ 
+ 
+-class PrivateFormat(Enum):
++class PrivateFormat(utils.Enum):
+     PKCS8 = "PKCS8"
+     TraditionalOpenSSL = "TraditionalOpenSSL"
+     Raw = "Raw"
+     OpenSSH = "OpenSSH"
+ 
+ 
+-class PublicFormat(Enum):
++class PublicFormat(utils.Enum):
+     SubjectPublicKeyInfo = "X.509 subjectPublicKeyInfo with PKCS#1"
+     PKCS1 = "Raw PKCS#1"
+     OpenSSH = "OpenSSH"
+@@ -34,7 +35,7 @@
+     UncompressedPoint = "X9.62 Uncompressed Point"
+ 
+ 
+-class ParameterFormat(Enum):
++class ParameterFormat(utils.Enum):
+     PKCS3 = "PKCS3"
+ 
+ 
+diff -Naur cryptography-3.4.8.orig/src/cryptography/utils.py cryptography-3.4.8/src/cryptography/utils.py
+--- cryptography-3.4.8.orig/src/cryptography/utils.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/utils.py	2022-02-17 13:55:36.000000000 +0300
+@@ -4,6 +4,7 @@
+ 
+ 
+ import abc
++import enum
+ import inspect
+ import sys
+ import typing
+@@ -162,3 +163,13 @@
+     "int_from_bytes is deprecated, use int.from_bytes instead",
+     DeprecatedIn34,
+ )
++
++
++# Python 3.10 changed representation of enums. We use well-defined object
++# representation and string representation from Python 3.9.
++class Enum(enum.Enum):
++    def __repr__(self):
++        return f"<{self.__class__.__name__}.{self._name_}: {self._value_!r}>"
++
++    def __str__(self):
++        return f"{self.__class__.__name__}.{self._name_}"
+diff -Naur cryptography-3.4.8.orig/src/cryptography/x509/base.py cryptography-3.4.8/src/cryptography/x509/base.py
+--- cryptography-3.4.8.orig/src/cryptography/x509/base.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/x509/base.py	2022-02-17 13:55:36.000000000 +0300
+@@ -7,8 +7,8 @@
+ import datetime
+ import os
+ import typing
+-from enum import Enum
+ 
++from cryptography import utils
+ from cryptography.hazmat._types import _PRIVATE_KEY_TYPES, _PUBLIC_KEY_TYPES
+ from cryptography.hazmat.backends import _get_backend
+ from cryptography.hazmat.primitives import hashes, serialization
+@@ -66,7 +66,7 @@
+         return time
+ 
+ 
+-class Version(Enum):
++class Version(utils.Enum):
+     v1 = 0
+     v3 = 2
+ 
+diff -Naur cryptography-3.4.8.orig/src/cryptography/x509/certificate_transparency.py cryptography-3.4.8/src/cryptography/x509/certificate_transparency.py
+--- cryptography-3.4.8.orig/src/cryptography/x509/certificate_transparency.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/x509/certificate_transparency.py	2022-02-17 13:55:36.000000000 +0300
+@@ -5,15 +5,16 @@
+ 
+ import abc
+ import datetime
+-from enum import Enum
+ 
++from cryptography import utils
+ 
+-class LogEntryType(Enum):
++
++class LogEntryType(utils.Enum):
+     X509_CERTIFICATE = 0
+     PRE_CERTIFICATE = 1
+ 
+ 
+-class Version(Enum):
++class Version(utils.Enum):
+     v1 = 0
+ 
+ 
+diff -Naur cryptography-3.4.8.orig/src/cryptography/x509/extensions.py cryptography-3.4.8/src/cryptography/x509/extensions.py
+--- cryptography-3.4.8.orig/src/cryptography/x509/extensions.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/x509/extensions.py	2022-02-17 13:55:36.000000000 +0300
+@@ -8,7 +8,6 @@
+ import hashlib
+ import ipaddress
+ import typing
+-from enum import Enum
+ 
+ from cryptography import utils
+ from cryptography.hazmat._der import (
+@@ -634,7 +633,7 @@
+     crl_issuer = utils.read_only_property("_crl_issuer")
+ 
+ 
+-class ReasonFlags(Enum):
++class ReasonFlags(utils.Enum):
+     unspecified = "unspecified"
+     key_compromise = "keyCompromise"
+     ca_compromise = "cACompromise"
+@@ -978,7 +977,7 @@
+         return hash(tuple(self._features))
+ 
+ 
+-class TLSFeatureType(Enum):
++class TLSFeatureType(utils.Enum):
+     # status_request is defined in RFC 6066 and is used for what is commonly
+     # called OCSP Must-Staple when present in the TLS Feature extension in an
+     # X.509 certificate.
+diff -Naur cryptography-3.4.8.orig/src/cryptography/x509/name.py cryptography-3.4.8/src/cryptography/x509/name.py
+--- cryptography-3.4.8.orig/src/cryptography/x509/name.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/x509/name.py	2022-02-17 13:55:36.000000000 +0300
+@@ -3,14 +3,13 @@
+ # for complete details.
+ 
+ import typing
+-from enum import Enum
+ 
+ from cryptography import utils
+ from cryptography.hazmat.backends import _get_backend
+ from cryptography.x509.oid import NameOID, ObjectIdentifier
+ 
+ 
+-class _ASN1Type(Enum):
++class _ASN1Type(utils.Enum):
+     UTF8String = 12
+     NumericString = 18
+     PrintableString = 19
+diff -Naur cryptography-3.4.8.orig/src/cryptography/x509/ocsp.py cryptography-3.4.8/src/cryptography/x509/ocsp.py
+--- cryptography-3.4.8.orig/src/cryptography/x509/ocsp.py	1970-01-01 03:00:00.000000000 +0300
++++ cryptography-3.4.8/src/cryptography/x509/ocsp.py	2022-02-17 13:55:36.000000000 +0300
+@@ -6,8 +6,8 @@
+ import abc
+ import datetime
+ import typing
+-from enum import Enum
+ 
++from cryptography import utils
+ from cryptography import x509
+ from cryptography.hazmat.primitives import hashes, serialization
+ from cryptography.x509.base import (
+@@ -27,12 +27,12 @@
+ }
+ 
+ 
+-class OCSPResponderEncoding(Enum):
++class OCSPResponderEncoding(utils.Enum):
+     HASH = "By Hash"
+     NAME = "By Name"
+ 
+ 
+-class OCSPResponseStatus(Enum):
++class OCSPResponseStatus(utils.Enum):
+     SUCCESSFUL = 0
+     MALFORMED_REQUEST = 1
+     INTERNAL_ERROR = 2
+@@ -58,7 +58,7 @@
+         )
+ 
+ 
+-class OCSPCertStatus(Enum):
++class OCSPCertStatus(utils.Enum):
+     GOOD = 0
+     REVOKED = 1
+     UNKNOWN = 2
