@@ -22,6 +22,7 @@ PKG_LICENSE_FILES:=COPYING
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=protobuf/host
+PKG_BUILD_FLAGS:=gc-sections lto
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -100,8 +101,8 @@ CONFIGURE_VARS += \
 	TINFO_CFLAGS="-I$(STAGING_DIR)/opt/include" \
 	TINFO_LDFLAGS="-L$(STAGING_DIR)/opt/lib -lncursesw"
 
-TARGET_CXXFLAGS += -ffunction-sections -fdata-sections -flto -std=c++11
-TARGET_LDFLAGS += -Wl,--gc-sections -lncurses
+TARGET_CXXFLAGS += -std=c++11
+TARGET_LDFLAGS += -lncursesw
 
 define Package/mosh-client/install
 	$(INSTALL_DIR) $(1)/opt/bin
