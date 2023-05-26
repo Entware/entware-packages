@@ -23,6 +23,8 @@ PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
+PKG_BUILD_DEPENDS:=gettext-full/host
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/fuse/Default
