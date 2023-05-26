@@ -33,7 +33,7 @@
      try:
 --- a/Lib/uuid.py
 +++ b/Lib/uuid.py
-@@ -361,7 +361,7 @@ def _get_command_stdout(command, *args):
+@@ -362,7 +362,7 @@ def _get_command_stdout(command, *args):
  
      try:
          path_dirs = os.environ.get('PATH', os.defpath).split(os.pathsep)

@@ -1,22 +1,22 @@
---- a/configure
-+++ b/configure
-@@ -11959,7 +11959,7 @@ for ac_func in alarm accept4 setitimer g
-  clock confstr close_range copy_file_range ctermid dup3 execv explicit_bzero \
-  explicit_memset faccessat fchmod fchmodat fchown fchownat \
-  fdwalk fexecve fdopendir fork fpathconf fstatat ftime ftruncate futimesat \
-- futimens futimes gai_strerror getentropy \
-+ futimens futimes gai_strerror \
-  getgrgid_r getgrnam_r \
-  getgrouplist getgroups getlogin getloadavg getpeername getpgid getpid \
-  getpriority getresuid getresgid getpwent getpwnam_r getpwuid_r getspnam getspent getsid getwd \
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3715,7 +3715,7 @@ AC_CHECK_FUNCS(alarm accept4 setitimer g
-  clock confstr close_range copy_file_range ctermid dup3 execv explicit_bzero \
-  explicit_memset faccessat fchmod fchmodat fchown fchownat \
-  fdwalk fexecve fdopendir fork fpathconf fstatat ftime ftruncate futimesat \
-- futimens futimes gai_strerror getentropy \
-+ futimens futimes gai_strerror \
-  getgrgid_r getgrnam_r \
-  getgrouplist getgroups getlogin getloadavg getpeername getpgid getpid \
-  getpriority getresuid getresgid getpwent getpwnam_r getpwuid_r getspnam getspent getsid getwd \
+@@ -4585,7 +4585,7 @@ AC_CHECK_FUNCS([ \
+   copy_file_range ctermid dup dup3 execv explicit_bzero explicit_memset \
+   faccessat fchmod fchmodat fchown fchownat fdopendir fdwalk fexecve \
+   fork fork1 fpathconf fstatat ftime ftruncate futimens futimes futimesat \
+-  gai_strerror getegid getentropy geteuid getgid getgrgid getgrgid_r \
++  gai_strerror getegid geteuid getgid getgrgid getgrgid_r \
+   getgrnam_r getgrouplist getgroups gethostname getitimer getloadavg getlogin \
+   getpeername getpgid getpid getppid getpriority _getpty \
+   getpwent getpwnam_r getpwuid getpwuid_r getresgid getresuid getrusage getsid getspent \
+--- a/configure
++++ b/configure
+@@ -15163,7 +15163,7 @@ for ac_func in  \
+   copy_file_range ctermid dup dup3 execv explicit_bzero explicit_memset \
+   faccessat fchmod fchmodat fchown fchownat fdopendir fdwalk fexecve \
+   fork fork1 fpathconf fstatat ftime ftruncate futimens futimes futimesat \
+-  gai_strerror getegid getentropy geteuid getgid getgrgid getgrgid_r \
++  gai_strerror getegid geteuid getgid getgrgid getgrgid_r \
+   getgrnam_r getgrouplist getgroups gethostname getitimer getloadavg getlogin \
+   getpeername getpgid getpid getppid getpriority _getpty \
+   getpwent getpwnam_r getpwuid getpwuid_r getresgid getresuid getrusage getsid getspent \
