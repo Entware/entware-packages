@@ -4,7 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: patches/500-k26_compat.patch
+# Entware specific: patches/500-k26_compat.patch;
+#	keep v.3.29 (<linux/nvme.h> since Linux 3.3)
 
 include $(TOPDIR)/rules.mk
 
