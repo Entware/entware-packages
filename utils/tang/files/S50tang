@@ -1,0 +1,16 @@
+#!/bin/sh
+
+ENABLED=yes
+PROCS=tangd
+ARGS="-p 9090 -l /opt/share/tang/db"
+PREARGS=""
+DESC=$PROCS
+PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+KEYS=$(find /opt/share/tang/db -maxdepth 1 -name "*.jw*" | wc -l)
+if [ -z "${KEYS}" ] || [ "${KEYS}" = "0" ]; then # if db is empty generate new key pair
+	mkdir -p /opt/share/tang/db
+	/opt/sbin/tangd-keygen /opt/share/tang/db
+fi
+
+. /opt/etc/init.d/rc.func

@@ -4,17 +4,16 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: optional /opt/etc/services, shebangs at /opt/libexec/tangd-*
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tang
-PKG_VERSION:=11
-PKG_RELEASE:=2
+PKG_VERSION:=12
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/latchset/$(PKG_NAME)/releases/download/v$(PKG_VERSION)/
-PKG_HASH:=ef5d3ae56030f20c290594b9be89ad9ec469dd385676595e1c7a2bfdc3f45d8f
+PKG_HASH:=892e0b26ee2db01f2c257b083fbb85aede7d3f59de7361c9c9528c0d5783e69c
 
 PKG_MAINTAINER:=Tibor Dudlák <tibor.dudlak@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -27,7 +26,7 @@ define Package/tang
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=tang v$(PKG_VERSION) - daemon for binding data to the presence of a third party
-  DEPENDS:=+libhttp-parser +xinetd +jose +bash
+  DEPENDS:=+libhttp-parser +jose +bash
   URL:=https://github.com/latchset/tang
 endef
 
@@ -36,28 +35,18 @@ define Package/tang/description
 endef
 
 define Package/tang/conffiles
-/opt/etc/xinetd.d/tangdx
 /opt/share/tang/db/
 endef
 
 define Package/tang/install
 	$(INSTALL_DIR)	$(1)/opt/bin
-	$(INSTALL_DIR)	$(1)/opt/libexec
-	$(INSTALL_DIR)	$(1)/opt/etc/xinetd.d/
+	$(INSTALL_DIR)	$(1)/opt/sbin
 	$(INSTALL_BIN)	$(PKG_INSTALL_DIR)/opt/bin/tang-show-keys	$(1)/opt/bin/
-	$(INSTALL_BIN)	$(PKG_INSTALL_DIR)/opt/libexec/tangd*		$(1)/opt/libexec/
-	$(INSTALL_BIN)	./files/tangdw					$(1)/opt/libexec/
-	$(CP)		./files/tangdx					$(1)/opt/etc/xinetd.d/
-	$(SED) 's,^#!.*bash,#!/opt/bin/bash,' $(1)/opt/libexec/tangd-*
-endef
-
-define Package/tang/postinst
-#!/bin/sh
-
-mkdir -p /opt/share/tang/db
-if [ -z "$(ls -A /opt/share/tang/db)" ]; then
-	/opt/libexec/tangd-keygen /opt/share/tang/db/
-fi
+	$(INSTALL_BIN)  $(PKG_INSTALL_DIR)/opt/libexec/tangd*		$(1)/opt/sbin/
+	$(INSTALL_DIR)  $(1)/opt/etc/init.d
+	$(INSTALL_BIN)  ./files/S50tang $(1)/opt/etc/init.d
+#	$(INSTALL_DIR)  $(1)/etc/config
+#	$(INSTALL_CONF) ./files/config $(1)/etc/config/tang
 endef
 
 $(eval $(call BuildPackage,tang))
