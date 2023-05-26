@@ -25,7 +25,7 @@ PKG_CPE_ID:=cpe:/a:collectd:collectd
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_USE_MIPS16:=0
+PKG_BUILD_FLAGS:=no-mips16
 
 PKG_CONFIG_DEPENDS:= \
 	PACKAGE_COLLECTD_ENCRYPTED_NETWORK \
@@ -536,4 +536,4 @@ $(eval $(call BuildPlugin,write-http,HTTP POST output,write_http,+PACKAGE_collec
 $(eval $(call BuildPlugin,write-log,Log output,write_log,))
 
 #$(eval $(call BuildScriptPlugin,sqm,SQM/qdisc collection,sqm_collectd,+PACKAGE_collectd-mod-sqm:collectd-mod-exec))
-#$(eval $(call BuildScriptLuaPlugin,ltq-dsl,Lantiq DSL collection,dsl,ltq-dsl-app +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))
+#$(eval $(call BuildScriptLuaPlugin,@ltq-dsl,Lantiq DSL collection,dsl,ltq-dsl-app +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))
