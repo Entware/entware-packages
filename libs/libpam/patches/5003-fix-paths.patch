@@ -1,0 +1,56 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -14,16 +14,16 @@ AC_SUBST(VERSION)
+ dnl
+ dnl By default, everything under PAM is installed below /usr.
+ dnl
+-AC_PREFIX_DEFAULT(/usr)
++AC_PREFIX_DEFAULT(/opt)
+ 
+ dnl and some hacks to use /etc and /lib
+-test "${prefix}" = "NONE" && prefix="/usr"
+-if test ${prefix} = '/usr'
++test "${prefix}" = "NONE" && prefix="/opt"
++if test ${prefix} = '/opt'
+ then
+ dnl If we use /usr as prefix, use /etc for config files
+         if test ${sysconfdir} = '${prefix}/etc'
+         then
+-                sysconfdir="/etc"
++                sysconfdir="${prefix}/etc"
+         fi
+ 	if false
+ 	then
+@@ -31,12 +31,12 @@ dnl If we use /usr as prefix, use /etc f
+ 		    x86_64|ppc64|s390x|sparc64)
+ 			libdir="/lib64" ;;
+ 		    *)
+-			libdir="/lib" ;;
++			libdir="${prefix}/lib" ;;
+ 		esac
+ 	fi
+ 	if test ${sbindir} = '${exec_prefix}/sbin'
+         then
+-                sbindir="/sbin"
++                sbindir="${prefix}/sbin"
+         fi
+ dnl If we use /usr as prefix, use /usr/share/man for manual pages
+         if test ${mandir} = '${prefix}/man'
+@@ -52,7 +52,7 @@ dnl Add security to include directory
+ dnl Add /var directory
+         if test ${localstatedir} = '${prefix}/var'
+         then
+-                localstatedir="/var"
++                localstatedir="${prefix}/var"
+         fi
+ 
+ fi
+@@ -301,7 +301,7 @@ exit(0);
+ #else
+ exit(1);
+ #endif
+-}]])],[pam_mail_spool="_PATH_MAILDIR"],[pam_mail_spool="\"/var/spool/mail\""],[pam_mail_spool="\"/var/spool/mail\""])
++}]])],[pam_mail_spool="_PATH_MAILDIR"],[pam_mail_spool="\"/opt/var/spool/mail\""],[pam_mail_spool="\"/opt/var/spool/mail\""])
+ fi
+ AC_DEFINE_UNQUOTED(PAM_PATH_MAILDIR, $pam_mail_spool,
+ 	[Path where mails are stored])
