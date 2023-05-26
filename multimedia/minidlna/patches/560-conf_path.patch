@@ -1,6 +1,6 @@
 --- a/minidlna.c
 +++ b/minidlna.c
-@@ -549,7 +549,7 @@ init(int argc, char **argv)
+@@ -548,7 +548,7 @@ init(int argc, char **argv)
  	int options_flag = 0;
  	struct sigaction sa;
  	const char * presurl = NULL;

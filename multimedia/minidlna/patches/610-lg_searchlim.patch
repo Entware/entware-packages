@@ -1,6 +1,6 @@
 --- a/minidlna.c
 +++ b/minidlna.c
-@@ -925,6 +925,9 @@ init(int argc, char **argv)
+@@ -924,6 +924,9 @@ init(int argc, char **argv)
  		case MAX_CONNECTIONS:
  			runtime_vars.max_connections = atoi(ary_options[i].value);
  			break;
@@ -51,7 +51,7 @@
 +int search_limit = -1;
 --- a/upnpglobalvars.h
 +++ b/upnpglobalvars.h
-@@ -249,5 +249,6 @@ extern struct album_art_name_s *album_ar
+@@ -251,5 +251,6 @@ extern struct album_art_name_s *album_ar
  extern volatile short int quitting;
  extern volatile uint32_t updateID;
  extern const char *force_sort_criteria;

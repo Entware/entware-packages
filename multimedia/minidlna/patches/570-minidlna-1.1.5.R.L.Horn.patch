@@ -116,7 +116,7 @@
  			upnpreplyparse.c minixml.c clients.c \
  			getifaddr.c process.c upnpglobalvars.c \
  			options.c minissdp.c uuid.c upnpevents.c \
-@@ -52,13 +53,15 @@ endif
+@@ -56,13 +57,15 @@ endif
  
  minidlnad_LDADD = \
  	@LIBJPEG_LIBS@ \
@@ -262,8 +262,8 @@
  #include <time.h>
 --- a/configure.ac
 +++ b/configure.ac
-@@ -406,6 +406,11 @@ done
- test x"$ac_cv_lib_jpeg_jpeg_set_defaults" = x"yes" || AC_MSG_ERROR([Could not find libexif])
+@@ -407,6 +407,11 @@ done
+ test x"$ac_cv_lib_exif_exif_data_new_from_file" = x"yes" || AC_MSG_ERROR([Could not find libexif])
  AC_SUBST(LIBEXIF_LIBS)
  
 +PKG_CHECK_MODULES([libpng], [libpng],
@@ -274,7 +274,7 @@
  LDFLAGS_SAVE="$LDFLAGS"
  for dir in "" /usr/local $SEARCH_DIR; do
      if test -n "$dir"; then
-@@ -487,6 +492,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
+@@ -488,6 +493,13 @@ AC_CHECK_LIB(avahi-client, avahi_threade
           AM_CONDITIONAL(HAVE_AVAHI, false),
          -lavahi-client -lavahi-common)
  
@@ -1262,7 +1262,7 @@
 +		else if( strcmp(ctx->iformat->name, "ogg") == 0 )
 +			xasprintf(&m.mime, "video/ogg");
  		else if( strcmp(ctx->iformat->name, "rm") == 0 )
- 			xasprintf(&m.mime, "video/x-pn-realvideo");
+ 			xasprintf(&m.mime, "application/vnd.rn-realmedia");
  		else if( strcmp(ctx->iformat->name, "rmvb") == 0 )
 --- a/minidlna.c
 +++ b/minidlna.c
@@ -1275,7 +1275,7 @@
  #include <stdlib.h>
  #include <unistd.h>
  #include <string.h>
-@@ -70,8 +72,6 @@
+@@ -69,8 +71,6 @@
  #include <pwd.h>
  #include <grp.h>
  
@@ -1284,7 +1284,7 @@
  #ifdef ENABLE_NLS
  #include <locale.h>
  #include <libintl.h>
-@@ -98,6 +98,8 @@
+@@ -97,6 +97,8 @@
  #include "tivo_beacon.h"
  #include "tivo_utils.h"
  #include "avahi.h"
@@ -1293,7 +1293,7 @@
  
  #if SQLITE_VERSION_NUMBER < 3005001
  # warning "Your SQLite3 library appears to be too old!  Please use 3.5.1 or newer."
-@@ -304,6 +306,127 @@ getfriendlyname(char *buf, int len)
+@@ -303,6 +305,127 @@ getfriendlyname(char *buf, int len)
  #endif
  }
  
@@ -1421,7 +1421,7 @@
  static time_t
  _get_dbtime(void)
  {
-@@ -813,6 +936,34 @@ init(int argc, char **argv)
+@@ -812,6 +935,34 @@ init(int argc, char **argv)
  			if (!strtobool(ary_options[i].value))
  				CLEARFLAG(SUBTITLES_MASK);
  			break;
@@ -1502,16 +1502,17 @@
  	ENABLE_SUBTITLES,		/* Enable generic subtitle support for all clients by default */
 --- a/process.c
 +++ b/process.c
-@@ -27,6 +27,8 @@
+@@ -27,6 +27,9 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
   */
++
 +#include "config.h"
 +
  #include <sys/types.h>
  #include <sys/stat.h>
  #include <unistd.h>
-@@ -38,7 +40,6 @@
+@@ -38,7 +41,6 @@
  #include <signal.h>
  #include <sys/wait.h>
  
@@ -1519,7 +1520,7 @@
  #include "event.h"
  #include "upnpglobalvars.h"
  #include "process.h"
-@@ -113,8 +114,9 @@ void
+@@ -113,8 +115,9 @@ void
  process_handle_child_termination(int signal)
  {
  	pid_t pid;
@@ -1530,12 +1531,13 @@
  	{
  		if (pid == -1)
  		{
-@@ -123,8 +125,29 @@ process_handle_child_termination(int sig
+@@ -123,9 +126,30 @@ process_handle_child_termination(int sig
  			else
  				break;
  		}
 +
- 		number_of_children--;
+ 		if (number_of_children)
+ 			number_of_children--;
  		remove_process_info(pid);
 +
 +		if (WIFEXITED(status))
@@ -2016,7 +2018,7 @@
  enum event_type {
  	E_INVALID,
  	E_SUBSCRIBE,
-@@ -1410,29 +1410,29 @@ SendResp_icon(struct upnphttp * h, char
+@@ -1449,29 +1449,29 @@ SendResp_icon(struct upnphttp * h, char
  	if( strcmp(icon, "sm.png") == 0 )
  	{
  		DPRINTF(E_DEBUG, L_HTTP, "Sending small PNG icon\n");
@@ -2054,7 +2056,7 @@
  		strcpy(mime+6, "jpeg");
  	}
  	else
-@@ -1649,8 +1649,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1688,8 +1688,10 @@ SendResp_resizedimg(struct upnphttp * h,
  	int scale = 1;
  	const char *tmode;
  
@@ -2066,7 +2068,7 @@
  	ret = sql_get_table(db, buf, &result, &rows, NULL);
  	if( ret != SQLITE_OK )
  	{
-@@ -1659,10 +1661,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1698,10 +1700,10 @@ SendResp_resizedimg(struct upnphttp * h,
  	}
  	if( rows )
  	{
@@ -2081,7 +2083,7 @@
  	}
  	if( !file_path || !resolution || (access(file_path, F_OK) != 0) )
  	{
-@@ -1672,6 +1674,20 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1711,6 +1713,20 @@ SendResp_resizedimg(struct upnphttp * h,
  		return;
  	}
  
@@ -2102,7 +2104,7 @@
  	if( saveptr )
  		saveptr = strchr(saveptr, '?');
  	path = saveptr ? saveptr + 1 : object;
-@@ -1795,7 +1811,12 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1834,7 +1850,12 @@ SendResp_resizedimg(struct upnphttp * h,
  	if( strcmp(h->HttpVer, "HTTP/1.0") == 0 )
  	{
  		chunked = 0;
@@ -2116,7 +2118,7 @@
  	}
  	else
  	{
-@@ -1813,6 +1834,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1852,6 +1873,10 @@ SendResp_resizedimg(struct upnphttp * h,
  		}
  
  		imdst = image_resize(imsrc, dstw, dsth);
@@ -2127,7 +2129,7 @@
  		data = image_save_to_jpeg_buf(imdst, &size);
  
  		strcatf(&str, "Content-Length: %d\r\n\r\n", size);
-@@ -1822,7 +1847,12 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1861,7 +1886,12 @@ SendResp_resizedimg(struct upnphttp * h,
  	{
  		if( chunked )
  		{
@@ -2141,7 +2143,7 @@
  			if( !imsrc )
  			{
  				DPRINTF(E_WARN, L_HTTP, "Unable to open image %s!\n", file_path);
-@@ -1830,6 +1860,10 @@ SendResp_resizedimg(struct upnphttp * h,
+@@ -1869,6 +1899,10 @@ SendResp_resizedimg(struct upnphttp * h,
  				goto resized_error;
  			}
  			imdst = image_resize(imsrc, dstw, dsth);
@@ -2178,18 +2180,18 @@
  				return "TiVo";
 +			else if( strcmp(mime+6, "ogg") == 0 )
 +				return "ogv";
- 			else if( strcmp(mime+6, "x-pn-realvideo") == 0 )
- 				return "rm";
  			break;
-@@ -397,6 +406,7 @@ is_video(const char * file)
+ 		case 'i':
+ 			if( strcmp(mime+6, "jpeg") == 0 )
+@@ -394,6 +403,7 @@ is_video(const char * file)
+ 		ends_with(file, ".m2t") || ends_with(file, ".mkv")   ||
  		ends_with(file, ".vob") || ends_with(file, ".ts")    ||
  		ends_with(file, ".flv") || ends_with(file, ".xvid")  ||
- 		ends_with(file, ".rm") || ends_with(file, ".rmvb")  ||
 +		ends_with(file, ".ogv") ||
  #ifdef TIVO_SUPPORT
  		ends_with(file, ".TiVo") ||
  #endif
-@@ -413,13 +423,18 @@ is_audio(const char * file)
+@@ -412,13 +422,18 @@ is_audio(const char * file)
  		ends_with(file, ".mp4") || ends_with(file, ".m4p")  ||
  		ends_with(file, ".wav") || ends_with(file, ".ogg")  ||
  		ends_with(file, ".pcm") || ends_with(file, ".3gp")  ||

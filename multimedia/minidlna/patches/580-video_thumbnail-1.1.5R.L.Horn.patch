@@ -82,7 +82,7 @@
  		if( !ret )
 --- a/configure.ac
 +++ b/configure.ac
-@@ -647,7 +647,22 @@ AC_ARG_ENABLE(lto,
+@@ -655,7 +655,22 @@ AC_ARG_ENABLE(lto,
          ]
  )
  
@@ -108,7 +108,7 @@
  		;;
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -61,6 +61,7 @@ minidlnad_LDADD = \
+@@ -65,6 +65,7 @@ minidlnad_LDADD = \
  	@LIBINTL@ \
  	@LIBICONV@ \
  	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
@@ -118,7 +118,7 @@
  testupnpdescgen_SOURCES = testupnpdescgen.c upnpdescgen.c
 --- a/minidlna.c
 +++ b/minidlna.c
-@@ -712,6 +712,11 @@ init(int argc, char **argv)
+@@ -711,6 +711,11 @@ init(int argc, char **argv)
  	runtime_vars.max_connections = 50;
  	runtime_vars.root_container = NULL;
  	runtime_vars.ifaces[0] = NULL;
@@ -130,7 +130,7 @@
  
  	/* read options file first since
  	 * command line arguments have final say */
-@@ -928,6 +933,30 @@ init(int argc, char **argv)
+@@ -927,6 +932,30 @@ init(int argc, char **argv)
  			if (strtobool(ary_options[i].value))
  				SETFLAG(WIDE_LINKS_MASK);
  			break;
@@ -233,7 +233,7 @@
  	BGCOLOR,			/* user-supplied BG color */
 --- a/upnpglobalvars.h
 +++ b/upnpglobalvars.h
-@@ -205,6 +205,10 @@ extern uint32_t runtime_flags;
+@@ -207,6 +207,10 @@ extern uint32_t runtime_flags;
  #define RESCAN_MASK           0x0200
  #define SUBTITLES_MASK        0x0400
  #define FORCE_ALPHASORT_MASK  0x0800
@@ -246,7 +246,7 @@
  #define GETFLAG(mask)	(runtime_flags & mask)
 --- a/utils.c
 +++ b/utils.c
-@@ -532,6 +532,20 @@ resolve_unknown_type(const char * path,
+@@ -531,6 +531,20 @@ resolve_unknown_type(const char * path,
  	return type;
  }
  
