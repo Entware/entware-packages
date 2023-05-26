@@ -7,6 +7,6 @@ PREARGS=""
 DESC=$PROCS
 PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-TRANSMISSION_WEB_HOME="/opt/share/transmission/web"
+TRANSMISSION_WEB_HOME="/opt/share/transmission/public_html"
 
 . /opt/etc/init.d/rc.func
