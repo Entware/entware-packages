@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=strongswan
-PKG_VERSION:=5.9.8
+PKG_VERSION:=5.9.10
 PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.strongswan.org/ https://download2.strongswan.org/
-PKG_HASH:=d3303a43c0bd7b75a12b64855e8edcb53696f06190364f26d1533bde1f2e453c
+PKG_HASH:=3b72789e243c9fa6f0a01ccaf4f83766eba96a5e5b1e071d36e997572cf34654
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Philip Prindeville <philipp@redfish-solutions.com>, Noel Kuntze <noel.kuntze@thermi.consulting>
 PKG_CPE_ID:=cpe:/a:strongswan:strongswan
@@ -40,6 +40,7 @@ PKG_MOD_AVAILABLE:= \
 	des \
 	dhcp \
 	dnskey \
+	drbg \
 	duplicheck \
 	eap-identity \
 	eap-md5 \
@@ -55,12 +56,12 @@ PKG_MOD_AVAILABLE:= \
 	gmpdh \
 	ha \
 	hmac \
+	kdf \
 	kernel-libipsec \
 	kernel-netlink \
 	ldap \
 	led \
 	load-tester \
-	nonce \
 	md4 \
 	md5 \
 	mgf1 \
@@ -189,7 +190,6 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-ldap \
 	+strongswan-mod-led \
 	+strongswan-mod-load-tester \
-	+strongswan-mod-nonce \
 	+strongswan-mod-md4 \
 	+strongswan-mod-md5 \
 	+strongswan-mod-mgf1 \
@@ -260,7 +260,6 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-kernel-netlink \
 	+strongswan-mod-md5 \
 	+strongswan-mod-mgf1 \
-	+strongswan-mod-nonce \
 	+strongswan-mod-pem \
 	+strongswan-mod-pgp \
 	+strongswan-mod-pkcs1 \
@@ -300,7 +299,6 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-kernel-netlink \
 	+strongswan-mod-md5 \
 	+strongswan-mod-mgf1 \
-	+strongswan-mod-nonce \
 	+strongswan-mod-pubkey \
 	+strongswan-mod-random \
 	+strongswan-mod-sha1 \
@@ -328,7 +326,6 @@ $(call Package/strongswan/Default)
 	@(PACKAGE_strongswan-mod-kdf||PACKAGE_strongswan-mod-openssl||PACKAGE_strongswan-mod-wolfssl) \
 	+strongswan-mod-kernel-netlink \
 	+strongswan-mod-mgf1 \
-	+strongswan-mod-nonce \
 	+strongswan-mod-pubkey \
 	+strongswan-mod-random \
 	+strongswan-mod-sha1 \
@@ -457,6 +454,7 @@ CONFIGURE_ARGS+= \
 	--disable-scripts \
 	--disable-static \
 	--disable-fast \
+	--enable-nonce \
 	--enable-mgf1 \
 	--enable-mediation \
 	--with-systemdsystemunitdir=no \
@@ -480,9 +478,12 @@ endef
 define Package/strongswan/install
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/strongswan.conf $(1)/opt/etc/
-#	echo -e "\ninclude /var/ipsec/strongswan.conf" >> $(1)/etc/strongswan.conf
-	$(INSTALL_DIR) $(1)/opt/lib/ipsec
+	echo -e "\ninclude /opt/var/ipsec/strongswan.conf" >> $(1)/opt/etc/strongswan.conf
+	$(INSTALL_DIR) $(1)/opt/etc/strongswan.d/charon
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/strongswan.d/charon/nonce.conf $(1)/opt/etc/strongswan.d/charon/
+	$(INSTALL_DIR) $(1)/opt/lib/ipsec/plugins
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ipsec/libstrongswan.so.* $(1)/opt/lib/ipsec/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/ipsec/plugins/libstrongswan-nonce.so $(1)/opt/lib/ipsec/plugins/
 endef
 
 define Package/strongswan-default/install
@@ -556,7 +557,7 @@ define Package/strongswan-swanctl/install
 	$(INSTALL_DIR) $(1)/opt/etc/swanctl/{bliss,conf.d,ecdsa,pkcs{12,8},private,pubkey,rsa}
 	$(INSTALL_DIR) $(1)/opt/etc/swanctl/x509{,aa,ac,ca,crl,ocsp}
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/swanctl/swanctl.conf $(1)/opt/etc/swanctl/
-#	echo "include /var/swanctl/swanctl.conf" >> $(1)/etc/swanctl/swanctl.conf
+	echo "include /opt/var/swanctl/swanctl.conf" >> $(1)/opt/etc/swanctl/swanctl.conf
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/swanctl $(1)/opt/sbin/
 #	$(INSTALL_BIN) ./files/swanctl.init $(1)/etc/init.d/swanctl
@@ -678,7 +679,6 @@ $(eval $(call BuildPlugin,kernel-netlink,netlink kernel interface,))
 $(eval $(call BuildPlugin,ldap,LDAP,+PACKAGE_strongswan-mod-ldap:libopenldap))
 $(eval $(call BuildPlugin,led,LED blink on IKE activity,))
 $(eval $(call BuildPlugin,load-tester,load testing,))
-$(eval $(call BuildPlugin,nonce,nonce generation,))
 $(eval $(call BuildPlugin,md4,MD4 crypto,))
 $(eval $(call BuildPlugin,md5,MD5 crypto,))
 $(eval $(call BuildPlugin,mgf1,MGF1 crypto,))
