@@ -1,6 +1,6 @@
 --- a/lib/param/loadparm.c
 +++ b/lib/param/loadparm.c
-@@ -2683,7 +2683,7 @@ struct loadparm_context *loadparm_init(T
+@@ -2826,7 +2826,7 @@ struct loadparm_context *loadparm_init(T
  				      MIT_KDC_PATH);
  #endif
  	lpcfg_do_global_parameter(lp_ctx, "template shell", "/bin/false");
@@ -11,7 +11,7 @@
  	lpcfg_do_global_parameter(lp_ctx, "client ipc signing", "default");
 --- a/source3/param/loadparm.c
 +++ b/source3/param/loadparm.c
-@@ -796,7 +796,7 @@ static void init_globals(struct loadparm
+@@ -799,7 +799,7 @@ static void init_globals(struct loadparm
  
  	lpcfg_string_set(Globals.ctx, &Globals.template_shell, "/bin/false");
  	lpcfg_string_set(Globals.ctx, &Globals.template_homedir,

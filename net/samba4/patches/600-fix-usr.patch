@@ -1,6 +1,6 @@
 --- a/lib/param/loadparm.c
 +++ b/lib/param/loadparm.c
-@@ -2715,7 +2715,7 @@ struct loadparm_context *loadparm_init(T
+@@ -2858,7 +2858,7 @@ struct loadparm_context *loadparm_init(T
  				  "tls priority",
  				  "NORMAL:-VERS-SSL3.0");
  
@@ -11,7 +11,7 @@
  	lpcfg_do_global_parameter(lp_ctx, "dns zone scavenging", "False");
 --- a/source4/torture/rpc/spoolss.c
 +++ b/source4/torture/rpc/spoolss.c
-@@ -8606,7 +8606,7 @@ static bool torture_rpc_spoolss_printer_
+@@ -8607,7 +8607,7 @@ static bool torture_rpc_spoolss_printer_
  	t->driver.info8.dependent_files->string[6] = "cupsps6.dll";
  	t->driver.info8.dependent_files->string[7] = "cupsui6.dll";
  

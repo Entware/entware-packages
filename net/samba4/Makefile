@@ -2,7 +2,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=samba
-PKG_VERSION:=4.17.2
+PKG_VERSION:=4.18.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -13,7 +13,9 @@ PKG_SOURCE_URL:= \
 		http://www.nic.funet.fi/index/samba/pub/samba/stable/ \
 		http://samba.mirror.bit.nl/samba/ftp/stable/ \
 		https://download.samba.org/pub/samba/stable/
-PKG_HASH:=e55ddf4d5178f8c84316abf53c5edd7b35399e3b7d86bcb81b75261c827bb3b8
+PKG_HASH:=70348656ef807be9c8be4465ca157cef4d99818e234253d2c684cc18b8408149
+
+PKG_BUILD_FLAGS:=gc-sections
 
 PKG_LICENSE:=GPL-3.0-only
 PKG_LICENSE_FILES:=COPYING
@@ -26,6 +28,7 @@ PKG_BUILD_DEPENDS:=samba4/host libtasn1/host perl/host
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_SAMBA4_SERVER_NETBIOS \
 	CONFIG_SAMBA4_SERVER_AVAHI \
+	CONFIG_SAMBA4_SERVER_QUOTAS \
 	CONFIG_SAMBA4_SERVER_VFS \
 	CONFIG_SAMBA4_SERVER_VFSX \
 	CONFIG_SAMBA4_SERVER_AD_DC
@@ -120,13 +123,13 @@ define Package/samba4-utils
 endef
 
 define Package/samba4-utils/description
-  installs: smbstatus smbtree mvxattr smbtar smbcquotas
+  installs: smbstatus smbtree mvxattr smbtar (smbcquotas)
 
   Utilities collection
 endef
 
-TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections
-TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
+TARGET_CFLAGS += $(FPIC)
+TARGET_LDFLAGS += -Wl,--as-needed
 # dont mess with sambas private rpath!
 RSTRIP:=:
 
@@ -232,7 +235,7 @@ CONFIGURE_ARGS += \
 		--with-privatedir=/opt/etc/samba
 
 # features
-ifeq ($(CONFIG_SAMBA4_SERVER_VFS),y)
+ifeq ($(CONFIG_SAMBA4_SERVER_QUOTAS),y)
 	CONFIGURE_ARGS += --with-quotas
 else
 	CONFIGURE_ARGS += --without-quotas
@@ -260,7 +263,10 @@ SAMBA4_VFS_MODULES_SHARED :=auth_script,
 #	SAMBA4_VFS_MODULES_SHARED :=$(SAMBA4_VFS_MODULES_SHARED)vfs_io_uring,
 #endif
 ifeq ($(CONFIG_SAMBA4_SERVER_VFS),y)
-	SAMBA4_VFS_MODULES_SHARED :=$(SAMBA4_VFS_MODULES_SHARED)vfs_fruit,vfs_shadow_copy2,vfs_recycle,vfs_fake_perms,vfs_readonly,vfs_cap,vfs_offline,vfs_crossrename,vfs_catia,vfs_streams_xattr,vfs_xattr_tdb,vfs_default_quota,vfs_widelinks,
+	SAMBA4_VFS_MODULES_SHARED :=$(SAMBA4_VFS_MODULES_SHARED)vfs_fruit,vfs_shadow_copy2,vfs_recycle,vfs_fake_perms,vfs_readonly,vfs_cap,vfs_offline,vfs_crossrename,vfs_catia,vfs_streams_xattr,vfs_xattr_tdb,vfs_widelinks,
+ifeq ($(CONFIG_SAMBA4_SERVER_QUOTAS),y)
+	SAMBA4_VFS_MODULES_SHARED :=$(SAMBA4_VFS_MODULES_SHARED)vfs_default_quota,
+endif
 #ifdef CONFIG_PACKAGE_kmod-fs-btrfs
 #	SAMBA4_VFS_MODULES_SHARED :=$(SAMBA4_VFS_MODULES_SHARED)vfs_btrfs,
 #endif
