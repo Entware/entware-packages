@@ -49,6 +49,7 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_GENSIO_TCL),with-tcl \
 		--with-tclcflags=-I$(STAGING_DIR)/opt/include \
 		--with-tcllibs=-ltcl8.5,without-tcl) \
+	--without-go \
 	--without-openipmi \
 	--with-cplusplus \
 	--disable-doc \
@@ -134,11 +135,11 @@ endef
 
 define Package/python3-gensio
 $(call Package/gensio/Default)
-  TITLE+= (Python3-bindings)
+  TITLE+= (Python bindings)
   SECTION:=lang
   CATEGORY:=Languages
   SUBMENU:=Python
-  DEPENDS:=+PACKAGE_python3-gensio:python3-light +libgensio
+  DEPENDS:=+PACKAGE_python3-gensio:python3-light +libgensiocpp
 endef
 
 define Package/python3-gensio/description
