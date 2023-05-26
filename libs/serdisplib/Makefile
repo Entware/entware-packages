@@ -51,6 +51,8 @@ define Package/serdisplib-tools/description
  * touchscreen_tool
 endef
 
+TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-ldl)
+
 CONFIGURE_VARS += \
 	ac_cv_build=$(GNU_TARGET_NAME)
 
