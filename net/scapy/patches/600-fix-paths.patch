@@ -1,7 +1,7 @@
 --- a/scapy/data.py
 +++ b/scapy/data.py
-@@ -517,7 +517,7 @@ else:
-     TCP_SERVICES, UDP_SERVICES = load_services("/etc/services")
+@@ -533,7 +533,7 @@ else:
+     TCP_SERVICES, UDP_SERVICES, SCTP_SERVICES = load_services("/etc/services")
      MANUFDB = ManufDA()
      manuf_path = select_path(
 -        ['/usr', '/usr/local', '/opt', '/opt/wireshark',
@@ -11,7 +11,7 @@
      )
 --- a/scapy/modules/nmap.py
 +++ b/scapy/modules/nmap.py
-@@ -34,7 +34,7 @@ import scapy.libs.six as six
+@@ -35,7 +35,7 @@ import scapy.libs.six as six
  if WINDOWS:
      conf.nmap_base = os.environ["ProgramFiles"] + "\\nmap\\nmap-os-fingerprints"  # noqa: E501
  else:
@@ -33,7 +33,7 @@
  MIN_TCP4 = 40  # Min size of IPv4/TCP headers
 --- a/scapy/volatile.py
 +++ b/scapy/volatile.py
-@@ -1063,10 +1063,13 @@ class RandSingString(RandSingularity):
+@@ -1062,10 +1062,13 @@ class RandSingString(RandSingularity):
                          "%00",
                          "\\",
                          "../../../../../../../../../../../../../../../../../etc/passwd",  # noqa: E501
