@@ -1,0 +1,105 @@
+--- a/contrib/pg_trgm/trgm_regexp.c
++++ b/contrib/pg_trgm/trgm_regexp.c
+@@ -2199,7 +2199,7 @@ printSourceNFA(regex_t *regex, TrgmColor
+ 
+ 	{
+ 		/* dot -Tpng -o /tmp/source.png < /tmp/source.gv */
+-		FILE	   *fp = fopen("/tmp/source.gv", "w");
++		FILE	   *fp = fopen("/opt/tmp/source.gv", "w");
+ 
+ 		fprintf(fp, "%s", buf.data);
+ 		fclose(fp);
+@@ -2261,7 +2261,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
+ 
+ 	{
+ 		/* dot -Tpng -o /tmp/transformed.png < /tmp/transformed.gv */
+-		FILE	   *fp = fopen("/tmp/transformed.gv", "w");
++		FILE	   *fp = fopen("/opt/tmp/transformed.gv", "w");
+ 
+ 		fprintf(fp, "%s", buf.data);
+ 		fclose(fp);
+@@ -2352,7 +2352,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
+ 
+ 	{
+ 		/* dot -Tpng -o /tmp/packed.png < /tmp/packed.gv */
+-		FILE	   *fp = fopen("/tmp/packed.gv", "w");
++		FILE	   *fp = fopen("/opt/tmp/packed.gv", "w");
+ 
+ 		fprintf(fp, "%s", buf.data);
+ 		fclose(fp);
+--- a/src/bin/initdb/findtimezone.c
++++ b/src/bin/initdb/findtimezone.c
+@@ -403,7 +403,7 @@ identify_system_timezone(void)
+ 	 * this, but that seems to be the only one used on enough platforms to be
+ 	 * worth troubling over.
+ 	 */
+-	if (check_system_link_file("/etc/localtime", &tt, resultbuf))
++	if (check_system_link_file("/opt/etc/localtime", &tt, resultbuf))
+ 		return resultbuf;
+ 
+ 	/* No luck, so search for the best-matching timezone file */
+--- a/src/bin/initdb/initdb.c
++++ b/src/bin/initdb/initdb.c
+@@ -1051,7 +1051,7 @@ setup_config(void)
+ #else
+ 	snprintf(repltok, sizeof(repltok), "#unix_socket_directories = ''");
+ #endif
+-	conflines = replace_token(conflines, "#unix_socket_directories = '/tmp'",
++	conflines = replace_token(conflines, "#unix_socket_directories = '/opt/var/run'",
+ 							  repltok);
+ 
+ #if DEF_PGPORT != 5432
+--- a/src/bin/psql/command.c
++++ b/src/bin/psql/command.c
+@@ -3892,7 +3892,7 @@ do_edit(const char *filename_arg, PQExpB
+ 		const char *tmpdir = getenv("TMPDIR");
+ 
+ 		if (!tmpdir)
+-			tmpdir = "/tmp";
++			tmpdir = "/opt/tmp";
+ #else
+ 		char		tmpdir[MAXPGPATH];
+ 		int			ret;
+--- a/src/include/pg_config_manual.h
++++ b/src/include/pg_config_manual.h
+@@ -224,7 +224,7 @@
+  * support them yet.
+  */
+ #ifndef WIN32
+-#define DEFAULT_PGSOCKET_DIR  "/tmp"
++#define DEFAULT_PGSOCKET_DIR  "/opt/tmp"
+ #else
+ #define DEFAULT_PGSOCKET_DIR ""
+ #endif
+--- a/src/interfaces/ecpg/preproc/ecpg.c
++++ b/src/interfaces/ecpg/preproc/ecpg.c
+@@ -251,6 +251,7 @@ main(int argc, char *const argv[])
+ 	}
+ 
+ 	add_include_path(".");
++	add_include_path("/opt/include");
+ 	add_include_path("/usr/local/include");
+ 	get_include_path(my_exec_path, include_path);
+ 	add_include_path(include_path);
+--- a/src/test/regress/pg_regress.c
++++ b/src/test/regress/pg_regress.c
+@@ -335,7 +335,7 @@ static const char *
+ make_temp_sockdir(void)
+ {
+ 	char	   *template = psprintf("%s/pg_regress-XXXXXX",
+-									getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp");
++									getenv("TMPDIR") ? getenv("TMPDIR") : "/opt/tmp");
+ 
+ 	temp_sockdir = mkdtemp(template);
+ 	if (temp_sockdir == NULL)
+--- a/src/timezone/tzfile.h
++++ b/src/timezone/tzfile.h
+@@ -24,7 +24,7 @@
+  * Information about time zone files.
+  */
+ 
+-#define TZDEFAULT	"/etc/localtime"
++#define TZDEFAULT	"/opt/etc/localtime"
+ #define TZDEFRULES	"posixrules"
+ 
+ 
