@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=acme-common
-PKG_VERSION:=1.0.2
+PKG_VERSION:=1.0.3
 
 PKG_MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
 PKG_LICENSE:=GPL-3.0-only
@@ -38,8 +38,6 @@ define Package/acme-common/install
 	$(INSTALL_DIR) $(1)/etc/ssl/acme
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/acme.config $(1)/etc/config/acme
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) ./files/acme.sh $(1)/usr/bin/acme
 	$(INSTALL_DIR) $(1)/usr/lib/acme
 	$(INSTALL_DATA) ./files/functions.sh $(1)/usr/lib/acme
 	$(INSTALL_BIN) ./files/acme-notify.sh $(1)/usr/lib/acme/notify
@@ -50,15 +48,9 @@ define Package/acme-common/install
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/acme
 endef
 
-define Package/acme/postinst
-#!/bin/sh
-grep -q '/usr/bin/acme' /etc/crontabs/root 2>/dev/null && exit 0
-echo "0 0 * * * /usr/bin/acme get" >> /etc/crontabs/root
-endef
-
 define Package/acme-common/prerm
 #!/bin/sh
-sed -i '\|/usr/bin/acme|d' /etc/crontabs/root
+sed -i '\|/etc/init.d/acme|d' /etc/crontabs/root
 endef
 
 define Build/Configure
