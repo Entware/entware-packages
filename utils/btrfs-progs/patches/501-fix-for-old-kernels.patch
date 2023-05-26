@@ -1,0 +1,42 @@
+--- a/cmds/filesystem.c
++++ b/cmds/filesystem.c
+@@ -1558,6 +1558,11 @@ static int cmd_filesystem_mkswapfile(con
+ 		ret = 1;
+ 		goto out;
+ 	}
++/* FS_NOCOW_FL since Linux 2.6.39 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
+ 	pr_verbose(LOG_INFO, "set NOCOW attribute\n");
+ 	flags = FS_NOCOW_FL;
+ 	ret = ioctl(fd, FS_IOC_SETFLAGS, &flags);
+@@ -1566,6 +1571,7 @@ static int cmd_filesystem_mkswapfile(con
+ 		ret = 1;
+ 		goto out;
+ 	}
++#endif /* FS_NOCOW_FL since Linux 2.6.39 */
+ 	page_count = size / SZ_4K;
+ 	if (page_count <= 10) {
+ 		error("file too short");
+--- a/cmds/inspect.c
++++ b/cmds/inspect.c
+@@ -1486,11 +1486,17 @@ static int cmd_inspect_map_swapfile(cons
+ 		ret = 1;
+ 		goto out;
+ 	}
++/* FS_NOCOW_FL since Linux 2.6.39 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
+ 	if (!(flags & FS_NOCOW_FL)) {
+ 		error("file is not NOCOW");
+ 		ret = 1;
+ 		goto out;
+ 	}
++#endif /* FS_NOCOW_FL since Linux 2.6.39 */
+ 	if (flags & FS_COMPR_FL) {
+ 		error("file with COMP attribute");
+ 		ret = 1;
