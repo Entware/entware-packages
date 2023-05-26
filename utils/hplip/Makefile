@@ -24,6 +24,7 @@ PKG_BUILD_DEPENDS:= python3 libcups
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 include $(TOPDIR)/feeds/packages/lang/python/python3-version.mk
 
 define Package/hplip/Default
