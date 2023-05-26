@@ -1,8 +1,8 @@
 --- a/alsactl/alsactl.c
 +++ b/alsactl/alsactl.c
-@@ -31,18 +31,14 @@
- #include <sched.h>
+@@ -32,18 +32,14 @@
  #include "alsactl.h"
+ #include "os_compat.h"
  
 -#ifndef SYS_ASOUND_DIR
 -#define SYS_ASOUND_DIR "/var/lib/alsa"
