@@ -9,6 +9,17 @@
  #endif
  
  typedef struct mclient {
+--- a/support/include/nls.h
++++ b/support/include/nls.h
+@@ -4,7 +4,7 @@
+  */
+ 
+ #ifndef LOCALEDIR
+-#define LOCALEDIR "/usr/share/locale"
++#define LOCALEDIR "/opt/share/locale"
+ #endif
+ 
+ #ifdef ENABLE_NLS
 --- a/support/nfsidmap/libnfsidmap.c
 +++ b/support/nfsidmap/libnfsidmap.c
 @@ -72,13 +72,13 @@ uid_t nobody_uid = (uid_t)-1;
@@ -33,18 +44,45 @@
  #include "conffile.h"
  #include "systemd.h"
  
--#define RPC_PIPEFS_DEFAULT "/var/lib/nfs/rpc_pipefs"
+-#define RPC_PIPEFS_DEFAULT NFS_STATEDIR "/rpc_pipefs"
 +#define RPC_PIPEFS_DEFAULT "/opt/var/lib/nfs/rpc_pipefs"
  
  static int generate_mount_unit(const char *pipefs_path, const char *pipefs_unit,
  			       const char *dirname)
+--- a/tools/nfsrahead/99-nfs.rules.in
++++ b/tools/nfsrahead/99-nfs.rules.in
+@@ -1 +1 @@
+-SUBSYSTEM=="bdi", ACTION=="add", PROGRAM="_libexecdir_/nfsrahead %k", ATTR{read_ahead_kb}="%c"
++SUBSYSTEM=="bdi", ACTION=="add", PROGRAM="/opt/lib/nfsrahead %k", ATTR{read_ahead_kb}="%c"
+--- a/tools/nfsrahead/Makefile.am
++++ b/tools/nfsrahead/Makefile.am
+@@ -6,7 +6,7 @@ nfsrahead_LDADD = ../../support/nfs/libn
+ man5_MANS = nfsrahead.man
+ EXTRA_DIST = $(man5_MANS)
+ 
+-udev_rulesdir = /usr/lib/udev/rules.d/
++udev_rulesdir = @libdir@/udev/rules.d/
+ udev_rules_DATA = 99-nfs.rules
+ 
+ 99-nfs.rules: 99-nfs.rules.in $(builddefs)
+--- a/tools/nfsrahead/Makefile.in
++++ b/tools/nfsrahead/Makefile.in
+@@ -421,7 +421,7 @@ nfsrahead_LDFLAGS = -lmount
+ nfsrahead_LDADD = ../../support/nfs/libnfsconf.la
+ man5_MANS = nfsrahead.man
+ EXTRA_DIST = $(man5_MANS)
+-udev_rulesdir = /usr/lib/udev/rules.d/
++udev_rulesdir = @libdir@/udev/rules.d/
+ udev_rules_DATA = 99-nfs.rules
+ all: all-am
+ 
 --- a/utils/blkmapd/device-discovery.c
 +++ b/utils/blkmapd/device-discovery.c
 @@ -63,8 +63,8 @@
  #define EVENT_SIZE (sizeof(struct inotify_event))
  #define EVENT_BUFSIZE (1024 * EVENT_SIZE)
  
--#define RPCPIPE_DIR	"/var/lib/nfs/rpc_pipefs"
+-#define RPCPIPE_DIR	NFS_STATEDIR "/rpc_pipefs"
 -#define PID_FILE	"/tmp/run/blkmapd.pid"
 +#define RPCPIPE_DIR	"/opt/var/lib/nfs/rpc_pipefs"
 +#define PID_FILE	"/opt/var/run/blkmapd.pid"
@@ -57,7 +95,7 @@
  #include <pthread.h>
  
  #ifndef GSSD_PIPEFS_DIR
--#define GSSD_PIPEFS_DIR		"/var/lib/nfs/rpc_pipefs"
+-#define GSSD_PIPEFS_DIR		NFS_STATEDIR "/rpc_pipefs"
 +#define GSSD_PIPEFS_DIR		"/opt/var/lib/nfs/rpc_pipefs"
  #endif
  #define DNOTIFY_SIGNAL		(SIGRTMIN + 3)
@@ -74,22 +112,22 @@
  
 --- a/utils/gssd/svcgssd.c
 +++ b/utils/gssd/svcgssd.c
-@@ -300,7 +300,7 @@ main(int argc, char *argv[])
+@@ -296,7 +296,7 @@ main(int argc, char *argv[])
+ 		if (status == FALSE) {
  			printerr(0, "unable to obtain root (machine) credentials\n");
- 			printerr(0, "do you have a keytab entry for "
- 				"nfs/<your.host>@<YOUR.REALM> in "
--				"/etc/krb5.keytab?\n");
-+				"/opt/etc/krb5.keytab?\n");
+ 			printerr(0, "do you have a keytab entry for %s in"
+-				"/etc/krb5.keytab?\n",
++				"/opt/etc/krb5.keytab?\n",
+ 				principal ? principal : "nfs/<your.host>@<YOUR.REALM>");
  			exit(1);
  		}
- 	} else {
 --- a/utils/idmapd/idmapd.c
 +++ b/utils/idmapd/idmapd.c
 @@ -73,7 +73,7 @@
  #include "nfslib.h"
  
  #ifndef PIPEFS_DIR
--#define PIPEFS_DIR  "/var/lib/nfs/rpc_pipefs/"
+-#define PIPEFS_DIR  NFS_STATEDIR "/rpc_pipefs/"
 +#define PIPEFS_DIR  "/opt/var/lib/nfs/rpc_pipefs/"
  #endif
  
@@ -118,26 +156,70 @@
  extern char *progname;
 --- a/utils/mount/Makefile.am
 +++ b/utils/mount/Makefile.am
-@@ -2,7 +2,7 @@
- 
- # These binaries go in /sbin (not /usr/sbin), and that cannot be
- # overridden at config time.
--sbindir = /sbin
-+sbindir = @sbindir@
+@@ -4,7 +4,7 @@
+ # is disabled as may be appropriate when /sbin is a symlink.
+ # Note that we don't use "if CONFIG_SBIN_OVERRIDE" as that
+ # causes autotools to notice the override and disable it.
+-@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = /sbin
++@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = @sbindir@
  
  man8_MANS	= mount.nfs.man umount.nfs.man
  man5_MANS	= nfs.man
 --- a/utils/mount/Makefile.in
 +++ b/utils/mount/Makefile.in
-@@ -426,7 +426,7 @@ psdir = @psdir@
+@@ -448,7 +448,7 @@ unitdir = @unitdir@
+ # is disabled as may be appropriate when /sbin is a symlink.
+ # Note that we don't use "if CONFIG_SBIN_OVERRIDE" as that
+ # causes autotools to notice the override and disable it.
+-@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = /sbin
++@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = @sbindir@
+ man8_MANS = mount.nfs.man umount.nfs.man
+ man5_MANS = nfs.man $(am__append_2)
+ EXTRA_DIST = nfsmount.conf $(man8_MANS) $(man5_MANS) $(am__append_3)
+--- a/utils/nfsd/nfssvc.c
++++ b/utils/nfsd/nfssvc.c
+@@ -69,7 +69,7 @@ nfssvc_mount_nfsdfs(char *progname)
+ 	 * mount nfsdfs when nfsd.ko is plugged in. So, ignore the return
+ 	 * code from it and just check for the "threads" file afterward.
+ 	 */
+-	err = system("/bin/mount -t nfsd nfsd " NFSD_FS_DIR " >/dev/null 2>&1");
++	err = system("/opt/bin/mount -t nfsd nfsd " NFSD_FS_DIR " >/dev/null 2>&1");
  
- # These binaries go in /sbin (not /usr/sbin), and that cannot be
- # overridden at config time.
--sbindir = /sbin
-+sbindir = @sbindir@
- sharedstatedir = @sharedstatedir@
- srcdir = @srcdir@
- startstatd = @startstatd@
+ 	err = stat(NFSD_THREAD_FILE, &statbuf);
+ 	if (err == 0)
+--- a/utils/nfsdcltrack/Makefile.am
++++ b/utils/nfsdcltrack/Makefile.am
+@@ -5,7 +5,7 @@
+ # disabled to install in /usr/sbin anyway.
+ # Note that we don't use "if CONFIG_SBIN_OVERRIDE" as that
+ # causes autotools to notice the override and disable it.
+-@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = /sbin
++@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = @sbindir@
+ 
+ man8_MANS	= nfsdcltrack.man
+ EXTRA_DIST	= $(man8_MANS)
+--- a/utils/nfsdcltrack/Makefile.in
++++ b/utils/nfsdcltrack/Makefile.in
+@@ -421,7 +421,7 @@ unitdir = @unitdir@
+ # disabled to install in /usr/sbin anyway.
+ # Note that we don't use "if CONFIG_SBIN_OVERRIDE" as that
+ # causes autotools to notice the override and disable it.
+-@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = /sbin
++@CONFIG_SBIN_OVERRIDE_TRUE@sbindir = @sbindir@
+ man8_MANS = nfsdcltrack.man
+ EXTRA_DIST = $(man8_MANS)
+ noinst_HEADERS = sqlite.h
+--- a/utils/nfsidmap/nfsidmap.c
++++ b/utils/nfsidmap/nfsidmap.c
+@@ -31,7 +31,7 @@ int verbose = 0;
+ #endif
+ 
+ #ifndef PATH_IDMAPDCONF
+-#define PATH_IDMAPDCONF "/etc/idmapd.conf"
++#define PATH_IDMAPDCONF "/opt/etc/idmapd.conf"
+ #endif
+ 
+ #define UIDKEYS 0x1
 --- a/utils/statd/sm-notify.c
 +++ b/utils/statd/sm-notify.c
 @@ -913,7 +913,7 @@ static int record_pid(void)

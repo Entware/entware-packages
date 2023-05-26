@@ -13,20 +13,20 @@ Fixes: https://bugzilla.redhat.com/show_bug.cgi?id=1979816
 Signed-off-by: Steve Dickson <steved@redhat.com>
 --- a/support/export/v4clients.c
 +++ b/support/export/v4clients.c
-@@ -10,6 +10,7 @@
- #include <sys/inotify.h>
+@@ -11,6 +11,7 @@
+ #include <sys/stat.h>
  #include <errno.h>
  #include "export.h"
 +#include "../../utils/mount/version.h"
  
  /* search.h declares 'struct entry' and nfs_prot.h
   * does too.  Easiest fix is to trick search.h into
-@@ -23,6 +24,8 @@ static int clients_fd = -1;
+@@ -49,6 +50,8 @@ void v4clients_init(void)
  
- void v4clients_init(void)
+ void v4clients_set_fds(fd_set *fdset)
  {
 +	if (linux_version_code() < MAKE_VERSION(5, 3, 0))
 +		return;
  	if (clients_fd >= 0)
- 		return;
- 	clients_fd = inotify_init1(IN_NONBLOCK);
+ 		FD_SET(clients_fd, fdset);
+ }
