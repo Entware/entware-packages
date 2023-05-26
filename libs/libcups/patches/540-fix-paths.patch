@@ -1,0 +1,100 @@
+--- a/config-scripts/cups-common.m4
++++ b/config-scripts/cups-common.m4
+@@ -330,9 +330,9 @@ if test "x$enable_dbus" != xno -a "x$PKG
+ 		AC_CHECK_FUNC(dbus_threads_init,
+ 			      AC_DEFINE(HAVE_DBUS_THREADS_INIT))
+ 		LIBS="$SAVELIBS"
+-		if test -d /etc/dbus-1; then
+-			DBUSDIR="/etc/dbus-1"
+-		fi
++dnl		if test -d /etc/dbus-1; then
++		DBUSDIR="/opt/etc/dbus-1"
++dnl		fi
+ 	else
+ 		AC_MSG_RESULT(no)
+ 	fi
+--- a/cups/dest.c
++++ b/cups/dest.c
+@@ -1869,7 +1869,7 @@ cupsGetNamedDest(http_t     *http,	/* I
+             break;
+ 
+         case 3 : /* Set from /etc/cups/lpoptions */
+-	    _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("/etc/cups/lpoptions file names default destination that does not exist."), 1);
++	    _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("/opt/etc/cups/lpoptions file names default destination that does not exist."), 1);
+             break;
+ 
+         case 4 : /* Set from server */
+--- a/notifier/mailto.c
++++ b/notifier/mailto.c
+@@ -409,7 +409,7 @@ load_configuration(void)
+     snprintf(mailtoFrom, sizeof(mailtoFrom), "root@%s",
+              httpGetHostname(NULL, line, sizeof(line)));
+ 
+-  strlcpy(mailtoSendmail, "/usr/sbin/sendmail", sizeof(mailtoSendmail));
++  strlcpy(mailtoSendmail, "/opt/sbin/sendmail", sizeof(mailtoSendmail));
+ 
+   mailtoSMTPServer[0] = '\0';
+ 
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -593,7 +593,7 @@ cupsdReadConfiguration(void)
+                   CUPS_VERSION_MINOR);
+   cupsdSetString(&StateDir, CUPS_STATEDIR);
+ 
+-  if (!strcmp(CUPS_DEFAULT_PRINTCAP, "/etc/printers.conf"))
++  if (!strcmp(CUPS_DEFAULT_PRINTCAP, "/opt/etc/printers.conf"))
+     PrintcapFormat = PRINTCAP_SOLARIS;
+   else if (!strcmp(CUPS_DEFAULT_PRINTCAP,
+                    "/Library/Preferences/org.cups.printers.plist"))
+--- a/scheduler/process.c
++++ b/scheduler/process.c
+@@ -166,6 +166,7 @@ cupsdCreateProfile(int job_id,		/* I - J
+                  "(allow file-read-metadata\n"
+                  "  (regex"
+ 		 " #\"^/$\""		/* / */
++		 " #\"^/opt$\""		/* /opt Entware */
+ 		 " #\"^/usr$\""		/* /usr */
+ 		 " #\"^/Library$\""	/* /Library */
+ 		 " #\"^/Library/Printers$\""	/* /Library/Printers */
+@@ -213,6 +214,8 @@ cupsdCreateProfile(int job_id,		/* I - J
+                  "  (regex"
+                  " #\"^/AppleInternal$\""
+                  " #\"^/AppleInternal/\""
++                 " #\"^/opt/bin$\""		/* /opt/bin Entware */
++                 " #\"^/opt/bin/\""		/* /opt/bin/... Entware */
+                  " #\"^/bin$\""		/* /bin */
+                  " #\"^/bin/\""		/* /bin/... */
+                  " #\"^/private$\""
+@@ -232,6 +235,8 @@ cupsdCreateProfile(int job_id,		/* I - J
+                  " #\"^/private/var/tmp/\""
+                  " #\"^/usr/bin$\""	/* /usr/bin */
+                  " #\"^/usr/bin/\""	/* /usr/bin/... */
++                 " #\"^/opt/lib/cups$\""	/* /opt/lib/cups Entware */
++                 " #\"^/opt/lib/cups/\""	/* /opt/lib/cups/... Entware */
+                  " #\"^/usr/libexec/cups$\""	/* /usr/libexec/cups */
+                  " #\"^/usr/libexec/cups/\""	/* /usr/libexec/cups/... */
+                  " #\"^/usr/libexec/fax$\""	/* /usr/libexec/fax */
+--- a/configure
++++ b/configure
+@@ -5903,9 +5903,7 @@ if test "x$ac_cv_func_dbus_threads_init"
+ fi
+ 
+ 		LIBS="$SAVELIBS"
+-		if test -d /etc/dbus-1; then
+-			DBUSDIR="/etc/dbus-1"
+-		fi
++		DBUSDIR="/opt/etc/dbus-1"
+ 	else
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ $as_echo "no" >&6; }
+--- a/cups-config.in
++++ b/cups-config.in
+@@ -32,7 +32,7 @@ INSTALLSTATIC=@INSTALLSTATIC@
+ 
+ # flags for C++ compiler:
+ CFLAGS=""
+-LDFLAGS="@EXPORT_LDFLAGS@"
++LDFLAGS="@LDFLAGS@"
+ LIBS="@LIBGSSAPI@ @EXPORT_SSLLIBS@ @LIBZ@ @LIBS@"
+ 
+ # Check for local invocation...
