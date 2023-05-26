@@ -71,7 +71,7 @@
  }
  
  fhs_set_unix () {
-@@ -1149,7 +1149,7 @@ detect_env_linux () {
+@@ -1152,7 +1152,7 @@ detect_env_linux () {
  		dist="SUSE LINUX"
  	else
  		echo "Unknown or unsupported Linux distribution!"
@@ -80,7 +80,7 @@
  	fi
  }
  
-@@ -1162,7 +1162,7 @@ detect_env () {
+@@ -1165,7 +1165,7 @@ detect_env () {
  	if [ -x /opt/syslog-ng/bin/loggen ] ; then
  		syslogfhs=unix
  		echo "Unix-like FHS detected"
