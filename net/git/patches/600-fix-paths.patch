@@ -24,7 +24,7 @@
  		then
 --- a/git-send-email.perl
 +++ b/git-send-email.perl
-@@ -1066,7 +1066,7 @@ if (defined $reply_to) {
+@@ -1102,7 +1102,7 @@ if (defined $reply_to) {
  }
  
  if (!defined $sendmail_cmd && !defined $smtp_server) {
@@ -35,7 +35,7 @@
  		if (-x $_) {
 --- a/gitweb/gitweb.perl
 +++ b/gitweb/gitweb.perl
-@@ -3946,7 +3946,7 @@ sub mimetype_guess {
+@@ -3929,7 +3929,7 @@ sub mimetype_guess {
  		}
  		$mime = mimetype_guess_file($filename, $file);
  	}
@@ -46,15 +46,7 @@
  
 --- a/gitweb/Makefile
 +++ b/gitweb/Makefile
-@@ -12,15 +12,15 @@ all::
- 
- prefix ?= $(HOME)
- bindir ?= $(prefix)/bin
--gitwebdir ?= /var/www/cgi-bin
-+gitwebdir ?= /opt/share/www/cgi-bin
- 
- RM ?= rm -f
- INSTALL ?= install
+@@ -12,8 +12,8 @@ endif
  
  # default configuration for gitweb
  GITWEB_CONFIG = gitweb_config.perl
