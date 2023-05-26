@@ -8,13 +8,11 @@
 # initial implementation kindly stolen from (and then updated) :
 # https://forum.openwrt.org/t/xxhash-makefile/118426
 
-# XXX Entware specific: fixed it after the fucking maintainer
-
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xxhash
 PKG_VERSION:=0.8.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/Cyan4973/xxHash/archive/v$(PKG_VERSION)
@@ -30,7 +28,7 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
-PKG_UNPACK:=$(TAR) -C $(PKG_BUILD_DIR) --strip-components 1 -xzf $(DL_DIR)/$(PKG_SOURCE)
+PKG_UNPACK:=$(HOST_TAR) -C "$(PKG_BUILD_DIR)" --strip-components=1 -xzf "$(DL_DIR)/$(PKG_SOURCE)"
 
 define Package/xxhash/Default
   TITLE:=Extremely fast hash algorithm
@@ -74,11 +72,11 @@ MAKE_FLAGS += PREFIX=/opt
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/*.h $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libxxhash.so* $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libxxhash.{a,so*} $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libxxhash.pc $(1)/opt/lib/pkgconfig
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libxxhash.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libxxhash/install
