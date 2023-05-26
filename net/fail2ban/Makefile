@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fail2ban
 PKG_VERSION:=0.11.2
-PKG_RELEASE:=3
+PKG_RELEASE:=8
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/fail2ban/fail2ban/tar.gz/$(PKG_VERSION)?
@@ -47,6 +47,11 @@ define Package/fail2ban/conffiles
 /opt/etc/fail2ban/
 endef
 
+define Build/Compile
+	cd $(PKG_BUILD_DIR) && ./fail2ban-2to3
+	$(call Py3Build/Compile)
+endef
+
 define Py3Package/fail2ban/filespec
 +|$(PYTHON3_PKG_DIR)
 -|$(PYTHON3_PKG_DIR)/fail2ban/tests
@@ -76,11 +81,6 @@ define Py3Package/fail2ban/install
 #	$(INSTALL_BIN) ./files/fail2ban.defaults $(1)/etc/uci-defaults/99_fail2ban
 	# XXX
 	$(FIND) $(1)/opt/etc -type f -exec $(SED) 's,[[:space:]]/var/, /opt/var/,g' {} +
-endef
-
-define Py3Build/Compile
-	cd $(PKG_BUILD_DIR) && ./fail2ban-2to3
-	$(call Py3Build/Compile/Default)
 endef
 
 $(eval $(call Py3Package,fail2ban))
