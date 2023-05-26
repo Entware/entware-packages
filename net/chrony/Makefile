@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chrony
 PKG_VERSION:=4.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://download.tuxfamily.org/chrony/
@@ -23,6 +23,7 @@ PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:tuxfamily:chrony
 
 PKG_BUILD_DEPENDS:=pps-tools
+PKG_BUILD_FLAGS:=lto
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -82,9 +83,6 @@ CONFIGURE_ARGS+= \
 #	--with-user=chrony
 
 CONFIGURE_VARS+=CPPFLAGS="-DNDEBUG -I$(STAGING_DIR)/opt/include"
-
-TARGET_CFLAGS += -flto
-TARGET_LDFLAGS += -flto
 
 define Package/chrony/install
 	$(INSTALL_DIR) $(1)/opt/bin/
