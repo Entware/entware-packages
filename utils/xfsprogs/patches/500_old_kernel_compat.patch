@@ -1,6 +1,6 @@
 --- a/libxfs/xfs_fs.h
 +++ b/libxfs/xfs_fs.h
-@@ -324,7 +324,15 @@ typedef struct xfs_growfs_rt {
+@@ -314,7 +314,15 @@ typedef struct xfs_growfs_rt {
   * Structures returned from ioctl XFS_IOC_FSBULKSTAT & XFS_IOC_FSBULKSTAT_SINGLE
   */
  typedef struct xfs_bstime {
