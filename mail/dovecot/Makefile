@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dovecot
-PKG_VERSION:=2.3.18
+PKG_VERSION:=2.3.20
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://dovecot.org/releases/2.3
-PKG_HASH:=06e73f668c6c093c45bdeeeb7c20398ab8dc49317234f4b5781ac5e2cc5d6c33
+PKG_HASH:=caa832eb968148abdf35ee9d0f534b779fa732c0ce4a913d9ab8c3469b218552
 
 PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
 PKG_LICENSE:=LGPL-2.1-only MIT BSD-3-Clause
@@ -37,6 +37,9 @@ include $(INCLUDE_DIR)/package.mk
 # dovecot itself.
 include $(INCLUDE_DIR)/nls.mk
 
+# need iconv.m4, otherwise error during autoreconf
+PKG_BUILD_DEPENDS:=gettext-full
+
 define Package/dovecot
   SECTION:=mail
   CATEGORY:=Mail
@@ -44,7 +47,7 @@ define Package/dovecot
   URL:=https://www.dovecot.org/
   DEPENDS:=+DOVECOT_GSSAPI:krb5-libs +DOVECOT_LDAP:libopenldap +DOVECOT_MYSQL:libmysqlclient +DOVECOT_PGSQL:libpq +DOVECOT_SQLITE:libsqlite3 +libopenssl +librt +zlib +libbz2 +libcap +DOVECOT_ICU:icu $(ICONV_DEPENDS)
   USERID:=dovecot=59:dovecot=59 dovenull=60:dovenull=60
-#  ABI_VERSION:=$(PKG_VERSION)
+  ABI_VERSION:=$(PKG_VERSION)
 endef
 
 define Package/dovecot/description
