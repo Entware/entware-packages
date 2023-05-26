@@ -1,9 +1,9 @@
-This patch is only needed for old kernels that do not have SOCK_CLOEXEC flag - used in tomato and keenetic
+This patch is only needed for old kernels that do not have SOCK_CLOEXEC flag - used in tomato
 --- a/src/fdevent.c
 +++ b/src/fdevent.c
-@@ -21,12 +21,22 @@
- #include "ck.h"
- #define force_assert(x) ck_assert(x)
+@@ -16,12 +16,22 @@
+ 
+ #ifndef _WIN32
  
 +#ifndef LINUX_VERSION_CODE
 +#include <linux/version.h>
