@@ -21,6 +21,7 @@ PKG_LICENSE_FILES:=COPYING LICENSE
 
 PKG_BUILD_DEPENDS:=libusb
 PKG_BUILD_PARALLEL:=1
+PKG_BUILD_FLAGS:=gc-sections lto
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -57,8 +58,7 @@ MAKE_FLAGS += \
 	UNAME="Linux" \
 	DUMP1090_VERSION="$(PKG_VERSION)"
 
-TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
-TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
+TARGET_LDFLAGS += -Wl,--as-needed
 
 #define Package/dump1090/conffiles
 #/etc/config/dump1090
