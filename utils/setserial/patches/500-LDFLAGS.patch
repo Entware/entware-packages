@@ -13,7 +13,7 @@
  
  setserial: setserial.c
 -	$(CC) $(CFLAGS) $(DEFS) $(INCS) setserial.c -o setserial
-+	$(CC) $(CFLAGS) $(DEFS) $(INCS) setserial.c $(LDFLAGS) -o setserial
++	$(CC) $(CFLAGS) $(DEFS) $(INCS) setserial.c -o setserial $(LDFLAGS)
  
  setserial.cat: setserial.8
  	nroff -man setserial.8 > setserial.cat
