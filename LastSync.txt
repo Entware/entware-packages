@@ -1,10 +1,8 @@
-commit 0ca0faafc449aadaff2682f3a87b5be12b068e46 (HEAD -> master, origin/master, origin/HEAD)
-Author: Hirokazu MORIKAWA <morikw2@gmail.com>
-Date:   Thu Feb 23 11:29:42 2023 +0900
+commit f0b30847dac1c708257a44e12b5884841270e7b3 (HEAD -> master, origin/master, origin/HEAD)
+Merge: d26e21ef4 eb40aa1b5
+Author: Stan Grishin <stangri@melmac.ca>
+Date:   Fri May 26 08:17:30 2023 -0600
 
-    node: bump to v18.14.2
+    Merge pull request #21177 from stangri/master-https-dns-proxy
     
-    Update to v18.14.2
-    Support for OpenSSL v3.0.x
-    
-    Signed-off-by: Hirokazu MORIKAWA <morikw2@gmail.com>
+    https-dns-proxy: update to 2023-05-25-1
