@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# XXX Entware specific: added host build
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-yaml
 PKG_VERSION:=6.0
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PYPI_NAME:=PyYAML
 PKG_HASH:=68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2
@@ -19,11 +20,14 @@ PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:pyyaml_project:pyyaml
 
-HOST_PYTHON3_PACKAGE_BUILD_DEPENDS:=Cython PyYAML # crawl & suricata
+HOST_BUILD_DEPENDS:=python-cython/host yaml/host
+PKG_BUILD_DEPENDS:=python-yaml/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
 include ../python3-package.mk
+include ../python3-host-build.mk
 
 define Package/python3-yaml
   SECTION:=lang
@@ -38,9 +42,9 @@ define Package/python3-yaml/description
   PyYAML is a YAML parser and emitter for the Python programming language.
 endef
 
-PYTHON3_PKG_SETUP_GLOBAL_ARGS:=--with-libyaml
-PYTHON3_PKG_SETUP_ARGS:=
+PYTHON3_PKG_BUILD_VARS:=PYYAML_FORCE_LIBYAML=1
 
 $(eval $(call Py3Package,python3-yaml))
 $(eval $(call BuildPackage,python3-yaml))
 $(eval $(call BuildPackage,python3-yaml-src))
+$(eval $(call HostBuild))
