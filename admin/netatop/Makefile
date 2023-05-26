@@ -42,7 +42,7 @@ define Package/netatop
   SECTION:=admin
   CATEGORY:=Administration
   TITLE:=network counter for atop
-  DEPENDS:=+zlib #+kmod-netatop
+  DEPENDS:=+zlib +kmod-netatop
   URL:=https://www.atoptool.nl/
 endef
 
@@ -83,4 +83,4 @@ define Package/netatop/install
 endef
 
 #$(eval $(call KernelPackage,netatop))
-$(eval $(call BuildPackage,netatop))
+#$(eval $(call BuildPackage,netatop))
