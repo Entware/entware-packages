@@ -18,14 +18,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
-# XXX Entware specific: keep GCC-8.4.0; drop GCC-10.3.0
+# XXX Entware specific: keep GCC-8.4.0; drop GCC-10.3.0;
+#	add (?autotool?) --enable-dependency-tracking (libatomic)
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
-PKG_RELEASE:=5
+PKG_RELEASE:=5a
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
@@ -44,8 +45,8 @@ ifeq ($(PKG_VERSION),11.3.0)
 	PKG_HASH:=b47cf2818691f5b1e21df2bb38c795fac2cfbd640ede2d0a5e1c89e338a3ac39
 endif
 
-ifeq ($(PKG_VERSION),12.2.0)
-	PKG_HASH:=e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff
+ifeq ($(PKG_VERSION),12.3.0)
+	PKG_HASH:=949a5d4f99e786421a93b532b22ffab5578de7321369975b91aec97adfda8c3b
 endif
 
 PATCH_DIR=./patches/$(GCC_VERSION)
@@ -164,13 +165,12 @@ define Build/Configure
 			--enable-languages=$(TARGET_LANGUAGES) \
 			--with-bugurl=$(BUGURL) \
 			--with-pkgversion="$(PKGVERSION)" \
+			--enable-dependency-tracking \
 			--enable-shared \
 			$(if $(CONFIG_LIBC_USE_GLIBC),--enable,--disable)-__cxa_atexit \
 			--with-default-libstdcxx-abi=gcc4-compatible \
 			--enable-target-optspace \
 			--with-gnu-ld \
-			--with-specs="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
-			--with-boot-ldflags="-static-libstdc++ -static-libgcc -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--disable-nls \
 			--disable-libsanitizer \
 			--disable-libvtv \
@@ -187,7 +187,7 @@ define Build/Configure
 			--prefix=/opt \
 			--libexecdir=/opt/lib \
 			--with-local-prefix=/opt \
-			--with-stage1-ldflags="-lstdc++ -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
+			--with-stage1-ldflags=-lstdc++ \
 			$(ARM_FLOAT_OPTION) \
 			$(SOFT_FLOAT_CONFIG_OPTION) \
 			$(call qstrip,$(CONFIG_EXTRA_GCC_CONFIG_OPTIONS)) \
@@ -216,6 +216,9 @@ ENVLDFLAGS:="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER) -L/o
 define Package/gcc/install
 	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/lib $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 	cp -ar $(PKG_INSTALL_DIR)/opt/include $(1)/opt
+	# FIXME c++
+	cp -ar $(PKG_INSTALL_DIR)/opt/include/c++/$(PKG_VERSION)/$(REAL_GNU_TARGET_NAME)/{bits,ext} \
+		$(1)/opt/include/c++/$(PKG_VERSION)/
 	cp -a $(PKG_INSTALL_DIR)/opt/bin/{$(REAL_GNU_TARGET_NAME)-{g++,gcc,gcc-ar},cpp,gcov} $(1)/opt/bin
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/c++
 	ln -s $(REAL_GNU_TARGET_NAME)-g++ $(1)/opt/bin/g++
@@ -239,6 +242,8 @@ define Package/gcc/install
 	echo 'export LDFLAGS=$(ENVLDFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	echo 'export CFLAGS=$(ENVCFLAGS)' >> $(1)/opt/bin/gcc_env.sh
 	chmod +x $(1)/opt/bin/gcc_env.sh
+	# XXX rm "..install.cmd" ".install"
+	$(FIND) $(1)/opt/include -type f -name '*install*' -delete
 	# XXX fix path
 	$(SED) 's,/usr/include,/opt/include,' \
 		$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/install-tools/mkheaders.conf
@@ -262,7 +267,7 @@ endef
 define Package/gcc/postrm
 #!/bin/sh
 
-$(REMOVE_STATIC_SPEC)
+$(REMOVE_STATIC_SPEC) || true
 endef
 #endif
 
