@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=coreutils
-PKG_VERSION:=9.1
+PKG_VERSION:=9.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/coreutils
-PKG_HASH:=61a1f410d78ba7e7f37a5a4f50e6d1320aca33375484a3255eddf17a38580423
+PKG_HASH:=adbcfcfe899235b71e8768dcf07cd532520b7f54f9a8064843f8d199a904bbaa
 
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -114,7 +114,8 @@ CONFIGURE_VARS += \
 	ac_cv_header_selinux_context_h=no \
 	ac_cv_header_selinux_flash_h=no \
 	ac_cv_header_selinux_selinux_h=no \
-	ac_cv_search_setfilecon=no
+	ac_cv_search_setfilecon=no \
+	ac_cv_sys_year2038_opts='none needed'
 
 CONFIGURE_ARGS += \
 	--disable-xattr \
