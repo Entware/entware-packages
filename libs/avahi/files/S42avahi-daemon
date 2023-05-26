@@ -1,10 +1,97 @@
 #!/bin/sh
 
-ENABLED=yes
-PROCS=avahi-daemon
-ARGS="-D"
-PREARGS=""
-DESC=$PROCS
-PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# avahi-daemon init script
 
-. /opt/etc/init.d/rc.func
+ENABLED=yes
+PROCS="avahi-daemon"
+ARGS=""
+DESC="$PROCS"
+PROGS="/opt/sbin/$PROCS"
+
+ansi_red="\033[1;31m"
+ansi_white="\033[1;37m"
+ansi_green="\033[1;32m"
+ansi_yellow="\033[1;33m"
+ansi_std="\033[m"
+
+[ "$ENABLED" != "yes" ] && return 1
+
+ACTION=$1
+
+start() {
+  echo -e -n "$ansi_white Starting $DESC... $ansi_std"
+  if $PROGS -c; then
+    echo -e "            $ansi_yellow already running. $ansi_std"
+    return 0
+  fi
+  $PROGS -D $ARGS
+  if ! $PROGS -c; then
+    echo -e "            $ansi_red failed. $ansi_std"
+    return 1
+  else
+    echo -e "            $ansi_green done. $ansi_std"
+    return 0
+  fi
+}
+
+stop() {
+  case "$ACTION" in
+    stop|restart)
+	echo -e -n "$ansi_white Shutting down $PROC... $ansi_std"
+	$PROGS -k
+    ;;
+#    kill)
+#	echo -e -n "$ansi_white Killing $PROC... $ansi_std"
+#	$PROGS -k
+#    ;;
+  esac
+
+  if $PROGS -c; then
+    echo -e "            $ansi_red failed. $ansi_std"
+    return 255
+  else
+    echo -e "            $ansi_green done. $ansi_std"
+    return 0
+  fi
+}
+
+check() {
+  echo -e -n "$ansi_white Checking $DESC... $ansi_std"
+  if $PROGS -c; then
+    echo -e "            $ansi_green alive. $ansi_std"
+    return 0
+  else
+    echo -e "            $ansi_red dead. $ansi_std"
+    return 1
+  fi
+}
+
+reload() {
+  echo -e "$ansi_white Reloading $PROCS... $ansi_std"
+  $PROGS -r
+}
+
+case $ACTION in
+    start)
+	start
+    ;;
+    stop|kill)
+	check && stop
+    ;;
+    restart)
+	check > /dev/null && stop
+	start
+    ;;
+    check|status)
+	check
+    ;;
+    reconfigure|reload)
+	reload
+    ;;
+    *)
+	echo -e "$ansi_white Usage: $0 (start|stop|restart|status|reload)$ansi_std"
+	exit 1
+    ;;
+esac
+
+exit 0

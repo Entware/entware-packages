@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# XXX Entware specifics: glib/gobject (glib2) added
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=avahi
 PKG_VERSION:=0.8
-PKG_RELEASE:=7
+PKG_RELEASE:=7a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/lathiat/avahi/releases/download/v$(PKG_VERSION) \
@@ -26,6 +27,7 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/avahi/Default
   SECTION:=net
@@ -65,7 +67,7 @@ endef
 define Package/avahi-autoipd
   $(call Package/avahi/Default)
   SUBMENU:=IP Addresses and Names
-  DEPENDS:=+libdaemon
+  DEPENDS:=+libdaemon $(INTL_DEPENDS)
   TITLE:=IPv4LL network address configuration daemon
 endef
 
@@ -166,7 +168,7 @@ endef
 define Package/libavahi-dbus-support
   $(call Package/libavahi/Default)
   VARIANT:=dbus
-  DEPENDS:=+dbus
+  DEPENDS:=+dbus $(INTL_DEPENDS)
   TITLE+= (D-Bus support)
 endef
 
@@ -174,6 +176,7 @@ define Package/libavahi-nodbus-support
   $(call Package/libavahi/Default)
   VARIANT:=nodbus
   TITLE+= (No D-Bus)
+  DEPENDS:=$(INTL_DEPENDS)
 endef
 
 define Package/libavahi-dbus-support/description
@@ -234,6 +237,37 @@ $(call Package/avahi/Default/description)
  For more information please see the avahi documentation.
 endef
 
+define Package/libavahi-glib
+  $(call Package/avahi/Default)
+  SECTION:=libs
+  CATEGORY:=Libraries
+  VARIANT:=dbus
+  DEPENDS:=+glib2 +libavahi-client $(INTL_DEPENDS)
+  TITLE+= (GLib Support)
+endef
+
+define Package/libavahi-glib/description
+$(call Package/avahi/Default/description)
+ .
+ This packages adds the libavahi-glib library.
+endef
+
+#define Package/libavahi-gobject
+#  $(call Package/avahi/Default)
+#  SECTION:=libs
+#  CATEGORY:=Libraries
+#  VARIANT:=dbus
+#  DEPENDS:=+libavahi-glib
+#  TITLE+= (GLib GObject Support)
+#endef
+
+#define Package/libavahi-gobject/description
+#$(call Package/avahi/Default/description)
+# .
+# This packages adds the libavahi-gobject library.
+# It also automatically adds the required libavahi-glib package.
+#endef
+
 define Package/avahi-utils
   $(call Package/avahi/Default)
   SUBMENU:=IP Addresses and Names
@@ -252,12 +286,11 @@ $(call Package/avahi/Default/description)
 endef
 
 TARGET_CFLAGS += $(FPIC) -DGETTEXT_PACKAGE
+TARGET_LDFLAGS += $(if $(INTL_FULL),-lintl)
 
 CONFIGURE_ARGS += \
 	--enable-shared \
 	--enable-static \
-	--disable-glib \
-	--disable-gobject \
 	--disable-introspection \
 	--disable-qt3 \
 	--disable-qt4 \
@@ -299,11 +332,28 @@ CONFIGURE_ARGS += \
 	--enable-compat-libdns_sd
 endif
 CONFIGURE_ARGS += \
-	--enable-dbus
+	--enable-dbus \
+	--with-dbus-system-address="unix:path=/opt/var/run/dbus/system_bus_socket"
 else
 CONFIGURE_ARGS += \
 	--disable-dbus
 endif
+
+ifneq ($(CONFIG_PACKAGE_libavahi-glib),)
+CONFIGURE_ARGS += \
+	--enable-glib
+else
+CONFIGURE_ARGS += \
+	--disable-glib
+endif
+
+#ifneq ($(CONFIG_PACKAGE_libavahi-gobject),)
+#CONFIGURE_ARGS += \
+#	--enable-gobject
+#else
+CONFIGURE_ARGS += \
+	--disable-gobject
+#endif
 
 CONFIGURE_VARS+= \
 	CFLAGS="$$$$CFLAGS -DNDEBUG -DDISABLE_SYSTEMD" \
@@ -317,6 +367,7 @@ define Build/InstallDev
 ifneq ($(CONFIG_PACKAGE_libavahi-compat-libdnssd),)
 ifeq ($(BUILD_VARIANT),dbus)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdns_sd* $(1)/opt/lib/
+	$(LN) avahi-compat-libdns_sd/dns_sd.h $(1)/opt/include/dns_sd.h
 endif
 endif
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
@@ -346,9 +397,19 @@ define Package/libavahi-compat-libdnssd/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdns_sd.so* $(1)/opt/lib/
 endef
 
+define Package/libavahi-glib/install
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libavahi-glib.so.* $(1)/opt/lib/
+endef
+
+#define Package/libavahi-gobject/install
+#	$(INSTALL_DIR) $(1)/opt/lib
+#	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libavahi-gobject.so.* $(1)/opt/lib/
+#endef
+
 define Package/avahi-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 endef
 
 define Package/avahi-autoipd/install
@@ -393,6 +454,8 @@ endef
 
 $(eval $(call BuildPackage,libavahi-client))
 $(eval $(call BuildPackage,libavahi-compat-libdnssd))
+$(eval $(call BuildPackage,libavahi-glib))
+#$(eval $(call BuildPackage,libavahi-gobject))
 $(eval $(call BuildPackage,avahi-utils))
 $(eval $(call BuildPackage,libavahi-dbus-support))
 $(eval $(call BuildPackage,libavahi-nodbus-support))
