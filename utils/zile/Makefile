@@ -19,7 +19,7 @@ PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
-PKG_FIXUP:=autoreconf
+#PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
