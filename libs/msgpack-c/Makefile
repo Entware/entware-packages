@@ -45,8 +45,8 @@ define Package/msgpack-c/description
 endef
 
 define Package/msgpack-c/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmsgpack-c.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libmsgpack-c.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,msgpack-c))
