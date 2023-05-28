@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: enable host build (neovim)
 
 include $(TOPDIR)/rules.mk
 
@@ -18,6 +19,7 @@ PKG_SOURCE_URL:=http://www.inf.puc-rio.br/~roberto/lpeg/
 PKG_HASH:=48d66576051b6c78388faad09b70493093264588fcd0f258ddaab1cdd4a15ffe
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/host-build.mk
 
 define Package/lpeg
   SUBMENU:=Lua
@@ -30,6 +32,13 @@ endef
 
 define Package/lpeg/description
 	LPeg is a new pattern-matching library for Lua, based on Parsing Expression Grammars (PEGs)
+endef
+
+Host/Configure:=:
+
+define Host/Install
+	$(INSTALL_DIR) $(STAGING_DIR_HOSTPKG)/lib/lua/5.1
+	$(INSTALL_BIN) $(HOST_BUILD_DIR)/lpeg.so $(STAGING_DIR_HOSTPKG)/lib/lua/5.1
 endef
 
 define Build/Configure
@@ -45,3 +54,4 @@ define Package/lpeg/install
 endef
 
 $(eval $(call BuildPackage,lpeg))
+$(eval $(call HostBuild))
