@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-cryptography
 PKG_VERSION:=3.4.8
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PYPI_NAME:=cryptography
 PKG_HASH:=94cc5ed4ceaefcbe5bf38c8fba6a21fc1d365bb8fb826ea1688e3370b2e24a1c
@@ -31,7 +31,7 @@ define Package/python3-cryptography
   TITLE:=Cryptographic recipes and primitives
   URL:=https://github.com/pyca/cryptography
   DEPENDS:= \
-      +libopenssl \
+      +libopenssl-legacy \
       +python3-light \
       +python3-email \
       +python3-openssl \
