@@ -31,13 +31,14 @@ define Package/python3-cryptography
   TITLE:=Cryptographic recipes and primitives
   URL:=https://github.com/pyca/cryptography
   DEPENDS:= \
-      +libopenssl-legacy \
+      +libopenssl \
       +python3-light \
       +python3-email \
       +python3-openssl \
       +python3-urllib \
       +python3-cffi \
       +python3-six
+  EXTRA_DEPENDS:=libopenssl-legacy
 endef
 
 define Package/python3-cryptography/description
