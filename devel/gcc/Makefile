@@ -26,7 +26,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
-PKG_RELEASE:=5a
+PKG_RELEASE:=5b
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
@@ -171,6 +171,8 @@ define Build/Configure
 			--with-default-libstdcxx-abi=gcc4-compatible \
 			--enable-target-optspace \
 			--with-gnu-ld \
+			--with-specs="-Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
+			--with-boot-ldflags="-static-libstdc++ -static-libgcc -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			--disable-nls \
 			--disable-libsanitizer \
 			--disable-libvtv \
@@ -187,7 +189,7 @@ define Build/Configure
 			--prefix=/opt \
 			--libexecdir=/opt/lib \
 			--with-local-prefix=/opt \
-			--with-stage1-ldflags=-lstdc++ \
+			--with-stage1-ldflags="-lstdc++ -Wl,-rpath=/opt/lib -Wl,--dynamic-linker=/opt/lib/$(DYNLINKER)" \
 			$(ARM_FLOAT_OPTION) \
 			$(SOFT_FLOAT_CONFIG_OPTION) \
 			$(call qstrip,$(CONFIG_EXTRA_GCC_CONFIG_OPTIONS)) \
