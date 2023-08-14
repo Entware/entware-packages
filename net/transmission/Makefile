@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific - link libdht statically(patch). It is needed for old kernels.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=transmission
 PKG_VERSION:=4.0.3
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/transmission/transmission/releases/download/$(PKG_VERSION)/
@@ -42,7 +43,7 @@ define Package/transmission/template
   CATEGORY:=Network
   TITLE:=BitTorrent client
   URL:=https://www.transmissionbt.com
-  DEPENDS:=+libatomic +libcurl +libdeflate +libdht +libevent2 \
+  DEPENDS:=+libatomic +libcurl +libdeflate +libevent2 \
 	   +libevent2-pthreads +libminiupnpc +libnatpmp +libpthread +libpsl \
 	   +librt +libutp +zlib +LIBCURL_NOSSL:libmbedtls \
 	   +LIBCURL_GNUTLS:libmbedtls
