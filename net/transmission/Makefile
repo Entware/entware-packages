@@ -94,7 +94,7 @@ define Package/transmission-daemon/conffiles
 /opt/etc/transmission/settings.json
 endef
 
-TARGET_CXXFLAGS += -DHAVE_SIZE_T
+TARGET_CFLAGS += -DHAVE_SIZE_T
 TARGET_LDFLAGS += -latomic -Wl,--as-needed
 
 CMAKE_OPTIONS += \
@@ -108,7 +108,7 @@ CMAKE_OPTIONS += \
 	-DRUN_CLANG_TIDY:BOOL=NO \
 	-DUSE_SYSTEM_EVENT2:BOOL=YES \
 	-DUSE_SYSTEM_DEFLATE:BOOL=YES \
-	-DUSE_SYSTEM_DHT:BOOL=YES \
+	-DUSE_SYSTEM_DHT:BOOL=OFF \
 	-DUSE_SYSTEM_MINIUPNPC:BOOL=YES \
 	-DUSE_SYSTEM_NATPMP:BOOL=YES \
 	-DUSE_SYSTEM_UTP:BOOL=YES \
@@ -119,8 +119,6 @@ CMAKE_OPTIONS += \
 	-DWITH_SYSTEMD:BOOL=NO \
 	-DB64_INCLUDE_DIR=$(STAGING_DIR)/opt/include \
 	-DB64_LIBRARY=$(STAGING_DIR)/opt/lib/libb64.a \
-	-DDHT_INCLUDE_DIR=$(STAGING_DIR)/opt/include \
-	-DDHT_LIBRARY=$(STAGING_DIR)/opt/lib/libdht.so \
 	-DUTP_INCLUDE_DIR=$(STAGING_DIR)/opt/include \
 	-DUTP_LIBRARY=$(STAGING_DIR)/opt/lib/libutp.so \
 	$(if $(CONFIG_LIBCURL_NOSSL),-DWITH_CRYPTO=mbedtls) \

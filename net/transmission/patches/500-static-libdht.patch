@@ -1,14 +1,15 @@
 --- a/CMakeLists.txt
-+++ b/CMakeLists.txt.new
-@@ -60,7 +60,6 @@
++++ b/CMakeLists.txt
+@@ -60,7 +60,7 @@ tr_auto_option(ENABLE_DEPRECATED "Allow
  tr_auto_option(RUN_CLANG_TIDY "Run clang-tidy on the code" OFF)
  tr_auto_option(USE_SYSTEM_EVENT2 "Use system event2 library" AUTO)
  tr_auto_option(USE_SYSTEM_DEFLATE "Use system deflate library" AUTO)
 -tr_auto_option(USE_SYSTEM_DHT "Use system dht library" AUTO)
++option(USE_SYSTEM_DHT "Use system dht library" OFF)
  tr_auto_option(USE_SYSTEM_MINIUPNPC "Use system miniupnpc library" AUTO)
  tr_auto_option(USE_SYSTEM_NATPMP "Use system natpmp library" AUTO)
  tr_auto_option(USE_SYSTEM_UTP "Use system utp library" AUTO)
-@@ -504,9 +503,7 @@
+@@ -504,9 +504,7 @@ target_compile_definitions(miniupnpc::li
  
  add_subdirectory(third-party/jsonsl)
  add_subdirectory(third-party/wildmat)
@@ -21,19 +22,40 @@
      TARGET psl::psl)
 --- a/libtransmission/CMakeLists.txt
 +++ b/libtransmission/CMakeLists.txt
-@@ -280,7 +280,6 @@
+@@ -280,7 +280,7 @@ target_link_libraries(${TR_NAME}
          psl::psl
          natpmp::natpmp
          miniupnpc::libminiupnpc
 -        dht::dht
++        dht
          libutp::libutp
          libb64::libb64
          ${LIBINTL_LIBRARY}
-@@ -290,6 +289,7 @@
-         jsonsl
-         utf8::cpp
-         wildmat
-+	dht
-         WideInteger::WideInteger
-         $<$<BOOL:${WIN32}>:crypt32>
-         $<$<BOOL:${WIN32}>:shlwapi>
+--- a/libtransmission/tr-dht.h
++++ b/libtransmission/tr-dht.h
+@@ -12,7 +12,7 @@
+ #include <string_view>
+ #include <vector>
+ 
+-#include <dht/dht.h>
++#include <dht.h>
+ 
+ #include "transmission.h"
+ 
+--- a/third-party/dht/CMakeLists.txt
++++ b/third-party/dht/CMakeLists.txt
+@@ -1,9 +1,7 @@
+-cmake_minimum_required(VERSION 2.8)
+-project(dht C)
+-
+-add_library(${PROJECT_NAME} STATIC
++add_library(dht STATIC
+     dht.c
+-)
++    dht.h)
+ 
+-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+-install(FILES dht.h DESTINATION include/dht)
++target_include_directories(dht
++    PUBLIC
++        ${CMAKE_CURRENT_LIST_DIR})
