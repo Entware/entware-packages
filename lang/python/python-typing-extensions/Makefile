@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-typing-extensions
-PKG_VERSION:=4.5.0
+PKG_VERSION:=4.7.1
 PKG_RELEASE:=1
 
 PYPI_NAME:=typing-extensions
 PYPI_SOURCE_NAME:=typing_extensions
-PKG_HASH:=5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb
+PKG_HASH:=b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2
 
 PKG_MAINTAINER:=Jan Pavlinec <jan.pavlinec1@gmail.com>, Jeffery To <jeffery.to@gmail.com>
-PKG_LICENSE:=PSF-2.0
+PKG_LICENSE:=Python-2.0.1 0BSD
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_BUILD_DEPENDS:=python-flit-core/host
@@ -32,14 +32,20 @@ define Package/python3-typing-extensions
   SUBMENU:=Python
   SECTION:=lang
   CATEGORY:=Languages
-  TITLE:=Module with type hints for Python
-  URL:=https://github.com/python/typing
-  DEPENDS:= \
-	+python3-light
+  TITLE:=Backported and Experimental Type Hints
+  URL:=https://github.com/python/typing_extensions
+  DEPENDS:=+python3-light
 endef
 
 define Package/python3-typing-extensions/description
-  Backported and Experimental Type Hints for Python.
+The typing_extensions module serves two related purposes:
+
+* Enable use of new type system features on older Python versions. For
+  example, typing.TypeGuard is new in Python 3.10, but typing_extensions
+  allows users on previous Python versions to use it too.
+
+* Enable experimentation with new type system PEPs before they are
+  accepted and added to the typing module.
 endef
 
 $(eval $(call Py3Package,python3-typing-extensions))
