@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.12.0
-PKG_RELEASE:=42
+PKG_RELEASE:=47
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -33,7 +33,7 @@ PKG_CONFIG_DEPENDS:= \
 
 COLLECTD_PLUGINS_DISABLED:= \
 	amqp \
-	ampq1 \
+	amqp1 \
 	apple_sensors \
 	aquaero \
 	barometer \
@@ -339,13 +339,17 @@ ifneq ($(CONFIG_PACKAGE_collectd-mod-rrdtool),)
   CONFIGURE_ARGS+= --with-librrd="$(STAGING_DIR)/opt/lib/rrdtool-1.0"
 endif
 
-# exception: mod-smart needs libatasmart
+# exception: mod-smart needs libatasmart and libudev
 ifneq ($(CONFIG_PACKAGE_collectd-mod-smart),)
   CONFIGURE_ARGS+= \
 	--with-libatasmart="$(STAGING_DIR)/opt" \
 	--with-libudev="$(STAGING_DIR)/opt"
-else
-  CONFIGURE_ARGS+= --without-libudev
+endif
+
+# exception: mod-disk needs libudev
+ifneq ($(CONFIG_PACKAGE_collectd-mod-disk),)
+  CONFIGURE_ARGS+= \
+	--with-libudev="$(STAGING_DIR)/opt"
 endif
 
 define Package/collectd/conffiles
@@ -465,13 +469,13 @@ $(eval $(call BuildPlugin,chrony,chrony status input,chrony,))
 $(eval $(call BuildPlugin,conntrack,connection tracking table size input,conntrack,))
 $(eval $(call BuildPlugin,contextswitch,context switch input,contextswitch,))
 $(eval $(call BuildPlugin,cpu,CPU input,cpu,))
-$(eval $(call BuildPlugin,cpufreq,CPU Freq input,cpufreq,@(TARGET_x86||TARGET_x86_64||TARGET_mvebu||TARGET_ipq806x||TARGET_armvirt||TARGET_ipq40xx||TARGET_bcm27xx_bcm2709||TARGET_rockchip||TARGET_mediatek||TARGET_ipq807x))) # Only enable on targets with CPUs supporting frequency scaling
+$(eval $(call BuildPlugin,cpufreq,CPU Freq input,cpufreq,@(TARGET_x86||TARGET_x86_64||TARGET_mvebu||TARGET_ipq806x||TARGET_armsr||TARGET_ipq40xx||TARGET_bcm27xx_bcm2709||TARGET_rockchip||TARGET_mediatek||TARGET_qualcommax))) # Only enable on targets with CPUs supporting frequency scaling
 $(eval $(call BuildPlugin,csv,CSV output,csv,))
 $(eval $(call BuildPlugin,curl,cURL input,curl,+PACKAGE_collectd-mod-curl:libcurl))
 #$(eval $(call BuildPlugin,dbi,relational database input,dbi,+PACKAGE_collectd-mod-dbi:libdbi))
 $(eval $(call BuildPlugin,df,disk space input,df,))
 #$(eval $(call BuildPlugin,dhcpleases,show dhcpleases,dhcpleases,))
-$(eval $(call BuildPlugin,disk,disk usage/timing input,disk,+PACKAGE_collectd-mod-smart:libudev))
+$(eval $(call BuildPlugin,disk,disk usage/timing input,disk,+PACKAGE_collectd-mod-disk:libudev))
 $(eval $(call BuildPlugin,dns,DNS traffic input,dns,+PACKAGE_collectd-mod-dns:libpcap))
 $(eval $(call BuildPlugin,email,email output,email,))
 $(eval $(call BuildPlugin,entropy,Entropy amount input,entropy,))
@@ -536,4 +540,4 @@ $(eval $(call BuildPlugin,write-http,HTTP POST output,write_http,+PACKAGE_collec
 $(eval $(call BuildPlugin,write-log,Log output,write_log,))
 
 #$(eval $(call BuildScriptPlugin,sqm,SQM/qdisc collection,sqm_collectd,+PACKAGE_collectd-mod-sqm:collectd-mod-exec))
-#$(eval $(call BuildScriptLuaPlugin,@ltq-dsl,Lantiq DSL collection,dsl,ltq-dsl-app +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))
+#$(eval $(call BuildScriptLuaPlugin,ltq-dsl,Lantiq DSL collection,dsl,@ltq-dsl-app +PACKAGE_collectd-mod-ltq-dsl:collectd-mod-lua +libubus-lua))
