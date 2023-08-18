@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: ALTERNATIVES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadow
 PKG_VERSION:=4.8.1
-PKG_RELEASE:=3a
+PKG_RELEASE:=3b
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/shadow-maint/shadow/releases/download/$(PKG_VERSION)
@@ -33,6 +34,11 @@ SHADOW_APPLETS := \
 	lastlog login logoutd newgidmap newgrp newuidmap newusers nologin \
 	passwd pwck pwconv pwunconv su \
 	useradd userdel usermod vipw
+
+DIR_BIN := \
+	login passwd su
+
+$(eval $(foreach u,$(DIR_BIN),ALTS_$(u):=300:/opt/bin/$(u):/opt/libexec/$(u)-shadow$(newline)))
 
 CONFIGURE_ARGS += \
 	--without-audit \
@@ -110,6 +116,7 @@ define GenPlugin
     $(call Package/shadow/Default)
     TITLE:=Utility $(1) from the PLD Linux shadow utilities
     DEPENDS:=+shadow-common
+    ALTERNATIVES:=$(ALTS_$(1))
     HIDDEN:=1
   endef
 
@@ -147,8 +154,8 @@ define BuildPlugin
 		$(INSTALL_DIR) $$(1)/opt/sbin; \
 		$(CP) $(PKG_INSTALL_DIR)/opt/sbin/$(1) $$(1)/opt/sbin/; \
 	} || { \
-		$(INSTALL_DIR) $$(1)/opt/bin; \
-		$(CP) $(PKG_INSTALL_DIR)/opt/bin/$(1) $$(1)/opt/bin/; \
+		$(INSTALL_DIR) $$(1)/opt/$(if $(ALTS_$(1)),libexec,bin); \
+		$(CP) $(PKG_INSTALL_DIR)/opt/bin/$(1) $$(1)/opt/$(if $(ALTS_$(1)),libexec/$(1)-shadow,bin/$(1)); \
 	}
   endef
 
