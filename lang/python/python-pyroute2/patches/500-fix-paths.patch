@@ -1,0 +1,44 @@
+--- a/pyroute2/config/__init__.py
++++ b/pyroute2/config/__init__.py
+@@ -49,7 +49,7 @@ AF_NETLINK = getattr(socket, 'AF_NETLINK
+ data_plugins_pkgs = []
+ data_plugins_path = []
+ 
+-netns_path = ['/var/run/netns', '/var/run/docker/netns']
++netns_path = ['/opt/var/run/netns', '/var/run/netns', '/var/run/docker/netns']
+ 
+ entry_points_aliases = {
+     'pyroute2.netlink.exceptions': 'pyroute2.netlink.exceptions'
+--- a/pyroute2/netlink/rtnl/ifinfmsg/__init__.py
++++ b/pyroute2/netlink/rtnl/ifinfmsg/__init__.py
+@@ -559,7 +559,7 @@ class ifinfbase(object):
+ 
+     class netns_fd(nla):
+         fields = [('value', 'I')]
+-        netns_run_dir = '/var/run/netns'
++        netns_run_dir = '/opt/var/run/netns'
+         netns_fd = None
+ 
+         def encode(self):
+--- a/pyroute2/netns/__init__.py
++++ b/pyroute2/netns/__init__.py
+@@ -116,7 +116,7 @@ MNT_DETACH = 0x00000002
+ MS_BIND = 4096
+ MS_REC = 16384
+ MS_SHARED = 1 << 20
+-NETNS_RUN_DIR = '/var/run/netns'
++NETNS_RUN_DIR = '/opt/var/run/netns'
+ 
+ __saved_ns = []
+ __libc = None
+--- a/pyroute2/netns/manager.py
++++ b/pyroute2/netns/manager.py
+@@ -13,7 +13,7 @@ class NetNSManager(Inotify):
+         path = set(path or [])
+         super(NetNSManager, self).__init__(libc, path)
+         if not self.path:
+-            for d in ['/var/run/netns', '/var/run/docker/netns']:
++            for d in ['/opt/var/run/netns', '/var/run/netns', '/var/run/docker/netns']:
+                 try:
+                     self.register_path(d)
+                 except OSError:
