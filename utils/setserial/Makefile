@@ -1,8 +1,10 @@
+# Entware specific: ALTERNATIVES
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=setserial
 PKG_VERSION:=2.17
-PKG_RELEASE:=3
+PKG_RELEASE:=3a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/setserial
@@ -20,11 +22,12 @@ define Package/setserial
   CATEGORY:=Utilities
   URL:=http://setserial.sourceforge.net/
   TITLE:=Serial port attribute utility
+  ALTERNATIVES:=300:/opt/bin/setserial:/opt/libexec/setserial
 endef
 
 define Package/setserial/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/setserial $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/setserial $(1)/opt/libexec/
 endef
 
 define Package/setserial/description
