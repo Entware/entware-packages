@@ -17,7 +17,7 @@ PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=8a5db99c961a7ecf27c75956189c9602c968751f11dbeae2b900dbff1c085b5e
+PKG_HASH:=2f0e409df2ab57aa9fc4cbddfb976af44e4e55bf6f619eee6bc5c2297264a7f6
 
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=PSF-2.0
@@ -41,10 +41,6 @@ PKG_BUILD_FLAGS:=no-lto
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
-
-PKG_CONFIG_DEPENDS:= \
-	CONFIG_PACKAGE_python3-pkg-resources \
-	CONFIG_PACKAGE_python3-setuptools CONFIG_PACKAGE_python3-pip
 
 PKG_BUILD_DEPENDS:=bluez python3/host python-build/host python-installer/host python-wheel/host
 HOST_BUILD_DEPENDS:=bzip2/host libffi/host
@@ -193,57 +189,6 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_IPV6),--enable-ipv6) \
 	$(if $(findstring mips,$(CONFIG_ARCH)),,--with-lto)
 
-ifdef CONFIG_PACKAGE_python3-setuptools
-PYTHON3_SETUPTOOLS_BUILD:=1
-endif
-
-ifdef CONFIG_PACKAGE_python3-pkg-resources
-PYTHON3_SETUPTOOLS_BUILD:=1
-endif
-
-ifeq ($(PYTHON3_SETUPTOOLS_BUILD),1)
-define Build/Compile/python3-setuptools
-	$(HOST_PYTHON3_PIP_VARS) \
-	$(HOST_PYTHON3_PIP) \
-		install \
-		--ignore-installed \
-		--progress-bar off \
-		--root=$(PKG_BUILD_DIR)/install-setuptools \
-		--prefix=/opt \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-$(PYTHON3_SETUPTOOLS_VERSION)-py3-none-any.whl
-	$(call PatchDir,$(PKG_BUILD_DIR)/install-setuptools/opt/lib/python$(PYTHON3_VERSION)/site-packages,./patches-setuptools,)
-endef
-else
-define Build/Compile/python3-setuptools
-	ls $(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-$(PYTHON3_SETUPTOOLS_VERSION)-py3-none-any.whl
-endef
-endif # CONFIG_PACKAGE_python3-setuptools
-
-ifdef CONFIG_PACKAGE_python3-pip
-define Build/Compile/python3-pip
-	$(HOST_PYTHON3_PIP_VARS) \
-	$(HOST_PYTHON3_PIP) \
-		install \
-		--ignore-installed \
-		--progress-bar off \
-		--root=$(PKG_BUILD_DIR)/install-pip \
-		--prefix=/opt \
-		$(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py3-none-any.whl
-	$(call PatchDir,$(PKG_BUILD_DIR)/install-pip/opt/lib/python$(PYTHON3_VERSION)/site-packages,./patches-pkg-pip,)
-endef
-else
-define Build/Compile/python3-pip
-	ls $(PKG_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py3-none-any.whl
-endef
-endif # CONFIG_PACKAGE_python3-pip
-
-define Build/Compile
-	$(call Build/Compile/Default)
-	# Use host pip to install python-setuptools
-	$(call Build/Compile/python3-setuptools)
-	$(call Build/Compile/python3-pip)
-endef
-
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib $(1)/opt/lib/pkgconfig
 	$(INSTALL_DIR) $(2)/bin
@@ -376,6 +321,8 @@ HOST_CONFIGURE_ARGS += \
 define Host/Configure
 	$(SED) 's/^ENABLE_USER_SITE = None$$$$/ENABLE_USER_SITE = False/' $(HOST_BUILD_DIR)/Lib/site.py
 	$(call Host/Configure/Default)
+	ls $(HOST_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-$(PYTHON3_SETUPTOOLS_VERSION)-py3-none-any.whl
+	ls $(HOST_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py3-none-any.whl
 endef
 
 define Host/Install
@@ -396,11 +343,11 @@ define Host/Install
 	)
 	$(call Host/Install/Default)
 	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)),,
-		$(call HostPatchDir,$(HOST_PYTHON3_PKG_DIR),./patches-setuptools,)
+		$(call HostPatchDir,$(HOST_PYTHON3_PKG_DIR),./patches-host-setuptools,)
 		touch $(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)
 	)
 	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.pip_installed_$(PYTHON3_PIP_VERSION)-$(PYTHON3_PIP_PKG_RELEASE)),,
-		$(call HostPatchDir,$(HOST_PYTHON3_PKG_DIR),./patches-pip,)
+		$(call HostPatchDir,$(HOST_PYTHON3_PKG_DIR),./patches-host-pip,)
 		touch $(HOST_PYTHON3_PKG_DIR)/.pip_installed_$(PYTHON3_PIP_VERSION)-$(PYTHON3_PIP_PKG_RELEASE)
 	)
 endef
