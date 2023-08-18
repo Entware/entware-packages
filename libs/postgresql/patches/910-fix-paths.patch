@@ -1,6 +1,6 @@
 --- a/contrib/pg_trgm/trgm_regexp.c
 +++ b/contrib/pg_trgm/trgm_regexp.c
-@@ -2199,7 +2199,7 @@ printSourceNFA(regex_t *regex, TrgmColor
+@@ -2205,7 +2205,7 @@ printSourceNFA(regex_t *regex, TrgmColor
  
  	{
  		/* dot -Tpng -o /tmp/source.png < /tmp/source.gv */
@@ -9,7 +9,7 @@
  
  		fprintf(fp, "%s", buf.data);
  		fclose(fp);
-@@ -2261,7 +2261,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
+@@ -2267,7 +2267,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
  
  	{
  		/* dot -Tpng -o /tmp/transformed.png < /tmp/transformed.gv */
@@ -18,7 +18,7 @@
  
  		fprintf(fp, "%s", buf.data);
  		fclose(fp);
-@@ -2352,7 +2352,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
+@@ -2358,7 +2358,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
  
  	{
  		/* dot -Tpng -o /tmp/packed.png < /tmp/packed.gv */
