@@ -1,17 +1,6 @@
---- a/jmespath.egg-info/SOURCES.txt
-+++ b/jmespath.egg-info/SOURCES.txt
-@@ -3,7 +3,7 @@ MANIFEST.in
- README.rst
- setup.cfg
- setup.py
--bin/jp.py
-+bin/jp
- jmespath/__init__.py
- jmespath/ast.py
- jmespath/compat.py
 --- a/setup.py
 +++ b/setup.py
-@@ -15,7 +15,7 @@ setup(
+@@ -13,7 +13,7 @@ setup(
      author='James Saryerwinnie',
      author_email='js@jamesls.com',
      url='https://github.com/jmespath/jmespath.py',
@@ -19,4 +8,4 @@
 +    scripts=['bin/jp'],
      packages=find_packages(exclude=['tests']),
      license='MIT',
-     classifiers=(
+     python_requires='>=3.7',
