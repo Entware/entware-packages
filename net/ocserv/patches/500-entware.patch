@@ -1,6 +1,6 @@
 --- a/src/config.c
 +++ b/src/config.c
-@@ -59,8 +59,8 @@
+@@ -58,8 +58,8 @@
  #include <getopt.h>
  #include <snapshot.h>
  
@@ -21,7 +21,7 @@
 +#define OCSERV_FW_SCRIPT "/opt/bin/ocserv-fw"
  
  #define APPEND_TO_STR(str, val) \
- 			ret = str_append_str(str, val); \
+ 	do { \
 --- a/src/occtl/ctl.h
 +++ b/src/occtl/ctl.h
 @@ -1,7 +1,7 @@
@@ -35,9 +35,9 @@
  	CTL_CMD_STATUS = 1,
 --- a/src/ocpasswd/ocpasswd.c
 +++ b/src/ocpasswd/ocpasswd.c
-@@ -42,7 +42,7 @@
- #include <getpass.h>
- #include <minmax.h>
+@@ -36,7 +36,7 @@
+ #endif
+ #include <locale.h>
  
 -#define DEFAULT_OCPASSWD "/etc/ocserv/ocpasswd"
 +#define DEFAULT_OCPASSWD "/opt/etc/ocserv/ocpasswd"
