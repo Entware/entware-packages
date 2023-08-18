@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
 PKG_VERSION:=7.2
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/nano
@@ -32,7 +32,7 @@ define Package/nano/Default
   SECTION:=utils
   CATEGORY:=Utilities
   URL:=https://www.nano-editor.org/
-  DEPENDS:=+file +libncursesw +zlib
+  DEPENDS:=+libmagic +libncursesw +zlib
 endef
 
 define Package/nano
