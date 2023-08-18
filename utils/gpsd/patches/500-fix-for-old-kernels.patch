@@ -1,0 +1,12 @@
+--- a/clients/ppscheck.c
++++ b/clients/ppscheck.c
+@@ -33,6 +33,9 @@
+ #include <limits.h>          // for PATH_MAX
+ #ifdef __linux__
+    #include <linux/tty.h>             // for N_PPS
++   #ifndef N_PPS
++   #define N_PPS 18 /* ? 2.6.26.x */
++   #endif
+ #endif
+ #include <stdio.h>
+ #include <stdlib.h>                   // for atexit()
