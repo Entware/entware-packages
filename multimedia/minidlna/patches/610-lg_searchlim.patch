@@ -60,7 +60,7 @@
  #endif
 --- a/upnpsoap.c
 +++ b/upnpsoap.c
-@@ -1930,6 +1930,15 @@ SearchContentDirectory(struct upnphttp *
+@@ -1935,6 +1935,15 @@ SearchContentDirectory(struct upnphttp *
  			goto search_error;
  		}
  	}
