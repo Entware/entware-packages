@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=avahi
 PKG_VERSION:=0.8
-PKG_RELEASE:=7a
+PKG_RELEASE:=8
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/lathiat/avahi/releases/download/v$(PKG_VERSION) \
@@ -417,6 +417,8 @@ define Package/avahi-autoipd/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/etc/avahi/avahi-autoipd.action $(1)/opt/etc/avahi/
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/avahi-autoipd $(1)/opt/sbin/
+#	$(INSTALL_DIR) $(1)/lib/netifd/proto
+#	$(INSTALL_BIN) ./files/netifd-autoip.sh $(1)/lib/netifd/proto/autoip.sh
 endef
 
 define Package/avahi-daemon/install
