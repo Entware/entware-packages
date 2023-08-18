@@ -1,7 +1,7 @@
 #
 # Copyright (C) 2015, 2016 gxcreator
 # Copyright (C) 2017 OpenWrt.org
-# Copyright (C) 2021-2022 PurpleI2P team
+# Copyright (C) 2021-2023 PurpleI2P team
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -10,13 +10,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=i2pd
-PKG_VERSION:=2.46.1
-PKG_RELEASE:=1a
+PKG_VERSION:=2.48.0
+PKG_RELEASE:=1
 PKG_BUILD_PARALLEL:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/PurpleI2P/i2pd/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=83bb5e2494d566d41ff3a85e4c93078d290d10e3cf1fbe7807bec9f0d024513e
+PKG_HASH:=ccf417aa66ce37f72ea15b7fbcff4c71e823566ea74bda696b9c1e19aae08739
 
 PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -55,7 +55,7 @@ define Package/i2pd/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/i2pd.init-entware $(1)/opt/etc/init.d/S30i2pd
 	$(INSTALL_DIR) $(1)/opt/share/i2pd
-	$(CP) $(PKG_BUILD_DIR)/contrib/certificates  $(1)/opt/share/i2pd
+	$(CP) $(PKG_BUILD_DIR)/contrib/certificates $(1)/opt/share/i2pd
 	$(INSTALL_DIR) $(1)/opt/etc/config
 	$(INSTALL_CONF) ./files/i2pd.config-entware $(1)/opt/etc/config/i2pd
 	$(INSTALL_DIR) $(1)/opt/etc/i2pd
