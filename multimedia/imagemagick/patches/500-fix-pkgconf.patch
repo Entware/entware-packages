@@ -1,0 +1,33 @@
+--- a/MagickCore/ImageMagick.pc.in
++++ b/MagickCore/ImageMagick.pc.in
+@@ -2,7 +2,7 @@ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+-includearchdir=@INCLUDEARCH_DIR@/ImageMagick-@MAGICK_MAJOR_VERSION@
++includearchdir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+ libname=MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+  
+ Name: ImageMagick
+--- a/MagickCore/MagickCore.pc.in
++++ b/MagickCore/MagickCore.pc.in
+@@ -2,7 +2,7 @@ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+-includearchdir=@INCLUDEARCH_DIR@/ImageMagick-@MAGICK_MAJOR_VERSION@
++includearchdir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+ libname=MagickCore-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+ moduledir=@libdir@/ImageMagick-@MAGICK_MAJOR_VERSION@.@MAGICK_MINOR_VERSION@.@MAGICK_MICRO_VERSION@/modules-@MAGICK_ABI_SUFFIX@
+  
+--- a/MagickWand/MagickWand.pc.in
++++ b/MagickWand/MagickWand.pc.in
+@@ -2,7 +2,7 @@ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ includedir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+-includearchdir=@INCLUDEARCH_DIR@/ImageMagick-@MAGICK_MAJOR_VERSION@
++includearchdir=@includedir@/ImageMagick-@MAGICK_MAJOR_VERSION@
+ libname=MagickWand-@MAGICK_MAJOR_VERSION@.@MAGICK_ABI_SUFFIX@
+  
+ Name: MagickWand
