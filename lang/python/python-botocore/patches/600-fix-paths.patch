@@ -1,6 +1,6 @@
 --- a/botocore/credentials.py
 +++ b/botocore/credentials.py
-@@ -1116,7 +1116,7 @@ class BotoProvider(CredentialProvider):
+@@ -1334,7 +1334,7 @@ class BotoProvider(CredentialProvider):
      CANONICAL_NAME = 'Boto2Config'
  
      BOTO_CONFIG_ENV = 'BOTO_CONFIG'
