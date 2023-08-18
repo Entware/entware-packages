@@ -4,13 +4,14 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: ALTERNATIVES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unzip
 PKG_REV:=60
 PKG_VERSION:=6.0
-PKG_RELEASE:=8
+PKG_RELEASE:=8a
 
 PKG_SOURCE:=$(PKG_NAME)$(PKG_REV).tar.gz
 PKG_SOURCE_URL:=@SF/infozip
@@ -33,6 +34,7 @@ define Package/unzip
   TITLE:=De-archiver for .zip files
   URL:=http://infozip.sourceforge.net/UnZip.html
   SUBMENU:=Compression
+  ALTERNATIVES:=300:/opt/bin/unzip:/opt/libexec/unzip
 endef
 
 define Package/unzip/description
@@ -67,8 +69,10 @@ endef
 define Package/unzip/install
 	$(INSTALL_DIR) $(1)/opt/bin/
 	$(INSTALL_BIN) \
-		$(PKG_INSTALL_DIR)/opt/bin/{funzip,unzip,unzipsfx,zipgrep} \
+		$(PKG_INSTALL_DIR)/opt/bin/{funzip,unzipsfx,zipgrep} \
 		$(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/unzip $(1)/opt/libexec
 	$(LN) unzip $(1)/opt/bin/zipinfo
 endef
 
