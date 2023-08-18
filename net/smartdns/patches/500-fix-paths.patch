@@ -1,6 +1,6 @@
 --- a/src/dns_client.c
 +++ b/src/dns_client.c
-@@ -937,8 +937,8 @@ static int _dns_client_set_trusted_cert(
+@@ -938,8 +938,8 @@ static int _dns_client_set_trusted_cert(
  
  		const STACK_OF(X509_NAME) *cas = SSL_CTX_get_client_CA_list(ssl_ctx);
  		if (cas && sk_X509_NAME_num(cas) == 0) {
@@ -13,10 +13,10 @@
  	}
 --- a/src/dns_conf.h
 +++ b/src/dns_conf.h
-@@ -57,12 +57,12 @@ extern "C" {
- #define DEFAULT_DNS_TLS_PORT 853
- #define DEFAULT_DNS_HTTPS_PORT 443
- #define DNS_MAX_CONF_CNAME_LEN 256
+@@ -60,12 +60,12 @@ extern "C" {
+ #define MAX_QTYPE_NUM 65535
+ #define DNS_MAX_REPLY_IP_NUM 8
+ 
 -#define SMARTDNS_CONF_FILE "/etc/smartdns/smartdns.conf"
 -#define SMARTDNS_LOG_FILE "/var/log/smartdns/smartdns.log"
 -#define SMARTDNS_AUDIT_FILE "/var/log/smartdns/smartdns-audit.log"
@@ -45,7 +45,7 @@
  #define TMP_BUFF_LEN_32 32
  
  static int verbose_screen;
-@@ -753,7 +753,7 @@ int main(int argc, char *argv[])
+@@ -763,7 +763,7 @@ int main(int argc, char *argv[])
  
  	safe_strncpy(config_file, SMARTDNS_CONF_FILE, MAX_LINE_LEN);
  
@@ -56,7 +56,7 @@
  		safe_strncpy(pid_file, SMARTDNS_LEGACY_PID_FILE, MAX_LINE_LEN);
 --- a/src/tlog.c
 +++ b/src/tlog.c
-@@ -1726,7 +1726,7 @@ static void _tlog_get_gzip_cmd_path(void
+@@ -1732,7 +1732,7 @@ static void _tlog_get_gzip_cmd_path(void
      char *save_ptr = NULL;
  
      if (env_path == NULL) {
