@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: ALTERNATIVES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ntp
 PKG_VERSION:=4.2.8p15
-PKG_RELEASE:=4a
+PKG_RELEASE:=4b
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/
@@ -47,6 +48,7 @@ $(call Package/ntpd/Default)
   DEPENDS+= +ntp-utils
   TITLE+= server
   USERID:=ntp=123:ntp=123
+  ALTERNATIVES:=300:/opt/sbin/ntpd:/opt/libexec/ntpd
 endef
 
 define Package/ntpd/description
@@ -119,8 +121,8 @@ CONFIGURE_ARGS += \
 	--with-openssl-libdir="$(STAGING_DIR)/opt/lib"
 
 define Package/ntpd/install
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ntpd/ntpd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ntpd/ntpd $(1)/opt/libexec/
 	$(INSTALL_DIR) $(1)/opt/etc $(1)/opt/etc/config
 	$(INSTALL_CONF) ./files/ntp.conf $(1)/opt/etc/
 	$(INSTALL_CONF) ./files/ntpd.config $(1)/opt/etc/config/ntpd
