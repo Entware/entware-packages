@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: ALTERNATIVES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=patch
 PKG_VERSION:=2.7.6
-PKG_RELEASE:=7
+PKG_RELEASE:=7a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/patch
@@ -29,6 +30,7 @@ define Package/patch
   TITLE:=patch
   URL:=https://savannah.gnu.org/projects/patch/
   MAINTAINER:=Russell Senior <russell@personaltelco.net>
+  ALTERNATIVES:=300:/opt/bin/patch:/opt/libexec/patch-gnu
 endef
 
 define Package/patch/description
@@ -45,8 +47,8 @@ define Build/Compile
 endef
 
 define Package/patch/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/patch $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/patch $(1)/opt/libexec/patch-gnu
 endef
 
 $(eval $(call BuildPackage,patch))
