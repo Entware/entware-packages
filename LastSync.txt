@@ -1,8 +1,7 @@
-commit f0b30847dac1c708257a44e12b5884841270e7b3 (HEAD -> master, origin/master, origin/HEAD)
-Merge: d26e21ef4 eb40aa1b5
-Author: Stan Grishin <stangri@melmac.ca>
-Date:   Fri May 26 08:17:30 2023 -0600
+commit bd438b6937b9b3326052923ade8c5a586ebe5e15 (HEAD -> master, origin/master, origin/HEAD)
+Author: Jianhui Zhao <zhaojh329@gmail.com>
+Date:   Thu Aug 17 21:07:51 2023 +0800
 
-    Merge pull request #21177 from stangri/master-https-dns-proxy
+    lua-eco: update to 2.4.0
     
-    https-dns-proxy: update to 2023-05-25-1
+    Signed-off-by: Jianhui Zhao <zhaojh329@gmail.com>
