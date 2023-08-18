@@ -1,6 +1,6 @@
 --- a/babel/localtime/_unix.py
 +++ b/babel/localtime/_unix.py
-@@ -47,7 +47,7 @@ def _get_localzone(_root='/'):
+@@ -39,7 +39,7 @@ def _get_localzone(_root: str = '/') ->
      # zone on operating systems like OS X.  On OS X especially this is the
      # only one that actually works.
      try:
