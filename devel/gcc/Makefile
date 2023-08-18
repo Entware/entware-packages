@@ -26,7 +26,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
-PKG_RELEASE:=5b
+PKG_RELEASE:=5c
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
@@ -85,6 +85,7 @@ ifeq ($(CONFIG_INCLUDE_STATIC_LINK_SPEC),y)
   else
 	INSTALL_STATIC_SPEC=g++ -dumpspecs |sed s/--start-group}\ %G\ %{!nolibc:%L}\ /--start-group}\ %G\ %{!nolibc:%L}\ -lstdc++\ -lgcc_pic\ / >/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
   endif
+	RPATH_LINK_STATIC_SPEC=sed -i 's| %{L\*} | %{L*} -rpath-link /opt/lib |' /opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
 	REMOVE_STATIC_SPEC=rm /opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/specs
 endif
 
@@ -261,16 +262,19 @@ define Package/gcc/postinst
 #!/bin/sh
 
 $(INSTALL_STATIC_SPEC)
+$(RPATH_LINK_STATIC_SPEC)
+
 echo "There are no *-dev packages in Entware(with few exceptions)!"
 echo "Please install headers as described in the wiki:"
 echo "https://github.com/Entware/Entware/wiki"
 endef
 
+ifeq ($(CONFIG_INCLUDE_STATIC_LINK_SPEC),y)
 define Package/gcc/postrm
 #!/bin/sh
 
-$(REMOVE_STATIC_SPEC) || true
+$(REMOVE_STATIC_SPEC)
 endef
-#endif
+endif
 
 $(eval $(call BuildPackage,gcc))
