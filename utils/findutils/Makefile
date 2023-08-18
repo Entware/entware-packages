@@ -4,13 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: findutils-find, findutils-xargs merged with findutils
+# Entware specific: findutils-find, findutils-xargs merged with findutils; ALTERNATIVES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=findutils
 PKG_VERSION:=4.9.0
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
@@ -41,6 +41,9 @@ endef
 
 define Package/findutils
 	$(call Package/findutils/Default)
+	ALTERNATIVES:= \
+		300:/opt/bin/find:/opt/libexec/find-gnu \
+		300:/opt/bin/xargs:/opt/libexec/xargs-gnu
 endef
 
 define Package/findutils/description
@@ -64,9 +67,9 @@ CONFIGURE_ARGS += \
 CONFIGURE_VARS += ac_cv_path_SORT=sort
 
 define Package/findutils/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{find,xargs} \
-	    $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/find $(1)/opt/libexec/find-gnu
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/xargs $(1)/opt/libexec/xargs-gnu
 endef
 
 define Package/findutils-locate/install
