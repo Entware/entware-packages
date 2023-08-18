@@ -35,20 +35,20 @@
  
 --- a/magic/Magdir/commands
 +++ b/magic/Magdir/commands
-@@ -3,21 +3,33 @@
- # $File: commands,v 1.66 2021/07/03 13:50:29 christos Exp $
+@@ -4,22 +4,34 @@
  # commands:  file(1) magic for various shells and interpreters
  #
--#0	string/w	:			shell archive or script for antique kernel text
-+#0	string/w	:
+ #0	string/w	:			shell archive or script for antique kernel text
 +0	string/fwt	#!/opt/bin/sh		POSIX shell script text executable
-+!:mime	text/x-shellscript			shell archive or script for antique kernel text
++!:mime	text/x-shellscript
  0	string/fwt	#!\ /bin/sh		POSIX shell script text executable
  !:mime	text/x-shellscript
 +0	string/fwb	#!/opt/bin/sh		POSIX shell script executable (binary data)
 +!:mime	text/x-shellscript
  0	string/fwb	#!\ /bin/sh		POSIX shell script executable (binary data)
  !:mime	text/x-shellscript
+ >10	string	#\040This\040script\040was\040generated\040using\040Makeself	\b, self-executable archive
+ >>53	string	x	\b, Makeself %s
  
 +0	string/fwt	#!/opt/bin/csh		C shell script text executable
 +!:mime	text/x-shellscript
@@ -70,7 +70,7 @@
  0	string/fwt 	#!\ /bin/tcsh		Tenex C shell script text executable
  !:mime	text/x-shellscript
  0	string/fwt	#!\ /usr/bin/tcsh	Tenex C shell script text executable
-@@ -29,29 +41,41 @@
+@@ -31,29 +43,41 @@
  
  #
  # zsh/ash/ae/nawk/gawk magic from cameron@cs.unsw.oz.au (Cameron Simpson)
@@ -82,9 +82,9 @@
  !:mime	text/x-shellscript
  0	string/fwt	#!\ /usr/local/bin/zsh	Paul Falstad's zsh script text executable
  !:mime	text/x-shellscript
-+0	search/1	#!/opt/bin/env\ zsh	Paul Falstad's zsh script text executable
++0	string/fwt	#!/opt/bin/env\ zsh	Paul Falstad's zsh script text executable
 +!:mime	text/x-shellscript
- 0	search/1	#!/usr/bin/env\ zsh	Paul Falstad's zsh script text executable
+ 0	string/fwt	#!\ /usr/bin/env\ zsh	Paul Falstad's zsh script text executable
  !:mime	text/x-shellscript
  
 +0	string/fwt	#!/opt/bin/ash		Neil Brown's ash script text executable
@@ -112,7 +112,7 @@
  0	string/fwt	#!\ /bin/gawk		GNU awk script text executable
  !:mime	text/x-gawk
  0	string/wt	#!\ /usr/bin/gawk	GNU awk script text executable
-@@ -59,6 +83,8 @@
+@@ -61,6 +85,8 @@
  0	string/fwt	#!\ /usr/local/bin/gawk	GNU awk script text executable
  !:mime	text/x-gawk
  #
@@ -121,7 +121,7 @@
  0	string/fwt	#!\ /bin/awk		awk script text executable
  !:mime	text/x-awk
  0	string/fwt	#!\ /usr/bin/awk	awk script text executable
-@@ -66,11 +92,16 @@
+@@ -68,11 +94,16 @@
  0	regex/4096	=^[\040\t\f\r\n]{0,100}BEGIN[\040\t\f\r\n]{0,100}[{]	awk or perl script text
  
  # AT&T Bell Labs' Plan 9 shell
@@ -138,7 +138,7 @@
  0	string/fwb	#!\ /bin/bash	Bourne-Again shell script executable (binary data)
  !:mime	text/x-shellscript
  0	string/fwt	#!\ /usr/bin/bash	Bourne-Again shell script text executable
-@@ -90,6 +121,8 @@
+@@ -92,6 +123,8 @@
  
  # Fish shell magic
  # From: Benjamin Lowry <ben@ben.gmbh>
@@ -147,9 +147,9 @@
  0	string/fwt	#!\ /usr/local/bin/fish		fish shell script text executable
  !:mime	text/x-shellscript
  0	string/fwt	#!\ /usr/bin/fish		fish shell script text executable
-@@ -100,15 +133,23 @@
- 0	string/wt	#!\ 	a
- >&-1	string		x	%s script text executable
+@@ -99,15 +132,23 @@
+ 0	string/fwt	#!\ /usr/bin/env\ fish		fish shell script text executable
+ !:mime	text/x-shellscript
  
 +0	search/1/fwt	#!/opt/bin/tclsh	Tcl/Tk script text executable
 +!:mime  text/x-tcl
@@ -171,7 +171,7 @@
  0	search/1/fwt	#!\ /usr/bin/stap	Systemtap script text executable
  !:mime  text/x-systemtap
  
-@@ -137,6 +178,9 @@
+@@ -136,6 +177,9 @@
  !:mime	text/x-php
  0	search/1	=<?\r			PHP script text
  !:mime	text/x-php
@@ -181,7 +181,7 @@
  0	search/1/w	#!\ /usr/local/bin/php	PHP script text executable
  !:strength + 10
  !:mime	text/x-php
-@@ -158,6 +202,7 @@
+@@ -183,6 +227,7 @@
  # Type: Pdmenu
  # URL:  https://packages.debian.org/pdmenu
  # From: Edward Betts <edward@debian.org>
@@ -192,28 +192,28 @@
 --- a/magic/Magdir/javascript
 +++ b/magic/Magdir/javascript
 @@ -3,16 +3,24 @@
- # $File: javascript,v 1.2 2019/08/05 10:34:26 christos Exp $
+ # $File: javascript,v 1.4 2022/09/02 08:08:17 christos Exp $
  # javascript:  magic for javascript and node.js scripts.
  #
-+0	search/1/w	#!/opt/bin/node		Node.js script text executable
++0	string/w	#!/opt/bin/node		Node.js script text executable
 +!:mime application/javascript
- 0	search/1/w	#!/bin/node		Node.js script text executable
+ 0	string/w	#!/bin/node		Node.js script text executable
  !:mime application/javascript
- 0	search/1/w	#!/usr/bin/node		Node.js script text executable
+ 0	string/w	#!/usr/bin/node		Node.js script text executable
  !:mime application/javascript
-+0	search/1/w	#!/opt/bin/nodejs	Node.js script text executable
++0	string/w	#!/opt/bin/nodejs	Node.js script text executable
 +!:mime application/javascript
- 0	search/1/w	#!/bin/nodejs		Node.js script text executable
+ 0	string/w	#!/bin/nodejs		Node.js script text executable
  !:mime application/javascript
- 0	search/1/w	#!/usr/bin/nodejs	Node.js script text executable
+ 0	string/w	#!/usr/bin/nodejs	Node.js script text executable
  !:mime application/javascript
-+0	search/1	#!/opt/bin/node		Node.js script text executable
++0	string		#!/opt/bin/node		Node.js script text executable
 +!:mime application/javascript
- 0	search/1	#!/usr/bin/env\ node	Node.js script text executable
+ 0	string		#!/usr/bin/env\ node	Node.js script text executable
  !:mime application/javascript
-+0	search/1	#!/opt/bin/nodejs	Node.js script text executable
++0	string		#!/opt/bin/nodejs	Node.js script text executable
 +!:mime application/javascript
- 0	search/1	#!/usr/bin/env\ nodejs	Node.js script text executable
+ 0	string		#!/usr/bin/env\ nodejs	Node.js script text executable
  !:mime application/javascript
  # Hermes by Facebook https://hermesengine.dev/
 --- a/magic/Magdir/lua
@@ -264,11 +264,11 @@
  0	string	#!\ /usr/bin/env\ perl	Perl script text executable
 --- a/magic/Magdir/python
 +++ b/magic/Magdir/python
-@@ -216,12 +216,18 @@
- 0	belong		0x610d0d0a	python 3.9 byte-compiled
+@@ -229,12 +229,18 @@
  !:mime application/x-bytecode.python
+ >>>0		use		pyc-pep552
  
-+0	search/1/w	#!\040/opt/bin/python	Python script text executable
++0	search/1/w	#!/opt/bin/python	Python script text executable
 +!:strength + 15
 +!:mime text/x-script.python
  0	search/1/w	#!\040/usr/bin/python	Python script text executable
@@ -277,7 +277,7 @@
  0	search/1/w	#!\040/usr/local/bin/python	Python script text executable
  !:strength + 15
  !:mime text/x-script.python
-+0	search/10/w	#!\040/opt/bin/env\040python	Python script text executable
++0	search/10/w	#!/opt/bin/env\040python	Python script text executable
 +!:strength + 15
 +!:mime text/x-script.python
  0	search/10/w	#!\040/usr/bin/env\040python	Python script text executable
@@ -335,34 +335,20 @@
  0	search/1	#!\ /usr/bin/env\ wish	Tcl/Tk script text executable
 --- a/magic/Magdir/varied.script
 +++ b/magic/Magdir/varied.script
-@@ -35,18 +35,30 @@
- !:strength / 2
+@@ -12,10 +12,16 @@
+ 
  
  # using env
-+0	string/t	#!/opt/bin/env		a
-+>15	string/t	>\0			%s script text executable
-+!:strength / 10
- 0	string/t	#!/usr/bin/env		a
- >15	string/t	>\0			%s script text executable
- !:strength / 10
++0	string/wt	#!/opt/bin/env		a
++>15	string/T	>\0			%s script text executable
++!:strength / 6
+ 0	string/wt	#!\ /usr/bin/env		a
+ >15	string/T	>\0			%s script text executable
+ !:strength / 6
  
-+0	string/b	#!/opt/bin/env		a
-+>15	string/b	>\0			%s script executable (binary data)
-+!:strength / 10
- 0	string/b	#!/usr/bin/env		a
- >15	string/b	>\0			%s script executable (binary data)
- !:strength / 10
- 
-+0	string/t	#!/opt/bin/env		a
-+>16	string/t	>\0			%s script text executable
-+!:strength / 10
- 0	string/t	#!\ /usr/bin/env	a
- >16	string/t	>\0			%s script text executable
- !:strength / 10
- 
-+0	string/b	#!/opt/bin/env		a
-+>16	string/b	>\0			%s script executable (binary data)
-+!:strength / 10
- 0	string/b	#!\ /usr/bin/env	a
- >16	string/b	>\0			%s script executable (binary data)
- !:strength / 10
++0	string/wb	#!/opt/bin/env		a
++>15	string/T	>\0			%s script executable (binary data)
++!:strength / 6
+ 0	string/wb	#!\ /usr/bin/env		a
+ >15	string/T	>\0			%s script executable (binary data)
+ !:strength / 6
