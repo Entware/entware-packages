@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
-PKG_VERSION:=9.3p1
-PKG_RELEASE:=3
+PKG_VERSION:=9.4p1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
 		https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
-PKG_HASH:=e9baba7701a76a51f3d85a62c383a3c9dcd97fa900b859bc7db114c1868af8a8
+PKG_HASH:=3608fd9088db2163ceb3e600c85ab79d0de3d221e59192ea1923e23263866a85
 
 PKG_LICENSE:=BSD ISC
 PKG_LICENSE_FILES:=LICENCE
@@ -103,6 +103,7 @@ endef
 
 define Package/openssh-server/conffiles
 /opt/etc/ssh/sshd_config
+/opt/etc/ssh/sshd_config.d/
 /opt/etc/ssh/ssh_host_ed25519_key
 /opt/etc/ssh/ssh_host_ed25519_key.pub
 /opt/etc/ssh/ssh_host_rsa_key
@@ -228,7 +229,7 @@ define Package/openssh-keygen/install
 endef
 
 define Package/openssh-server/install
-	install -d -m0700 $(1)/opt/etc/ssh
+	install -d -m0700 $(1)/opt/etc/ssh $(1)/opt/etc/ssh/sshd_config.d
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/ssh/sshd_config $(1)/opt/etc/ssh/
 	sed -r -i 's,^#(HostKey /opt/etc/ssh/ssh_host_(rsa|ed25519)_key)$$$$,\1,' $(1)/opt/etc/ssh/sshd_config
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
