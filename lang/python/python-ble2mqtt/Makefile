@@ -7,11 +7,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-ble2mqtt
-PKG_VERSION:=0.1.5
-PKG_RELEASE:=2
+PKG_VERSION:=0.1.8
+PKG_RELEASE:=1
 
 PYPI_NAME:=ble2mqtt
-PKG_HASH:=0015cae0c36badb48cbd4a1c8b1a8029e45ab0891a95363fe00624c2629b4510
+PKG_HASH:=206f707f5ad04b72247b1e772a569e14167e109f4e9f13d1d74eb4b049d4e6da
 
 PKG_MAINTAINER:=Quintin Hill <stuff@quintin.me.uk>
 PKG_LICENSE:=MIT
@@ -38,6 +38,8 @@ endef
 define Py3Package/python3-ble2mqtt/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/ble2mqtt.init $(1)/etc/init.d/ble2mqtt
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
 endef
 
 $(eval $(call Py3Package,python3-ble2mqtt))
