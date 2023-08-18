@@ -1,0 +1,20 @@
+--- a/src/dbus_fast/_private/address.py
++++ b/src/dbus_fast/_private/address.py
+@@ -42,7 +42,7 @@ def get_system_bus_address():
+     if "DBUS_SYSTEM_BUS_ADDRESS" in os.environ:
+         return os.environ["DBUS_SYSTEM_BUS_ADDRESS"]
+     else:
+-        return "unix:path=/var/run/dbus/system_bus_socket"
++        return "unix:path=/opt/var/run/dbus/system_bus_socket"
+ 
+ 
+ display_re = re.compile(r".*:([0-9]+)\.?.*")
+@@ -71,7 +71,7 @@ def get_session_bus_address():
+     # should be fairly reliable. fix this by passing in an async func to read
+     # the file for each io backend.
+     machine_id = None
+-    with open("/var/lib/dbus/machine-id") as f:
++    with open("/opt/var/lib/dbus/machine-id") as f:
+         machine_id = f.read().rstrip()
+ 
+     dbus_info_file_name = f"{home}/.dbus/session-bus/{machine_id}-{display}"
