@@ -1,6 +1,6 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -71,18 +71,18 @@ what-you-see-is-what-you-get plaintext m
+@@ -74,18 +74,18 @@ what-you-see-is-what-you-get plaintext m
          'console_scripts': ['docutils=docutils.__main__:main']
      },
      'scripts': [
