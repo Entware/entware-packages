@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=flex
 PKG_VERSION:=2.6.4
-PKG_RELEASE:=4
+PKG_RELEASE:=4a
 PKG_CPE_ID:=cpe:/a:flex_project:flex
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -35,9 +35,7 @@ define Package/flex/description
   flex is a tool for generating scanners: programs which recognize lexical patterns in text
 endef
 
-CONFIGURE_ARGS += \
-	--disable-shared \
-	--disable-bootstrap
+CONFIGURE_ARGS += --disable-shared --disable-bootstrap
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include $(1)/opt/lib
@@ -47,7 +45,9 @@ endef
 
 define Package/flex/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/flex{,++} $(1)/opt/bin
+	$(CP) \
+		$(PKG_INSTALL_DIR)/opt/bin/flex{,++} \
+		$(1)/opt/bin
 endef
 
 $(eval $(call BuildPackage,flex))
