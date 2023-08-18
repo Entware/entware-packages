@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=vsftpd
 PKG_VERSION:=3.0.5
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://security.appspot.com/downloads/
@@ -53,6 +53,7 @@ Package/vsftpd-tls/conffiles=$(Package/vsftpd/conffiles)
 
 ifneq ($(CONFIG_USE_MUSL),)
   NLSSTRING:=-lcrypt
+  TARGET_CFLAGS += -D_LARGEFILE64_SOURCE
 else ifneq ($(CONFIG_USE_GLIBC),)
   NLSSTRING:=-lcrypt
 else
@@ -61,7 +62,7 @@ endif
 
 TARGET_CFLAGS += -D_GNU_SOURCE -include fcntl.h
 
-ifeq ($(or $(CONFIG_GCC_USE_VERSION_8),$(CONFIG_GCC_USE_VERSION_9)),y)
+ifeq ($(CONFIG_GCC_USE_VERSION_8),y)
 TARGET_CFLAGS += -Wno-error=stringop-truncation
 endif
 
