@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-io-html
 PKG_VERSION:=1.001
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/C/CJ/CJM
 PKG_SOURCE:=IO-HTML-$(PKG_VERSION).tar.gz
