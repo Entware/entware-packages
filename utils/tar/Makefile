@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tar
-PKG_VERSION:=1.34
-PKG_RELEASE:=4
+PKG_VERSION:=1.35
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/tar
-PKG_HASH:=63bebd26879c5e1eea4352f0d03c991f966aeb3ddeb3c7445c902568d5411d28
+PKG_HASH:=4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16
 
 PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -81,6 +81,8 @@ define Package/tar/description
 	single archive in tar format.
 endef
 
+# XXX Entware specific: --disable-year2038
+#	configure: error: could not enable timestamps after mid-January 2038.
 CONFIGURE_ARGS += \
 	$(if $(CONFIG_PACKAGE_TAR_POSIX_ACL),--with,--without)-posix-acls \
 	$(if $(CONFIG_PACKAGE_TAR_XATTR),--with,--without)-xattrs \
@@ -93,7 +95,8 @@ CONFIGURE_ARGS += \
 	--without-lzma \
 	--without-lzop \
 	--without-selinux \
-	--disable-rpath
+	--disable-rpath \
+	--disable-year2038
 
 MAKE_FLAGS += \
 	CFLAGS="$(TARGET_CFLAGS)" \
