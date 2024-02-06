@@ -55,7 +55,7 @@ endef
 define Package/rtorrent-rpc
 $(call Package/rtorrent/Default)
   VARIANT:=rpc
-  DEPENDS+=+xmlrpc-c-server
+  DEPENDS+=+xmlrpc-c-internal +xmlrpc-c-server
   TITLE+=(with rpc support)
 endef
 
