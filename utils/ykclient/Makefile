@@ -27,10 +27,10 @@ define Package/ykclient/description
 endef
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/include
-	$(CP) $(PKG_BUILD_DIR)/ykclient*.h $(STAGING_DIR)/usr/include
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/.libs/libykclient.so* $(STAGING_DIR)/usr/lib
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/include
+	$(CP) $(PKG_BUILD_DIR)/ykclient*.h $(STAGING_DIR)/opt/include
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/.libs/libykclient.so* $(STAGING_DIR)/opt/lib
 endef
 
 CONFIGURE_ARGS += \
@@ -38,10 +38,10 @@ CONFIGURE_ARGS += \
 	--disable-static
 
 define Package/ykclient/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/ykclient $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_BUILD_DIR)/.libs/libykclient.so* $(1)/usr/lib
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/.libs/ykclient $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_BUILD_DIR)/.libs/libykclient.so* $(1)/opt/lib
 endef
 
 $(eval $(call BuildPackage,ykclient))
