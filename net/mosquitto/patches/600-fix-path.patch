@@ -1,6 +1,6 @@
 --- a/src/net.c
 +++ b/src/net.c
-@@ -769,7 +769,7 @@ static int net__socket_listen_tcp(struct
+@@ -789,7 +789,7 @@ static int net__socket_listen_tcp(struct
  #if defined(__linux__)
  			if(errno == EACCES){
  				log__printf(NULL, MOSQ_LOG_ERR, "If you are trying to bind to a privileged port (<1024), try using setcap and do not start the broker as root:");
