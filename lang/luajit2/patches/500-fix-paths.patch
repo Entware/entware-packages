@@ -1,0 +1,11 @@
+--- a/src/luaconf.h
++++ b/src/luaconf.h
+@@ -35,7 +35,7 @@
+ #ifndef LUA_LMULTILIB
+ #define LUA_LMULTILIB	"lib"
+ #endif
+-#define LUA_LROOT	"/usr"
++#define LUA_LROOT	"/opt"
+ #define LUA_LUADIR	"/lua/"
+ #define LUA_LJDIR	"/luajit-2.1/"
+ 
