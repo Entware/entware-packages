@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-www-robotrules
 PKG_VERSION:=6.02
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/G/GA/GAAS
 PKG_SOURCE:=WWW-RobotRules-$(PKG_VERSION).tar.gz
