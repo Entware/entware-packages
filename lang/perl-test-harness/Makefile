@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-test-harness
 PKG_VERSION:=3.42
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=Test-Harness-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/L/LE/LEONT
