@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gst1-plugins-good
-PKG_VERSION:=1.22.3
+PKG_VERSION:=1.22.8
 PKG_RELEASE:=1
 
 PKG_SOURCE:=gst-plugins-good-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://gstreamer.freedesktop.org/src/gst-plugins-good/
-PKG_HASH:=af81154b3a2ef3f4d2feba395f25696feea6fd13ec62c92d3c7a973470710273
+PKG_HASH:=e305b9f07f52743ca481da0a4e0c76c35efd60adaf1b0694eb3bb021e2137e39
 PKG_BUILD_DIR:=$(BUILD_DIR)/gst-plugins-good-$(PKG_VERSION)
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org> \
@@ -278,7 +278,7 @@ $(eval $(call GstBuildPlugin,ossaudio,OSS audio support,audio,,))
 $(eval $(call GstBuildPlugin,png,png support,video,,+libpng))
 #$(eval $(call GstBuildPlugin,pulse,pulse support,audio pbutils tag video,,+pulseaudio))
 $(eval $(call GstBuildPlugin,shout2,shout2 support,audio,,+libshout))
-$(eval $(call GstBuildPlugin,soup,soup input,audio tag,,+libsoup))
+$(eval $(call GstBuildPlugin,soup,soup input,audio tag,,+libsoup3))
 $(eval $(call GstBuildPlugin,speex,speex support,audio tag,,+libspeex))
 $(eval $(call GstBuildPlugin,taglib,taglib support,tag,,+taglib))
 $(eval $(call GstBuildPlugin,video4linux2,video4linux2 support,video allocators,,+libv4l))
