@@ -1,0 +1,22 @@
+--- a/nss/lib/freebl/unix_rand.c
++++ b/nss/lib/freebl/unix_rand.c
+@@ -617,6 +617,8 @@ RNG_SystemInfoForRNG(void)
+     extern char **environ;
+ #endif
+     static const char *const files[] = {
++        "/opt/etc/passwd",
++        "/opt/tmp",
+         "/etc/passwd",
+         "/etc/utmp",
+         "/tmp",
+--- a/nss/lib/sysinit/nsssysinit.c
++++ b/nss/lib/sysinit/nsssysinit.c
+@@ -128,7 +128,7 @@ getUserDB(void)
+     return nssdir;
+ }
+ 
+-#define NSS_DEFAULT_SYSTEM "/etc/pki/nssdb"
++#define NSS_DEFAULT_SYSTEM "/opt/etc/pki/nssdb"
+ static char *
+ getSystemDB(void)
+ {
