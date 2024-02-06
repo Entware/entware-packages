@@ -1,14 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=compose
-PKG_VERSION:=2.20.3
+PKG_VERSION:=2.24.5
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 
 PKG_SOURCE:=v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/docker/compose/tar.gz/v${PKG_VERSION}?
-PKG_HASH:=af8025623de3991a15a89575ae4fc4f3f38a17311af9641815500c01f0775950
+PKG_HASH:=160c575658cdd65836ea3138bb6337f75877df6cbad8e2d4bf4ddcf850cee382
 
 PKG_MAINTAINER:=Javier Marcet <javier@marcet.info>
 
