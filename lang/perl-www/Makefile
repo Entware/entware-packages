@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-www
 PKG_VERSION:=6.43
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/O/OA/OALDERS
 PKG_SOURCE:=libwww-perl-$(PKG_VERSION).tar.gz
