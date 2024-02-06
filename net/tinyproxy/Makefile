@@ -18,7 +18,7 @@ PKG_HASH:=d66388448215d0aeb90d0afdd58ed00386fb81abc23ebac9d80e194fceb40f7c
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
-PKG_CPE_ID:=cpe:/a:banu:tinyproxy
+PKG_CPE_ID:=cpe:/a:tinyproxy_project:tinyproxy
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -41,7 +41,7 @@ CONFIGURE_VARS += ac_cv_path_A2X=no
 
 # Entware specific:
 MAKE_FLAGS += \
-	LIBS="-lresolv $(if $(CONFIG_GLIBC_USE_VERSION_2_33),,-lnsl)"
+	LIBS="-lresolv $(if $(CONFIG_USE_GLIBC),-lnsl)"
 
 define Package/tinyproxy/install
 	$(INSTALL_DIR) $(1)/opt/bin
