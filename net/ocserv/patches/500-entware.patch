@@ -17,8 +17,8 @@
  #include <script-list.h>
  #include <ccan/list/list.h>
  
--#define OCSERV_FW_SCRIPT "/usr/bin/ocserv-fw"
-+#define OCSERV_FW_SCRIPT "/opt/bin/ocserv-fw"
+-#define OCSERV_FW_SCRIPT "/usr/libexec/ocserv-fw"
++#define OCSERV_FW_SCRIPT "/opt/libexec/ocserv-fw"
  
  #define APPEND_TO_STR(str, val) \
  	do { \
@@ -33,6 +33,22 @@
  
  enum {
  	CTL_CMD_STATUS = 1,
+--- a/src/occtl/maxmind.c
++++ b/src/occtl/maxmind.c
+@@ -31,11 +31,11 @@
+ #include <maxminddb.h>
+ 
+ #ifndef MAXMINDDB_LOCATION_COUNTRY
+-#define MAXMINDDB_LOCATION_COUNTRY "/usr/share/GeoIP/GeoLite2-Country.mmdb"
++#define MAXMINDDB_LOCATION_COUNTRY "/opt/share/GeoIP/GeoLite2-Country.mmdb"
+ #endif
+ 
+ #ifndef MAXMINDDB_LOCATION_CITY
+-#define MAXMINDDB_LOCATION_CITY "/usr/share/GeoIP/GeoLite2-City.mmdb"
++#define MAXMINDDB_LOCATION_CITY "/opt/share/GeoIP/GeoLite2-City.mmdb"
+ #endif
+ 
+ #define pMMDB_close         MMDB_close
 --- a/src/ocpasswd/ocpasswd.c
 +++ b/src/ocpasswd/ocpasswd.c
 @@ -36,7 +36,7 @@
