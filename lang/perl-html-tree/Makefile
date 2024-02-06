@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-html-tree
 PKG_VERSION:=3.23
-PKG_RELEASE:=5
+PKG_RELEASE:=5a
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/P/PE/PETEK/
 PKG_SOURCE:=HTML-Tree-$(PKG_VERSION).tar.gz
