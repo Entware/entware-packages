@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smcroute
 PKG_VERSION:=2.5.6
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
 
