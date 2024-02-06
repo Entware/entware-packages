@@ -9,12 +9,12 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python3-bottle
 PKG_VERSION:=0.12.25
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PYPI_NAME:=bottle
 PKG_HASH:=e1a9c94970ae6d710b3fb4526294dfeb86f2cb4a81eff3a4b98dc40fb0e5e021
 
-PKG_MAINTAINER:=Josef Schlehofer <josef.schlehofer@nic.cz>
+PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:bottlepy:bottle
@@ -36,6 +36,11 @@ define Package/python3-bottle/description
  Bottle is a fast, simple and lightweight WSGI micro web-framework for Python.
  It is distributed as a single file module and has no dependencies other than the
  Python Standard Library.
+endef
+
+define Py3Package/python3-bottle/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/bottle.py $(1)/opt/bin/bottle
 endef
 
 $(eval $(call Py3Package,python3-bottle))
