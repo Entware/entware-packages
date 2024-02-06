@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-http-date
 PKG_VERSION:=6.05
-PKG_RELEASE:=2
+PKG_RELEASE:=2a
 
 PKG_SOURCE:=HTTP-Date-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/O/OA/OALDERS
