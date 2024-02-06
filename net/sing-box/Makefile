@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sing-box
-PKG_VERSION:=1.3.0
+PKG_VERSION:=1.8.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/SagerNet/sing-box/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=e89ffdadf11d4b34d12b2c0659efea0f0786b2396ea4638c61a06e7772783ca5
+PKG_HASH:=949feec1da2bc9d43b6c766c1dfb6f71f737a221e5ce4220616a3900dfb40c82
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
@@ -35,7 +35,7 @@ endef
 
 define Package/sing-box/description
   Sing-box is a universal proxy platform which supports hysteria, SOCKS, Shadowsocks,
-  ShadowsocksR, ShadowTLS, Tor, trojan, VLess, VMess, WireGuard and so on.
+  ShadowTLS, Tor, trojan, VLess, VMess, WireGuard and so on.
 endef
 
 define Package/sing-box/config
@@ -54,6 +54,7 @@ define Package/sing-box/config
 
 		config SINGBOX_WITH_ECH
 			bool "Build with TLS ECH extension support for TLS outbound"
+			default y
 
 		config SINGBOX_WITH_EMBEDDED_TOR
 			bool "Build with embedded Tor support"
@@ -65,9 +66,6 @@ define Package/sing-box/config
 			bool "Build with gVisor support"
 			default y
 
-		config SINGBOX_WITH_LWIP
-			bool "Build with LWIP Tun stack support"
-
 		config SINGBOX_WITH_QUIC
 			bool "Build with QUIC support"
 			default y
@@ -75,9 +73,6 @@ define Package/sing-box/config
 		config SINGBOX_WITH_REALITY_SERVER
 			bool "Build with reality TLS server support, see TLS."
 			default y
-
-		config SINGBOX_WITH_SHADOWSOCKSR
-			bool "Build with ShadowsocksR support"
 
 		config SINGBOX_WITH_UTLS
 			bool "Build with uTLS support for TLS outbound"
@@ -100,10 +95,8 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_SINGBOX_WITH_EMBEDDED_TOR \
 	CONFIG_SINGBOX_WITH_GRPC \
 	CONFIG_SINGBOX_WITH_GVISOR \
-	CONFIG_SINGBOX_WITH_LWIP \
 	CONFIG_SINGBOX_WITH_QUIC \
 	CONFIG_SINGBOX_WITH_REALITY_SERVER \
-	CONFIG_SINGBOX_WITH_SHADOWSOCKSR \
 	CONFIG_SINGBOX_WITH_UTLS \
 	CONFIG_SINGBOX_WITH_V2RAY_API \
 	CONFIG_SINGBOX_WITH_WIREGUARD
@@ -116,9 +109,7 @@ GO_PKG_TAGS:=$(subst $(space),$(comma),$(strip \
 	$(if $(CONFIG_SINGBOX_WITH_EMBEDDED_TOR),with_embedded_tor) \
 	$(if $(CONFIG_SINGBOX_WITH_GRPC),with_grpc) \
 	$(if $(CONFIG_SINGBOX_WITH_GVISOR),with_gvisor) \
-	$(if $(CONFIG_SINGBOX_WITH_LWIP),with_lwip) \
 	$(if $(CONFIG_SINGBOX_WITH_QUIC),with_quic) \
-	$(if $(CONFIG_SINGBOX_WITH_SHADOWSOCKSR),with_shadowsocksr) \
 	$(if $(CONFIG_SINGBOX_WITH_REALITY_SERVER),with_reality_server) \
 	$(if $(CONFIG_SINGBOX_WITH_UTLS),with_utls) \
 	$(if $(CONFIG_SINGBOX_WITH_V2RAY_API),with_v2ray_api) \
