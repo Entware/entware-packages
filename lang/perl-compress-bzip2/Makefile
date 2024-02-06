@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-compress-bzip2
 PKG_VERSION:=2.28
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=Compress-Bzip2-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.cpan.org/authors/id/R/RU/RURBAN/
