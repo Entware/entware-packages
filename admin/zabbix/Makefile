@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zabbix
-PKG_VERSION:=6.2.3
-PKG_RELEASE:=3a
+PKG_VERSION:=6.4.7
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cdn.zabbix.com/zabbix/sources/stable/$(basename $(PKG_VERSION))/ \
 	https://cdn.zabbix.com/zabbix/sources/oldstable/$(basename $(PKG_VERSION))/
-PKG_HASH:=2be7e57fb33a55fee71480598e317ffa6a8ee5a39639a7e1b42b2ea6872107b5
+PKG_HASH:=6b4e81f07de4c82c7994871bea51be4d6427683fa9a7fbe112fd7559b3670e49
 
 PKG_MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
 PKG_LICENSE:=GPL-2.0
@@ -57,7 +57,7 @@ define Package/zabbix/Default
   TITLE:=Zabbix
   URL:=https://www.zabbix.com/
   USERID:=zabbix=53:zabbix=53
-  DEPENDS+=$(ICONV_DEPENDS) +libpcre +zlib
+  DEPENDS+=$(ICONV_DEPENDS) +libpcre2 +zlib
 endef
 
 define Package/zabbix-agentd
@@ -157,6 +157,7 @@ define Package/zabbix-server/Default
     +ZABBIX_MYSQL:libmariadbclient \
     @(!ZABBIX_SQLITE) \
     +libevent2 \
+    +libevent2-pthreads \
     +fping
 endef
 
@@ -209,6 +210,7 @@ define Package/zabbix-proxy/Default
     +ZABBIX_MYSQL:libmariadbclient \
     +ZABBIX_SQLITE:libsqlite3 \
     +libevent2 \
+    +libevent2-pthreads \
     +fping
 endef
 
@@ -263,7 +265,7 @@ CONFIGURE_ARGS+= \
 	$(if $(CONFIG_ZABBIX_POSTGRESQL),--with-postgresql) \
 	$(if $(CONFIG_ZABBIX_SQLITE),--with-sqlite3=$(STAGING_DIR)/opt) \
 	--with-libevent=$(STAGING_DIR)/opt \
-	--with-libpcre=$(STAGING_DIR)/opt \
+	--with-libpcre2=$(STAGING_DIR)/opt \
 	--with-zlib=$(STAGING_DIR)/opt
 
 ifeq ($(BUILD_VARIANT),openssl)
@@ -374,9 +376,9 @@ Package/zabbix-agentd-gnutls/install = $(Package/zabbix-agentd/install)
 
 define Package/zabbix-extra-mac80211/install
 	$(call Package/zabbix/install/zabbix.conf.d,$(1),mac80211)
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zabbix-extra-mac80211/zabbix_helper_mac80211 $(1)/opt/bin/
-	chmod 4755 $(1)/opt/bin/zabbix_helper_mac80211
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zabbix-extra-mac80211/zabbix_helper_mac80211 $(1)/usr/bin/
+	chmod 4755 $(1)/usr/bin/zabbix_helper_mac80211
 endef
 
 define Package/zabbix-extra-network/install
