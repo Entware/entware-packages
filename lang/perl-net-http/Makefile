@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-net-http
 PKG_VERSION:=6.19
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=Net-HTTP-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/O/OA/OALDERS
