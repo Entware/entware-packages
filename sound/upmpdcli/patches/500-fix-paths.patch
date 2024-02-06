@@ -48,7 +48,7 @@
  }
 --- a/src/mediaserver/cdplugins/pycommon/upmplgutils.py
 +++ b/src/mediaserver/cdplugins/pycommon/upmplgutils.py
-@@ -97,7 +97,7 @@ def getcachedir(config, servicename, for
+@@ -137,7 +137,7 @@ def getcachedir(servicename, forcedpath=
              me = pwd.getpwuid(os.getuid()).pw_name
              uplog("getcachedir: me: %s" % me)
              if me == "upmpdcli":
@@ -68,15 +68,15 @@
          self.fetchstream = os.path.join(datadir, "rdpl2stream", "fetchStream.py")
          self._radios = []
          self._readRadios(upconfig)
-@@ -132,7 +132,7 @@ def radioToEntry(pid, idx, radio):
- 
- 
- if __name__ == "__main__":
--    conf = conftree.ConfSimple("/etc/upmpdcli.conf")
-+    conf = conftree.ConfSimple("/opt/etc/upmpdcli.conf")
-     radios = UpmpdcliRadios(conf)
-     for radio in radios:
-         print("%s" % radio)
+@@ -87,7 +87,7 @@ class UpmpdcliRadios(object):
+         else:
+             self._maxthreads = 5
+         self._readRadiosFromConf(upconfig)
+-        radiolist = getOptionValue("radiolist", "/usr/share/upmpdcli/radio_scripts/radiolist.conf")
++        radiolist = getOptionValue("radiolist", "/opt/share/upmpdcli/radio_scripts/radiolist.conf")
+         if radiolist:
+             radioconf = conftree.ConfSimple(radiolist)
+             self._readRadiosFromConf(radioconf)
 --- a/src/mediaserver/mediaserver.cxx
 +++ b/src/mediaserver/mediaserver.cxx
 @@ -70,7 +70,7 @@ bool MediaServer::readLibFile(const stri
@@ -124,7 +124,7 @@
  
 --- a/src/main.cxx
 +++ b/src/main.cxx
-@@ -154,7 +154,7 @@ static vector<UpnpDevice *> devs;
+@@ -138,7 +138,7 @@ static vector<UpnpDevice *> devs;
  static MPDCli *mpdclip{nullptr};
  
  string g_datadir(DATADIR "/");
@@ -133,16 +133,16 @@
  
  // Global
  string g_configfilename;
-@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
-     bool enableMediaServer = false;
-     bool ohmetapersist = true;
-     string upmpdcliuser("upmpdcli");
--    string pidfilename("/var/run/upmpdcli.pid");
-+    string pidfilename("/opt/var/run/upmpdcli.pid");
-     string iconpath(DATADIR "/icon.png");
-     string presentationhtml(DATADIR "/presentation.html");
-     string iface;
-@@ -491,7 +491,7 @@ int main(int argc, char *argv[])
+@@ -374,7 +374,7 @@ int main(int argc, char *argv[])
+     getOptionValue("presentationhtml", presentationhtml);
+     getOptionValue("cachedir", opts.cachedir);
+     string pidfilename;
+-    getOptionValue("pidfile", pidfilename, "/var/run/upmpdcli.pid");
++    getOptionValue("pidfile", pidfilename, "/opt/var/run/upmpdcli.pid");
+ 
+     opts.schttpport = getIntOptionValue("schttpport", 0);
+     getOptionValue("scplaymethod", opts.scplaymethod);
+@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
              return 1;
          }
          if (opts.cachedir.empty())
@@ -151,7 +151,7 @@
      } else if (runas == geteuid()) {
          // Already running as upmpdcli user. There are actually 2
          // possibilities: either we were initially started as
-@@ -505,7 +505,7 @@ int main(int argc, char *argv[])
+@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
          // wrong is to set cachedir in the configuration file
          // (opts.cachedir will be non-empty then).
          if (opts.cachedir.empty())
@@ -184,24 +184,28 @@
  static vector<pair<string, string> > o_sources;
 --- a/src/upmpdcli.conf-dist
 +++ b/src/upmpdcli.conf-dist
-@@ -14,9 +14,9 @@
- # Log level.
- #loglevel = 2
+@@ -18,9 +18,9 @@
+ # Log level for the low level UPnP lib.
+ #upnploglevel = 2
  # XML and other constant data storage directory.
 -#pkgdatadir=/usr/share/upmpdcli
 +#pkgdatadir=/opt/share/upmpdcli
- # Name of lock file used to store the current process pid.
+ # Name of the lock file used to store the current process pid.
 -#pidfile = /var/run/upmpdcli.pid
 +#pidfile = /opt/var/run/upmpdcli.pid
  
  # UPnP network parameters
  
-@@ -50,11 +50,11 @@
- # Path to the openssl command
- #opensslcmd =
+@@ -50,15 +50,15 @@
+ # Check that input format is supported.
+ #checkcontentformat = 0
  # Path to the Renderer icon.
 -#iconpath = /usr/share/upmpdcli/icon.png
 +#iconpath = /opt/share/upmpdcli/icon.png
+ # Save the streaming services login parameters to disk.
+ #saveohcredentials = 1
+ # Path to the openssl command
+ #opensslcmd =
  # Directory used to store cached data
 -#cachedir = /var/cache/upmpdcli
 +#cachedir = /opt/var/cache/upmpdcli
@@ -211,30 +215,30 @@
  # Advertise L16 format support
  #enablel16 = true
  
-@@ -100,9 +100,9 @@
+@@ -104,9 +104,9 @@
  # The name of the room where the Product is located.
  #ohproductroom = Main Room
  # Path to an external file with radio definitions.
--radiolist = /usr/share/upmpdcli/radio_scripts/radiolist.conf
-+radiolist = /opt/share/upmpdcli/radio_scripts/radiolist.conf
+-#radiolist = /usr/share/upmpdcli/radio_scripts/radiolist.conf
++#radiolist = /opt/share/upmpdcli/radio_scripts/radiolist.conf
  # Radio metadata scripts directory.
 -#radioscripts = /usr/share/upmpdcli/radio_scripts
 +#radioscripts = /opt/share/upmpdcli/radio_scripts
  # Manufacturer name. 
  #ohmanufacturername = UpMPDCli heavy industries Co.
  # Manufacturer information. 
-@@ -143,7 +143,7 @@ radiolist = /usr/share/upmpdcli/radio_sc
+@@ -149,7 +149,7 @@
  # Decide if we proxy (copy: fetch/serve), or redirect the streaming services streams.
  #plgproxymethod = redirect
  # Path to the Media Server icon.
 -#msiconpath = /usr/share/upmpdcli/icon.png
 +#msiconpath = /opt/share/upmpdcli/icon.png
+ # Directory from which the internal HTTP server will directly serve files
+ #webserverdocumentroot =
  
- # Highresaudio streaming service parameters
- 
-@@ -199,13 +199,13 @@ uprcltitle = Local Music
- # HTTP host and port for serving media files
- #uprclhostport =
+@@ -197,9 +197,9 @@ uprcltitle = Local Music
+ # Uprcl HTTP server port for serving media files.
+ #uprclport = 9090
  # uprcl Recoll index directory
 -#uprclconfdir = /var/cache/upmpdcli/uprcl
 +#uprclconfdir = /opt/var/cache/upmpdcli/uprcl
@@ -244,12 +248,7 @@
  # Name of the Minim Server configuration file
  #uprclminimconfig =
  # Media directories
--#uprclmediadirs = /tmp
-+#uprclmediadirs = /opt/tmp
- # Path translations.
- #uprclpaths =
- 
-@@ -259,6 +259,6 @@ upradiostitle = Upmpdcli Radio List
+@@ -299,6 +299,6 @@ upradiostitle = Upmpdcli Radio List
  # localhost port to be used by the auxiliary mpd.
  #scsendermpdport = 6700
  # External sources script directory.
@@ -259,27 +258,35 @@
  #scscriptgracesecs = 2
 --- a/src/upmpdcli.conf-xml
 +++ b/src/upmpdcli.conf-xml
-@@ -20,8 +20,8 @@
+@@ -34,15 +34,15 @@
  
  # <var name="pkgdatadir" type="dfn"><brief>XML and other constant data storage
- # directory.</brief><descr>Default: '$prefix/share/upmpcli' (e.g.:
+ # directory.</brief><descr>Default: '$prefix/share/upmpdcli' (e.g.:
 -# '/usr/share/upmpdcli').</descr></var>
 -#pkgdatadir=/usr/share/upmpdcli
 +# '/opt/share/upmpdcli').</descr></var>
 +#pkgdatadir=/opt/share/upmpdcli
  
- # <var name="pidfile" type="fn"><brief>Name of lock file used to store the
- # current process pid.</brief><descr>Only used if the process is launched
-@@ -29,7 +29,7 @@
- # instances. The only reason to change the value is if you actually want to
- # have several instances running (also change cachedir in this
- # case).</descr></var>
+ # <var name="pidfile" type="fn">
+ # <brief>Name of the lock file used to store the current process pid.</brief>
+ # <descr>Only used if the process is launched by user root. Used by the init system, and to avoid
+ # multiple instances. The only reason to change the value is if you actually want to have several
+ # instances running (also change cachedir in this case).</descr></var>
 -#pidfile = /var/run/upmpdcli.pid
 +#pidfile = /opt/var/run/upmpdcli.pid
  
  
  # <grouptitle>UPnP network parameters</grouptitle>
-@@ -121,7 +121,7 @@
+@@ -128,7 +128,7 @@
+ # 64x64 32 bits-per-pixel png file. Default: '$pkgdatadir/icon.png'.
+ # The icon will only be read once, when upmpdcli starts
+ # up.</descr></var>
+-#iconpath = /usr/share/upmpdcli/icon.png
++#iconpath = /opt/share/upmpdcli/icon.png
+ 
+ # <var name="saveohcredentials" type="bool"><brief>Save the streaming
+ # services login parameters to disk.</brief><descr>This allows sharing the
+@@ -141,15 +141,15 @@
  
  # <var name="opensslcmd" type="fn"><brief>Path to the openssl command</brief>
  # <descr>The OHCredentials service needs openssl 1.1.x or newer.
@@ -287,13 +294,6 @@
 +# Path to the openssl command to use if the system one (in /opt/bin) is too
  # old. Not set by default.</descr></var>
  #opensslcmd = 
- 
-@@ -133,13 +133,13 @@
- # 64x64 32 bits-per-pixel png file. Default: '$pkgdatadir/icon.png'.
- # The icon will only be read once, when upmpdcli starts
- # up.</descr></var>
--#iconpath = /usr/share/upmpdcli/icon.png
-+#iconpath = /opt/share/upmpdcli/icon.png
  
  # <var name="cachedir" type="dfn"><brief>Directory used to store cached
  # data</brief><descr>Only used for the OpenHome queue metadata for now.
@@ -305,7 +305,7 @@
  
  # <var name="presentationhtml" type="fn"><brief>Path to the presentation HTML
  # document</brief><descr>You can change it to replace the default
-@@ -147,7 +147,7 @@
+@@ -157,7 +157,7 @@
  # up. It can't presently be used for status updates (but I guess that you
  # could put a redirect in there, to something more dynamic served by a real
  # HTTP server). Default: '$pkgdatadir/presentation.html'.</descr></var>
@@ -314,7 +314,7 @@
  
  # <var name="enablel16" type="bool">
  # <brief>Advertise L16 format support</brief>
-@@ -197,22 +197,22 @@
+@@ -207,22 +207,22 @@
  
  # <var name="onstart" type="fn"><brief>Command to run when playback is
  # about to begin.</brief><descr>Specify the full path to the program,
@@ -341,12 +341,12 @@
  #onstop =
  
  # <var name="onstandby" type="fn"><brief>Command to run when the setstandby
-@@ -279,18 +279,18 @@
+@@ -289,18 +289,18 @@
  # to the end of the file).</descr>
  #
  # </var>
--radiolist = /usr/share/upmpdcli/radio_scripts/radiolist.conf
-+radiolist = /opt/share/upmpdcli/radio_scripts/radiolist.conf
+-#radiolist = /usr/share/upmpdcli/radio_scripts/radiolist.conf
++#radiolist = /opt/share/upmpdcli/radio_scripts/radiolist.conf
  
  # <var name="radioscripts" type="fn">
  # <brief>Radio metadata scripts directory.</brief>
@@ -363,16 +363,32 @@
  
  # <var name="ohmanufacturername" type="string"><brief>Manufacturer
  # name. </brief></var>
-@@ -374,7 +374,7 @@ radiolist = /usr/share/upmpdcli/radio_sc
+@@ -367,7 +367,7 @@
+ #   - `0$uprcl$folders` Direct access to the Local Media [folders] tree.
+ #
+ # An alias must begin with `0` (which is the mandatory UPnP root object ID), followed by
+-# `$pluginname$` where _pluginname_ could be any subdirectory of `/usr/share/upmpdcli/cdplugins`
++# `$pluginname$` where _pluginname_ could be any subdirectory of `/opt/share/upmpdcli/cdplugins`
+ # except `pycommon` (e.g. `uprcl`, `qobuz`, `upradios`...), and the rest would depend on the plugin
+ # type.
+ # </descr></var>
+@@ -401,13 +401,13 @@
  # image file *must* be a 64x64 32 bits-per-pixel png file. Default:
  # '$pkgdatadir/icon.png'. The icon will only be read once, when upmpdcli
  # starts up.</descr></var>
 -#msiconpath = /usr/share/upmpdcli/icon.png
 +#msiconpath = /opt/share/upmpdcli/icon.png
  
- # <grouptitle>Highresaudio streaming service parameters</grouptitle>
+ # <var name="webserverdocumentroot" type="fn">
+ # <brief>Directory from which the internal HTTP server will directly serve files</brief>
+ # <descr>This is disabled by default for compatibility with older versions which never served
+ # files directly from the filesystem. Some Mediaserver plugins ask to enable it, e.g. for
+-# serving icon files (normally from directories under /usr/share/upmpdcli/www).</descr></var>
++# serving icon files (normally from directories under /opt/share/upmpdcli/www).</descr></var>
+ #webserverdocumentroot = 
  
-@@ -468,22 +468,22 @@ uprcltitle = Local Music
+ # <grouptitle>Highresaudio streaming service parameters</grouptitle>
+@@ -498,22 +498,22 @@ uprcltitle = Local Music
  # <var name="uprclconfdir" type="dfn">
  # <brief>uprcl Recoll index directory</brief>
  # <descr>This is usually not defined and defaults to
@@ -399,16 +415,7 @@
  
  # <var name="uprclminimconfig" type="fn">
  # <brief>Name of the Minim Server configuration file</brief>
-@@ -502,7 +502,7 @@ uprcltitle = Local Music
- # use double-quote quoting for paths with embedded spaces. If not set, we
- # will try to use contentDirs from the Minim config.</descr>
- # </var>
--#uprclmediadirs = /tmp
-+#uprclmediadirs = /opt/tmp
- 
- # <var name="uprclpaths" type="string"><brief>Path translations.</brief>
- # <descr>Translations from real paths to ones relative to the HTTP server
-@@ -593,7 +593,7 @@ upradiostitle = Upmpdcli Radio List
+@@ -698,7 +698,7 @@ upradiostitle = Upmpdcli Radio List
  #scusempdvolume = 0
  
  # <var name="sc2mpd" type="string"><brief>Path to
@@ -417,7 +424,7 @@
  # location is not in the $PATH for the init scripts.</descr></var>
  #sc2mpd = 
  
-@@ -637,7 +637,7 @@ upradiostitle = Upmpdcli Radio List
+@@ -742,7 +742,7 @@ upradiostitle = Upmpdcli Radio List
  # directory.</brief><descr>Location for the scripts used to set up
  # additional external sources. See the Songcast Sender support
  # documentation page.</descr></var>

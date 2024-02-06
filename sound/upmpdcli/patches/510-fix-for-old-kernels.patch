@@ -1,0 +1,24 @@
+--- a/src/pathut.cpp
++++ b/src/pathut.cpp
+@@ -1103,7 +1103,12 @@ bool path_samefile(const std::string& p1
+ #endif
+ }
+ 
+-#if defined(STATX_TYPE)
++/* statx since Linux 4.11 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++#if defined(STATX_TYPE) && LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 
+ #include <sys/syscall.h>
+ 
+@@ -1156,6 +1161,7 @@ static int lstatx(const char *filename,
+ #define STATXCALL statx
+ #define LSTATXCALL lstatx
+ 
++/* statx since Linux 4.11 */
+ #else /* -> !defined(STATX_TYPE) */
+ 
+ /* Using traditional stat */
