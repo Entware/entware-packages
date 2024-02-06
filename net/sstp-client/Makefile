@@ -4,21 +4,22 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific - we have upgraded version used in owrt because of a bug descibed here - https://sourceforge.net/p/sstp-client/discussion/1499218/thread/f96014d027
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sstp-client
-PKG_VERSION:=1.0.16
-PKG_RELEASE:=1
+PKG_VERSION:=1.0.19
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=@SF/sstp-client/$(PKG_VERSION)
-PKG_HASH:=afbe14fd122f7875f4fad0ed982d1745136d2e66cc36b97f72ef1a1111784ca1
+PKG_SOURCE_URL:=https://gitlab.com/sstp-project/sstp-client/-/archive/1.0.19/
+PKG_HASH:=e2652365f69f5037102e78f4e115ff764a390b27bb3fd513a8a50b10a61bb613
 
 PKG_MAINTAINER:=Federico Di Marco <fededim@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
+
+PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
