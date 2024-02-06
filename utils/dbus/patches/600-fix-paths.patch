@@ -23,7 +23,7 @@
  
 --- a/dbus/dbus-sysdeps-util-unix.c
 +++ b/dbus/dbus-sysdeps-util-unix.c
-@@ -1447,7 +1447,7 @@ _dbus_get_standard_session_servicedirs (
+@@ -1453,7 +1453,7 @@ _dbus_get_standard_session_servicedirs (
      }
    else
      {
@@ -32,7 +32,7 @@
          goto oom;
      }
  
-@@ -1505,10 +1505,9 @@ _dbus_get_standard_system_servicedirs (D
+@@ -1511,10 +1511,9 @@ _dbus_get_standard_system_servicedirs (D
     * be available.
     */
    static const char standard_search_path[] =
@@ -45,14 +45,3 @@
    DBusString servicedir_path;
  
    _dbus_string_init_const (&servicedir_path, standard_search_path);
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -512,7 +512,7 @@ if(WIN32)
- else(WIN32)
-     set(DBUS_SESSION_BUS_LISTEN_ADDRESS "unix:tmpdir=${DBUS_SESSION_SOCKET_DIR}" CACHE STRING "session bus default listening address")
-     set(DBUS_SESSION_BUS_CONNECT_ADDRESS "autolaunch:" CACHE STRING "session bus fallback address for clients")
--    set(sysconfdir "/usr/share")
-+    set(sysconfdir "/opt/share")
-     set(configdir ${sysconfdir}/dbus-1 )
-     set(DBUS_SYSTEM_CONFIG_FILE  ${configdir}/system.conf)
-     set(DBUS_SESSION_CONFIG_FILE ${configdir}/session.conf)
