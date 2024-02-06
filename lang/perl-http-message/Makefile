@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-http-message
 PKG_VERSION:=6.22
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=HTTP-Message-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/O/OA/OALDERS
