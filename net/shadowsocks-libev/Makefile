@@ -14,7 +14,7 @@ include $(TOPDIR)/rules.mk
 #
 PKG_NAME:=shadowsocks-libev
 PKG_VERSION:=3.3.5
-PKG_RELEASE:=9
+PKG_RELEASE:=10a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-libev/releases/download/v$(PKG_VERSION)
@@ -24,12 +24,13 @@ PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:shadowsocks:shadowsocks-libev
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_FLAGS:=no-mips16 lto
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=c-ares pcre
+PKG_BUILD_DEPENDS:=c-ares pcre2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -71,8 +72,8 @@ define Package/shadowsocks-libev/Default
 
 endef
 
-DEPENDS_ss-local = +libpcre
-DEPENDS_ss-server = +libcares +libpcre
+DEPENDS_ss-local = +libpcre2
+DEPENDS_ss-server = +libcares +libpcre2
 
 SHADOWSOCKS_COMPONENTS:=ss-local ss-redir ss-tunnel ss-server
 define shadowsocks-libev/templates
@@ -90,6 +91,7 @@ define Package/shadowsocks-libev-ss-rules
   TITLE:=shadowsocks-libev ss-rules
   URL:=https://github.com/shadowsocks/shadowsocks-libev
   DEPENDS:= \
+	   +ip \
 	   +shadowsocks-libev-ss-redir \
 	   +shadowsocks-libev-config
 endef
