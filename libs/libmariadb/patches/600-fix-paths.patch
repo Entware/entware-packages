@@ -1,0 +1,25 @@
+--- a/libmariadb/ma_default.c
++++ b/libmariadb/ma_default.c
+@@ -118,9 +118,9 @@ char **get_default_configuration_dirs()
+   if (add_cfg_dir(configuration_dirs, DEFAULT_SYSCONFDIR))
+     goto error;
+ #else
+-  if (add_cfg_dir(configuration_dirs, "/etc"))
++  if (add_cfg_dir(configuration_dirs, "/opt/etc"))
+     goto error;
+-  if (add_cfg_dir(configuration_dirs, "/etc/mysql"))
++  if (add_cfg_dir(configuration_dirs, "/opt/etc/mysql"))
+     goto error;
+ #endif
+ #endif
+--- a/mariadb_config/mariadb_config.c.in
++++ b/mariadb_config/mariadb_config.c.in
+@@ -214,7 +214,7 @@ end:
+   if (p && p[0])
+   {
+     char *c, *search= alloca(6 + strlen(mariadb_progname));
+-    sprintf(search, "/bin/%s", mariadb_progname);
++    sprintf(search, "/opt/bin/%s", mariadb_progname);
+     c= strstr(p, search);
+     if (c)
+     {
