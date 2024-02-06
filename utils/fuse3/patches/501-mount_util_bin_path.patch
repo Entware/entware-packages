@@ -1,9 +1,6 @@
 --- a/lib/mount_util.c
 +++ b/lib/mount_util.c
-@@ -111,15 +111,15 @@
- 		if(setuid(geteuid()) == -1) {
- 			fprintf(stderr, "%s: setuid: %s\n", progname, strerror(errno));
- 			res = -1;
+@@ -117,9 +117,9 @@ static int add_mount(const char *prognam
  			goto out_restore;
  		}
  
@@ -15,13 +12,7 @@
  			progname, strerror(errno));
  		exit(1);
  	}
- 	res = waitpid(res, &status, 0);
- 	if (res == -1)
- 		fprintf(stderr, "%s: waitpid: %s\n", progname, strerror(errno));
-@@ -171,19 +171,19 @@
- 			fprintf(stderr, "%s: setuid: %s\n", progname, strerror(errno));
- 			res = -1;
- 			goto out_restore;
+@@ -177,13 +177,13 @@ static int exec_umount(const char *progn
  		}
  
  		if (lazy) {
@@ -38,13 +29,7 @@
  			progname, strerror(errno));
  		exit(1);
  	}
- 	res = waitpid(res, &status, 0);
- 	if (res == -1)
- 		fprintf(stderr, "%s: waitpid: %s\n", progname, strerror(errno));
-@@ -242,15 +242,15 @@
- 		if(setuid(geteuid()) == -1) {
- 			fprintf(stderr, "%s: setuid: %s\n", progname, strerror(errno));
- 			res = -1;
+@@ -248,9 +248,9 @@ static int remove_mount(const char *prog
  			goto out_restore;
  		}
  
@@ -56,6 +41,3 @@
  			progname, strerror(errno));
  		exit(1);
  	}
- 	res = waitpid(res, &status, 0);
- 	if (res == -1)
- 		fprintf(stderr, "%s: waitpid: %s\n", progname, strerror(errno));
