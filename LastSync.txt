@@ -1,7 +1,10 @@
-commit bd438b6937b9b3326052923ade8c5a586ebe5e15 (HEAD -> master, origin/master, origin/HEAD)
-Author: Jianhui Zhao <zhaojh329@gmail.com>
-Date:   Thu Aug 17 21:07:51 2023 +0800
+commit fabbbdbbc29c09a287e6c1a024f3be668b1162ba (HEAD -> master, origin/master, origin/HEAD)
+Author: krant <aleksey.vasilenko@gmail.com>
+Date:   Mon Feb 5 17:38:42 2024 +0200
 
-    lua-eco: update to 2.4.0
+    mpg123: update to 1.32.4
     
-    Signed-off-by: Jianhui Zhao <zhaojh329@gmail.com>
+    - Use package official URL
+    - Fix license name
+    
+    Signed-off-by: krant <aleksey.vasilenko@gmail.com>
