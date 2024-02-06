@@ -23,7 +23,7 @@
  
  # Linux using LCC
  #CXX=lcc
-@@ -161,14 +162,14 @@ lib:	clean $(OBJECTS) $(LIB_OBJ)
+@@ -164,14 +165,14 @@ lib:	$(OBJECTS) $(LIB_OBJ)
  	$(AR) rcs libunrar.a $(OBJECTS) $(LIB_OBJ)
  
  install-unrar:
