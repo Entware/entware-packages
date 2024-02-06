@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-try-tiny
 PKG_VERSION:=0.31
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/E/ET/ETHER/
 PKG_SOURCE:=Try-Tiny-$(PKG_VERSION).tar.gz
