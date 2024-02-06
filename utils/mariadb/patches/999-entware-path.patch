@@ -33,7 +33,7 @@
  #define TO_UPPER_TABLE_SIZE   256
 --- a/mysys/my_default.c
 +++ b/mysys/my_default.c
-@@ -1045,8 +1045,8 @@ static const char **init_default_directo
+@@ -1060,8 +1060,8 @@ static const char **init_default_directo
    if (DEFAULT_SYSCONFDIR[0])
      errors += add_directory(alloc, DEFAULT_SYSCONFDIR, dirs);
  #else
@@ -100,7 +100,7 @@
    };
    for (i = 0 ; i < (int)array_elements(paths); i++)
    {
-@@ -1003,9 +1002,8 @@ static int find_tool(const char *tool_na
+@@ -999,9 +998,8 @@ static int find_tool(const char *tool_na
    int i= 0;
  
    const char *paths[]= {
@@ -136,7 +136,7 @@
    SET(scriptdir ${prefix}/${INSTALL_BINDIR})
 --- a/scripts/mysql_install_db.sh
 +++ b/scripts/mysql_install_db.sh
-@@ -374,8 +374,8 @@ then
+@@ -376,8 +376,8 @@ then
    if test -z "$plugindir"
    then
      echo "Could not find plugin directory." >&2
