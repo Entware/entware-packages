@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=taglib
 PKG_VERSION:=1.13
-PKG_RELEASE:=2a
+PKG_RELEASE:=2b
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/taglib/taglib/tar.gz/v$(PKG_VERSION)?
@@ -47,9 +47,9 @@ CMAKE_OPTIONS += \
 
 define Build/InstallDev
 	$(call Build/InstallDev/cmake,$(1))
-	$(SED) '/^prefix=\|^exec_prefix=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/taglib-config
-	$(SED) '/^includedir=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/taglib-config
-	$(SED) '/^libdir=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/taglib-config
+#	$(SED) '/^prefix=\|^exec_prefix=/s|/usr|$(STAGING_DIR)/usr|' $(1)/usr/bin/taglib-config
+	$(SED) '/includedir=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/taglib-config
+	$(SED) '/libdir=/s|/opt|$(STAGING_DIR)/opt|' $(1)/opt/bin/taglib-config
 	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/taglib.pc
 	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/taglib.pc
 	$(INSTALL_DIR) $(2)/bin
