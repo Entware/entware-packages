@@ -48,6 +48,9 @@ ifdef CONFIG_LIBCURL_WOLFSSL
   PYTHON3_PKG_BUILD_VARS:=PYCURL_SSL_LIBRARY=wolfssl
 endif
 
+# XXX FileNotFoundError: [Errno 2] No such file or directory: 'curl-config'
+PYTHON3_PKG_BUILD_VARS += PYCURL_CURL_CONFIG=$(STAGING_DIR)/opt/bin/curl-config
+
 $(eval $(call Py3Package,python3-curl))
 $(eval $(call BuildPackage,python3-curl))
 $(eval $(call BuildPackage,python3-curl-src))
