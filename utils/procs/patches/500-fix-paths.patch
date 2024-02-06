@@ -1,0 +1,11 @@
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -208,7 +208,7 @@ fn get_config(opt: &Opt) -> Result<Confi
+                 .join("config.toml")
+         })
+         .filter(|path| path.exists());
+-    let etc_path = PathBuf::from("/etc/procs/procs.toml");
++    let etc_path = PathBuf::from("/opt/etc/procs/procs.toml");
+     let etc_cfg_path = etc_path.exists().then_some(etc_path);
+     let cfg_path = opt
+         .load_config
