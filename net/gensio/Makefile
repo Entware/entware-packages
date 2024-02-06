@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gensio
-PKG_VERSION:=2.4.2
-PKG_RELEASE:=1a
+PKG_VERSION:=2.7.6
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/ser2net
-PKG_HASH:=2593c1e7beaec3a0a4acbf60f94bbf64b99883d86f172a3b584eba5f67441b4b
+PKG_HASH:=7574fb710ddd6580d53ea44af4ddfc57f28dbcdc646d842f7ed8ccc1235fdf89
 
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
@@ -41,6 +41,7 @@ include $(INCLUDE_DIR)/nls.mk
 include ../../lang/python/python3-package.mk
 
 CONFIGURE_ARGS += \
+	--$(if $(CONFIG_GENSIO_AVAHI),with,without)-avahi \
 	--$(if $(CONFIG_GENSIO_SSL),with,without)-openssl \
 	--without-sctp \
 	--$(if $(CONFIG_GENSIO_WRAP),with,without)-tcp-wrappers \
@@ -49,11 +50,22 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_GENSIO_TCL),with-tcl \
 		--with-tclcflags=-I$(STAGING_DIR)/opt/include \
 		--with-tcllibs=-ltcl8.5,without-tcl) \
+	--without-afskmdm \
+	--without-alsa \
+	--without-ax25 \
+	--without-cm108gpio \
+	--without-dnssd \
 	--without-go \
+	--without-ipmisol \
+	--without-kiss \
 	--without-openipmi \
+	--without-portaudio \
+	--without-sound \
+	--without-udev \
 	--with-cplusplus \
-	--disable-doc \
-	--with-uucp-locking=/opt/var/lock
+	--with-flock-locking \
+	--with-uucp-locking=/opt/var/lock \
+	--disable-doc
 
 CONFIGURE_VARS += \
 	ac_cv_lib_avahi_client_avahi_client_new=$(if $(CONFIG_GENSIO_AVAHI),yes,no) \
@@ -69,6 +81,9 @@ CONFIGURE_VARS += \
 	PYTHON_LIBS="$(shell $(STAGING_DIR)/host/bin/$(PYTHON3)-config --ldflags) -l${PYTHON3}" \
 	PYTHON_CPPFLAGS="$(shell $(STAGING_DIR)/host/bin/$(PYTHON3)-config --includes)" \
 	PYTHON="$(STAGING_DIR_HOSTPKG)/bin/$(PYTHON3)"
+
+MAKE_VARS += \
+	PYTHON_LIBS="$(shell $(STAGING_DIR)/host/bin/$(PYTHON3)-config --ldflags) -l${PYTHON3}"
 else
 CONFIGURE_ARGS += \
 	--without-python \
@@ -166,8 +181,9 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/gensio/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/include/gensio/* $(1)/opt/include/gensio/
-	$(INSTALL_DIR) $(1)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/gensio
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.{so*,a,la} $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/gensio/* $(1)/opt/lib/gensio/
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
 ifneq ($(CONFIG_PACKAGE_python3-gensio),)
@@ -178,8 +194,11 @@ endif
 endef
 
 define Package/libgensio/install
-	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DIR) $(1)/opt/lib/gensio
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensio.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensioosh.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensiomdns.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/gensio/* $(1)/opt/lib/gensio/
 ifeq ($(CONFIG_GENSIO_GLIB),y)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensioglib.so.* $(1)/opt/lib/
 endif
@@ -215,7 +234,7 @@ endef
 
 define Package/libgensiocpp/install
 	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensiocpp.so.* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgensio*cpp.so.* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libgensio))
