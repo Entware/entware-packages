@@ -12,6 +12,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/LuaJIT-$(PKG_VERSION)
 PKG_MAINTAINER:=Morteza Milani <milani@pichak.co>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYRIGHT
+PKG_CPE_ID:=cpe:/a:luajit:luajit
 
 PKG_BUILD_FLAGS:=no-mips16
 
@@ -24,12 +25,19 @@ define Package/luajit
  CATEGORY:=Languages
  TITLE:=LuaJIT
  URL:=https://www.luajit.org
- DEPENDS:=@(i386||x86_64||arm||armeb||aarch64||powerpc||mips||mipsel||mips64)
+ DEPENDS:=@HAS_LUAJIT_ARCH
 endef
 
 define Package/luajit/description
  LuaJIT is a Just-In-Time (JIT) compiler for the Lua programming language. *** Requires GCC Multilib on host system to build! ***
 endef
+
+define Package/luajit/config
+config HAS_LUAJIT_ARCH
+	bool
+	default y if i386||x86_64||arm||armeb||aarch64||powerpc||mips||mipsel||mips64
+endef
+
 ifeq ($(HOST_ARCH),$(filter $(HOST_ARCH), x86_64 mips64))
   ifeq ($(CONFIG_ARCH_64BIT),)
     HOST_BITS := -m32
@@ -44,7 +52,6 @@ define Build/Compile
 		PREFIX=/opt \
 		TARGET_SYS=Linux \
 		TARGET_CFLAGS="$(TARGET_CFLAGS)" \
-		TARGET_LDFLAGS="$(TARGET_LDFLAGS)" \
 		BUILDMODE=dynamic
 	rm -rf $(PKG_INSTALL_DIR)
 	mkdir -p $(PKG_INSTALL_DIR)
