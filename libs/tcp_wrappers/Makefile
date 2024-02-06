@@ -31,14 +31,7 @@ define Package/libwrap
 endef
 
 TARGET_CFLAGS += $(FPIC) -Wall
-
-ifeq ($(CONFIG_GCC_USE_VERSION_7),y)
-TARGET_LDFLAGS += -L$(TOOLCHAIN_DIR)/lib
-endif
-
-ifeq ($(CONFIG_USE_MUSL),)
-TARGET_EXTRA_LIBS:=LIBS=-lnsl
-endif
+TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lnsl)
 
 define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR) \
