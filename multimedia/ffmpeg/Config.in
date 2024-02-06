@@ -1,3 +1,5 @@
+# XXX TARGET_x86_2_6: nasm/yasm not found or too old. Use --disable-x86asm for a crippled build.
+
 config FFMPEG_X86ASM
 	bool "Compile x86 ASM"
 	depends on (x86_64 || (i386 && !(TARGET_x86_geode || TARGET_x86_legacy || TARGET_x86_2_6)))
@@ -302,6 +304,9 @@ comment "Muxers"
 
 config FFMPEG_CUSTOM_MUXER_ac3
 	bool "AC3"
+
+config FFMPEG_CUSTOM_MUXER_avi
+	bool "AVI"
 
 config FFMPEG_CUSTOM_MUXER_h264
 	bool "H.264 Raw Video"
