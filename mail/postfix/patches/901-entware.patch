@@ -1,11 +1,28 @@
+--- a/makedefs
++++ b/makedefs
+@@ -253,7 +253,7 @@ case "$SYSTEM.$RELEASE" in
+ 		: ${SHLIB_CFLAGS=-fPIC}
+ 		: ${SHLIB_LD="${CC-gcc} -shared"' -Wl,-soname,${LIB}'}
+ 		: ${SHLIB_RPATH='-Wl,--enable-new-dtags -Wl,-rpath,${SHLIB_DIR}'}
+-		: ${SHLIB_ENV="LD_LIBRARY_PATH=`pwd`/lib"}
++		: ${SHLIB_ENV="LD_LIBRARY_PATH=`pwd`/opt/lib"}
+ 		: ${PLUGIN_LD="${CC-gcc} -shared"}
+ 		;;
+    SCO_SV.3.2)	SYSTYPE=SCO5
 --- a/src/util/sys_defs.h
 +++ b/src/util/sys_defs.h
-@@ -766,18 +766,18 @@ extern int initgroups(const char *, int)
+@@ -775,23 +775,23 @@ extern int initgroups(const char *, int)
+ #define DEF_MAILBOX_LOCK "fcntl, dotlock"	/* RedHat >= 4.x */
+ #define HAS_FSYNC
+ #define NATIVE_DB_TYPE	"hash"
+-#define ALIAS_DB_MAP	DEF_DB_TYPE ":/etc/postfix/aliases"
++#define ALIAS_DB_MAP	DEF_DB_TYPE ":/opt/etc/postfix/aliases"
+ #ifndef NO_NIS
  #define HAS_NIS
  #endif
  #define GETTIMEOFDAY(t)	gettimeofday(t,(struct timezone *) 0)
 -#define ROOT_PATH	"/bin:/usr/bin:/sbin:/usr/sbin"
-+#define ROOT_PATH	"/opt/bin:/opt/sbin:/bin:/usr/bin:/sbin:/usr/sbin"
++#define ROOT_PATH	"/opt/bin:/opt/usr/bin:/opt/sbin:/opt/usr/sbin:/bin:/usr/bin:/sbin:/usr/sbin"
  #define FIONREAD_IN_TERMIOS_H
  #define USE_STATFS
  #define STATFS_IN_SYS_VFS_H
@@ -22,12 +39,12 @@
 +#define NATIVE_NEWALIAS_PATH "/opt/bin/newaliases"
 +#define NATIVE_COMMAND_DIR "/opt/sbin"
 +#define NATIVE_DAEMON_DIR "/opt/libexec/postfix"
- #ifdef __GLIBC_PREREQ
- #define HAVE_GLIBC_API_VERSION_SUPPORT(maj, min) __GLIBC_PREREQ(maj, min)
- #else
+ #if HAVE_GLIBC_API_VERSION_SUPPORT(2, 1)
+ #define SOCKADDR_SIZE	socklen_t
+ #define SOCKOPT_SIZE	socklen_t
 --- a/src/global/mail_params.h
 +++ b/src/global/mail_params.h
-@@ -279,7 +279,7 @@ extern int var_smtp_mxsess_limit;
+@@ -303,7 +303,7 @@ extern int var_smtp_mxsess_limit;
    */
  #define VAR_QUEUE_DIR	"queue_directory"
  #ifndef DEF_QUEUE_DIR
@@ -36,7 +53,7 @@
  #endif
  extern char *var_queue_dir;
  
-@@ -288,13 +288,13 @@ extern char *var_queue_dir;
+@@ -312,13 +312,13 @@ extern char *var_queue_dir;
    */
  #define VAR_DAEMON_DIR		"daemon_directory"
  #ifndef DEF_DAEMON_DIR
@@ -52,7 +69,7 @@
  #endif
  extern char *var_command_dir;
  
-@@ -312,7 +312,7 @@ extern char *var_pid_dir;
+@@ -336,7 +336,7 @@ extern char *var_pid_dir;
    */
  #define VAR_DATA_DIR		"data_directory"
  #ifndef DEF_DATA_DIR
@@ -61,7 +78,7 @@
  #endif
  extern char *var_data_dir;
  
-@@ -326,7 +326,7 @@ extern time_t var_starttime;
+@@ -350,7 +350,7 @@ extern time_t var_starttime;
    */
  #define VAR_CONFIG_DIR		"config_directory"
  #ifndef DEF_CONFIG_DIR
@@ -70,7 +87,7 @@
  #endif
  extern char *var_config_dir;
  
-@@ -571,7 +571,7 @@ extern char *var_luser_relay;
+@@ -595,7 +595,7 @@ extern char *var_luser_relay;
    */
  #define VAR_MAIL_SPOOL_DIR	"mail_spool_directory"
  #ifndef DEF_MAIL_SPOOL_DIR
@@ -79,7 +96,7 @@
  #endif
  extern char *var_mail_spool_dir;
  
-@@ -2692,17 +2692,17 @@ extern int var_fault_inj_code;
+@@ -2782,17 +2782,17 @@ extern int var_fault_inj_code;
    */
  #define VAR_SENDMAIL_PATH		"sendmail_path"
  #ifndef DEF_SENDMAIL_PATH
@@ -100,7 +117,7 @@
  #endif
  
  #define VAR_OPENSSL_PATH		"openssl_path"
-@@ -2713,7 +2713,7 @@ extern char *var_openssl_path;
+@@ -2803,7 +2803,7 @@ extern char *var_openssl_path;
  
  #define VAR_MANPAGE_DIR			"manpage_directory"
  #ifndef DEF_MANPAGE_DIR
@@ -109,7 +126,7 @@
  #endif
  
  #define VAR_SAMPLE_DIR			"sample_directory"
-@@ -4120,7 +4120,7 @@ extern bool var_smtp_tls_conn_reuse;
+@@ -4299,7 +4299,7 @@ extern bool var_smtp_tls_conn_reuse;
    */
  #define VAR_SHLIB_DIR	"shlib_directory"
  #ifndef DEF_SHLIB_DIR
