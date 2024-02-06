@@ -220,23 +220,6 @@ $(call Package/avahi/Default/description)
  For more information please see the avahi documentation.
 endef
 
-define Package/libavahi-compat-libdnssd
-  $(call Package/avahi/Default)
-  SECTION:=libs
-  CATEGORY:=Libraries
-  VARIANT:=dbus
-  DEPENDS:=+libavahi-client
-  TITLE+= (libdnssd)
-endef
-
-define Package/libavahi-compat-libdnssd/description
-$(call Package/avahi/Default/description)
- .
- This packages adds the libavahi-compat-libdnssd library.
- It also automatically adds the required libavahi-client package.
- For more information please see the avahi documentation.
-endef
-
 define Package/libavahi-glib
   $(call Package/avahi/Default)
   SECTION:=libs
@@ -327,10 +310,6 @@ CONFIGURE_ARGS += \
 	--with-autoipd-group=nogroup
 
 ifeq ($(BUILD_VARIANT),dbus)
-ifneq ($(CONFIG_PACKAGE_libavahi-compat-libdnssd),)
-CONFIGURE_ARGS += \
-	--enable-compat-libdns_sd
-endif
 CONFIGURE_ARGS += \
 	--enable-dbus \
 	--with-dbus-system-address="unix:path=/opt/var/run/dbus/system_bus_socket"
@@ -364,12 +343,6 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libavahi-* $(1)/opt/lib/
-ifneq ($(CONFIG_PACKAGE_libavahi-compat-libdnssd),)
-ifeq ($(BUILD_VARIANT),dbus)
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdns_sd* $(1)/opt/lib/
-	$(LN) avahi-compat-libdns_sd/dns_sd.h $(1)/opt/include/dns_sd.h
-endif
-endif
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/* $(1)/opt/lib/pkgconfig/
 endef
@@ -390,11 +363,6 @@ Package/libavahi-nodbus-support/install=$(Package/libavahi/install)
 define Package/libavahi-client/install
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libavahi-client.so.* $(1)/opt/lib/
-endef
-
-define Package/libavahi-compat-libdnssd/install
-	$(INSTALL_DIR) $(1)/opt/lib
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libdns_sd.so* $(1)/opt/lib/
 endef
 
 define Package/libavahi-glib/install
@@ -455,7 +423,6 @@ define Package/avahi-dnsconfd/install
 endef
 
 $(eval $(call BuildPackage,libavahi-client))
-$(eval $(call BuildPackage,libavahi-compat-libdnssd))
 $(eval $(call BuildPackage,libavahi-glib))
 #$(eval $(call BuildPackage,libavahi-gobject))
 $(eval $(call BuildPackage,avahi-utils))
