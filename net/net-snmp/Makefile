@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=net-snmp
 PKG_VERSION:=5.9.1
-PKG_RELEASE:=5
+PKG_RELEASE:=7
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/net-snmp
@@ -42,7 +42,7 @@ define Package/libnetsnmp
 $(call Package/net-snmp/Default)
   SECTION:=libs
   CATEGORY:=Libraries
-  DEPENDS:=+libnl +libopenssl +libpci +libpcre
+  DEPENDS:=+libnl +libopenssl +libpci +libpcre2
   TITLE:=Open source SNMP implementation (libraries)
 endef
 
@@ -74,7 +74,23 @@ endef
 define Package/snmp-utils/description
 $(call Package/net-snmp/Default/description)
  .
- This package contains SNMP client utilities.
+ This package contains SNMP client utilities:
+   - snmpbulkget
+   - snmpbulkwalk
+   - snmpdelta
+   - snmpdf
+   - snmpget
+   - snmpgetnext
+   - snmpnetstat
+   - snmpset
+   - snmpstatus
+   - snmptable
+   - snmptest
+   - snmptranslate
+   - snmptrap
+   - snmpusm
+   - snmpvacm
+   - snmpwalk
 endef
 
 
@@ -198,10 +214,12 @@ CONFIGURE_ARGS += \
 	--with-mib-modules="$(SNMP_MIB_MODULES_INCLUDED)" \
 	--with-out-transports="$(SNMP_TRANSPORTS_EXCLUDED)" \
 	--with-transports="$(SNMP_TRANSPORTS_INCLUDED)" \
+	--with-openssl \
 	--without-libwrap \
 	--without-mysql \
 	--without-rpm \
 	--without-zlib \
+	--with-pcre2-8 \
 	--with-nl \
 	 $(call autoconf_bool,CONFIG_IPV6,ipv6) \
 	--disable-perl-cc-checks \
@@ -228,7 +246,7 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) $(2)/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/net-snmp-config $(2)/bin/
-	$(SED) 's,=/opt,=$(STAGING_DIR)/opt,g' $(2)/bin/net-snmp-config
+	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(2)/bin/net-snmp-config
 	$(INSTALL_DIR) $(STAGING_DIR)/opt/bin
 	$(LN) $(STAGING_DIR)/host/bin/net-snmp-config $(STAGING_DIR)/opt/bin/
 
