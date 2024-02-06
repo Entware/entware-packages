@@ -1,11 +1,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-jsonschema
-PKG_VERSION:=4.17.3
-PKG_RELEASE:=3
+PKG_VERSION:=4.21.1
+PKG_RELEASE:=1
 
 PYPI_NAME:=jsonschema
-PKG_HASH:=0f864437ab8b6076ba6707453ef8f98a6a0d512a80e93f8abdb676f737ecb60d
+PKG_HASH:=85727c00279f5fa6bedbe6238d2aa6403bedd8b4864ab11207d07df3cc1b2ee5
 
 PKG_MAINTAINER:=Javier Marcet <javier@marcet.info>
 PKG_LICENSE:=MIT
@@ -22,9 +22,16 @@ define Package/python3-jsonschema
   CATEGORY:=Languages
   SUBMENU:=Python
   TITLE:=An implementation of JSON Schema validation
-  URL:=https://github.com/Julian/jsonschema
-  DEPENDS:=+python3-light +python3-attrs +python3-urllib \
-	  +python3-six +python3-pyrsistent +python3-setuptools
+  URL:=https://github.com/python-jsonschema/jsonschema
+  DEPENDS:= \
+	  +python3-light \
+	  +python3-decimal \
+	  +python3-urllib \
+	  +python3-uuid \
+	  +python3-attrs \
+	  +python3-jsonschema-specifications \
+	  +python3-referencing \
+	  +python3-rpds-py
 endef
 
 define Package/python3-jsonschema/description
