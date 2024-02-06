@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=crowdsec
-PKG_VERSION:=1.5.2
+PKG_VERSION:=1.6.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/crowdsecurity/crowdsec/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=18de78572600166c3a7636e9cd4ea011d204211638810969d99cb65feb78c231
+PKG_HASH:=6d79d67383c7faed6c5b2019e4f01c6ed84334c8c45cd1736ff18a03167aa192
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -29,7 +29,7 @@ CWD_BUILD_CODENAME:=alphaga
 CWD_BUILD_TIMESTAMP:=$(shell date +%F"_"%T)
 CWD_BUILD_TAG:=openwrt-$(PKG_VERSION)-$(PKG_RELEASE)
 
-CWD_VERSION_PKG:=github.com/crowdsecurity/crowdsec/pkg/cwversion
+CWD_VERSION_PKG:=github.com/crowdsecurity/go-cs-lib/version
 
 GO_PKG:=github.com/crowdsecurity/crowdsec
 GO_PKG_INSTALL_ALL:=1
