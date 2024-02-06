@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4585,7 +4585,7 @@ AC_CHECK_FUNCS([ \
+@@ -4431,7 +4431,7 @@ AC_CHECK_FUNCS([ \
    copy_file_range ctermid dup dup3 execv explicit_bzero explicit_memset \
    faccessat fchmod fchmodat fchown fchownat fdopendir fdwalk fexecve \
    fork fork1 fpathconf fstatat ftime ftruncate futimens futimes futimesat \

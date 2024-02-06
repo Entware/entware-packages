@@ -9,6 +9,57 @@
                                        stdin=subprocess.DEVNULL,
                                        stderr=subprocess.DEVNULL,
                                        stdout=subprocess.PIPE,
+--- a/Lib/idlelib/editor.py
++++ b/Lib/idlelib/editor.py
+@@ -80,10 +80,10 @@ class EditorWindow:
+             if sys.platform.count('linux'):
+                 # look for html docs in a couple of standard places
+                 pyver = 'python-docs-' + '%s.%s.%s' % sys.version_info[:3]
+-                if os.path.isdir('/var/www/html/python/'):  # "python2" rpm
+-                    dochome = '/var/www/html/python/index.html'
++                if os.path.isdir('/opt/var/www/html/python/'):  # "python2" rpm
++                    dochome = '/opt/var/www/html/python/index.html'
+                 else:
+-                    basepath = '/usr/share/doc/'  # standard location
++                    basepath = '/opt/share/doc/'  # standard location
+                     dochome = os.path.join(basepath, pyver,
+                                            'Doc', 'index.html')
+             elif sys.platform[:3] == 'win':
+--- a/Lib/mailcap.py
++++ b/Lib/mailcap.py
+@@ -66,7 +66,7 @@ def listmailcapfiles():
+         else:
+             # Don't bother with getpwuid()
+             home = '.' # Last resort
+-        mailcaps = [home + '/.mailcap', '/etc/mailcap',
++        mailcaps = [home + '/.mailcap', '/opt/etc/mailcap', '/etc/mailcap',
+                 '/usr/etc/mailcap', '/usr/local/etc/mailcap']
+     return mailcaps
+ 
+--- a/Lib/mimetypes.py
++++ b/Lib/mimetypes.py
+@@ -46,6 +46,10 @@ __all__ = [
+ ]
+ 
+ knownfiles = [
++    "/opt/etc/mime.types",                    # Entware
++    "/opt/etc/httpd/conf/mime.types",               # Apache (Entware)
++    "/opt/etc/apache/mime.types",                   # Apache 1 (Entware)
++    "/opt/etc/apache2/mime.types",                  # Apache 2 (Entware)
+     "/etc/mime.types",
+     "/etc/httpd/mime.types",                    # Mac OS X
+     "/etc/httpd/conf/mime.types",               # Apache
+--- a/Lib/platform.py
++++ b/Lib/platform.py
+@@ -1269,7 +1269,7 @@ _os_release_line = re.compile(
+ # unescape five special characters mentioned in the standard
+ _os_release_unescape = re.compile(r"\\([\\\$\"\'`])")
+ # /etc takes precedence over /usr/lib
+-_os_release_candidates = ("/etc/os-release", "/usr/lib/os-release")
++_os_release_candidates = ("/opt/etc/os-release", "/etc/os-release", "/usr/lib/os-release")
+ _os_release_cache = None
+ 
+ 
 --- a/Lib/posixpath.py
 +++ b/Lib/posixpath.py
 @@ -18,7 +18,7 @@ pardir = '..'

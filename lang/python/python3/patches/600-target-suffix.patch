@@ -1,0 +1,11 @@
+--- a/Misc/platform_triplet.c
++++ b/Misc/platform_triplet.c
+@@ -56,7 +56,7 @@
+ #    endif
+ #   else
+ #    if _MIPS_SIM == _ABIO32
+-#     define LIBC_MIPS gnusf
++#     define LIBC_MIPS gnu
+ #    elif _MIPS_SIM == _ABIN32
+ #     define LIBC_MIPS gnuabin32sf
+ #    elif _MIPS_SIM == _ABI64
