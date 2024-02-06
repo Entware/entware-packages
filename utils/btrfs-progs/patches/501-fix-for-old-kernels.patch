@@ -22,7 +22,7 @@
  		error("file too short");
 --- a/cmds/inspect.c
 +++ b/cmds/inspect.c
-@@ -1486,11 +1486,17 @@ static int cmd_inspect_map_swapfile(cons
+@@ -1574,11 +1574,17 @@ static int cmd_inspect_map_swapfile(cons
  		ret = 1;
  		goto out;
  	}
