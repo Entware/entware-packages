@@ -2,8 +2,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=samba
-PKG_VERSION:=4.18.0
-PKG_RELEASE:=1
+PKG_VERSION:=4.18.8
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= \
@@ -13,7 +13,7 @@ PKG_SOURCE_URL:= \
 		http://www.nic.funet.fi/index/samba/pub/samba/stable/ \
 		http://samba.mirror.bit.nl/samba/ftp/stable/ \
 		https://download.samba.org/pub/samba/stable/
-PKG_HASH:=70348656ef807be9c8be4465ca157cef4d99818e234253d2c684cc18b8408149
+PKG_HASH:=4fb87bceaeb01d832a59046c197a044b7e8e8000581548b5d577a6cda03344d1
 
 PKG_BUILD_FLAGS:=gc-sections
 
@@ -23,7 +23,7 @@ PKG_CPE_ID:=cpe:/a:samba:samba
 
 # samba4=(asn1_compile,compile_et) rpcsvc-proto=(rpcgen)
 HOST_BUILD_DEPENDS:=python3/host rpcsvc-proto/host perl/host perl-parse-yapp/host
-PKG_BUILD_DEPENDS:=samba4/host libtasn1/host perl/host
+PKG_BUILD_DEPENDS:=samba4/host libtasn1/host perl/host perl-parse-yapp
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_SAMBA4_SERVER_NETBIOS \
@@ -416,7 +416,7 @@ endef
 define Package/samba4-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{smbstatus,smbtree,mvxattr,smbtar} $(1)/opt/bin/
-ifeq ($(CONFIG_SAMBA4_SERVER_VFS),y)
+ifeq ($(CONFIG_SAMBA4_SERVER_QUOTAS),y)
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/smbcquotas $(1)/opt/bin/
 endif
 endef
