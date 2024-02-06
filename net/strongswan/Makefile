@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=strongswan
-PKG_VERSION:=5.9.11
-PKG_RELEASE:=1
+PKG_VERSION:=5.9.13
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.strongswan.org/ https://download2.strongswan.org/
-PKG_HASH:=ddf53f1f26ad26979d5f55e8da95bd389552f5de3682e35593f9a70b2584ed2d
+PKG_HASH:=56e30effb578fd9426d8457e3b76c8c3728cd8a5589594b55649b2719308ba55
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_MAINTAINER:=Philip Prindeville <philipp@redfish-solutions.com>, Noel Kuntze <noel.kuntze@thermi.consulting>
 PKG_CPE_ID:=cpe:/a:strongswan:strongswan
@@ -42,6 +42,7 @@ PKG_MOD_AVAILABLE:= \
 	dnskey \
 	drbg \
 	duplicheck \
+	eap-dynamic \
 	eap-identity \
 	eap-md5 \
 	eap-mschapv2 \
@@ -172,6 +173,7 @@ $(call Package/strongswan/Default)
 	+strongswan-mod-dnskey \
 	+strongswan-mod-drbg \
 	+strongswan-mod-duplicheck \
+	+strongswan-mod-eap-dynamic \
 	+strongswan-mod-eap-identity \
 	+strongswan-mod-eap-md5 \
 	+strongswan-mod-eap-mschapv2 \
@@ -648,7 +650,7 @@ $(eval $(call BuildPlugin,blowfish,Blowfish crypto,))
 $(eval $(call BuildPlugin,ccm,CCM AEAD wrapper crypto,))
 $(eval $(call BuildPlugin,chapoly,ChaCha20-Poly1305 AEAD crypto,))
 $(eval $(call BuildPlugin,cmac,CMAC crypto,))
-$(eval $(call BuildPlugin,connmark,netfilter connection marking,+PACKAGE_strongswan-mod-connmark:iptables))
+$(eval $(call BuildPlugin,connmark,netfilter connection marking,+iptables))
 $(eval $(call BuildPlugin,constraints,advanced X509 constraint checking,))
 $(eval $(call BuildPlugin,coupling,IKEv2 plugin to couple peer certificates permanently to authentication,))
 $(eval $(call BuildPlugin,ctr,Counter Mode wrapper crypto,))
@@ -659,6 +661,7 @@ $(eval $(call BuildPlugin,dhcp,DHCP based attribute provider,))
 $(eval $(call BuildPlugin,dnskey,DNS RR key decoding,))
 $(eval $(call BuildPlugin,drbg,Deterministic random bit generator,,))
 $(eval $(call BuildPlugin,duplicheck,advanced duplicate checking,))
+$(eval $(call BuildPlugin,eap-dynamic,EAP dynamic selector,))
 $(eval $(call BuildPlugin,eap-identity,EAP identity helper,))
 $(eval $(call BuildPlugin,eap-md5,EAP MD5 (CHAP) EAP auth,))
 $(eval $(call BuildPlugin,eap-mschapv2,EAP MS-CHAPv2 EAP auth,+strongswan-mod-md4 +strongswan-mod-des))
@@ -666,7 +669,7 @@ $(eval $(call BuildPlugin,eap-radius,EAP RADIUS auth,))
 $(eval $(call BuildPlugin,eap-tls,EAP TLS auth,+strongswan-libtls))
 $(eval $(call BuildPlugin,farp,fake arp respsonses,))
 $(eval $(call BuildPlugin,fips-prf,FIPS PRF crypto,+strongswan-mod-sha1))
-$(eval $(call BuildPlugin,forecast,forward multi/broadcast traffic,+PACKAGE_strongswan-mod-forecast:iptables))
+$(eval $(call BuildPlugin,forecast,forward multi/broadcast traffic,+iptables))
 $(eval $(call BuildPlugin,gcm,GCM AEAD wrapper crypto,))
 $(eval $(call BuildPlugin,gcrypt,libgcrypt,+PACKAGE_strongswan-mod-gcrypt:libgcrypt))
 $(eval $(call BuildPlugin,gmp,libgmp,+PACKAGE_strongswan-mod-gmp:libgmp))
