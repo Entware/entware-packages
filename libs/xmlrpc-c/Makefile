@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xmlrpc-c
-PKG_VERSION:=1.51.07
-PKG_RELEASE:=3
+PKG_VERSION:=1.59.02
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=@SF/xmlrpc-c/Xmlrpc-c%20Super%20Stable/$(PKG_VERSION)
-PKG_HASH:=84d20ae33f927582f821d61c0b9194aefbf1d7924590a13fa9da5ae1698aded9
+PKG_HASH:=e25e45be1bae7e90f1de69be3d6838917ba3839b2f1c7d3fc0e6663d8622a5ab
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=VARIOUS
@@ -23,6 +23,8 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
+# XXX Entware specific: cannot find -liconv
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/xmlrpc-c/Default
   SECTION:=libs
@@ -42,22 +44,15 @@ define Package/xmlrpc-c-internal
   $(call Package/xmlrpc-c/Default)
   TITLE+= (uses internal expat variant)
   DEPENDS:=+xmlrpc-c-common
-#  PROVIDES:=xmlrpc-c
+  PROVIDES:=xmlrpc-c
   VARIANT:=internal
-  HIDDEN:=1
-endef
-
-define Package/xmlrpc-c
-  $(call Package/xmlrpc-c/Default)
-  TITLE+= (uses internal expat variant)
-  DEPENDS:=+xmlrpc-c-internal
 endef
 
 define Package/xmlrpc-c-libxml2
   $(call Package/xmlrpc-c/Default)
   TITLE+= (uses libxml2)
-  DEPENDS:=+xmlrpc-c-common +libxml2 @BROKEN
-#  PROVIDES:=xmlrpc-c
+  DEPENDS:=+xmlrpc-c-common +libxml2
+  PROVIDES:=xmlrpc-c
   VARIANT:=libxml2
 endef
 
@@ -76,7 +71,7 @@ endef
 define Package/xmlrpc-c-abyss
   $(call Package/xmlrpc-c/Default)
   TITLE+= - abyss
-  DEPENDS:=+xmlrpc-c-common @BROKEN
+  DEPENDS:=+xmlrpc-c-common
 endef
 
 define Package/xmlrpc-c-server-abyss
@@ -101,11 +96,10 @@ Package/xmlrpc-c-internal/description += Uses internal expat variant (stripped d
 CONFIGURE_ARGS+= \
 	--disable-wininet-client \
 	--disable-libwww-client \
-	--disable-abyss-server \
 	--disable-cgi-server \
 	--disable-cplusplus \
-	--disable-abyss-threads \
-	--without-libwww-ssl
+	--without-libwww-ssl \
+	--disable-abyss-openssl
 
 ifeq ($(BUILD_VARIANT),libxml2)
 	CONFIGURE_ARGS += \
@@ -118,7 +112,7 @@ ifeq ($(BUILD_VARIANT),internal)
 endif
 
 define Build/Compile
-	( cd $(PKG_BUILD_DIR)/lib/expat/gennmtab && cc -I$(PKG_BUILD_DIR) -c gennmtab.c -o gennmtab.o && cc -o gennmtab  gennmtab.o )
+	( cd $(PKG_BUILD_DIR)/lib/expat/gennmtab && cc -I$(PKG_BUILD_DIR) -c gennmtab.c -o gennmtab.o && cc -o gennmtab gennmtab.o )
 	$(call Build/Compile/Default)
 endef
 
@@ -127,6 +121,7 @@ define Build/InstallDev
 		$(1)/opt/include \
 		$(1)/opt/lib \
 		$(1)/opt/bin \
+		$(1)/opt/lib/pkgconfig \
 		$(2)/bin
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/include/* \
@@ -144,6 +139,9 @@ define Build/InstallDev
 	$(SED) \
 		's,LIBINST_DIR="/opt/lib",LIBINST_DIR="$(STAGING_DIR)/opt/lib",g' \
 		$(2)/bin/xmlrpc-c-config
+	$(INSTALL_DATA) \
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
+		$(1)/opt/lib/pkgconfig/
 endef
 
 define Package/xmlrpc-c-libxml2/install
@@ -208,15 +206,10 @@ define Package/xmlrpc-c-common/install
 		$(1)/opt/lib/
 endef
 
-define Package/xmlrpc-c/install
-	true
-endef
-
-$(eval $(call BuildPackage,xmlrpc-c))
 $(eval $(call BuildPackage,xmlrpc-c-common))
-#$(eval $(call BuildPackage,xmlrpc-c-libxml2))
+$(eval $(call BuildPackage,xmlrpc-c-libxml2))
 $(eval $(call BuildPackage,xmlrpc-c-internal))
 $(eval $(call BuildPackage,xmlrpc-c-server))
-#$(eval $(call BuildPackage,xmlrpc-c-abyss))
-#$(eval $(call BuildPackage,xmlrpc-c-server-abyss))
+$(eval $(call BuildPackage,xmlrpc-c-abyss))
+$(eval $(call BuildPackage,xmlrpc-c-server-abyss))
 $(eval $(call BuildPackage,xmlrpc-c-client))
