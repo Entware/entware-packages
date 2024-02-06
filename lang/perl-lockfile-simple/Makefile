@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-lockfile-simple
 PKG_VERSION:=0.208
-PKG_RELEASE:=4
+PKG_RELEASE:=4a
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/S/SC/SCHWIGON/lockfile-simple/
 PKG_SOURCE:=LockFile-Simple-$(PKG_VERSION).tar.gz
