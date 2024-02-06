@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-sub-uplevel
 PKG_VERSION:=0.2800
-PKG_RELEASE:=1
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=Sub-Uplevel-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/D/DA/DAGOLDEN
