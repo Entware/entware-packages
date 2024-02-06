@@ -55,4 +55,4 @@ define Package/openappid/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/version.conf $(1)/usr/lib/openappid/odp
 endef
 
-$(eval $(call BuildPackage,openappid))
+#$(eval $(call BuildPackage,openappid))
