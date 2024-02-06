@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mpg123
-PKG_VERSION:=1.31.1
-PKG_RELEASE:=1
+PKG_VERSION:=1.32.4
+PKG_RELEASE:=1a
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=@SF/mpg123
-PKG_HASH:=5dcb0936efd44cb583498b6585845206f002a7b19d5066a2683be361954d955a
+PKG_HASH:=5a99664338fb2f751b662f40ee25804d0c9db6b575dcb5ce741c6dc64224a08a
 
 PKG_MAINTAINER:=Zoltan HERPAI <wigyori@uid0.hu>
 PKG_LICENSE_FILES:=COPYING
@@ -25,7 +25,7 @@ PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
 
 define Package/mpg123/Default
-  URL:=http://www.mpg123.de
+  URL:=https://www.mpg123.org
 endef
 
 define Package/libmpg123
@@ -33,7 +33,7 @@ define Package/libmpg123
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=fast console mpeg audio decoder library
-  LICENSE:=LGPL-2.1-or-later
+  LICENSE:=LGPL-2.1-only
   DEPENDS:=+libltdl
 endef
 
@@ -63,6 +63,10 @@ define Package/mpg123
   LICENSE:=GPL-2.0-or-later
   DEPENDS+=+libmpg123 +alsa-lib +libout123 +libsyn123
 endef
+
+# Entware specific: add TARGET_CFLAGS
+# src/libmpg123/lfs_wrap.c:62:23: error: size of array 'MPG123_STATIC_ASSERT' is negative
+TARGET_CFLAGS += -D_FILE_OFFSET_BITS=64
 
 CONFIGURE_ARGS += \
 	--enable-shared \
