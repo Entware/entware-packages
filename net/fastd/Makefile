@@ -13,11 +13,12 @@ PKG_RELEASE:=3
 
 PKG_MAINTAINER:=Matthias Schiffer <mschiffer@universe-factory.net>
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://github.com/NeoRaider/fastd/releases/download/v$(PKG_VERSION)
+PKG_SOURCE_URL:=https://github.com/neocturne/fastd/releases/download/v$(PKG_VERSION)
 PKG_HASH:=19750b88705d66811b7c21b672537909c19ae6b21350688cbd1a3a54d08a8951
 
 PKG_LICENSE:=BSD-2-Clause LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYRIGHT src/dep/libmnl/COPYING
+PKG_CPE_ID:=cpe:/a:fastd_project:fastd
 
 PKG_CONFIG_DEPENDS:=\
 	CONFIG_FASTD_ENABLE_METHOD_CIPHER_TEST \
@@ -53,7 +54,7 @@ define Package/fastd
   CATEGORY:=Network
   DEPENDS:=+libpthread +libuecc +FASTD_WITH_STATUS_SOCKET:libjson-c +FASTD_WITH_CAPABILITIES:libcap
   TITLE:=Fast and Secure Tunneling Daemon
-  URL:=https://github.com/NeoRaider/fastd/
+  URL:=https://github.com/neocturne/fastd/
   SUBMENU:=VPN
 endef
 
