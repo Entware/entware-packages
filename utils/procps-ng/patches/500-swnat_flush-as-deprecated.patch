@@ -1,6 +1,6 @@
---- a/sysctl.c
-+++ b/sysctl.c
-@@ -58,6 +58,7 @@ static const char DEFAULT_PRELOAD[] = "/
+--- a/src/sysctl.c
++++ b/src/sysctl.c
+@@ -62,6 +62,7 @@ static const char DEFAULT_PRELOAD[] = "/
  static const char *DEPRECATED[] = {
  	"base_reachable_time",
  	"retrans_time",

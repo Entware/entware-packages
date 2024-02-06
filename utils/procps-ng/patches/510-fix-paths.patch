@@ -1,0 +1,55 @@
+--- a/local/nls.h
++++ b/local/nls.h
+@@ -10,7 +10,7 @@
+ 
+ /* programs issuing bindtextdomain() also need LOCALEDIR string */
+ #ifndef LOCALEDIR
+-#define LOCALEDIR "/usr/share/locale"
++#define LOCALEDIR "/opt/share/locale"
+ #endif
+ 
+ #ifdef HAVE_LOCALE_H
+--- a/src/ps/display.c
++++ b/src/ps/display.c
+@@ -626,7 +626,7 @@ int main(int argc, char *argv[]){
+   setlocale (LC_ALL, "");
+   bindtextdomain(PACKAGE, LOCALEDIR);
+   textdomain(PACKAGE);
+-  setenv("TZ", ":/etc/localtime", 0);
++  setenv("TZ", ":/opt/etc/localtime", 0);
+ 
+ #ifdef DEBUG
+   init_stack_trace(argv[0]);
+--- a/src/sysctl.c
++++ b/src/sysctl.c
+@@ -58,7 +58,7 @@
+  *    Globals...
+  */
+ static const char PROC_PATH[] = "/proc/sys/";
+-static const char DEFAULT_PRELOAD[] = "/etc/sysctl.conf";
++static const char DEFAULT_PRELOAD[] = "/opt/etc/sysctl.conf";
+ static const char *DEPRECATED[] = {
+ 	"base_reachable_time",
+ 	"retrans_time",
+@@ -810,6 +810,8 @@ static int PreloadSystem(SettingList *se
+ {
+ 	unsigned di, i;
+ 	const char *dirs[] = {
++		"/opt/etc/sysctl.d",
++		"/opt/lib/sysctl.d",
+ 		"/etc/sysctl.d",
+ 		"/run/sysctl.d",
+ 		"/usr/local/lib/sysctl.d",
+--- a/src/top/top.h
++++ b/src/top/top.h
+@@ -524,8 +524,8 @@ typedef struct WIN_t {
+ /*      ( see module top_nls.c for the nls translatable data ) */
+ 
+         /* Configuration files support */
+-#define SYS_RCRESTRICT  "/etc/toprc"
+-#define SYS_RCDEFAULTS  "/etc/topdefaultrc"
++#define SYS_RCRESTRICT  "/opt/etc/toprc"
++#define SYS_RCDEFAULTS  "/opt/etc/topdefaultrc"
+ #define RCF_EYECATCHER  "Config File (Linux processes with windows)\n"
+ #define RCF_PLUS_H      "\\]^_`abcdefghij"
+ #define RCF_PLUS_J      "klmnopqrstuvwxyz"
