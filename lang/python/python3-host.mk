@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: no include rust-values.mk
 
 # Note: include this file after `include $(TOPDIR)/rules.mk in your package Makefile
 #       if `python3-package.mk` is included, this will already be included
@@ -11,7 +12,7 @@
 # For PYTHON3_VERSION
 python3_mk_path:=$(dir $(lastword $(MAKEFILE_LIST)))
 include $(python3_mk_path)python3-version.mk
-include $(python3_mk_path)../rust/rust-values.mk
+#include $(python3_mk_path)../rust/rust-values.mk
 
 # Unset environment variables
 
