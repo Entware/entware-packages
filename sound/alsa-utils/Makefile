@@ -4,6 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware-specific: --disable-nls
 
 include $(TOPDIR)/rules.mk
 
@@ -56,7 +57,8 @@ CONFIGURE_ARGS += \
 	--disable-bat \
 	--disable-xmlto \
 	--disable-rst2man \
-	--with-curses=ncursesw
+	--with-curses=ncursesw \
+	--disable-nls
 
 CONFIGURE_VARS += \
 	ac_cv_header_samplerate_h=no
