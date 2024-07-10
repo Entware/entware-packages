@@ -1,28 +1,12 @@
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -125,7 +125,7 @@ add_subdirectory(src)
- 
- # pkg-config file
- if (UNIX OR MINGW)
--configure_file(libssh.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libssh.pc)
-+configure_file(libssh.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libssh.pc @ONLY)
- install(
-   FILES
-     ${CMAKE_CURRENT_BINARY_DIR}/libssh.pc
 --- a/libssh.pc.cmake
 +++ b/libssh.pc.cmake
-@@ -1,6 +1,10 @@
--Name: ${PROJECT_NAME}
-+prefix=@CMAKE_INSTALL_PREFIX@
+@@ -1,7 +1,7 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+-libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+-includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 +libdir=${prefix}/lib
 +includedir=${prefix}/include
-+
-+Name: @PROJECT_NAME@
- Description: The SSH Library
--Version: ${PROJECT_VERSION}
--Libs: -L${CMAKE_INSTALL_FULL_LIBDIR} -lssh
--Cflags: -I${CMAKE_INSTALL_FULL_INCLUDEDIR}
-+Version: @PROJECT_VERSION@
-+Libs: -L${libdir} -lssh
-+Cflags: -I${includedir}
  
+ Name: @PROJECT_NAME@
+ Description: The SSH Library

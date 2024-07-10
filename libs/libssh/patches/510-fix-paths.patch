@@ -45,7 +45,7 @@
  /* 0x04  Probabilistic Miller-Rabin primality tests. */
 --- a/src/options.c
 +++ b/src/options.c
-@@ -684,7 +684,7 @@ int ssh_options_set(ssh_session session,
+@@ -690,7 +690,7 @@ int ssh_options_set(ssh_session session,
              SAFE_FREE(session->opts.global_knownhosts);
              if (v == NULL) {
                  session->opts.global_knownhosts =
@@ -54,23 +54,29 @@
                  if (session->opts.global_knownhosts == NULL) {
                      ssh_set_error_oom(session);
                      return -1;
-@@ -1507,7 +1507,7 @@ int ssh_options_apply(ssh_session sessio
-     session->opts.knownhosts = tmp;
+@@ -1524,7 +1524,7 @@ int ssh_options_apply(ssh_session sessio
  
-     if (session->opts.global_knownhosts == NULL) {
--        tmp = strdup("/etc/ssh/ssh_known_hosts");
-+        tmp = strdup("/opt/etc/ssh/ssh_known_hosts");
-     } else {
-         tmp = ssh_path_expand_escape(session, session->opts.global_knownhosts);
-     }
+     if ((session->opts.exp_flags & SSH_OPT_EXP_FLAG_GLOBAL_KNOWNHOSTS) == 0) {
+         if (session->opts.global_knownhosts == NULL) {
+-            tmp = strdup("/etc/ssh/ssh_known_hosts");
++            tmp = strdup("/opt/etc/ssh/ssh_known_hosts");
+         } else {
+             tmp = ssh_path_expand_escape(session,
+                                          session->opts.global_knownhosts);
 --- a/src/socket.c
 +++ b/src/socket.c
-@@ -908,7 +908,7 @@ ssh_execute_command(const char *command,
+@@ -925,11 +925,11 @@ ssh_execute_command(const char *command,
      if (shell == NULL || shell[0] == '\0') {
-         /* Fall back to bash. There are issues with dash or
-          * whatever people tend to link to /bin/sh */
--        shell = "/bin/bash";
-+        shell = "$SHELL";
+         /* Fall back to the /bin/sh only if the bash is not available. But there are 
+          * issues with dash or whatever people tend to link to /bin/sh */
+-        rc = access("/bin/bash", 0);
++        rc = access("$SHELL", 0);
+         if (rc != 0) {
+-            shell = "/bin/sh";
++            shell = "$SHELL";
+         } else {
+-            shell = "/bin/bash";
++            shell = "$SHELL";
+         }
      }
      args[0] = shell;
- 
