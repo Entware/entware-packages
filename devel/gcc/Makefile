@@ -26,7 +26,8 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
-PKG_RELEASE:=5c
+GCC_MAJOR_VERSION:=$(word 1,$(subst ., ,$(PKG_VERSION)))
+PKG_RELEASE:=6
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
@@ -49,7 +50,11 @@ ifeq ($(PKG_VERSION),12.3.0)
 	PKG_HASH:=949a5d4f99e786421a93b532b22ffab5578de7321369975b91aec97adfda8c3b
 endif
 
-PATCH_DIR=./patches/$(GCC_VERSION)
+ifeq ($(PKG_VERSION),13.3.0)
+	PKG_HASH:=0845e9621c9543a13f484e94584a49ffc0129970e9914624235fc1d061a0c083
+endif
+
+PATCH_DIR:=patches-$(GCC_MAJOR_VERSION).x
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -67,15 +72,15 @@ define Package/gcc/config
 endef
 
 ifeq ($(CONFIG_INCLUDE_STATIC_LIBC),y)
-	COPY_STATIC_LIBC=cp -a $(TOOLCHAIN_DIR)/lib/libc.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	COPY_STATIC_LIBC=cp -a $(TOOLCHAIN_ROOT_DIR)/lib/libc.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 endif
 
 ifeq ($(CONFIG_INCLUDE_STATIC_LIBPTHREAD),y)
-	COPY_STATIC_LIBPTHREAD=cp -a $(TOOLCHAIN_DIR)/lib/libpthread.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	COPY_STATIC_LIBPTHREAD=cp -a $(TOOLCHAIN_ROOT_DIR)/lib/libpthread.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 endif
 
 ifeq ($(CONFIG_INCLUDE_STATIC_LIBSTDC),y)
-	COPY_STATIC_LIBSTDC=cp -a $(TOOLCHAIN_DIR)/lib/libstdc++.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	COPY_STATIC_LIBSTDC=cp -a $(TOOLCHAIN_ROOT_DIR)/lib/libstdc++.a $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 endif
 
 ### FIXME %G %L <= 8.x; %G >= 10.x
@@ -95,9 +100,9 @@ PKGVERSION=OpenWrt GCC $(PKG_VERSION)
 TARGET_CPPFLAGS += -D_GLIBCXX_INCLUDE_NEXT_C_HEADERS
 
 # not using sstrip here as this messes up the .so's somehow
-STRIP:=$(TOOLCHAIN_DIR)/bin/$(TARGET_CROSS)strip
+STRIP:=$(firstword $(TOOLCHAIN_BIN_DIRS))/$(TARGET_CROSS)strip
 RSTRIP:= \
-	NM="$(TOOLCHAIN_DIR)/bin/$(TARGET_CROSS)nm" \
+	NM="$(firstword $(TOOLCHAIN_BIN_DIRS))/$(TARGET_CROSS)nm" \
 	STRIP="$(STRIP)" \
 	STRIP_KMOD="$(STRIP) --strip-debug" \
 	$(SCRIPT_DIR)/rstrip.sh
@@ -231,10 +236,10 @@ define Package/gcc/install
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc $(1)/opt/bin/$(REAL_GNU_TARGET_NAME)-gcc-$(PKG_VERSION)
 	ln -s $(REAL_GNU_TARGET_NAME)-gcc-ar $(1)/opt/bin/gcc-ar
 	cp -ar $(PKG_INSTALL_DIR)/opt/lib/gcc $(1)/opt/lib
-	cp -ar $(TOOLCHAIN_DIR)/include $(1)/opt
-	cp -a $(TOOLCHAIN_DIR)/lib/*.{o,so*} $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
-	cp -a $(TOOLCHAIN_DIR)/lib/*nonshared*.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
-	cp -a $(TOOLCHAIN_DIR)/lib/libm.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	cp -ar $(TOOLCHAIN_ROOT_DIR)/include $(1)/opt
+	cp -a $(TOOLCHAIN_ROOT_DIR)/lib/*.{o,so*} $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	cp -a $(TOOLCHAIN_ROOT_DIR)/lib/*nonshared*.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
+	cp -a $(TOOLCHAIN_ROOT_DIR)/lib/libm.a  $(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)
 	$(COPY_STATIC_LIBC)
 	$(COPY_STATIC_LIBPTHREAD)
 	$(COPY_STATIC_LIBSTDC)
@@ -253,7 +258,7 @@ define Package/gcc/install
 	# XXX cleanup *.la/*.py
 	$(SED) 's,^dependency_libs=.*,dependency_libs='\'' -L/opt/lib -lm'\'',' \
 		$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/liblto_plugin.la
-	$(SED) 's,$(TOOLCHAIN_DIR)/$(REAL_GNU_TARGET_NAME),/opt,;s,$(TOOLCHAIN_DIR),/opt,' \
+	$(SED) 's,$(TOOLCHAIN_ROOT_DIR)/$(REAL_GNU_TARGET_NAME),/opt,;s,$(TOOLCHAIN_ROOT_DIR),/opt,' \
 			$(1)/opt/lib/$(PKG_NAME)/$(REAL_GNU_TARGET_NAME)/$(PKG_VERSION)/*.py
 endef
 
