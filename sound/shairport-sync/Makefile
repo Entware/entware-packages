@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shairport-sync
 PKG_VERSION:=4.3.2
-PKG_RELEASE:=2
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/mikebrady/shairport-sync/tar.gz/$(PKG_VERSION)?
@@ -30,7 +30,7 @@ define Package/shairport-sync/default
   SECTION:=sound
   CATEGORY:=Sound
   TITLE:=AirPlay compatible audio player
-  DEPENDS:=@AUDIO_SUPPORT +libpthread +alsa-lib +libconfig +libdaemon +libpopt +libstdcpp +libplist +libsodium +libgcrypt +libffmpeg-full +libuuid +nqptp
+  DEPENDS:=@AUDIO_SUPPORT +libpthread +alsa-lib +libconfig +libdaemon +libpopt +libplist +libsodium +libgcrypt +libffmpeg-full +libuuid +nqptp +libmosquitto
   PROVIDES:=shairport-sync
   URL:=https://github.com/mikebrady/shairport-sync
 endef
@@ -81,6 +81,7 @@ CONFIGURE_ARGS += \
 	--with-libdaemon \
 	--with-airplay-2 \
 	--with-pipe \
+	--with-mqtt-client \
 	--with-metadata
 
 ifeq ($(BUILD_VARIANT),openssl)
@@ -96,6 +97,8 @@ ifeq ($(BUILD_VARIANT),mini)
 else
   CONFIGURE_ARGS+= --with-avahi --with-soxr
 endif
+
+TARGET_LDFLAGS += -Wl,--as-needed
 
 define Package/shairport-sync/default/conffiles
 /opt/etc/asound.conf
@@ -113,6 +116,7 @@ define Package/shairport-sync/default/install
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/shairport-sync.conf $(1)/opt/etc/shairport-sync.conf
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S50shairport-sync $(1)/opt/etc/init.d
+#	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/asound.conf $(1)/opt/etc/
 endef
 
