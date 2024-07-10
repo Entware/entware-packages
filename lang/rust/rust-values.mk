@@ -57,16 +57,10 @@ endif
 
 # ARM Logic
 ifeq ($(ARCH),arm)
-# XXX Entware specifics: armv5/7 added
-  ifeq ($(CONFIG_TARGET_armv5_3_2),y)
+  ifeq ($(CONFIG_arm_v6)$(CONFIG_arm_v7),)
     RUSTC_TARGET_ARCH:=$(subst arm,armv5te,$(RUSTC_TARGET_ARCH))
-  endif
-
-  ifeq ($(or $(CONFIG_TARGET_armv7_2_6),$(CONFIG_TARGET_armv7_3_2)),y)
-    RUSTC_TARGET_ARCH:=$(subst arm,armv7,$(RUSTC_TARGET_ARCH))
-  endif
-
-  ifeq ($(CONFIG_arm_v7),y)
+# XXX Entware specifics: TARGET_armv7_3_2 added
+  else ifeq ($(or $(CONFIG_arm_v7)$(CONFIG_TARGET_armv7_3_2)),y)
     RUSTC_TARGET_ARCH:=$(subst arm,armv7,$(RUSTC_TARGET_ARCH))
   endif
 
