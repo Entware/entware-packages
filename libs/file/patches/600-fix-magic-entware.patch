@@ -192,30 +192,30 @@
 --- a/magic/Magdir/javascript
 +++ b/magic/Magdir/javascript
 @@ -3,16 +3,24 @@
- # $File: javascript,v 1.4 2022/09/02 08:08:17 christos Exp $
+ # $File: javascript,v 1.5 2023/01/12 00:02:16 christos Exp $
  # javascript:  magic for javascript and node.js scripts.
  #
-+0	string/w	#!/opt/bin/node		Node.js script text executable
++0	string/tw	#!/opt/bin/node		Node.js script executable
 +!:mime application/javascript
- 0	string/w	#!/bin/node		Node.js script text executable
+ 0	string/tw	#!/bin/node		Node.js script executable
  !:mime application/javascript
- 0	string/w	#!/usr/bin/node		Node.js script text executable
+ 0	string/tw	#!/usr/bin/node		Node.js script executable
  !:mime application/javascript
-+0	string/w	#!/opt/bin/nodejs	Node.js script text executable
++0	string/tw	#!/opt/bin/nodejs	Node.js script executable
 +!:mime application/javascript
- 0	string/w	#!/bin/nodejs		Node.js script text executable
+ 0	string/tw	#!/bin/nodejs		Node.js script executable
  !:mime application/javascript
- 0	string/w	#!/usr/bin/nodejs	Node.js script text executable
+ 0	string/tw	#!/usr/bin/nodejs	Node.js script executable
  !:mime application/javascript
-+0	string		#!/opt/bin/node		Node.js script text executable
++0	string/t		#!/opt/bin/env\ node	Node.js script executable
 +!:mime application/javascript
- 0	string		#!/usr/bin/env\ node	Node.js script text executable
+ 0	string/t		#!/usr/bin/env\ node	Node.js script executable
  !:mime application/javascript
-+0	string		#!/opt/bin/nodejs	Node.js script text executable
++0	string/t		#!/opt/bin/env\ nodejs	Node.js script executable
 +!:mime application/javascript
- 0	string		#!/usr/bin/env\ nodejs	Node.js script text executable
+ 0	string/t		#!/usr/bin/env\ nodejs	Node.js script executable
  !:mime application/javascript
- # Hermes by Facebook https://hermesengine.dev/
+ 
 --- a/magic/Magdir/lua
 +++ b/magic/Magdir/lua
 @@ -6,10 +6,14 @@
