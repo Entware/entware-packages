@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xmlrpc-c
-PKG_VERSION:=1.59.02
+PKG_VERSION:=1.59.03
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=@SF/xmlrpc-c/Xmlrpc-c%20Super%20Stable/$(PKG_VERSION)
-PKG_HASH:=e25e45be1bae7e90f1de69be3d6838917ba3839b2f1c7d3fc0e6663d8622a5ab
+PKG_HASH:=bdb71db42ab0be51591555885d11682b044c1034d4a3296401bf921ec0b233fe
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=VARIOUS
@@ -116,7 +116,9 @@ define Build/Compile
 	$(call Build/Compile/Default)
 endef
 
-define Build/InstallDev
+TARGET_VARIANT=$(if $(ALL_VARIANTS),$(if $(VARIANT),$(VARIANT),$(firstword $(ALL_VARIANTS))))
+ifeq ($(if $(TARGET_VARIANT),$(BUILD_VARIANT)),$(TARGET_VARIANT))
+  define Build/InstallDev
 	$(INSTALL_DIR) \
 		$(1)/opt/include \
 		$(1)/opt/lib \
@@ -142,7 +144,8 @@ define Build/InstallDev
 	$(INSTALL_DATA) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
 		$(1)/opt/lib/pkgconfig/
-endef
+  endef
+endif
 
 define Package/xmlrpc-c-libxml2/install
 	$(INSTALL_DIR) \
