@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
-PKG_VERSION:=9.6p1
-PKG_RELEASE:=1
+PKG_VERSION:=9.8p1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
 		https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
-PKG_HASH:=910211c07255a8c5ad654391b40ee59800710dd8119dd5362de09385aa7a777c
+PKG_HASH:=dd8bd002a379b5d499dfb050dd1fa9af8029e80461f4bb6c523c49973f5a39f3
 
 PKG_LICENSE:=BSD ISC
 PKG_LICENSE_FILES:=LICENCE
@@ -81,6 +81,7 @@ define Package/openssh-keygen
 	$(call Package/openssh/Default)
 	DEPENDS+= +libopenssl +zlib
 	TITLE+= keygen
+	ALTERNATIVES:=200:/opt/bin/ssh-keygen:/opt/libexec/ssh-keygen-openssh
 endef
 
 define Package/openssh-keygen/description
@@ -180,8 +181,9 @@ CONFIGURE_ARGS += \
 	--without-kerberos5 \
 	--with-stackprotect \
 	--with$(if $(CONFIG_OPENSSL_ENGINE),,out)-ssl-engine \
-	--with$(if $(CONFIG_OPENSSH_LIBFIDO2),,out)-security-key-builtin
-
+	--with$(if $(CONFIG_OPENSSH_LIBFIDO2),,out)-security-key-builtin \
+	--with-cflags-after=-fzero-call-used-regs=skip
+	
 ifeq ($(BUILD_VARIANT),with-pam)
 CONFIGURE_ARGS += \
 	--with-pam
@@ -226,8 +228,8 @@ define Package/openssh-client-utils/install
 endef
 
 define Package/openssh-keygen/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ssh-keygen $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ssh-keygen $(1)/opt/libexec/ssh-keygen-openssh
 endef
 
 define Package/openssh-server/install
@@ -240,6 +242,8 @@ define Package/openssh-server/install
 #	$(INSTALL_BIN) ./files/sshd.failsafe $(1)/lib/preinit/99_10_failsafe_sshd
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/sshd $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/sshd-session $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/var/empty
 endef
 
