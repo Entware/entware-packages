@@ -223,7 +223,7 @@ TITLE:=bytes perl module
 endef
 
 define Package/perlbase-bytes/install
-$(call perlmod/Install,$(1),bytes.pm bytes_heavy.pl,)
+$(call perlmod/Install,$(1),bytes.pm,)
 $(call perlmod/InstallBaseTests,$(1),lib/bytes.t)
 endef
 
