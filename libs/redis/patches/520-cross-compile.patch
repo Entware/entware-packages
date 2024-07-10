@@ -1,6 +1,6 @@
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -323,7 +323,7 @@ persist-settings: distclean
+@@ -325,7 +325,7 @@ persist-settings: distclean
  	echo REDIS_LDFLAGS=$(REDIS_LDFLAGS) >> .make-settings
  	echo PREV_FINAL_CFLAGS=$(FINAL_CFLAGS) >> .make-settings
  	echo PREV_FINAL_LDFLAGS=$(FINAL_LDFLAGS) >> .make-settings
