@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-http-server-simple
 PKG_VERSION:=0.52
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PKG_SOURCE:=HTTP-Server-Simple-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.cpan.org/authors/id/B/BP/BPS
