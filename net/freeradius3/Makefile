@@ -4,24 +4,24 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: do not use libbsd
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=freeradius3
-PKG_VERSION:=3.0.26
-PKG_RELEASE:=4
+PKG_VERSION:=3.2.4
+PKG_RELEASE:=2
 
-PKG_SOURCE:=release_$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/FreeRADIUS/freeradius-server/tar.gz/release_$(subst .,_,$(PKG_VERSION))?
-PKG_HASH:=6aea98d6126035e7ccca483d8b3faea447030169639807017ec98985b78fb2ca
+PKG_SOURCE:=freeradius-server-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://freeradius.org/ftp/pub/freeradius
+PKG_HASH:=fdd476949f3c991c19f14ef7199b522e5204896d139c69946381dce9b8922941
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=COPYRIGHT LICENSE
 PKG_CPE_ID:=cpe:/a:freeradius:freeradius
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/freeradius-server-release_$(subst .,_,$(PKG_VERSION))
+PKG_BUILD_DIR:=$(BUILD_DIR)/freeradius-server-$(PKG_VERSION)
+PKG_BUILD_PARALLEL:=0
 PKG_FIXUP:=autoreconf
 PYTHON3_PKG_BUILD:=0
 
@@ -66,7 +66,7 @@ endef
 define Package/freeradius3-common
   $(call Package/freeradius3/Default)
   TITLE:=common files
-  DEPENDS:=+USE_GLIBC:libpthread +FREERADIUS3_OPENSSL:libopenssl +libcap +libpcap +libncurses +libreadline +libtalloc +libatomic
+  DEPENDS:=+USE_GLIBC:libpthread +USE_GLIBC:libbsd +FREERADIUS3_OPENSSL:libopenssl +libcap +libpcap +libncurses +libreadline +libtalloc +libatomic
 endef
 
 define Package/freeradius3-default
@@ -139,6 +139,28 @@ define Package/freeradius3-mod-attr-filter/conffiles
 /opt/etc/freeradius3/mods-config/attr_filter/pre-proxy
 endef
 
+define Package/freeradius3-mod-cache
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3
+  TITLE:=DATASTORE CACHE
+endef
+
+define Package/freeradius3-mod-cache/conffiles
+/opt/etc/freeradius3/mods-available/cache
+endef
+
+define Package/freeradius3-mod-cache-rbtree
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3 +freeradius3-mod-cache
+  TITLE:=DATASTORE CACHE RBTREE
+endef
+
+define Package/freeradius3-mod-cache-redis
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3 +freeradius3-mod-cache +libhiredis
+  TITLE:=DATASTORE CACHE REDIS
+endef
+
 define Package/freeradius3-mod-chap
   $(call Package/freeradius3/Default)
   DEPENDS:=freeradius3
@@ -190,6 +212,16 @@ endef
 define Package/freeradius3-mod-digest/conffiles
 /opt/etc/freeradius3/mods-available/digest
 /opt/etc/freeradius3/mods-enabled/digest
+endef
+
+define Package/freeradius3-mod-dpsk
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3
+  TITLE:=MODULE DPSK
+endef
+
+define Package/freeradius3-mod-dpsk/conffiles
+/opt/etc/freeradius3/mods-available/dpsk
 endef
 
 define Package/freeradius3-mod-dynamic-clients
@@ -251,6 +283,12 @@ define Package/freeradius3-mod-eap-pwd
   $(call Package/freeradius3/Default)
   DEPENDS:=freeradius3-mod-eap @FREERADIUS3_OPENSSL
   TITLE:=EAP/PWD module
+endef
+
+define Package/freeradius3-mod-eap-sim
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3-mod-eap
+  TITLE:=EAP/SIM module
 endef
 
 define Package/freeradius3-mod-eap-tls
@@ -320,6 +358,16 @@ endef
 
 define Package/freeradius3-mod-ippool/conffiles
 /opt/etc/freeradius3/mods-available/ippool
+endef
+
+define Package/freeradius3-mod-json
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3 +libjson-c
+  TITLE:=Json module
+endef
+
+define Package/freeradius3-mod-json/conffiles
+/opt/etc/freeradius3/mods-available/json
 endef
 
 define Package/freeradius3-mod-krb5
@@ -570,6 +618,12 @@ define Package/freeradius3-mod-sql-sqlite/conffiles
 /opt/etc/freeradius3/mods-config/sql/main/sqlite
 endef
 
+define Package/freeradius3-mod-sql-unixodbc
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3-mod-sql +unixodbc
+  TITLE:=Radius unixODBC back-end drivers
+endef
+
 define Package/freeradius3-mod-sqlcounter
   $(call Package/freeradius3/Default)
   DEPENDS:=+freeradius3-mod-sql
@@ -592,6 +646,28 @@ define Package/freeradius3-mod-sqlippool/conffiles
 /opt/etc/freeradius3/mods-config/sql/ippool-dhcp
 /opt/etc/freeradius3/mods-available/dhcp_sqlippool
 /opt/etc/freeradius3/mods-available/sqlippool
+endef
+
+define Package/freeradius3-mod-totp
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3
+  TITLE:=Totp module
+endef
+
+define Package/freeradius3-mod-totp/conffiles
+/opt/etc/freeradius3/mods-available/totp
+/opt/etc/freeradius3/sites-available/totp
+endef
+
+define Package/freeradius3-mod-unbound
+  $(call Package/freeradius3/Default)
+  DEPENDS:=freeradius3 +libunbound
+  TITLE:=Unbound module
+endef
+
+define Package/freeradius3-mod-unbound/conffiles
+/opt/etc/freeradius3/mods-available/unbound
+/opt/etc/freeradius3/mods-config/unbound
 endef
 
 define Package/freeradius3-mod-unix
@@ -675,11 +751,9 @@ CONFIGURE_ARGS+= \
 	--with-radacctdir=/opt/var/db/radacct \
 	--with-logdir=/opt/var/log \
 	--without-pcre \
-	--without-rlm_cache \
 	--without-rlm_cache_memcached \
 	--without-rlm_couchbase \
 	--without-rlm_eap_ikev2 \
-	--without-rlm_eap_sim \
 	--without-rlm_eap_tnc \
 	--without-rlm_perl \
 	--without-rlm_python \
@@ -687,8 +761,7 @@ CONFIGURE_ARGS+= \
 	--without-rlm_sql_firebird \
 	--without-rlm_sql_freetds \
 	--without-rlm_sql_iodbc \
-	--without-rlm_sql_oracle \
-	--without-rlm_sql_unixodbc
+	--without-rlm_sql_oracle
 
 CONFIGURE_LIBS+= -latomic
 
@@ -699,6 +772,15 @@ PKG_DICTIONARIES:= \
 	rfc4072 rfc4372 rfc4675 rfc4679 rfc5580 rfc6911 \
 	microsoft \
 	wispr \
+
+ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-cache-redis),)
+  CONFIGURE_ARGS+= \
+		--with-rlm_cache_redis \
+		--with-rlm_cache_redis-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_cache_redis-lib-dir="$(STAGING_DIR)/opt/lib"
+else
+  CONFIGURE_ARGS+= --without-rlm_cache_redis
+endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-eap-fast),)
   CONFIGURE_ARGS+= \
@@ -756,6 +838,14 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-ippool),)
 		--with-rlm_ippool-lib-dir="$(STAGING_DIR)/opt/lib"
 else
   CONFIGURE_ARGS+= --without-rlm_ippool
+endif
+
+ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-json),)
+  CONFIGURE_ARGS+= --with-rlm_json \
+		--with-rlm_json-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_json-lib-dir="$(STAGING_DIR)/opt/lib"
+else
+  CONFIGURE_ARGS+= --without-rlm_json
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-ldap),)
@@ -831,6 +921,15 @@ else
   CONFIGURE_ARGS+= --without-rlm_sql_sqlite
 endif
 
+ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-sql-unixodbc),)
+  CONFIGURE_ARGS+= \
+		--with-rlm_sql_unixodbc \
+		--with-unixodbc-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-unixodbc-lib-dir="$(STAGING_DIR)/opt/lib"
+else
+  CONFIGURE_ARGS+= --without-rlm_sql_unixodbc
+endif
+
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-sqlcounter),)
   CONFIGURE_ARGS+= --with-rlm_sqlcounter
 else
@@ -841,6 +940,15 @@ ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-sqlippool),)
   CONFIGURE_ARGS+= --with-rlm_sqlippool
 else
   CONFIGURE_ARGS+= --without-rlm_sqlippool
+endif
+
+ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-unbound),)
+  CONFIGURE_ARGS+= \
+		--with-rlm_unbound \
+		--with-rlm_unbound-include-dir="$(STAGING_DIR)/opt/include" \
+		--with-rlm_unbound-lib-dir="$(STAGING_DIR)/opt/lib"
+else
+  CONFIGURE_ARGS+= --without-rlm_unbound
 endif
 
 ifneq ($(SDK)$(CONFIG_PACKAGE_freeradius3-mod-unix),)
@@ -858,12 +966,12 @@ else
   CONFIGURE_ARGS+= --without-rlm_yubikey
 endif
 
-#ifeq ($(CONFIG_USE_GLIBC),y)
-#  TARGET_CFLAGS+= -DLIBBSD_OVERLAY -I$(STAGING_DIR)/usr/include/bsd \
-#	-D_RPC_NETDB_H
-#	#^^^^^^^^^^^^^ avoid inclusion of librpc's netdb.h
-#  CONFIGURE_LIBS+= -Wl,--push-state,--as-needed -lbsd -Wl,--pop-state
-#endif
+ifeq ($(CONFIG_USE_GLIBC),y)
+  TARGET_CFLAGS+= -DLIBBSD_OVERLAY -I$(STAGING_DIR)/opt/include/bsd \
+	-D_RPC_NETDB_H
+	#^^^^^^^^^^^^^ avoid inclusion of librpc's netdb.h
+  CONFIGURE_LIBS+= -Wl,--push-state,--as-needed -lbsd -Wl,--pop-state
+endif
 
 CONFIGURE_VARS+= \
 	LDFLAGS="$$$$LDFLAGS" \
@@ -933,7 +1041,6 @@ define Package/freeradius3-democerts/install
 	$(INSTALL_DIR) $(1)/opt/etc/freeradius3/certs
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/etc/freeradius3/certs/ca.pem \
-		$(PKG_INSTALL_DIR)/opt/etc/freeradius3/certs/dh \
 		$(PKG_INSTALL_DIR)/opt/etc/freeradius3/certs/server.pem \
 		$(1)/opt/etc/freeradius3/certs/
 endef
@@ -968,11 +1075,15 @@ $(eval $(call BuildPackage,freeradius3-default))
 $(eval $(call BuildPackage,freeradius3-democerts))
 $(eval $(call BuildPlugin,freeradius3-mod-always,rlm_always,))
 $(eval $(call BuildPlugin,freeradius3-mod-attr-filter,rlm_attr_filter,))
+$(eval $(call BuildPlugin,freeradius3-mod-cache,rlm_cache,))
+$(eval $(call BuildPlugin,freeradius3-mod-cache-rbtree,rlm_cache_rbtree,))
+$(eval $(call BuildPlugin,freeradius3-mod-cache-redis,rlm_cache_redis,))
 $(eval $(call BuildPlugin,freeradius3-mod-chap,rlm_chap,))
 $(eval $(call BuildPlugin,freeradius3-mod-counter,rlm_counter,))
 $(eval $(call BuildPlugin,freeradius3-mod-date,rlm_date,))
 $(eval $(call BuildPlugin,freeradius3-mod-detail,rlm_detail,))
 $(eval $(call BuildPlugin,freeradius3-mod-digest,rlm_digest,))
+$(eval $(call BuildPlugin,freeradius3-mod-dpsk,rlm_dpsk,))
 $(eval $(call BuildPlugin,freeradius3-mod-dynamic-clients,rlm_dynamic_clients,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap,rlm_eap,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap-fast,rlm_eap_fast,))
@@ -981,6 +1092,7 @@ $(eval $(call BuildPlugin,freeradius3-mod-eap-md5,rlm_eap_md5,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap-mschapv2,rlm_eap_mschapv2,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap-peap,rlm_eap_peap,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap-pwd,rlm_eap_pwd,))
+$(eval $(call BuildPlugin,freeradius3-mod-eap-sim,rlm_eap_sim,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap-tls,rlm_eap_tls,))
 $(eval $(call BuildPlugin,freeradius3-mod-eap-ttls,rlm_eap_ttls,))
 $(eval $(call BuildPlugin,freeradius3-mod-exec,rlm_exec,))
@@ -988,6 +1100,7 @@ $(eval $(call BuildPlugin,freeradius3-mod-expiration,rlm_expiration,))
 $(eval $(call BuildPlugin,freeradius3-mod-expr,rlm_expr,))
 $(eval $(call BuildPlugin,freeradius3-mod-files,rlm_files,))
 $(eval $(call BuildPlugin,freeradius3-mod-ippool,rlm_ippool,))
+$(eval $(call BuildPlugin,freeradius3-mod-json,rlm_json,))
 $(eval $(call BuildPlugin,freeradius3-mod-krb5,rlm_krb5,))
 $(eval $(call BuildPlugin,freeradius3-mod-ldap,rlm_ldap,))
 $(eval $(call BuildPlugin,freeradius3-mod-linelog,rlm_linelog,))
@@ -1012,8 +1125,11 @@ $(eval $(call BuildPlugin,freeradius3-mod-sql-mysql,rlm_sql_mysql,))
 $(eval $(call BuildPlugin,freeradius3-mod-sql-null,rlm_sql_null,))
 $(eval $(call BuildPlugin,freeradius3-mod-sql-postgresql,rlm_sql_postgresql,))
 $(eval $(call BuildPlugin,freeradius3-mod-sql-sqlite,rlm_sql_sqlite,))
+$(eval $(call BuildPlugin,freeradius3-mod-sql-unixodbc,rlm_sql_unixodbc,))
 $(eval $(call BuildPlugin,freeradius3-mod-sqlcounter,rlm_sqlcounter,))
 $(eval $(call BuildPlugin,freeradius3-mod-sqlippool,rlm_sqlippool,))
+$(eval $(call BuildPlugin,freeradius3-mod-totp,rlm_totp,))
+$(eval $(call BuildPlugin,freeradius3-mod-unbound,rlm_unbound,))
 $(eval $(call BuildPlugin,freeradius3-mod-unix,rlm_unix,))
 $(eval $(call BuildPlugin,freeradius3-mod-unpack,rlm_unpack,))
 $(eval $(call BuildPlugin,freeradius3-mod-utf8,rlm_utf8,))

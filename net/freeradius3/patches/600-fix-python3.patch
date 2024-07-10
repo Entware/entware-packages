@@ -1,34 +1,56 @@
+--- a/src/modules/rlm_python3/configure.ac
++++ b/src/modules/rlm_python3/configure.ac
+@@ -53,19 +53,7 @@ else
+ 	dnl # Strip -specs=/path/whatever.specs, We don't need the compiler .specs that comes from Python
+ 	dnl # Strip -ffat-lto-objects, We decide if we need that, not python.
+ 	dnl # Strip -flto=auto, We decide if we need that, not python.
+-	mod_cflags=`echo " $python3_cflags" | sed -e '\
+-		s/ -I/ -isystem/g;\
+-		s/ -isysroot[[ =]]\{0,1\}[[^-]]*/ /g;\
+-		s/ -O[[^[[:blank:]]]]*/ /g;\
+-		s/ -Wp,-D_FORTIFY_SOURCE=[[[:digit:]]]/ /g;\
+-		s/ -g[[^ ]]*/ /g;\
+-		s/ -W[[^ ]]*/ /g;\
+-		s/ -DNDEBUG[[[:blank:]]]*/ /g;\
+-		s/ -frecord-gcc-switches/ /g;\
+-		s/ -specs=[[^ ]]*/ /g; \
+-		s/ -ffat-lto-objects/ /g; \
+-		s/ -flto=[[^ ]]*/ /g;
+-		'`
++	mod_cflags=`echo " $python3_cflags"`
+ 	AC_MSG_NOTICE([Sanitized cflags were \"${mod_cflags}\"])
+ 
+ 	dnl # From python 3.8, --embed is required
 --- a/src/modules/rlm_python3/configure
 +++ b/src/modules/rlm_python3/configure
-@@ -3166,19 +3166,7 @@ test -n "$PYTHON3_CONFIG_BIN" || PYTHON3
- 		{ $as_echo "$as_me:${as_lineno-$LINENO}: ${PYTHON3_CONFIG_BIN}'s cflags were \"${python3_cflags}\"" >&5
+@@ -3347,19 +3347,7 @@ else
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: ${PYTHON3_CONFIG_BIN}'s cflags were \"${python3_cflags}\"" >&5
  $as_echo "$as_me: ${PYTHON3_CONFIG_BIN}'s cflags were \"${python3_cflags}\"" >&6;}
  
--																				mod_cflags=`echo " $python3_cflags" | sed -e '\
--			s/ -I/ -isystem/g;\
--			s/ -isysroot[ =]\{0,1\}[^-]*/ /g;\
--			s/ -O[^[[:blank:]]]*/ /g;\
--			s/ -Wp,-D_FORTIFY_SOURCE=[[:digit:]]/ /g;\
--			s/ -g[^ ]*/ /g;\
--			s/ -W[^ ]*/ /g;\
--			s/ -DNDEBUG[[:blank:]]*/ /g;\
--			s/ -frecord-gcc-switches/ /g;\
--			s/ -specs=[^ ]*/ /g;\
--			s/ -ffat-lto-objects/ /g;\
--			s/ -flto=[^ ]*/ /g;
--			'`
-+		mod_cflags=`echo $python3_cflags`
- 		{ $as_echo "$as_me:${as_lineno-$LINENO}: Sanitized cflags were \"${mod_cflags}\"" >&5
+-												mod_cflags=`echo " $python3_cflags" | sed -e '\
+-		s/ -I/ -isystem/g;\
+-		s/ -isysroot[ =]\{0,1\}[^-]*/ /g;\
+-		s/ -O[^[[:blank:]]]*/ /g;\
+-		s/ -Wp,-D_FORTIFY_SOURCE=[[:digit:]]/ /g;\
+-		s/ -g[^ ]*/ /g;\
+-		s/ -W[^ ]*/ /g;\
+-		s/ -DNDEBUG[[:blank:]]*/ /g;\
+-		s/ -frecord-gcc-switches/ /g;\
+-		s/ -specs=[^ ]*/ /g; \
+-		s/ -ffat-lto-objects/ /g; \
+-		s/ -flto=[^ ]*/ /g;
+-		'`
++	mod_cflags=`echo " $python3_cflags"`
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: Sanitized cflags were \"${mod_cflags}\"" >&5
  $as_echo "$as_me: Sanitized cflags were \"${mod_cflags}\"" >&6;}
  
 --- a/src/modules/stable
 +++ b/src/modules/stable
-@@ -24,7 +24,7 @@ rlm_pap
+@@ -25,7 +25,6 @@ rlm_pap
  rlm_passwd
  rlm_perl
  rlm_preprocess
 -rlm_python
-+rlm_python3
+ rlm_python3
  rlm_radutmp
  rlm_realm
- rlm_rest
