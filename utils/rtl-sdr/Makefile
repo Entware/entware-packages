@@ -7,13 +7,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtl-sdr
-PKG_VERSION:=0.6.0
-PKG_RELEASE:=3
+PKG_VERSION:=2.0.1
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_VERSION:=0.6.0
+PKG_SOURCE_VERSION:=v2.0.1
 PKG_SOURCE_URL:=https://gitea.osmocom.org/sdr/rtl-sdr
-PKG_MIRROR_HASH:=c7673b94126a61575823cde088112146be4e4874111ad134e7330371060f746d
+PKG_MIRROR_HASH:=731dfdf5ae70b3155b942c829467113a61590da90b643852ed82b73aae982094
 
 PKG_MAINTAINER:=Vasilis Tsiligiannis <b_tsiligiannis@silverton.gr>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -78,6 +78,10 @@ endef
 define Package/rtl-sdr/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(CP) $(PKG_INSTALL_DIR)/opt/bin/rtl_* $(1)/opt/bin/
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) files/rtl_tcp.init $(1)/etc/init.d/rtl_tcp
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) files/rtl_tcp.config $(1)/etc/config/rtl_tcp
 endef
 
 define Package/librtlsdr/install
