@@ -4,16 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: switch to rustlang/rustc-dev
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clamav
-PKG_VERSION:=0.104.4
+PKG_VERSION:=1.3.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.clamav.net/downloads/production/
-PKG_HASH:=8ac32e910aa744cc7f921c5122ba523ef1ffbbbf94545f94fc4a976b502be74b
+PKG_HASH:=0a86a6496320d91576037b33101119af6fd8d5b91060cd316a3a9c229e9604aa
 
 PKG_MAINTAINER:=Marko Ratkaj <markoratkaj@gmail.com> \
 		Lucian Cristian <lucian.cristian@gmail.com>
@@ -21,10 +22,11 @@ PKG_LICENSE:=GPL-2.0-only
 PKG_LICENSE_FILES:=COPYING*
 PKG_CPE_ID:=cpe:/a:clamav:clamav
 
-PKG_BUILD_DEPENDS:=ncurses
+PKG_BUILD_DEPENDS:=ncurses rustc-dev
 PKG_BUILD_FLAGS:=gc-sections lto
 
 include $(INCLUDE_DIR)/package.mk
+include $(TOPDIR)/feeds/rustlang/rustc-dev/rust.mk
 include $(INCLUDE_DIR)/nls.mk
 include $(INCLUDE_DIR)/cmake.mk
 
@@ -57,7 +59,6 @@ define Package/freshclam/description
 endef
 
 CMAKE_OPTIONS += \
-	-DENABLE_MILTER=ON \
 	-DHAVE_ATTRIB_PACKED=ON \
 	-DHAVE_ATTRIB_ALIGNED=ON \
 	-Dtest_run_result=ON \
@@ -66,11 +67,12 @@ CMAKE_OPTIONS += \
 	-DCLAMAV_GROUP=nogroup \
 	-DMMAP_FOR_CROSSCOMPILING=ON \
 	-DENABLE_CLAMONACC=ON \
-	-DENABLE_DOCS=OFF \
-	-DENABLE_DOXYGEN=OFF \
+	-DENABLE_MAN_PAGES=OFF \
+	-DENABLE_TESTS=OFF \
 	-DENABLE_EXAMPLES=OFF \
 	-DENABLE_UNRAR=OFF \
 	-DENABLE_SYSTEMD=OFF \
+	-DRUST_COMPILER_TARGET=$(RUSTC_TARGET_ARCH) \
 	-DHAVE_SYSTEM_LFS_FTS=O$(if $(CONFIG_USE_GLIBC),N,FF)
 
 TARGET_CXXFLAGS += -fno-rtti
