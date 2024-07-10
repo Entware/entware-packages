@@ -6,15 +6,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=imagemagick
-PKG_VERSION:=7.1.1
-PKG_REVISION:=27
-PKG_RELEASE:=1a
+PKG_VERSION:=7.1.1.33
+PKG_RELEASE:=1
 PKG_MAINTAINER:=Aleksey Vasilenko <aleksey.vasilenko@gmail.com>
 
-PKG_SOURCE:=ImageMagick-$(PKG_VERSION)-$(PKG_REVISION).tar.gz
+_PKGVER:=$(basename $(PKG_VERSION))
+_PKGREV:=$(_PKGVER)-$(subst .,,$(suffix $(PKG_VERSION)))
+
+PKG_SOURCE:=ImageMagick-$(_PKGREV).tar.xz
 PKG_SOURCE_URL:=https://imagemagick.org/archive
-PKG_HASH:=df0af0386df5bb3333ac9b1173ac4c893dcdd20b28100128e857f3d8f6466e1a
-PKG_BUILD_DIR:=$(BUILD_DIR)/ImageMagick-$(PKG_VERSION)-$(PKG_REVISION)
+PKG_HASH:=c021effec02d18df2e55fbbe68b10b95366c1869143b08d7e8e16f471a0ddea1
+PKG_BUILD_DIR:=$(BUILD_DIR)/ImageMagick-$(_PKGREV)
 PKG_FIXUP:=autoreconf
 
 PKG_LICENSE:=Apache-2.0
@@ -35,7 +37,7 @@ endef
 
 define Package/imagemagick
   $(call Package/imagemagick/Default)
-  DEPENDS:=+libltdl +libpthread +zlib +libfreetype +libpng +libjpeg +libtiff +libstdcpp +libzip
+  DEPENDS:=+libltdl +libpthread +zlib +libfreetype +libpng +libjpeg +libtiff +libzip
   DEPENDS+=+dejavu-fonts-ttf-DejaVuSans \
 	+dejavu-fonts-ttf-DejaVuSans-Bold \
 	+dejavu-fonts-ttf-DejaVuSans-BoldOblique \
@@ -114,6 +116,9 @@ CONFIGURE_ARGS += \
 	--with-gs-font-dir=/opt/share/fonts/type1/gsfonts \
 	--with-dejavu-font-dir=/opt/share/fonts/ttf-dejavu
 
+## Avoid linking with libstdcpp
+TARGET_LDFLAGS+= -Wl,--as-needed
+
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) \
@@ -138,7 +143,7 @@ define Build/InstallDev
 		$(1)/opt/bin/*-config
 endef
 
-IMlibdir:=opt/lib/ImageMagick-$(PKG_VERSION)
+IMlibdir:=opt/lib/ImageMagick-$(_PKGVER)
 define Package/imagemagick/install
 	$(INSTALL_DIR) $(1)/opt/etc $(1)/opt/bin $(1)/$(IMlibdir)
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so.* $(1)/opt/lib/
