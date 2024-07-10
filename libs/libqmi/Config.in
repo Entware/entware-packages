@@ -9,7 +9,7 @@ config LIBQMI_WITH_MBIM_QMUX
 
 config LIBQMI_WITH_QRTR_GLIB
 	bool "Include QRTR support"
-	depends on !(LINUX_2_6_36||LINUX_3_2||LINUX_3_4||LINUX_3_10)
+	depends on !(LINUX_3_2||LINUX_3_4||LINUX_3_10)
 	default y
 	help
 	  Compile libqmi with QRTR support (Linux >= 4.7.0)
