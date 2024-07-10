@@ -41,7 +41,7 @@ endef
 define Package/libopendkim
   SECTION:=mail
   CATEGORY:=Libraries
-  DEPENDS:=+libopenssl +libmilter-sendmail
+  DEPENDS:=+libopenssl +libmilter-sendmail +USE_GLIBC:libbsd
   TITLE:=Library for signing and verifying DKIM signatures
   URL:=http://opendkim.org/
 endef
@@ -63,12 +63,11 @@ define Package/opendkim-tools/description
 endef
 
 CONFIGURE_ARGS += \
-	--enable-bundled-strl \
 	--without-db \
 	--without-gcov \
 	--without-gprof \
 	--without-lcov \
-	--without-libbsd \
+	$(if $(CONFIG_USE_GLIBC),,--without-libbsd) \
 	--with-milter=$(STAGING_DIR)/opt \
 	--with-pic
 
