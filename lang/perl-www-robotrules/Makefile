@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-www-robotrules
 PKG_VERSION:=6.02
-PKG_RELEASE:=2a
+PKG_RELEASE:=3
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/G/GA/GAAS
 PKG_SOURCE:=WWW-RobotRules-$(PKG_VERSION).tar.gz
