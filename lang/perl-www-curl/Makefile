@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-www-curl
 PKG_VERSION:=4.17
-PKG_RELEASE:=7a
+PKG_RELEASE:=8
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/S/SZ/SZBALINT/
 PKG_SOURCE:=WWW-Curl-$(PKG_VERSION).tar.gz
