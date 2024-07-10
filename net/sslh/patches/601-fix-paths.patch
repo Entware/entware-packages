@@ -1,0 +1,21 @@
+--- a/landlock.c
++++ b/landlock.c
+@@ -125,14 +125,14 @@ void setup_landlock(void)
+     }
+ 
+     /* Access to libraries, to be able to fork */
+-    add_path_ro(ruleset_fd, LL_TREE, "/lib");
+-    add_path_ro(ruleset_fd, LL_TREE, "/usr/lib");
+-    add_path_ro(ruleset_fd, LL_FILE, "/etc/ld.so.cache");  /* To avoid searching all libs... */
++    add_path_ro(ruleset_fd, LL_TREE, "/opt/lib");
++    add_path_ro(ruleset_fd, LL_TREE, "/opt/usr/lib");
++    add_path_ro(ruleset_fd, LL_FILE, "/opt/etc/ld.so.cache");  /* To avoid searching all libs... */
+ 
+     /* Files to resolve names (required when dynamic resolution is used) */
+     add_path_ro(ruleset_fd, LL_FILE, "/etc/hosts");
+     add_path_ro(ruleset_fd, LL_FILE, "/etc/resolv.conf");
+-    add_path_ro(ruleset_fd, LL_FILE, "/etc/nsswitch.conf");
++    add_path_ro(ruleset_fd, LL_FILE, "/opt/etc/nsswitch.conf");
+ 
+     if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
+         print_message(msg_config_error, "Landlock: Failed to restrict privileges");
