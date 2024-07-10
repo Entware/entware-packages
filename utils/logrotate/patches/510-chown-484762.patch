@@ -1,6 +1,6 @@
 --- a/logrotate.c
 +++ b/logrotate.c
-@@ -571,8 +571,12 @@ static int createOutputFile(const char *
+@@ -625,8 +625,12 @@ static int createOutputFile(const char *
      if (fchmod(fd, (S_IRUSR | S_IWUSR) & sb->st_mode)) {
          message(MESS_ERROR, "error setting mode of %s: %s\n",
                  fileName, strerror(errno));
