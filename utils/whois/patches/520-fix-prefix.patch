@@ -1,6 +1,7 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -1,4 +1,4 @@
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-or-later
 -prefix = /usr
 +prefix = /opt
  
