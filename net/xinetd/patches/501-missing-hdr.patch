@@ -1,0 +1,33 @@
+sconf.c: In function 'sc_dump':
+sconf.c:314:52: error: expected ')' before 'PRId64'
+       tabprint( fd, tab_level+1, "CPS = max conn:%" PRId64 "wait:%" PRId64 "\n", \
+                                                    ^~~~~~~
+                                                    )
+---
+sensor.c: In function 'process_sensor':
+sensor.c:79:50: error: expected ')' before 'PRId64'
+                     strx_nprint(time_buf, 38, "%" PRId64,
+                                                  ^~~~~~~
+                                                  )
+---
+
+--- a/xinetd/sconf.c
++++ b/xinetd/sconf.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include "config.h"
++#include <inttypes.h>
+ #ifdef HAVE_NETDB_H
+ #include <netdb.h>
+ #endif
+--- a/xinetd/sensor.c
++++ b/xinetd/sensor.c
+@@ -4,6 +4,7 @@
+  * and conditions for redistribution.
+  */
+ 
++#include <inttypes.h>
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
