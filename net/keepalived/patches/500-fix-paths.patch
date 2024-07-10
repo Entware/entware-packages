@@ -1,0 +1,55 @@
+--- a/keepalived/core/global_data.c
++++ b/keepalived/core/global_data.c
+@@ -767,7 +767,7 @@ dump_global_data(FILE *fp, data_t * data
+ #endif
+ #ifdef _WITH_SNMP_
+ 	conf_write(fp, " SNMP traps %s", data->enable_traps ? "enabled" : "disabled");
+-	conf_write(fp, " SNMP socket = %s", data->snmp_socket ? data->snmp_socket : "default (unix:/var/agentx/master)");
++	conf_write(fp, " SNMP socket = %s", data->snmp_socket ? data->snmp_socket : "default (unix:/opt/var/agentx/master)");
+ #endif
+ #ifdef _WITH_DBUS_
+ 	conf_write(fp, " DBus %s", data->enable_dbus ? "enabled" : "disabled");
+--- a/keepalived/core/main.c
++++ b/keepalived/core/main.c
+@@ -1740,7 +1740,7 @@ set_debug_options(const char *options)
+ static void
+ report_distro(void)
+ {
+-	FILE *fp = fopen("/etc/os-release", "r");
++	FILE *fp = fopen("/opt/etc/os-release", "r");
+ 	char buf[128];
+ 	const char * const var = "PRETTY_NAME=";
+ 	const size_t var_len = strlen(var);
+--- a/keepalived/core/namespaces.c
++++ b/keepalived/core/namespaces.c
+@@ -327,7 +327,7 @@ static int open_ipvs_namespace(const cha
+ 	const char *path;
+ 
+ 	if (ns_name[0]) {
+-		if (snprintf(netns_path, sizeof(netns_path), "/var/run/netns/%s", ns_name) < 0)
++		if (snprintf(netns_path, sizeof(netns_path), "/opt/var/run/netns/%s", ns_name) < 0)
+ 			return -1;
+ 		path = netns_path;
+ 	} else
+--- a/lib/rttables.c
++++ b/lib/rttables.c
+@@ -34,7 +34,7 @@
+ #include "parser.h"
+ #include "rttables.h"
+ 
+-#define IPROUTE2_DIR	"/etc/iproute2/"
++#define IPROUTE2_DIR	"/opt/etc/iproute2/"
+ 
+ #define RT_TABLES_FILE	IPROUTE2_DIR "rt_tables"
+ #define	RT_DSFIELD_FILE IPROUTE2_DIR "rt_dsfield"
+--- a/lib/utils.c
++++ b/lib/utils.c
+@@ -1286,7 +1286,7 @@ get_modprobe(void)
+ bool
+ keepalived_modprobe(const char *mod_name)
+ {
+-	const char *argv[] = { "/sbin/modprobe", "-s", "--", mod_name, NULL };
++	const char *argv[] = { "/opt/sbin/modprobe", "-s", "--", mod_name, NULL };
+ 	int child;
+ 	int status;
+ 	int rc;

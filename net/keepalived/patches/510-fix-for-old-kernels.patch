@@ -1,0 +1,112 @@
+--- a/keepalived/vrrp/vrrp_iptables_calls.c
++++ b/keepalived/vrrp/vrrp_iptables_calls.c
+@@ -560,8 +560,12 @@ ip4tables_add_rules(struct iptc_handle *
+ 	struct xt_entry_match *match;
+ #ifdef HAVE_XT_SET_INFO_MATCH_V4
+ 	struct xt_set_info_match_v4 *setinfo;
+-#else
++#elif defined HAVE_XT_SET_INFO_MATCH_V3
+ 	struct xt_set_info_match_v3 *setinfo;
++#elif defined HAVE_XT_SET_INFO_MATCH_V1
++	struct xt_set_info_match_v1 *setinfo;
++#else
++	struct xt_set_info_match *setinfo;
+ #endif
+ 	ipt_chainlabel chain;
+ 	int res;
+@@ -601,16 +605,22 @@ ip4tables_add_rules(struct iptc_handle *
+ 	match->u.user.revision = 4;
+ #elif defined HAVE_XT_SET_INFO_MATCH_V3
+ 	match->u.user.revision = 3;
+-#else
++#elif defined HAVE_XT_SET_INFO_MATCH_V1
+ 	match->u.user.revision = 1;
++#else
++	match->u.user.revision = 0;
+ #endif
+ 	fw->target_offset = (uint16_t)(fw->target_offset + match->u.match_size);
+ 	strcpy(match->u.user.name, "set");
+ 
+ #ifdef HAVE_XT_SET_INFO_MATCH_V4
+ 	setinfo = PTR_CAST(struct xt_set_info_match_v4, match->data);
+-#else
++#elif defined HAVE_XT_SET_INFO_MATCH_V3
+ 	setinfo = PTR_CAST(struct xt_set_info_match_v3, match->data);
++#elif defined HAVE_XT_SET_INFO_MATCH_V1
++	setinfo = PTR_CAST(struct xt_set_info_match_v1, match->data);
++#else
++	setinfo = PTR_CAST(struct xt_set_info_match, match->data);
+ #endif
+ 
+ 	get_set_byname(set_name, &setinfo->match_set, NFPROTO_IPV4, ignore_errors);
+@@ -692,8 +702,12 @@ ip6tables_add_rules(struct ip6tc_handle
+ 	struct xt_entry_match *match;
+ #ifdef HAVE_XT_SET_INFO_MATCH_V4
+ 	struct xt_set_info_match_v4 *setinfo;
+-#else
++#elif defined HAVE_XT_SET_INFO_MATCH_V3
+ 	struct xt_set_info_match_v3 *setinfo;
++#elif defined HAVE_XT_SET_INFO_MATCH_V1
++	struct xt_set_info_match_v1 *setinfo;
++#else
++	struct xt_set_info_match *setinfo;
+ #endif
+ 	ip6t_chainlabel chain;
+ 	int res;
+@@ -734,16 +748,22 @@ ip6tables_add_rules(struct ip6tc_handle
+ 	match->u.user.revision = 4;
+ #elif defined HAVE_XT_SET_INFO_MATCH_V3
+ 	match->u.user.revision = 3;
+-#else
++#elif defined HAVE_XT_SET_INFO_MATCH_V1
+ 	match->u.user.revision = 1;
++#else
++	match->u.user.revision = 0;
+ #endif
+ 	fw->target_offset = (uint16_t)(fw->target_offset + match->u.match_size);
+ 	strcpy(match->u.user.name, "set");
+ 
+ #ifdef HAVE_XT_SET_INFO_MATCH_V4
+ 	setinfo = PTR_CAST(struct xt_set_info_match_v4, match->data);
+-#else
++#elif defined HAVE_XT_SET_INFO_MATCH_V3
+ 	setinfo = PTR_CAST(struct xt_set_info_match_v3, match->data);
++#elif defined HAVE_XT_SET_INFO_MATCH_V1
++	setinfo = PTR_CAST(struct xt_set_info_match_v1, match->data);
++#else
++	setinfo = PTR_CAST(struct xt_set_info_match, match->data);
+ #endif
+ 
+ 	get_set_byname (set_name, &setinfo->match_set, NFPROTO_IPV6, ignore_errors);
+--- a/lib/config.h.in
++++ b/lib/config.h.in
+@@ -569,6 +569,12 @@
+ /* Define to 1 if `vfork' works. */
+ #undef HAVE_WORKING_VFORK
+ 
++/* Define to 1 if have struct xt_set_info_match_v1 */
++#undef HAVE_XT_SET_INFO_MATCH_V1
++
++/* Define to 1 if have struct xt_set_info_match_v3 */
++#undef HAVE_XT_SET_INFO_MATCH_V3
++
+ /* Define to 1 if have struct xt_set_info_match_v4 */
+ #undef HAVE_XT_SET_INFO_MATCH_V4
+ 
+--- a/configure.ac
++++ b/configure.ac
+@@ -1749,6 +1749,14 @@ AS_IF([test .$enable_iptables != .no],
+ 		add_config_opt([LIBIPSET])
+ 	      fi
+ 
++	      dnl -- xt_set_info_match_v1 declared since Linux 3.1
++	      AC_CHECK_MEMBER([struct xt_set_info_match_v1.match_set.index], [AC_DEFINE([HAVE_XT_SET_INFO_MATCH_V1], [ 1 ], [Define to 1 if have struct xt_set_info_match_v1])], [],
++		[#include <linux/netfilter/xt_set.h>])
++
++	      dnl -- xt_set_info_match_v3 declared since Linux 3.10
++	      AC_CHECK_MEMBER([struct xt_set_info_match_v3.match_set.index], [AC_DEFINE([HAVE_XT_SET_INFO_MATCH_V3], [ 1 ], [Define to 1 if have struct xt_set_info_match_v3])], [],
++		[#include <linux/netfilter/xt_set.h>])
++
+ 	      dnl -- xt_set_info_match_v4 declared since Linux 3.19
+ 	      AC_CHECK_MEMBER([struct xt_set_info_match_v4.match_set.index], [AC_DEFINE([HAVE_XT_SET_INFO_MATCH_V4], [ 1 ], [Define to 1 if have struct xt_set_info_match_v4])], [],
+ 		[#include <linux/netfilter/xt_set.h>])
