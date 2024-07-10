@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-net-telnet
 PKG_VERSION:=3.04
-PKG_RELEASE:=4a
+PKG_RELEASE:=5
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/J/JR/JROGERS/
 PKG_SOURCE:=Net-Telnet-$(PKG_VERSION).tar.gz
