@@ -2,7 +2,7 @@
 
 --- a/lib/gensio_osops.c
 +++ b/lib/gensio_osops.c
-@@ -2727,8 +2727,10 @@ process_rs485(struct gensio_os_funcs *o,
+@@ -2739,8 +2739,10 @@ process_rs485(struct gensio_os_funcs *o,
  	    t->rs485.flags |= SER_RS485_RTS_ON_SEND;
  	} else if (strcmp(argv[i], "rts_after_send") == 0) {
  	    t->rs485.flags |= SER_RS485_RTS_AFTER_SEND;

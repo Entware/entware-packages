@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gensio
-PKG_VERSION:=2.7.6
+PKG_VERSION:=2.8.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/ser2net
-PKG_HASH:=7574fb710ddd6580d53ea44af4ddfc57f28dbcdc646d842f7ed8ccc1235fdf89
+PKG_HASH:=28807dce0373f04271d44e1cdd38aa9486f3dd3060867b9acd370ece10404f62
 
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
@@ -49,7 +49,7 @@ CONFIGURE_ARGS += \
 	--$(if $(CONFIG_GENSIO_GLIB),with,without)-glib \
 	--$(if $(CONFIG_GENSIO_TCL),with-tcl \
 		--with-tclcflags=-I$(STAGING_DIR)/opt/include \
-		--with-tcllibs=-ltcl8.5,without-tcl) \
+		--with-tcllibs=-ltcl8.6,without-tcl) \
 	--without-afskmdm \
 	--without-alsa \
 	--without-ax25 \
