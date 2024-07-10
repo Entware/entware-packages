@@ -3,17 +3,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: add -DHAVE_{FEENABLEEXCEPT,NEON}=FALSE
+# Entware specific: add -DHAVE_FEENABLEEXCEPT=FALSE
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tesseract
-PKG_VERSION:=5.3.3
-PKG_RELEASE:=1a
+PKG_VERSION:=5.3.4
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/tesseract-ocr/tesseract/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=dc4329f85f41191b2d813b71b528ba6047745813474e583ccce8795ff2ff5681
+PKG_HASH:=141afc12b34a14bb691a939b4b122db0d51bd38feda7f41696822bacea7710c7
 
 PKG_MAINTAINER:=Valentin Kivachuk <vk18496@gmail.com>
 PKG_LICENSE:=Apache-2.0
@@ -39,9 +39,9 @@ CMAKE_OPTIONS += \
 	-DAUTO_OPTIMIZE=OFF \
 	-DBUILD_SHARED_LIBS=ON \
 	-DBUILD_TRAINING_TOOLS=OFF \
+	-DHAVE_NEON=$(if $(or $(findstring aarch64,$(CONFIG_ARCH)),$(findstring neon,$(CONFIG_CPU_TYPE))),TRUE,FALSE) \
 	-DDISABLE_CURL=ON \
-	-DHAVE_FEENABLEEXCEPT=FALSE \
-	-DHAVE_NEON=FALSE
+	-DHAVE_FEENABLEEXCEPT=FALSE
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
