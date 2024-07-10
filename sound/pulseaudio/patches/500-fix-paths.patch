@@ -11,7 +11,7 @@
          pa_log("Failed to connect to devd.");
 --- a/src/pulsecore/core-util.c
 +++ b/src/pulsecore/core-util.c
-@@ -1609,7 +1609,7 @@ int pa_get_data_home_dir(char **_r) {
+@@ -1610,7 +1610,7 @@ int pa_get_data_home_dir(char **_r) {
  
  int pa_get_data_dirs(pa_dynarray **_r) {
      const char *e;
@@ -20,7 +20,7 @@
      const char *p;
      const char *split_state = NULL;
      char *n;
-@@ -3228,8 +3228,8 @@ char *pa_machine_id(void) {
+@@ -3229,8 +3229,8 @@ char *pa_machine_id(void) {
      if ((f = pa_fopen_cloexec(PA_MACHINE_ID, "r")) ||
          (f = pa_fopen_cloexec(PA_MACHINE_ID_FALLBACK, "r")) ||
  #if !defined(OS_IS_WIN32)
