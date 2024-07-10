@@ -1,3 +1,5 @@
+# XXX BROKEN: new mbedtls API
+
 include $(TOPDIR)/rules.mk
 
 
@@ -26,6 +28,7 @@ define Package/kadnode
 	URL:=https://github.com/mwarning/KadNode
 	MENU:=1
 	DEPENDS:=+KADNODE_ENABLE_BOB:libmbedtls +KADNODE_ENABLE_TLS:libmbedtls +KADNODE_ENABLE_UPNP:libminiupnpc +KADNODE_ENABLE_NATPMP:libnatpmp
+	DEPENDS+=@BROKEN
 endef
 
 define Package/kadnode/description
