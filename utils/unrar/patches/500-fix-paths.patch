@@ -1,0 +1,40 @@
+--- a/makefile
++++ b/makefile
+@@ -3,13 +3,14 @@
+ 
+ # Linux using GCC
+ CXX?=c++
+-CXXFLAGS?=-march=native -O2 -std=c++11 -Wno-logical-op-parentheses -Wno-switch -Wno-dangling-else
++CXXFLAGS?=-std=c++11 -Wno-logical-op-parentheses -Wno-switch -Wno-dangling-else
+ LIBFLAGS?=-fPIC
+ DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DRAR_SMP
+ STRIP?=strip
+ AR?=ar
+ LDFLAGS?=-lpthread
+-DESTDIR?=/usr
++DESTDIR ?=
++PREFIX ?= /opt
+ 
+ ##########################
+ 
+@@ -63,14 +64,15 @@ lib:	$(OBJECTS) $(LIB_OBJ)
+ 	$(AR) rcs libunrar.a $(OBJECTS) $(LIB_OBJ)
+ 
+ install-unrar:
+-			install -D unrar $(DESTDIR)/bin/unrar
++			install -D unrar $(DESTDIR)$(PREFIX)/bin/unrar
+ 
+ uninstall-unrar:
+-			rm -f $(DESTDIR)/bin/unrar
++			rm -f $(DESTDIR)$(PREFIX)/bin/unrar
+ 
+ install-lib:
+-		install -D libunrar.so $(DESTDIR)/lib/libunrar.so
+-		install libunrar.a $(DESTDIR)/lib
++		install -D libunrar.so $(DESTDIR)$(PREFIX)/lib/libunrar.so
++		install libunrar.a $(DESTDIR)$(PREFIX)/lib
+ 
+ uninstall-lib:
+-		rm -f $(DESTDIR)/lib/libunrar.so
++		rm -f $(DESTDIR)$(PREFIX)/lib/libunrar.so
++		rm -f $(DESTDIR)$(PREFIX)/lib/libunrar.a
