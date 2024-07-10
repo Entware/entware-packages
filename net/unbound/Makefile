@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.19.0
-PKG_RELEASE:=2
+PKG_VERSION:=1.20.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nlnetlabs.nl/downloads/unbound
-PKG_HASH:=a97532468854c61c2de48ca4170de854fd3bc95c8043bb0cfb0fe26605966624
+PKG_HASH:=56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf
 
 PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -136,15 +136,12 @@ define Package/libunbound/config
 		default n
 	config PACKAGE_libunbound_ipset
 		bool "Build with IPSET (libmnl) support."
-		depends on !LINUX_2_6_36
 		default y
 	config PACKAGE_libunbound_libevent
 		bool "Build with expanded network resource (libevent) support."
-		depends on !LINUX_2_6_36
 		default y
 	config PACKAGE_libunbound_libpthread
 		bool "Build with POSIX threading (libpthread) support."
-		depends on !LINUX_2_6_36
 		default y
 	config PACKAGE_libunbound_nghttp2
 		bool "Build with DNS over HTTPS support (nghttp2 framework)."
@@ -209,7 +206,7 @@ endif
 endef
 
 define Package/unbound-daemon/install
-	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/var/lib/unbound
+	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) \
 		$(PKG_INSTALL_DIR)/opt/sbin/unbound $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc/unbound
@@ -219,8 +216,21 @@ define Package/unbound-daemon/install
 	$(INSTALL_DATA) ./files/root.key $(1)/opt/etc/unbound/root.key
 	$(INSTALL_CONF) ./files/unbound_ext.conf $(1)/opt/etc/unbound/unbound_ext.conf
 	$(INSTALL_CONF) ./files/unbound_srv.conf $(1)/opt/etc/unbound/unbound_srv.conf
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/unbound.uci $(1)/etc/config/unbound
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/ntp
+#	$(INSTALL_BIN)  ./files/unbound.ntpd $(1)/etc/hotplug.d/ntp/25-unbound
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN)  ./files/S61unbound $(1)/opt/etc/init.d/
+#	$(INSTALL_DIR) $(1)/usr/lib/unbound
+#	$(INSTALL_DATA) ./files/defaults.sh $(1)/usr/lib/unbound/defaults.sh
+#	$(INSTALL_DATA) ./files/dnsmasq.sh $(1)/usr/lib/unbound/dnsmasq.sh
+#	$(INSTALL_DATA) ./files/iptools.sh $(1)/usr/lib/unbound/iptools.sh
+#	$(INSTALL_BIN)  ./files/odhcpd.sh $(1)/usr/lib/unbound/odhcpd.sh
+#	$(INSTALL_DATA) ./files/odhcpd.awk $(1)/usr/lib/unbound/odhcpd.awk
+#	$(INSTALL_DATA) ./files/stopping.sh $(1)/usr/lib/unbound/stopping.sh
+#	$(INSTALL_DATA) ./files/unbound.sh $(1)/usr/lib/unbound/unbound.sh
+	$(INSTALL_DIR) $(1)/opt/var/lib/unbound
 endef
 
 define Package/libunbound/install
