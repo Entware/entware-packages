@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mc
-PKG_VERSION:=4.8.30
+PKG_VERSION:=4.8.31
 PKG_RELEASE:=1
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-3.0-or-later
@@ -15,7 +15,7 @@ PKG_CPE_ID:=cpe:/a:midnight_commander:midnight_commander
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=http://ftp.midnight-commander.org/
-PKG_HASH:=5ebc3cb2144b970c5149fda556c4ad50b78780494696cdf2d14a53204c95c7df
+PKG_HASH:=24191cf8667675b8e31fc4a9d18a0a65bdc0598c2c5c4ea092494cd13ab4ab1a
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf gettext-version
 PKG_BUILD_DEPENDS:=MC_VFS:libtirpc
@@ -38,7 +38,7 @@ include $(INCLUDE_DIR)/nls.mk
 define Package/mc
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+glib2 +libslang2 +libmount +MC_VFS:libssh2 $(ICONV_DEPENDS)
+  DEPENDS:=+glib2 +libslang2 +libmount +libe2p +MC_VFS:libssh2 $(ICONV_DEPENDS)
   TITLE:=Midnight Commander - a powerful visual file manager
   URL:=https://www.midnight-commander.org/
   MENU:=1
@@ -57,6 +57,8 @@ Internal viewer and editor are included as well.
 endef
 
 CONFIGURE_ARGS += \
+	--enable-silent-rules \
+	--disable-tests \
 	--disable-doxygen-doc \
 	--with-homedir=/opt/etc/mc \
 	--with-screen=slang \
