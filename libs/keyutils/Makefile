@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=keyutils
 PKG_VERSION:=1.6.3
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/snapshot/
@@ -62,6 +62,7 @@ MAKE_FLAGS += \
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/* $(1)/opt/include/
+
 	$(INSTALL_DIR) $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libkeyutils.a $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libkeyutils.so.$(ABI_VERSION)* $(1)/opt/lib/
@@ -73,9 +74,11 @@ define Package/libkeyutils/install
 endef
 
 define Package/keyutils/install
-	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/keyutils $(1)/opt/etc/request-key.d
+	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/request-key $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/key.dns_resolver $(1)/opt/sbin/
+
+	$(INSTALL_DIR) $(1)/opt/etc/keyutils $(1)/opt/etc/request-key.d
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/request-key.conf $(1)/opt/etc/
 endef
 
