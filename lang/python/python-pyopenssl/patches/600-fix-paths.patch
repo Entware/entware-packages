@@ -1,6 +1,6 @@
 --- a/src/OpenSSL/SSL.py
 +++ b/src/OpenSSL/SSL.py
-@@ -381,6 +381,7 @@ class X509VerificationCodes:
+@@ -372,6 +372,7 @@ class X509VerificationCodes:
  
  # Taken from https://golang.org/src/crypto/x509/root_linux.go
  _CERTIFICATE_FILE_LOCATIONS = [
@@ -8,7 +8,7 @@
      "/etc/ssl/certs/ca-certificates.crt",  # Debian/Ubuntu/Gentoo etc.
      "/etc/pki/tls/certs/ca-bundle.crt",  # Fedora/RHEL 6
      "/etc/ssl/ca-bundle.pem",  # OpenSUSE
-@@ -389,6 +390,7 @@ _CERTIFICATE_FILE_LOCATIONS = [
+@@ -380,6 +381,7 @@ _CERTIFICATE_FILE_LOCATIONS = [
  ]
  
  _CERTIFICATE_PATH_LOCATIONS = [
