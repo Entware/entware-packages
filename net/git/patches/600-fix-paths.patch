@@ -24,7 +24,7 @@
  		then
 --- a/git-send-email.perl
 +++ b/git-send-email.perl
-@@ -1102,7 +1102,7 @@ if (defined $reply_to) {
+@@ -1063,7 +1063,7 @@ if (defined $reply_to) {
  }
  
  if (!defined $sendmail_cmd && !defined $smtp_server) {
@@ -35,7 +35,7 @@
  		if (-x $_) {
 --- a/gitweb/gitweb.perl
 +++ b/gitweb/gitweb.perl
-@@ -3929,7 +3929,7 @@ sub mimetype_guess {
+@@ -3931,7 +3931,7 @@ sub mimetype_guess {
  		}
  		$mime = mimetype_guess_file($filename, $file);
  	}
