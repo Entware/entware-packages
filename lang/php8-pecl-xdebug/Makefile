@@ -14,7 +14,7 @@ PKG_HASH:=4eb4ee270bbcc5f14195c38f6ee58580e007cf4886ce32e11430318ab5bc2315
 
 PKG_NAME:=php8-pecl-xdebug
 PKG_SOURCE:=$(PECL_NAME)-$(PKG_VERSION).tgz
-PKG_SOURCE_URL:=http://pecl.php.net/get/
+PKG_SOURCE_URL:=https://pecl.php.net/get/
 
 PKG_MAINTAINER:=Michael Heimpold <mhei@heimpold.de>
 
@@ -32,5 +32,5 @@ CONFIGURE_ARGS+= \
 	--disable-xdebug-dev \
 	--without-xdebug-compression
 
-$(eval $(call PHP8PECLPackage,$(PECL_NAME),$(PECL_LONGNAME),@!LINUX_2_6_36,20,zend))
+$(eval $(call PHP8PECLPackage,$(PECL_NAME),$(PECL_LONGNAME),,20,zend))
 $(eval $(call BuildPackage,$(PKG_NAME)))
