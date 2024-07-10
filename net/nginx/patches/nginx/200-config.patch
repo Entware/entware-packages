@@ -1,47 +1,18 @@
 --- a/conf/nginx.conf
 +++ b/conf/nginx.conf
-@@ -1,16 +1,16 @@
+@@ -1,5 +1,5 @@
  
 -#user  nobody;
-+user nobody;
++user nobody nogroup;
  worker_processes  1;
  
--#error_log  logs/error.log;
--#error_log  logs/error.log  notice;
--#error_log  logs/error.log  info;
-+#error_log  /opt/var/log/nginx/error.log;
-+#error_log  /opt/var/log/nginx/error.log  notice;
-+#error_log  /opt/var/log/nginx/error.log  info;
+ #error_log  logs/error.log;
+@@ -16,7 +16,7 @@ events {
  
--#pid        logs/nginx.pid;
-+#pid        /opt/var/run/nginx.pid;
+ http {
+     include       mime.types;
+-    default_type  application/octet-stream;
++    #default_type  application/octet-stream;
  
- 
- events {
--    worker_connections  1024;
-+    worker_connections  64;
- }
- 
- 
-@@ -22,7 +22,7 @@ http {
+     #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
      #                  '$status $body_bytes_sent "$http_referer" '
-     #                  '"$http_user_agent" "$http_x_forwarded_for"';
- 
--    #access_log  logs/access.log  main;
-+    #access_log  /opt/var/log/nginx/access.log main;
- 
-     sendfile        on;
-     #tcp_nopush     on;
-@@ -38,10 +38,10 @@ http {
- 
-         #charset koi8-r;
- 
--        #access_log  logs/host.access.log  main;
-+        #access_log  /opt/var/log/nginx/host.access.log;
- 
-         location / {
--            root   html;
-+            root   /opt/share/nginx/html;
-             index  index.html index.htm;
-         }
- 
