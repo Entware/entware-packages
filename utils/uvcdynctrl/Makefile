@@ -4,7 +4,6 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: disable on k2.6 toolchains
 
 include $(TOPDIR)/rules.mk
 
@@ -28,7 +27,7 @@ include $(INCLUDE_DIR)/meson.mk
 define Package/uvcdynctrl
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libxml2 $(ICONV_DEPENDS) @!LINUX_2_6_36
+  DEPENDS:=+libxml2 $(ICONV_DEPENDS)
   TITLE:=Manage dynamic controls in uvcvideo
   URL:=https://sourceforge.net/projects/libwebcam/
   MENU:=1
