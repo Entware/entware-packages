@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autossh
 PKG_VERSION:=1.4g
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://www.harding.motd.ca/autossh/
@@ -37,6 +37,10 @@ define Package/autossh/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/autossh $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S41autossh $(1)/opt/etc/init.d/
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_DATA) ./files/autossh.config $(1)/etc/config/autossh
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+#	$(INSTALL_DATA) ./files/autossh.hotplug $(1)/etc/hotplug.d/iface/20-autossh
 endef
 
 #define Package/autossh/conffiles
