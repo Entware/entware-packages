@@ -1,0 +1,25 @@
+videodev2.h:64:10: fatal error: linux/v4l2-common.h: No such file or directory
+ #include <linux/v4l2-common.h>
+
+include/uapi/linux >= 3.7
+---
+
+--- a/videodev2.h
++++ b/videodev2.h
+@@ -61,8 +61,16 @@
+ 
+ #include <linux/ioctl.h>
+ #include <linux/types.h>
++
++/* since Linux 3.7 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,7,0)
+ #include <linux/v4l2-common.h>
+ #include <linux/v4l2-controls.h>
++#endif /* since Linux 3.7 */
+ 
+ /*
+  * Common stuff for both V4L1 and V4L2
