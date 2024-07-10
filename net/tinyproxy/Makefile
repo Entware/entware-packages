@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tinyproxy
 PKG_VERSION:=1.11.1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/tinyproxy/tinyproxy/releases/download/$(PKG_VERSION)
@@ -41,7 +41,7 @@ CONFIGURE_VARS += ac_cv_path_A2X=no
 
 # Entware specific:
 MAKE_FLAGS += \
-	LIBS="-lresolv $(if $(CONFIG_USE_GLIBC),-lnsl)"
+	LIBS="$(if $(CONFIG_USE_GLIBC),-lnsl -lresolv)"
 
 define Package/tinyproxy/install
 	$(INSTALL_DIR) $(1)/opt/bin
