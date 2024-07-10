@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-parse-yapp
 PKG_VERSION:=1.21
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE_URL:=https://www.cpan.org/authors/id/W/WB/WBRASWELL/
 PKG_SOURCE:=Parse-Yapp-$(PKG_VERSION).tar.gz
