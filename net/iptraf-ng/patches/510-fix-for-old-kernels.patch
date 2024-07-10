@@ -1,0 +1,25 @@
+--- a/src/packet.c
++++ b/src/packet.c
+@@ -20,6 +20,11 @@ packet.c - routines to open the raw sock
+ #include "packet.h"
+ #include "ipfrag.h"
+ 
++/* PACKET_USER/PACKET_KERNEL since Linux 3.14 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ #define pkt_cast_hdrp_l2off_t(hdr, pkt, off)			\
+ 	do {							\
+ 		pkt->hdr = (struct hdr *) (pkt->pkt_buf + off);	\
+@@ -311,8 +316,10 @@ static char *pkttype_to_string(unsigned
+ 	case PACKET_OTHERHOST:	return "PACKET_OTHERHOST";
+ 	case PACKET_OUTGOING:	return "PACKET_OUTGOING";
+ 	case PACKET_LOOPBACK:	return "PACKET_LOOPBACK";
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0)
+ 	case PACKET_USER:	return "PACKET_USER";
+ 	case PACKET_KERNEL:	return "PACKET_KERNEL";
++#endif /* PACKET_USER/PACKET_KERNEL since Linux 3.14 */
+ 	default:		return NULL;
+ 	}
+ }

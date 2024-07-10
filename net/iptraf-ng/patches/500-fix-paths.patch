@@ -1,0 +1,36 @@
+--- a/src/dirs.h
++++ b/src/dirs.h
+@@ -20,11 +20,11 @@
+  */
+ 
+ #ifndef WORKDIR
+-#define WORKDIR		"/var/lib/iptraf-ng"
++#define WORKDIR		"/opt/var/lib/iptraf-ng"
+ #endif
+ 
+ #ifndef LOGDIR
+-#define LOGDIR		"/var/log/iptraf-ng"
++#define LOGDIR		"/opt/var/log/iptraf-ng"
+ #endif
+ 
+ /*
+@@ -36,7 +36,7 @@
+  */
+ 
+ #ifndef LOCKDIR
+-#define LOCKDIR		"/var/lock/iptraf-ng"
++#define LOCKDIR		"/opt/var/lock/iptraf-ng"
+ #endif
+ 
+ /***
+--- a/src/iptraf.c
++++ b/src/iptraf.c
+@@ -35,7 +35,7 @@ An IP Network Statistics Utility
+ #define WITHOUTALL 0
+ 
+ #ifndef IPTRAF_PIDFILE
+-#define IPTRAF_PIDFILE "/var/run/iptraf-ng.pid"
++#define IPTRAF_PIDFILE "/opt/var/run/iptraf-ng.pid"
+ #endif
+ 
+ const char *ALLSPEC = "all";
