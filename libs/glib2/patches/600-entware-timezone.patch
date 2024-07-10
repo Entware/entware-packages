@@ -1,6 +1,6 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -515,13 +515,13 @@ zone_identifier_illumos (void)
+@@ -511,13 +511,13 @@ zone_identifier_illumos (void)
  static const gchar *
  zone_info_base_dir (void)
  {
@@ -17,16 +17,23 @@
  }
  
  static gchar *
-@@ -534,7 +534,7 @@ zone_identifier_unix (void)
-   const gchar *tzdir;
+@@ -532,13 +532,13 @@ zone_identifier_unix (void)
+   struct stat file_status;
  
    /* Resolve the actual timezone pointed to by /etc/localtime. */
 -  resolved_identifier = g_file_read_link ("/etc/localtime", &read_link_err);
 +  resolved_identifier = g_file_read_link ("/opt/etc/localtime", &read_link_err);
-   if (resolved_identifier == NULL)
+ 
+   if (resolved_identifier != NULL)
      {
-       gboolean not_a_symlink = g_error_matches (read_link_err,
-@@ -573,7 +573,7 @@ zone_identifier_unix (void)
+       if (!g_path_is_absolute (resolved_identifier))
+         {
+-          gchar *absolute_resolved_identifier = g_build_filename ("/etc", resolved_identifier, NULL);
++          gchar *absolute_resolved_identifier = g_build_filename ("/opt/etc", resolved_identifier, NULL);
+           g_free (resolved_identifier);
+           resolved_identifier = g_steal_pointer (&absolute_resolved_identifier);
+         }
+@@ -603,7 +603,7 @@ zone_identifier_unix (void)
    else
      {
        /* Resolve relative path */
@@ -35,7 +42,7 @@
        g_free (resolved_identifier);
        resolved_identifier = g_steal_pointer (&canonical_path);
      }
-@@ -634,7 +634,7 @@ zone_info_unix (const gchar *identifier,
+@@ -664,7 +664,7 @@ zone_info_unix (const gchar *identifier,
        if (resolved_identifier == NULL)
          goto out;
  

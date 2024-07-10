@@ -1,10 +1,10 @@
 --- a/gio/gdbusaddress.c
 +++ b/gio/gdbusaddress.c
-@@ -1337,7 +1337,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
- 
-       if (ret == NULL)
-         {
--          ret = g_strdup ("unix:path=/var/run/dbus/system_bus_socket");
+@@ -1339,7 +1339,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
+            * https://dbus.freedesktop.org/doc/dbus-specification.html#ftn.id-1.13.6.4.3.3
+            * or, on systems where /run is the same as /var/run, runstatedir:
+            * https://gitlab.freedesktop.org/dbus/dbus/-/merge_requests/209 */
+-          ret = g_strdup ("unix:path=" GLIB_RUNSTATEDIR "/dbus/system_bus_socket");
 +          ret = g_strdup ("unix:path=/opt/var/run/dbus/system_bus_socket");
          }
        break;
