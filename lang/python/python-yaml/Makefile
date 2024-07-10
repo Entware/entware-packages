@@ -4,13 +4,12 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# XXX Entware specific: added host build
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-yaml
 PKG_VERSION:=6.0.1
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PYPI_NAME:=PyYAML
 PKG_HASH:=bfdf460b1736c775f2ba9f6a92bca30bc2095067b8a9d77876d1fad6cc3b4a43
@@ -20,8 +19,8 @@ PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:pyyaml:pyyaml
 
+PKG_BUILD_DEPENDS:=python-cython/host python-yaml/host
 HOST_BUILD_DEPENDS:=python-cython/host yaml/host
-PKG_BUILD_DEPENDS:=python-yaml/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
