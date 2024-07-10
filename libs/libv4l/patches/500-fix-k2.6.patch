@@ -1,6 +1,6 @@
 --- a/utils/keytable/keytable.c
 +++ b/utils/keytable/keytable.c
-@@ -74,6 +74,10 @@ struct input_keymap_entry_v2 {
+@@ -73,6 +73,10 @@ struct input_keymap_entry_v2 {
  #define EVIOCSCLOCKID		_IOW('E', 0xa0, int)
  #endif
  
