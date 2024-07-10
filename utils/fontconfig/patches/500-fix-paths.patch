@@ -1,6 +1,6 @@
 --- a/src/fccfg.c
 +++ b/src/fccfg.c
-@@ -2363,7 +2363,7 @@ DllMain (HINSTANCE hinstDLL,
+@@ -2335,7 +2335,7 @@ DllMain (HINSTANCE hinstDLL,
  		    FcStrCmpIgnoreCase (p + 1, (const FcChar8 *) "lib") == 0))
  	      *p = '\0';
  	  strcat ((char *) fontconfig_instprefix, (char *) fontconfig_path);
@@ -9,7 +9,7 @@
        }
        else
            fontconfig_path[0] = '\0';
-@@ -2666,6 +2666,8 @@ FcConfigXdgDataDirs (void)
+@@ -2638,6 +2638,8 @@ FcConfigXdgDataDirs (void)
  	 *
  	 * If $XDG_DATA_DIRS is either not set or empty, a value equal to /usr/local/share/:/usr/share/ should be used.
  	 */
