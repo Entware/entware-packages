@@ -1,0 +1,44 @@
+--- a/Makefile
++++ b/Makefile
+@@ -240,7 +240,7 @@ ifdef CONFIG_LIBBLKIO
+ endif
+ ifeq ($(CONFIG_TARGET_OS), Linux)
+   SOURCE += diskutil.c fifo.c blktrace.c cgroup.c trim.c engines/sg.c \
+-		oslib/linux-dev-lookup.c engines/io_uring.c
++		oslib/linux-dev-lookup.c
+   cmdprio_SRCS = engines/cmdprio.c
+ ifdef CONFIG_HAS_BLKZONED
+   SOURCE += oslib/linux-blkzoned.c
+@@ -250,7 +250,7 @@ endif
+ endif
+ ifeq ($(CONFIG_TARGET_OS), Android)
+   SOURCE += diskutil.c fifo.c blktrace.c cgroup.c trim.c profiles/tiobench.c \
+-		oslib/linux-dev-lookup.c engines/io_uring.c engines/sg.c
++		oslib/linux-dev-lookup.c engines/sg.c
+   cmdprio_SRCS = engines/cmdprio.c
+ ifdef CONFIG_HAS_BLKZONED
+   SOURCE += oslib/linux-blkzoned.c
+@@ -390,8 +390,8 @@ T_VS_PROGS = t/fio-verify-state
+ T_PIPE_ASYNC_OBJS = t/read-to-pipe-async.o
+ T_PIPE_ASYNC_PROGS = t/read-to-pipe-async
+ 
+-T_IOU_RING_OBJS = t/io_uring.o lib/rand.o lib/pattern.o lib/strntol.o
+-T_IOU_RING_PROGS = t/io_uring
++#T_IOU_RING_OBJS = t/io_uring.o lib/rand.o lib/pattern.o lib/strntol.o
++#T_IOU_RING_PROGS = t/io_uring
+ 
+ T_MEMLOCK_OBJS = t/memlock.o
+ T_MEMLOCK_PROGS = t/memlock
+@@ -602,9 +602,9 @@ cairo_text_helpers.o: cairo_text_helpers
+ printing.o: printing.c printing.h
+ 	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+ 
+-t/io_uring.o: os/linux/io_uring.h
+-t/io_uring: $(T_IOU_RING_OBJS)
+-	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_IOU_RING_OBJS) $(LIBS)
++#t/io_uring.o: os/linux/io_uring.h
++#t/io_uring: $(T_IOU_RING_OBJS)
++#	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_IOU_RING_OBJS) $(LIBS)
+ 
+ t/read-to-pipe-async: $(T_PIPE_ASYNC_OBJS)
+ 	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_PIPE_ASYNC_OBJS) $(LIBS)

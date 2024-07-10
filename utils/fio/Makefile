@@ -4,18 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: patches/500-k26_compat.patch;
-#	keep v.3.29 (<linux/nvme.h> since Linux 3.3)
+# Entware specific: patches/500-k26_compat.patch
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fio
-PKG_VERSION:=3.29
+PKG_VERSION:=3.37
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://brick.kernel.dk/snaps
-PKG_HASH:=acffb407d14e973321ada4cf234b2840a94fff7989350cfe62142daba79e6786
+PKG_HASH:=88f0fd6549ca07f7387e784a91706ab11e36d5c12ec26540f1b2d33c6f2d8327
 
 PKG_MAINTAINER:=
 PKG_LICENSE:=GPL-2.0-or-later
@@ -30,7 +29,7 @@ define Package/fio
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Disc
-  DEPENDS:=+libaio +libnfs +zlib
+  DEPENDS:=+libaio +zlib +USE_GLIBC:libnfs
   TITLE:=I/O testing and benchmarking tool
   URL:=https://github.com/axboe/fio
 endef
