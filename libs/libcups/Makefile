@@ -122,6 +122,7 @@ define Package/cups/install
 	$(INSTALL_BIN) ./files/S60cupsd $(1)/opt/etc/init.d/
 	# XXX cleanup
 	$(SED) 's,$(TOOLCHAIN_DIR),/opt,g;s,$(STAGING_DIR),,g' $(1)/opt/bin/cups-config
+	rm -fr $(1)/opt/share/man
 endef
 
 $(eval $(call BuildPackage,libcups))
