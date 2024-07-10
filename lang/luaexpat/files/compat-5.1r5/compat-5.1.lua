@@ -25,15 +25,15 @@ local _PACKAGE = package
 
 package.path = LUA_PATH or os.getenv("LUA_PATH") or
              ("./?.lua;" ..
-              "/opt/local/share/lua/5.0/?.lua;" ..
-              "/opt/local/share/lua/5.0/?/?.lua;" ..
-              "/opt/local/share/lua/5.0/?/init.lua" )
+              "/opt/share/lua/5.0/?.lua;" ..
+              "/opt/share/lua/5.0/?/?.lua;" ..
+              "/opt/share/lua/5.0/?/init.lua" )
  
 package.cpath = LUA_CPATH or os.getenv("LUA_CPATH") or
              "./?.so;" ..
              "./l?.so;" ..
-             "/opt/local/lib/lua/5.0/?.so;" ..
-             "/opt/local/lib/lua/5.0/l?.so"
+             "/opt/lib/lua/5.0/?.so;" ..
+             "/opt/lib/lua/5.0/l?.so"
 
 --
 -- make sure require works with standard libraries
