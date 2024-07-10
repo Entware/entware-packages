@@ -9,7 +9,7 @@
  tr_auto_option(USE_SYSTEM_MINIUPNPC "Use system miniupnpc library" AUTO)
  tr_auto_option(USE_SYSTEM_NATPMP "Use system natpmp library" AUTO)
  tr_auto_option(USE_SYSTEM_UTP "Use system utp library" AUTO)
-@@ -504,9 +504,7 @@ target_compile_definitions(miniupnpc::li
+@@ -524,9 +524,7 @@ target_compile_definitions(miniupnpc::li
  
  add_subdirectory(third-party/jsonsl)
  add_subdirectory(third-party/wildmat)
