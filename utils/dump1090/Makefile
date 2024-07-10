@@ -4,16 +4,18 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: no deps uhttpd
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dump1090
-PKG_VERSION:=4.0
-PKG_RELEASE:=1a
+PKG_VERSION:=9.0
+PKG_RELEASE:=3
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/flightaware/dump1090/tar.gz/v${PKG_VERSION}?
-PKG_HASH:=49ace5a06da3d51384de83a4199d043c6093ad475909c58317cedece0e9590d1
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_VERSION:=v$(PKG_VERSION)
+PKG_SOURCE_URL:=https://github.com/flightaware/dump1090
+PKG_MIRROR_HASH:=5acbfd0afbed020fc8328b44ade406c855cf617a54a9049b309586e181242ec8
 
 PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -53,10 +55,14 @@ define Package/view1090/description
 endef
 
 MAKE_FLAGS += \
+	DUMP1090_VERSION=$(PKG_VERSION) \
 	BLADERF=no \
 	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS)" \
-	UNAME="Linux" \
-	DUMP1090_VERSION="$(PKG_VERSION)"
+	UNAME="Linux"
+
+ifeq ($(CONFIG_SOFT_FLOAT),y)
+MAKE_FLAGS += CPUFEATURES=no
+endif
 
 TARGET_LDFLAGS += -Wl,--as-needed
 
@@ -65,6 +71,12 @@ TARGET_LDFLAGS += -Wl,--as-needed
 #endef
 
 define Package/dump1090/install
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) files/dump1090.init $(1)/etc/init.d/dump1090
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) files/dump1090.config $(1)/etc/config/dump1090
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
+#	$(INSTALL_DATA) files/dump1090.default $(1)/etc/uci-defaults/00_uhttpd_dump1090
 	$(INSTALL_DIR) $(1)/opt/share/dump1090
 	$(CP) $(PKG_BUILD_DIR)/public_html/* $(1)/opt/share/dump1090
 	$(LN) /opt/var/run/dump1090 $(1)/opt/share/dump1090/data
