@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -82,7 +82,7 @@ src_fuser_SOURCES = \
+ 		    src/lists.h
+ 
+ #if HAVE_SYSCALL_STATX
+-src_fuser_SOURCES += src/statx.c src/statx.h
++#src_fuser_SOURCES += src/statx.c src/statx.h
+ #endif
+ src_fuser_LDADD = @LIBINTL@
+ src_killall_SOURCES = src/killall.c src/comm.h src/signals.c src/signals.h src/i18n.h
