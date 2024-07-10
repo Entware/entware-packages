@@ -39,6 +39,22 @@ define Package/mii-tool/description
 	optimized for embedded systems and fully automated cross/-sysroot-builds
 endef
 
+define Package/net-tools-route
+  SECTION:=net
+  CATEGORY:=Network
+  TITLE:=net-tools - route utility
+  URL:=http://net-tools.sourceforge.net/
+  PROVIDES:=route
+  ALTERNATIVES:=300:/opt/sbin/route:/opt/libexec/net-tools-route
+endef
+
+define Package/net-tools-route/description
+	Replace busybox version of the route command with the full net-tools
+	version. This is normally not needed as busybox is smaller and provides
+	sufficient functionality, but some users may want or need the full
+	functionality of the net-tools variant (e.g. AF_X25).
+endef
+
 define Package/net-tools
   SECTION:=net
   CATEGORY:=Network
@@ -53,8 +69,7 @@ define Package/net-tools
 	300:/opt/bin/hostname:/opt/libexec/hostname-net-tools \
 	300:/opt/bin/netstat:/opt/libexec/netstat-net-tools \
 	300:/opt/sbin/ifconfig:/opt/libexec/ifconfig-net-tools \
-	300:/opt/sbin/iptunnel:/opt/libexec/iptunnel-net-tools \
-	300:/opt/sbin/route:/opt/libexec/route-net-tools
+	300:/opt/sbin/iptunnel:/opt/libexec/iptunnel-net-tools
 endef
 
 define Package/net-tools/description
@@ -72,13 +87,17 @@ define Package/mii-tool/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/mii-tool $(1)/opt/sbin/
 endef
 
+define Package/net-tools-route/install
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/route $(1)/opt/libexec/net-tools-route
+endef
+
 define Package/net-tools/install
 	$(INSTALL_DIR) $(1)/opt/libexec
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/hostname $(1)/opt/libexec/hostname-net-tools
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ifconfig $(1)/opt/libexec/ifconfig-net-tools
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/iptunnel $(1)/opt/libexec/iptunnel-net-tools
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/netstat $(1)/opt/libexec/netstat-net-tools
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/route $(1)/opt/libexec/route-net-tools
 
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/arp $(1)/opt/sbin
@@ -90,4 +109,5 @@ define Package/net-tools/install
 endef
 
 $(eval $(call BuildPackage,mii-tool))
+$(eval $(call BuildPackage,net-tools-route))
 $(eval $(call BuildPackage,net-tools))
