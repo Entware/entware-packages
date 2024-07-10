@@ -41,7 +41,7 @@
  dist_hplip_state_DATA =
  
  if FULL_BUILD
-@@ -234,11 +234,11 @@ endif # FAX_BUILD
+@@ -236,11 +236,11 @@ endif # FAX_BUILD
  if !HPLIP_CLASS_DRIVER
  # AppArmor Changes
  if APPARMOR_BUILD
@@ -55,7 +55,7 @@
  apparmor_abstraction_DATA = apparmor/abstractions/hplip
  dist_apparmor_abstraction_DATA = apparmor/abstractions/hplip
  
-@@ -449,9 +449,9 @@ endif
+@@ -451,9 +451,9 @@ endif
  endif #HPLIP_CLASS_DRIVER
  # PolicyKit
  if POLICYKIT_INSTALL
@@ -67,7 +67,7 @@
  dist_policykit_dbus_share_DATA = data/policykit/com.hp.hplip.service
  policykit_policydir = $(policykit_dir)
  dist_policykit_policy_DATA = data/policykit/com.hp.hplip.policy
-@@ -698,13 +698,13 @@ if HPLIP_BUILD
+@@ -712,13 +712,13 @@ if HPLIP_BUILD
  if !HPLIP_CLASS_DRIVER
  #	   If scanner build, add hpaio entry to sane dll.conf.
  	if [ "$(scan_build)" = "yes" ]; then \

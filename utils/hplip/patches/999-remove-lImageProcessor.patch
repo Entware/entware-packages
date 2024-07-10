@@ -1,7 +1,7 @@
 # ../bin/ld: cannot find -lImageProcessor
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -595,7 +595,7 @@ hpcups_SOURCES = prnt/hpcups/HPCupsFilte
+@@ -597,7 +597,7 @@ hpcups_SOURCES = prnt/hpcups/HPCupsFilte
  	prnt/hpcups/ImageProcessor.h
  
  hpcups_CXXFLAGS = $(APDK_ENDIAN_FLAG) $(DBUS_CFLAGS)

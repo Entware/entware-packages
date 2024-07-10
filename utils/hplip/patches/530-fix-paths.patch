@@ -1,0 +1,28 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -705,9 +705,9 @@ if HPLIP_BUILD
+ 		chmod 775 $(libdir)/libImageProcessor-x86_32.so ; \
+ 		ln -sf $(libdir)/libImageProcessor-x86_32.so $(libdir)/libImageProcessor.so ; \
+ 	fi
+-	if [ -d "/usr/share/ipp-usb/quirks/" ]; then \
++	if [ -d "$(DESTDIR)/opt/share/ipp-usb/quirks/" ]; then \
+ 		echo "ipp-usb directory exists"; \
+-		cp prnt/ipp-usb/HPLIP.conf /usr/share/ipp-usb/quirks/ ; \
++		cp prnt/ipp-usb/HPLIP.conf $(DESTDIR)/opt/share/ipp-usb/quirks/ ; \
+ 	fi
+ if !HPLIP_CLASS_DRIVER
+ #	   If scanner build, add hpaio entry to sane dll.conf.
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -10222,9 +10222,9 @@ install-data-hook:
+ @HPLIP_BUILD_TRUE@		chmod 775 $(libdir)/libImageProcessor-x86_32.so ; \
+ @HPLIP_BUILD_TRUE@		ln -sf $(libdir)/libImageProcessor-x86_32.so $(libdir)/libImageProcessor.so ; \
+ @HPLIP_BUILD_TRUE@	fi
+-@HPLIP_BUILD_TRUE@	if [ -d "/usr/share/ipp-usb/quirks/" ]; then \
++@HPLIP_BUILD_TRUE@	if [ -d "$(DESTDIR)/opt/share/ipp-usb/quirks/" ]; then \
+ @HPLIP_BUILD_TRUE@		echo "ipp-usb directory exists"; \
+-@HPLIP_BUILD_TRUE@		cp prnt/ipp-usb/HPLIP.conf /usr/share/ipp-usb/quirks/ ; \
++@HPLIP_BUILD_TRUE@		cp prnt/ipp-usb/HPLIP.conf $(DESTDIR)/opt/share/ipp-usb/quirks/ ; \
+ @HPLIP_BUILD_TRUE@	fi
+ #	   If scanner build, add hpaio entry to sane dll.conf.
+ @HPLIP_BUILD_TRUE@@HPLIP_CLASS_DRIVER_FALSE@	if [ "$(scan_build)" = "yes" ]; then \
