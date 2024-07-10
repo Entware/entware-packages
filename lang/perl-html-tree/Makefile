@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-html-tree
 PKG_VERSION:=3.23
-PKG_RELEASE:=5a
+PKG_RELEASE:=6
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/P/PE/PETEK/
 PKG_SOURCE:=HTML-Tree-$(PKG_VERSION).tar.gz
