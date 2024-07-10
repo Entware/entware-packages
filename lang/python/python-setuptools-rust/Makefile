@@ -4,7 +4,7 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: no rust/host deps
+# Entware specific: switch to rustlang/rustc-dev
 
 include $(TOPDIR)/rules.mk
 
@@ -26,7 +26,8 @@ HOST_BUILD_DEPENDS:= \
 	python-installer/host \
 	python-wheel/host \
 	python-setuptools-scm/host \
-	python-semantic-version/host
+	python-semantic-version/host \
+	rustc-dev/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
@@ -44,7 +45,8 @@ define Package/python3-setuptools-rust
     +python3-light \
     +python3-logging \
     +python3-semantic-version \
-    +python3-setuptools
+    +python3-setuptools \
+    +rustc-dev
   BUILDONLY:=1
 endef
 
