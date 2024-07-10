@@ -4,18 +4,17 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: keep v. 8.1.1 (mkvtoolnix)
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libfmt
-PKG_VERSION:=8.1.1
+PKG_VERSION:=11.0.1
 PKG_RELEASE:=1
 
 PKG_SOURCE_NAME:=fmt
 PKG_SOURCE:=$(PKG_SOURCE_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/fmtlib/$(PKG_SOURCE_NAME)/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=3d794d3cf67633b34b2771eb9f073bde87e846e0d395d254df7b211ef1ec7346
+PKG_HASH:=7d009f7f89ac84c0a83f79ed602463d092fbf66763766a907c97fd02b100f5e9
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_SOURCE_NAME)-$(PKG_VERSION)
 
 PKG_MAINTAINER:=Othmar Truniger <github@truniger.ch>
