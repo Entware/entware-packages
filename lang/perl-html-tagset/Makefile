@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-html-tagset
 PKG_VERSION:=3.20
-PKG_RELEASE:=4a
+PKG_RELEASE:=5
 
 PKG_SOURCE_URL:=http://www.cpan.org/authors/id/P/PE/PETDANCE/
 PKG_SOURCE:=HTML-Tagset-$(PKG_VERSION).tar.gz
