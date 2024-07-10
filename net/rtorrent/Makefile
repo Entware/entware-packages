@@ -4,6 +4,8 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# Entware specific: add nls.mk (rtorrent-rpc)
+# .../*-openwrt-linux-*/bin/ld.bfd: cannot find -liconv: No such file or directory
 
 include $(TOPDIR)/rules.mk
 
@@ -25,6 +27,8 @@ PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=libtorrent
 
 include $(INCLUDE_DIR)/package.mk
+# cannot find -liconv (xmlrpc-c)
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/rtorrent/Default
   SUBMENU:=BitTorrent
