@@ -32,7 +32,7 @@ define Package/xfsprogs/default
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Filesystem
-  DEPENDS:=+liburcu +libuuid +libpthread @!LINUX_2_6_36
+  DEPENDS:=+liburcu +libuuid +libpthread
   URL:=https://xfs.org/
 endef
 
