@@ -42,7 +42,6 @@ define Build/Compile
 		VSYSLOG= \
 		BUGS= \
 		PREFIX=/opt \
-		LIBS="$(TARGET_LDFLAGS)" \
 		EXTRA_CFLAGS="-DSYS_ERRLIST_DEFINED -DHAVE_STRERROR -DHAVE_WEAKSYMS -D_REENTRANT -DINET6=1 \
 			-Dss_family=__ss_family -Dss_len=__ss_len" \
 		FACILITY=LOG_DAEMON \
