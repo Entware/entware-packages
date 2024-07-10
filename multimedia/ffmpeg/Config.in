@@ -1,8 +1,6 @@
-# XXX TARGET_x86_2_6: nasm/yasm not found or too old. Use --disable-x86asm for a crippled build.
-
 config FFMPEG_X86ASM
 	bool "Compile x86 ASM"
-	depends on (x86_64 || (i386 && !(TARGET_x86_geode || TARGET_x86_legacy || TARGET_x86_2_6)))
+	depends on (x86_64 || (i386 && !(TARGET_x86_geode || TARGET_x86_legacy)))
 	help
 		This compiles ffmpeg with x86 assembly optimizations. This option is needed as NASM is
 		totally broken with CPU_TYPE=pentium.
