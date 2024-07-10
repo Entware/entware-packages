@@ -5,12 +5,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=croc
-PKG_VERSION:=9.6.6
+PKG_VERSION:=10.0.9
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/schollz/croc/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=9dd954e0068df2be416c71161665bfc283f150d30ba0bf96cee723701e93616f
+PKG_HASH:=5f17aa4d62d50034fd8dc56e92e98adb414977da382c60be1973f7e3df3a18f3
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -20,7 +20,7 @@ PKG_BUILD_DEPENDS:=golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_FLAGS:=no-mips16
 
-GO_PKG:=github.com/schollz/croc/v9
+GO_PKG:=github.com/schollz/croc/v10
 GO_PKG_BUILD_PKG:=$(GO_PKG)
 GO_PKG_LDFLAGS_X:=$(GO_PKG)/src/cli.Version=v$(PKG_VERSION)
 
