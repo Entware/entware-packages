@@ -1,10 +1,10 @@
-commit fabbbdbbc29c09a287e6c1a024f3be668b1162ba (HEAD -> master, origin/master, origin/HEAD)
-Author: krant <aleksey.vasilenko@gmail.com>
-Date:   Mon Feb 5 17:38:42 2024 +0200
+commit 2c96a5bb1d0f45965aa12a230ad3c88e0f632a45 (HEAD -> master, origin/master, origin/HEAD)
+Author: Javier Marcet <javier@marcet.info>
+Date:   Mon Jul 1 00:12:19 2024 +0200
 
-    mpg123: update to 1.32.4
+    luajit2: update to v2.1-20240626
     
-    - Use package official URL
-    - Fix license name
+     - change: disable hash computation optimization because of the
+     possibility of severe degradation.
     
-    Signed-off-by: krant <aleksey.vasilenko@gmail.com>
+    Signed-off-by: Javier Marcet <javier@marcet.info>
