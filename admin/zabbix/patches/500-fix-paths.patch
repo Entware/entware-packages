@@ -1,3 +1,32 @@
+--- a/conf/zabbix_agentd.conf
++++ b/conf/zabbix_agentd.conf
+@@ -3,11 +3,12 @@
+ 
+ ############ GENERAL PARAMETERS #################
+ 
+-# We do not need PidFile with procd
+-# PidFile=/var/run/zabbix_agentd.pid
+-
+-# use syslog
+-LogType=system
++### Option: PidFile
++#	Name of PID file.
++#
++# Mandatory: no
++# Default:
++# PidFile=/opt/var/run/zabbix_agentd.pid
+ 
+ ### Option: LogType
+ #	Specifies where log messages are written to:
+@@ -26,6 +27,8 @@ LogType=system
+ # Default:
+ # LogFile=
+ 
++LogFile=/opt/var/log/zabbix_agentd.log
++
+ ### Option: LogFileSize
+ #	Maximum size of log file in MB.
+ #	0 - disable automatic log rotation.
 --- a/ui/locale/add_new_language.sh
 +++ b/ui/locale/add_new_language.sh
 @@ -1,4 +1,4 @@

@@ -11,7 +11,7 @@
 -# Default:
 -# PidFile=/tmp/zabbix_agentd.pid
 +# We do not need PidFile with procd
-+# PidFile=/opt/var/run/zabbix_agentd.pid
++# PidFile=/var/run/zabbix_agentd.pid
 +
 +# use syslog
 +LogType=system
@@ -30,7 +30,7 @@
 @@ -136,6 +133,7 @@ Server=127.0.0.1
  # Range: 0-100
  # Default:
- # StartAgents=3
+ # StartAgents=10
 +StartAgents=1
  
  ##### Active checks related
@@ -59,7 +59,7 @@
  # Include=/usr/local/etc/zabbix_agentd.userparams.conf
 -# Include=/usr/local/etc/zabbix_agentd.conf.d/
  # Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
-+Include=/opt/etc/zabbix_agentd.conf.d/
++Include=/etc/zabbix_agentd.conf.d/
  
  ####### USER-DEFINED MONITORED PARAMETERS #######
  
