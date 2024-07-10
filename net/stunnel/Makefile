@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stunnel
-PKG_VERSION:=5.71
+PKG_VERSION:=5.72
 PKG_RELEASE:=1
 
 PKG_LICENSE:=GPL-2.0-or-later
@@ -23,7 +23,7 @@ PKG_SOURCE_URL:= \
 	https://www.usenix.org.uk/mirrors/stunnel/archive/$(word 1, $(subst .,$(space),$(PKG_VERSION))).x/
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=f023aae837c2d32deb920831a5ee1081e11c78a5d57340f8e6f0829f031017f5
+PKG_HASH:=3d532941281ae353319735144e4adb9ae489a10b7e309c58a48157f08f42e949
 
 PKG_FIXUP:=autoreconf
 PKG_FIXUP:=patch-libtool
@@ -77,6 +77,10 @@ define Package/stunnel/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/stunnel/libstunnel.so $(1)/opt/lib/stunnel/
 	$(INSTALL_DIR) $(1)/opt/etc/stunnel
 	$(INSTALL_CONF) ./files/stunnel.conf $(1)/opt/etc/stunnel/stunnel.conf
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/stunnel.init $(1)/etc/init.d/stunnel
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/stunnel.uci $(1)/etc/config/stunnel
 endef
 
 $(eval $(call BuildPackage,stunnel))
