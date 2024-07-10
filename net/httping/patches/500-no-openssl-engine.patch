@@ -1,0 +1,25 @@
+.../httping-3.5/mssl.c:40:(.text+0x20): undefined reference to `ENGINE_cleanup'
+collect2: error: ld returned 1 exit status
+
+--- a/mssl.c
++++ b/mssl.c
+@@ -12,7 +12,9 @@
+ #include <sys/socket.h>
+ #include <openssl/bio.h>
+ #include <openssl/conf.h>
++#ifndef OPENSSL_NO_ENGINE
+ #include <openssl/engine.h>
++#endif /* OPENSSL_NO_ENGINE */
+ #include <openssl/err.h>
+ #include <openssl/evp.h>
+ #include <openssl/md5.h>
+@@ -37,7 +39,9 @@ void shutdown_ssl(void)
+ 	ERR_free_strings();
+ 
+ 	ERR_remove_state(0);
++#ifndef OPENSSL_NO_ENGINE
+ 	ENGINE_cleanup();
++#endif /* OPENSSL_NO_ENGINE */
+ 	CONF_modules_free();
+ 	EVP_cleanup();
+ 	CRYPTO_cleanup_all_ex_data();
