@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 #
 # Copyright (C) 2021-2022 ImmortalWrt.org
+#
+# Entware specific: no prefix r before $(PKG_RELEASE)
 
 include $(TOPDIR)/rules.mk
 
@@ -12,31 +14,31 @@ PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 
 include $(INCLUDE_DIR)/package.mk
 
-GEOIP_VER:=202401250041
+GEOIP_VER:=202406270043
 GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
 define Download/geoip
   URL:=https://github.com/v2fly/geoip/releases/download/$(GEOIP_VER)/
   URL_FILE:=geoip.dat
   FILE:=$(GEOIP_FILE)
-  HASH:=cb005854fd16474df068a3a5ce78c845ae6cb53cbce80f6a7ad84b6f52f28a84
+  HASH:=84ef45f035a4e44ced0be85e453d07850ae1ebeb9bf99a788ef4d924dedbb5a9
 endef
 
-GEOSITE_VER:=20240123112230
+GEOSITE_VER:=20240624143214
 GEOSITE_FILE:=dlc.dat.$(GEOSITE_VER)
 define Download/geosite
   URL:=https://github.com/v2fly/domain-list-community/releases/download/$(GEOSITE_VER)/
   URL_FILE:=dlc.dat
   FILE:=$(GEOSITE_FILE)
-  HASH:=7c2efd90b7e3137e6bc68a78e641b5d9d5790330aa1de129510eeb432f020ec5
+  HASH:=2542bbc017ae060da37260da02f7567fb2b016f0e825aee5c23b1e8567c0649e
 endef
 
-GEOSITE_IRAN_VER:=202401220028
+GEOSITE_IRAN_VER:=202407010032
 GEOSITE_IRAN_FILE:=iran.dat.$(GEOSITE_IRAN_VER)
 define Download/geosite-ir
   URL:=https://github.com/bootmortis/iran-hosted-domains/releases/download/$(GEOSITE_IRAN_VER)/
   URL_FILE:=iran.dat
   FILE:=$(GEOSITE_IRAN_FILE)
-  HASH:=c0070879b1e98e748ecefbd63306566d44ec1dad3237176655f5f282ba014da7
+  HASH:=1306992448a10f1e1c0c0a566c0bb6057e999a0029bb1004b17763299013b893
 endef
 
 define Package/v2ray-geodata/template
