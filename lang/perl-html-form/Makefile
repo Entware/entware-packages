@@ -4,12 +4,13 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# perl bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=perl-html-form
 PKG_VERSION:=6.07
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PKG_SOURCE:=HTML-Form-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cpan.metacpan.org/authors/id/O/OA/OALDERS
