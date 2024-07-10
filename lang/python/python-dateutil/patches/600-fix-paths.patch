@@ -1,5 +1,5 @@
---- a/dateutil/parser/_parser.py
-+++ b/dateutil/parser/_parser.py
+--- a/src/dateutil/parser/_parser.py
++++ b/src/dateutil/parser/_parser.py
 @@ -607,7 +607,7 @@ class parser(object):
                  datetime.datetime(2012, 1, 19, 17, 21, tzinfo=tzoffset(u'BRST', -7200))
                  >>> parse("2012-01-19 17:21:00 CST", tzinfos=tzinfos)
@@ -18,8 +18,8 @@
  
          This parameter is ignored if ``ignoretz`` is set.
  
---- a/dateutil/tz/tz.py
-+++ b/dateutil/tz/tz.py
+--- a/src/dateutil/tz/tz.py
++++ b/src/dateutil/tz/tz.py
 @@ -2,7 +2,7 @@
  """
  This module offers timezone implementations subclassing the abstract
