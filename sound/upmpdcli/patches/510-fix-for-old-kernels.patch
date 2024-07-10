@@ -1,6 +1,6 @@
 --- a/src/pathut.cpp
 +++ b/src/pathut.cpp
-@@ -1103,7 +1103,12 @@ bool path_samefile(const std::string& p1
+@@ -1156,7 +1156,12 @@ bool path_samefile(const std::string& p1
  #endif
  }
  
@@ -14,7 +14,7 @@
  
  #include <sys/syscall.h>
  
-@@ -1156,6 +1161,7 @@ static int lstatx(const char *filename,
+@@ -1209,6 +1214,7 @@ static int lstatx(const char *filename,
  #define STATXCALL statx
  #define LSTATXCALL lstatx
  

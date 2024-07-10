@@ -48,7 +48,7 @@
  }
 --- a/src/mediaserver/cdplugins/pycommon/upmplgutils.py
 +++ b/src/mediaserver/cdplugins/pycommon/upmplgutils.py
-@@ -137,7 +137,7 @@ def getcachedir(servicename, forcedpath=
+@@ -178,7 +178,7 @@ def getcachedir(servicename, forcedpath=
              me = pwd.getpwuid(os.getuid()).pw_name
              uplog("getcachedir: me: %s" % me)
              if me == "upmpdcli":
@@ -101,27 +101,15 @@
      print("radio-paradise-get-flac.py: %s" % x, file=sys.stderr)
 --- a/src/closefrom.cpp
 +++ b/src/closefrom.cpp
-@@ -101,7 +101,7 @@ int libclf_closefrom(int fd0)
+@@ -122,7 +122,7 @@ int libclf_closefrom(int fd0)
+         if (fd0 != 0)
              dup2(0, fd0);
-         }
      } else {
 -        int fd = open("/etc/group", 0); // yes i am a unix man
 +        int fd = open("/opt/etc/group", 0); // yes i am a unix man
          if (fd >= 0 && fd != fd0) {
              dup2(fd, fd0);
              close(fd);
-@@ -206,9 +206,9 @@ int main(int argc, char **argv)
- {
-     int i;
- 
--    int fd0 = open("/etc/group", 0);
-+    int fd0 = open("/opt/etc/group", 0);
-     if (fd0 < 0) {
--        perror("open /etc/group");
-+        perror("open /opt/etc/group");
-         exit(1);
-     }
- 
 --- a/src/main.cxx
 +++ b/src/main.cxx
 @@ -138,7 +138,7 @@ static vector<UpnpDevice *> devs;
@@ -171,17 +159,6 @@
  
  static const string sTpCredentials("urn:av-openhome-org:service:Credentials:1");
  static const string sIdCredentials("urn:av-openhome-org:serviceId:Credentials");
---- a/src/ohproduct.cxx
-+++ b/src/ohproduct.cxx
-@@ -56,7 +56,7 @@ static string csxml("<SourceList>");
- static string csattrs("Info Time Volume");
- 
- // This can be replaced by config data in listScripts()
--static string scripts_dir("/usr/share/upmpdcli/src_scripts");
-+static string scripts_dir("/opt/share/upmpdcli/src_scripts");
- 
- // (Type, Name) list
- static vector<pair<string, string> > o_sources;
 --- a/src/upmpdcli.conf-dist
 +++ b/src/upmpdcli.conf-dist
 @@ -18,9 +18,9 @@
@@ -236,7 +213,7 @@
  # Directory from which the internal HTTP server will directly serve files
  #webserverdocumentroot =
  
-@@ -197,9 +197,9 @@ uprcltitle = Local Music
+@@ -221,9 +221,9 @@ uprcltitle = Local Music
  # Uprcl HTTP server port for serving media files.
  #uprclport = 9090
  # uprcl Recoll index directory
@@ -248,7 +225,7 @@
  # Name of the Minim Server configuration file
  #uprclminimconfig =
  # Media directories
-@@ -299,6 +299,6 @@ upradiostitle = Upmpdcli Radio List
+@@ -337,6 +337,6 @@ upradiostitle = Upmpdcli Radio List
  # localhost port to be used by the auxiliary mpd.
  #scsendermpdport = 6700
  # External sources script directory.
@@ -258,13 +235,14 @@
  #scscriptgracesecs = 2
 --- a/src/upmpdcli.conf-xml
 +++ b/src/upmpdcli.conf-xml
-@@ -34,15 +34,15 @@
+@@ -33,16 +33,16 @@
+ #upnploglevel = 2
  
  # <var name="pkgdatadir" type="dfn"><brief>XML and other constant data storage
- # directory.</brief><descr>Default: '$prefix/share/upmpdcli' (e.g.:
--# '/usr/share/upmpdcli').</descr></var>
+-# directory.</brief><descr>Default: '$prefix/share/upmpdcli' (e.g.: '/usr/share/upmpdcli').
++# directory.</brief><descr>Default: '$prefix/share/upmpdcli' (e.g.: '/opt/share/upmpdcli').
+ # </descr></var>
 -#pkgdatadir=/usr/share/upmpdcli
-+# '/opt/share/upmpdcli').</descr></var>
 +#pkgdatadir=/opt/share/upmpdcli
  
  # <var name="pidfile" type="fn">
@@ -372,10 +350,10 @@
  # except `pycommon` (e.g. `uprcl`, `qobuz`, `upradios`...), and the rest would depend on the plugin
  # type.
  # </descr></var>
-@@ -401,13 +401,13 @@
- # image file *must* be a 64x64 32 bits-per-pixel png file. Default:
- # '$pkgdatadir/icon.png'. The icon will only be read once, when upmpdcli
- # starts up.</descr></var>
+@@ -400,13 +400,13 @@
+ # it. Due to current (and probably permanent) *upmpdcli* limitations, the
+ # image file *must* be a 64x64 32 bits-per-pixel png file. Default: '$pkgdatadir/icon.png'.
+ # The icon will only be read once, when upmpdcli starts up.</descr></var>
 -#msiconpath = /usr/share/upmpdcli/icon.png
 +#msiconpath = /opt/share/upmpdcli/icon.png
  
@@ -388,7 +366,7 @@
  #webserverdocumentroot = 
  
  # <grouptitle>Highresaudio streaming service parameters</grouptitle>
-@@ -498,22 +498,22 @@ uprcltitle = Local Music
+@@ -545,22 +545,22 @@ uprcltitle = Local Music
  # <var name="uprclconfdir" type="dfn">
  # <brief>uprcl Recoll index directory</brief>
  # <descr>This is usually not defined and defaults to
@@ -415,7 +393,7 @@
  
  # <var name="uprclminimconfig" type="fn">
  # <brief>Name of the Minim Server configuration file</brief>
-@@ -698,7 +698,7 @@ upradiostitle = Upmpdcli Radio List
+@@ -777,7 +777,7 @@ upradiostitle = Upmpdcli Radio List
  #scusempdvolume = 0
  
  # <var name="sc2mpd" type="string"><brief>Path to
@@ -424,7 +402,7 @@
  # location is not in the $PATH for the init scripts.</descr></var>
  #sc2mpd = 
  
-@@ -742,7 +742,7 @@ upradiostitle = Upmpdcli Radio List
+@@ -821,7 +821,7 @@ upradiostitle = Upmpdcli Radio List
  # directory.</brief><descr>Location for the scripts used to set up
  # additional external sources. See the Songcast Sender support
  # documentation page.</descr></var>
@@ -468,3 +446,24 @@
      fi
  fi
  
+--- a/meson.build
++++ b/meson.build
+@@ -173,7 +173,7 @@ upmpdcli_data = files(
+ )
+ install_data(upmpdcli_data, install_dir: get_option('datadir') / 'upmpdcli')
+ 
+-install_data('src/upmpdcli.conf-dist', install_dir: '/etc')
++install_data('src/upmpdcli.conf-dist', install_dir: '/opt/etc')
+ 
+ install_subdir(
+   'rdpl2stream',
+--- a/tools/installconfig.sh
++++ b/tools/installconfig.sh
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-configfile=${DESTDIR}/etc/upmpdcli.conf
++configfile=${DESTDIR}/opt/etc/upmpdcli.conf
+ configsource=${MESON_SOURCE_ROOT}/src/upmpdcli.conf-dist
+ 
+ test -f  "$configfile" || (cp "$configsource" "$configfile" && chmod 600 "$configfile")
