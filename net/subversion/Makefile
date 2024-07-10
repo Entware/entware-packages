@@ -82,6 +82,8 @@ endef
 TARGET_CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE
 
 CONFIGURE_ARGS += \
+	--with-apr=$(STAGING_DIR)/opt/bin/apr-1-config \
+	--with-apr-util=$(STAGING_DIR)/opt/bin/apu-1-config \
 	--with-serf="$(STAGING_DIR)/opt" \
 	--without-swig \
 	--without-berkeley-db \
