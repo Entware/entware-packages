@@ -1,17 +1,54 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -140,15 +140,15 @@ AC_ARG_WITH(systemdsystemunitdir,
+ AC_SUBST(systemdsystemunitdir, [$with_systemdsystemunitdir])
+ 
+ AC_MSG_CHECKING(location of pid file)
+-if test -d /run ; then
+-    PIDDIR=/run
+-elif test -d /var/run ; then
+-    PIDDIR=/var/run
+-elif test -d /usr/run ; then
+-    PIDDIR=/usr/run
+-else
+-    PIDDIR="$ETCDIR"
+-fi
++dnl if test -d /run ; then
++dnl     PIDDIR=/run
++dnl elif test -d /var/run ; then
++dnl     PIDDIR=/var/run
++dnl elif test -d /usr/run ; then
++dnl     PIDDIR=/usr/run
++dnl else
++    PIDDIR=/opt/var/run
++dnl fi
+ AC_DEFINE_UNQUOTED(PIDFILE, "$PIDDIR/atd.pid", [What is the name of our PID file?])
+ AC_MSG_RESULT($PIDDIR)
+ 
 --- a/configure
 +++ b/configure
-@@ -5077,11 +5077,11 @@ systemdsystemunitdir=$with_systemdsystem
+@@ -5552,15 +5552,15 @@ systemdsystemunitdir=$with_systemdsystem
+ 
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking location of pid file" >&5
  $as_echo_n "checking location of pid file... " >&6; }
- if test -d /var/run ; then
+-if test -d /run ; then
+-    PIDDIR=/run
+-elif test -d /var/run ; then
 -    PIDDIR=/var/run
-+    PIDDIR=/opt/var/run
- elif test -d /usr/run ; then
+-elif test -d /usr/run ; then
 -    PIDDIR=/usr/run
-+    PIDDIR=/opt/var/run
- else
+-else
 -    PIDDIR="$ETCDIR"
+-fi
++#if test -d /run ; then
++#    PIDDIR=/run
++#elif test -d /var/run ; then
++#    PIDDIR=/var/run
++#elif test -d /usr/run ; then
++#    PIDDIR=/usr/run
++#else
 +    PIDDIR=/opt/var/run
- fi
++#fi
  
  cat >>confdefs.h <<_ACEOF
+ #define PIDFILE "$PIDDIR/atd.pid"
