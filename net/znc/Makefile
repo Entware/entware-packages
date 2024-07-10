@@ -9,13 +9,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=znc
-PKG_VERSION:=1.8.2
-PKG_RELEASE:=6
+PKG_VERSION:=1.9.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://znc.in/releases \
 		https://znc.in/releases/archive
-PKG_HASH:=ff238aae3f2ae0e44e683c4aee17dc8e4fdd261ca9379d83b48a7d422488de0d
+PKG_HASH:=8b99c9dbb21c1309705073460be9bfacb6f7b0e83a15fe5d4b7140201b39d2a1
 
 PKG_MAINTAINER:=Jonas Gorski <jonas.gorski@gmail.com>
 PKG_LICENSE:=Apache-2.0
@@ -59,11 +59,12 @@ endef
 define Package/znc/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/znc $(1)/opt/bin/
+	$(INSTALL_DIR) $(1)/opt/lib/znc
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/znc/corecaps.so $(1)/opt/lib/znc/
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S99znc $(1)/opt/etc/init.d/
 #	$(INSTALL_DIR) $(1)/etc/config
 #	$(INSTALL_DATA) ./files/znc.conf $(1)/etc/config/znc
-	$(INSTALL_DIR) $(1)/opt/lib/znc/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/modules/droproot.so $(1)/opt/lib/znc/
 endef
 
@@ -348,14 +349,15 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 CMAKE_OPTIONS += \
-	-DWANT_ICU=O$(if $(CONFIG_ZNC_ICU),N,FF) \
+	-DWANT_ARGON=OFF \
 	-DWANT_I18N=OFF \
+	-DWANT_ICU=O$(if $(CONFIG_ZNC_ICU),N,FF) \
 	-DWANT_CYRUS=OFF \
-	-DWANT_PERL=OFF \
-	-DWANT_SYSTEMD=OFF \
-	-DWANT_PYTHON=OFF \
 	-DWANT_OPENSSL=ON \
+	-DWANT_PERL=OFF \
+	-DWANT_PYTHON=OFF \
 	-DWANT_SWIG=OFF \
+	-DWANT_SYSTEMD=OFF \
 	-DWANT_TCL=OFF \
 	-DWANT_ZLIB=ON
 

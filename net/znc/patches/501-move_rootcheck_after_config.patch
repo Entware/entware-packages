@@ -9,7 +9,7 @@ Subject: [PATCH] Move the root check to after config parsing
 
 --- a/src/main.cpp
 +++ b/src/main.cpp
-@@ -434,23 +434,6 @@ int main(int argc, char** argv) {
+@@ -427,23 +427,6 @@ int main(int argc, char** argv) {
          CUtils::PrintStatus(true, "");
      }
  
@@ -33,7 +33,7 @@ Subject: [PATCH] Move the root check to after config parsing
      if (bMakeConf) {
          if (!pZNC->WriteNewConfig(sConfig)) {
              CZNC::DestroyInstance();
-@@ -472,6 +455,23 @@ int main(int argc, char** argv) {
+@@ -465,6 +448,23 @@ int main(int argc, char** argv) {
          return 1;
      }
  
@@ -56,4 +56,4 @@ Subject: [PATCH] Move the root check to after config parsing
 +
      if (bForeground) {
          int iPid = getpid();
-         CUtils::PrintMessage("Staying open for debugging [pid: " +
+         CUtils::PrintMessage("Running in foreground [pid: " +
