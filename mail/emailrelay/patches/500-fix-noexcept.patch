@@ -1,0 +1,33 @@
+# https://sourceforge.net/p/emailrelay/bugs/52
+# https://sourceforge.net/p/emailrelay/code/315
+---
+In file included from gstringlist.h:28,
+                 from gstringlist.cpp:22:
+goptional.h: In instantiation of 'class G::optional<std::basic_string<char> >':
+gstringlist.h:89:42:   required from here
+goptional.h:66:1: error: function 'G::optional<T>::optional() [with T = std::basic_string<char>]' defaulted on its redeclaration with an exception-specification that differs from the implicit exception-specification 'noexcept'
+ G::optional<T>::optional() noexcept(noexcept(T()))
+ ^
+---
+
+--- a/src/glib/goptional.h
++++ b/src/glib/goptional.h
+@@ -37,7 +37,7 @@ template <typename T>
+ class G::optional
+ {
+ public:
+-	optional() noexcept(noexcept(T())) ;
++	optional() noexcept(noexcept(T())) {}
+ 	explicit optional( const T & ) ;
+ 	optional( bool has_value , const T & value ) ; // not in std::optional()
+ 	void clear() ; // not in std::optional()
+@@ -62,9 +62,6 @@ private:
+ 	bool m_has_value {false} ;
+ } ;
+ 
+-template <typename T>
+-G::optional<T>::optional() noexcept(noexcept(T()))
+-= default ;
+ 
+ template <typename T>
+ G::optional<T>::optional( const T & t ) :
