@@ -337,7 +337,7 @@ define DefineBoostLibrary
 endef
 
 $(eval $(call DefineBoostLibrary,atomic,system))
-$(eval $(call DefineBoostLibrary,charconv,,,,libquadmath))
+#$(eval $(call DefineBoostLibrary,charconv,,,,libquadmath)) # Entware specific: no 128-bit float support, not all architectures support it
 $(eval $(call DefineBoostLibrary,chrono,system))
 #$(eval $(call DefineBoostLibrary,cobalt,system container)) # cxx_std_20; Entware specific: GCC-8.x
 $(eval $(call DefineBoostLibrary,container))
