@@ -61,7 +61,8 @@ endef
 define Package/airmon-ng
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+ethtool +procps-ng +CONFIG_PCI_SUPPORT:pciutils +CONFIG_USB_SUPPORT:usbutils
+  DEPENDS:=+procps-ng +CONFIG_PCI_SUPPORT:pciutils +CONFIG_USB_SUPPORT:usbutils
+  DEPENDS+=@LINUX_2_6_36:ethtool_legacy @(LINUX_3_2||LINUX_3_4||LINUX_3_10):ethtool
   TITLE:=Bash script designed to turn wireless cards into monitor mode.
   URL:=http://www.aircrack-ng.org/
   SUBMENU:=Wireless
