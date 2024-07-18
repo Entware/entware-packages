@@ -183,6 +183,8 @@ ifneq ($(CONFIG_USE_MUSL),)
   TARGET_CFLAGS += -D_LARGEFILE64_SOURCE
 endif
 
+TARGET_CXXFLAGS += -fpermissive
+
 TARGET_LDFLAGS += $(if $(CONFIG_USE_GLIBC),-lm)
 
 define Package/mariadb/disable/engine
