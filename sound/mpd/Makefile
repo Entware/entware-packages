@@ -101,6 +101,8 @@ define Package/mpd-avahi-service/conffiles
 /opt/etc/avahi/services/mpd.service
 endef
 
+TARGET_CXXFLAGS += -fpermissive
+
 MESON_ARGS += \
 	-Ddocumentation=disabled \
 	-Dhtml_manual=false \
