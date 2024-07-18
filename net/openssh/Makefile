@@ -181,8 +181,7 @@ CONFIGURE_ARGS += \
 	--without-kerberos5 \
 	--with-stackprotect \
 	--with$(if $(CONFIG_OPENSSL_ENGINE),,out)-ssl-engine \
-	--with$(if $(CONFIG_OPENSSH_LIBFIDO2),,out)-security-key-builtin \
-	--with-cflags-after=-fzero-call-used-regs=skip
+	--with$(if $(CONFIG_OPENSSH_LIBFIDO2),,out)-security-key-builtin
 	
 ifeq ($(BUILD_VARIANT),with-pam)
 CONFIGURE_ARGS += \
