@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
 PKG_VERSION:=2.45.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/software/scm/git/
@@ -102,10 +102,11 @@ MAKE_FLAGS := \
 CONFIGURE_ARGS += \
 	--without-iconv \
 
+# Entware specifics: fixed issue #1072
 CONFIGURE_VARS += \
-	ac_cv_fread_reads_directories=yes \
-	ac_cv_snprintf_returns_bogus=yes \
-	ac_cv_sane_mode_bits=no
+	ac_cv_fread_reads_directories=no \
+	ac_cv_snprintf_returns_bogus=no \
+	ac_cv_sane_mode_bits=yes
 
 define Build/Configure
 	$(MAKE) -C $(PKG_BUILD_DIR) \
