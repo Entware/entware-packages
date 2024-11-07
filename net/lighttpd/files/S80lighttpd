@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ENABLED=yes
-PROCS=lighttpd
+PROCS=/opt/sbin/lighttpd
 ARGS="-f /opt/etc/lighttpd/lighttpd.conf"
 PREARGS=""
 DESC=$PROCS
