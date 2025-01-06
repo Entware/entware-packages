@@ -17,7 +17,7 @@ PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=18e1aa7e66ff3a58423d59ed22815a6954e53342122c45df20c96877c062b9b7
+PKG_HASH:=07a4356e912900e61a15cb0949a06c4a05012e213ecd6b4e84d0f67aabbee372
 
 PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
 PKG_LICENSE:=Python-2.0.1 0BSD
@@ -42,7 +42,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=bluez python3/host python-build/host python-installer/host python-wheel/host
-HOST_BUILD_DEPENDS:=bzip2/host libffi/host
+HOST_BUILD_DEPENDS:=bzip2/host libffi/host readline/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -296,16 +296,6 @@ endef
 
 Py3Package/python3-light/install:=:
 Package/python3/install:=:
-
-# libuuid is provided by e2fsprogs and uuid/uuid.h is moved into
-# $(STAGING_DIR_HOST)/include/e2fsprogs
-HOST_CFLAGS += \
-	-I$(STAGING_DIR_HOST)/include/e2fsprogs
-HOST_CPPFLAGS += \
-	-I$(STAGING_DIR_HOST)/include/e2fsprogs
-
-HOST_LDFLAGS += \
-	-Wl$(comma)-rpath$(comma)$(STAGING_DIR_HOSTPKG)/lib
 
 ifeq ($(HOST_OS),Linux)
 HOST_LDFLAGS += \

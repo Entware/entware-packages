@@ -1,6 +1,6 @@
 --- a/Lib/ctypes/util.py
 +++ b/Lib/ctypes/util.py
-@@ -286,7 +286,7 @@ elif os.name == "posix":
+@@ -289,7 +289,7 @@ elif os.name == "posix":
              regex = r'\s+(lib%s\.[^\s]+)\s+\(%s'
              regex = os.fsencode(regex % (re.escape(name), abi_type))
              try:
@@ -73,7 +73,7 @@
  
 --- a/Lib/tempfile.py
 +++ b/Lib/tempfile.py
-@@ -170,7 +170,7 @@ def _candidate_tempdir_list():
+@@ -171,7 +171,7 @@ def _candidate_tempdir_list():
                           _os.path.expandvars(r'%SYSTEMROOT%\Temp'),
                           r'c:\temp', r'c:\tmp', r'\temp', r'\tmp' ])
      else:
