@@ -1,0 +1,18 @@
+# fixed 050-statusformat.patch
+
+apinger.c:832:53: error: expected ')' before 'PRIu64'
+  832 |                         fprintf(f,"%s|%s|%s|%i|%i|%" PRIu64 "|",t->name, t->config->srcip, t->description, t->last_sent+1,
+      |                                ~                    ^~~~~~~
+      |                                                     )
+---
+
+--- a/src/apinger.c
++++ b/src/apinger.c
+@@ -20,6 +20,7 @@
+ #include "config.h"
+ #include "apinger.h"
+ 
++#include <inttypes.h>
+ #include <stdio.h>
+ #ifdef HAVE_STDLIB_H
+ # include <stdlib.h>

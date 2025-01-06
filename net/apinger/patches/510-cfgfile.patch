@@ -9,7 +9,7 @@
  #pid_file "/tmp/apinger.pid"
  
  ## Format of timestamp (%s macro) (default: "%b %d %H:%M:%S")
-@@ -71,8 +71,8 @@ alarm default {
+@@ -76,8 +76,8 @@ alarm default {
  	#mailsubject "%s %r: %a: %T"
  
  	## Command to execute when alarm is fired

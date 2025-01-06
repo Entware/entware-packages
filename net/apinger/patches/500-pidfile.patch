@@ -1,6 +1,6 @@
 --- a/src/main.c
 +++ b/src/main.c
-@@ -84,7 +84,7 @@ struct config default_config={
+@@ -85,7 +85,7 @@ struct config default_config={
  	"nobody",		/* user */
  	NULL,			/* group */
  	"/usr/lib/sendmail -t",	/* mailer */
@@ -8,7 +8,7 @@
 +	"/opt/var/run/apinger.pid", /* pid file */
  	NULL,			/* status file */
  	0,			/* status interval */
- 	"%b %d %H:%M:%S"	/* timestamp format */
+ 	0,			/* status format */
 --- a/src/cfgtest.c
 +++ b/src/cfgtest.c
 @@ -46,7 +46,7 @@ struct config default_config={
