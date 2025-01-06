@@ -7,5 +7,5 @@
 -#define LUA_LROOT	"/usr"
 +#define LUA_LROOT	"/opt"
  #define LUA_LUADIR	"/lua/"
- #define LUA_LJDIR	"/luajit-2.1/"
  
+ #ifdef LUA_ROOT
