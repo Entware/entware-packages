@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lrzsz
 PKG_VERSION:=0.12.21
-PKG_RELEASE:=1a
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_VERSION).orig.tar.gz
 PKG_SOURCE_URL:=@DEBIAN/pool/main/l/lrzsz/
@@ -44,15 +44,6 @@ endef
 
 # XXX warning: In the GNU C Library, "major" is defined by <sys/sysmacros.h>.
 TARGET_CFLAGS += -DMAJOR_IN_SYSMACROS
-
-CONFIGURE_ARGS += --disable-nls
-
-# to stop automake from running, the bundled autohell crap is too old
-define Build/Configure
-	touch $(PKG_BUILD_DIR)/*
-	touch $(PKG_BUILD_DIR)/*/*
-	$(call Build/Configure/Default)
-endef
 
 define Package/lrzsz/install
 	$(INSTALL_DIR) $(1)/opt/bin
