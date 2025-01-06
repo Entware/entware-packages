@@ -11,16 +11,19 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=debootstrap
-PKG_VERSION:=1.0.128+nmu2+deb12u1
-PKG_RELEASE:=1
+PKG_REAL_VERSION:=1.0.128+nmu2+deb12u1
+PKG_VERSION:=1.0.128.2~deb121
+PKG_RELEASE:=2
 
-PKG_SOURCE:=$(PKG_NAME)-udeb_$(PKG_VERSION)_all.udeb
+PKG_SOURCE:=$(PKG_NAME)-udeb_$(PKG_REAL_VERSION)_all.udeb
 PKG_SOURCE_URL:=@DEBIAN/pool/main/d/debootstrap
 PKG_HASH:=4fa4ec7c144ed047c47d0d8eb9b91b56eaa9b2db2b52510777abbabf5965d268
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=Unique
 PKG_LICENSE_FILES:=debian/copyright
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_REAL_VERSION)
 
 UNPACK_CMD=ar -p "$(DL_DIR)/$(PKG_SOURCE)" data.tar.xz | xzcat | tar -C $(1) -xf -
 
@@ -51,7 +54,7 @@ endef
 define Package/debootstrap/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/usr/sbin/$(PKG_NAME) $(1)/opt/sbin
-	$(SED) 's/@VERSION@/$(PKG_VERSION)/g' $(1)/opt/sbin/debootstrap
+	$(SED) 's/@VERSION@/$(PKG_REAL_VERSION)/g' $(1)/opt/sbin/debootstrap
 	$(INSTALL_DIR) $(1)/opt/share/debootstrap
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/usr/share/debootstrap/pkgdetails $(1)/opt/share/debootstrap
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/usr/share/debootstrap/functions $(1)/opt/share/debootstrap
