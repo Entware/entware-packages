@@ -6,7 +6,7 @@
  
 -INSTALLPREFIX ?= $(PREFIX)/usr
 +INSTALLPREFIX ?= /opt
- SBININSTALLDIR = $(INSTALLPREFIX)/sbin
+ SBININSTALLDIR ?= $(INSTALLPREFIX)/sbin
 -ETCINSTALLDIR = $(PREFIX)/etc/miniupnpd
 +ETCINSTALLDIR = $(INSTALLPREFIX)/etc/miniupnpd
  MANINSTALLDIR = $(INSTALLPREFIX)/share/man/man8
@@ -18,8 +18,8 @@
  	$(INSTALL) -m 0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
 -	$(INSTALL) -d $(DESTDIR)$(PREFIX)/etc/init.d
 -	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)$(PREFIX)/etc/init.d/miniupnpd
-+	$(INSTALL) -d $(DESTDIR)/opt/etc/init.d
-+	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)/opt/etc/init.d/miniupnpd
++	$(INSTALL) -d $(DESTDIR)/$(INSTALLPREFIX)/etc/init.d
++	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)/$(INSTALLPREFIX)/etc/init.d/miniupnpd
  	$(INSTALL) -d $(DESTDIR)$(MANINSTALLDIR)
  	$(INSTALL) -m 0644 $(SRCDIR)/miniupnpd.8 $(DESTDIR)$(MANINSTALLDIR)
  	gzip -f $(DESTDIR)$(MANINSTALLDIR)/miniupnpd.8
@@ -31,7 +31,7 @@
  
 -INSTALLPREFIX ?= $(PREFIX)/usr
 +INSTALLPREFIX ?= /opt
- SBININSTALLDIR = $(INSTALLPREFIX)/sbin
+ SBININSTALLDIR ?= $(INSTALLPREFIX)/sbin
 -ETCINSTALLDIR = $(PREFIX)/etc/miniupnpd
 +ETCINSTALLDIR = $(INSTALLPREFIX)/etc/miniupnpd
  MANINSTALLDIR = $(INSTALLPREFIX)/share/man/man8
@@ -39,12 +39,12 @@
  include config.mk
 @@ -132,8 +132,8 @@ install:	miniupnpd $(SRCDIR)/miniupnpd.8
  	$(INSTALL) $(SRCDIR)/netfilter_nft/scripts/miniupnpd_functions.sh $(DESTDIR)$(ETCINSTALLDIR)
- 	$(INSTALL) --mode=0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
- 	sed -i -e "s/^uuid=[-0-9a-f]*/uuid=$(UUID)/" $(DESTDIR)$(ETCINSTALLDIR)/miniupnpd.conf
+ 	$(INSTALL) -m 0644 -b $(SRCDIR)/miniupnpd.conf $(DESTDIR)$(ETCINSTALLDIR)
+ 	sed -i'' -e "s/^uuid=[-0-9a-f]*/uuid=$(UUID)/" $(DESTDIR)$(ETCINSTALLDIR)/miniupnpd.conf
 -	$(INSTALL) -d $(DESTDIR)$(PREFIX)/etc/init.d
 -	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)$(PREFIX)/etc/init.d/miniupnpd
 +	$(INSTALL) -d $(DESTDIR)/$(INSTALLPREFIX)/etc/init.d
 +	$(INSTALL) $(SRCDIR)/linux/miniupnpd.init.d.script $(DESTDIR)/$(INSTALLPREFIX)/etc/init.d/miniupnpd
  	$(INSTALL) -d $(DESTDIR)$(MANINSTALLDIR)
- 	$(INSTALL) --mode=0644 $(SRCDIR)/miniupnpd.8 $(DESTDIR)$(MANINSTALLDIR)
+ 	$(INSTALL) -m 0644 $(SRCDIR)/miniupnpd.8 $(DESTDIR)$(MANINSTALLDIR)
  	gzip -f $(DESTDIR)$(MANINSTALLDIR)/miniupnpd.8
