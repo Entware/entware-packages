@@ -4,10 +4,10 @@
  # It is usually good practice to create a dedicated user and group for
  # running httpd, as with most system services.
  #
--User daemon
--Group daemon
-+User apache
-+Group apache
+-User apache
+-Group apache
++User nobody
++Group nogroup
  
  </IfModule>
  
