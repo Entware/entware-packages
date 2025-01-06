@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=unbound
-PKG_VERSION:=1.20.0
+PKG_VERSION:=1.22.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://nlnetlabs.nl/downloads/unbound
-PKG_HASH:=56b4ceed33639522000fd96775576ddf8782bb3617610715d7f1e777c5ec1dbf
+PKG_HASH:=c5dd1bdef5d5685b2cedb749158dd152c52d44f65529a34ac15cd88d4b1b3d43
 
 PKG_MAINTAINER:=Eric Luehrsen <ericluehrsen@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -186,8 +186,6 @@ CONFIGURE_ARGS += \
     $(if $(CONFIG_PACKAGE_libunbound_python),--with-pythonmodule,) \
     $(if $(CONFIG_PACKAGE_libunbound_subnet),--enable-subnet,) \
     $(if $(CONFIG_PACKAGE_libunbound_dnstap),--enable-dnstap,)
-
-CONFIGURE_VARS += ac_cv_func_getentropy=no
 
 define Package/unbound-daemon/conffiles
 /opt/etc/unbound/unbound.conf
