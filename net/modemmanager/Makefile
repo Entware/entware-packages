@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=modemmanager
 PKG_VERSION:=1.22.0
-PKG_RELEASE:=16
+PKG_RELEASE:=20
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://gitlab.freedesktop.org/mobile-broadband/ModemManager.git
@@ -52,6 +52,24 @@ define Package/modemmanager/description
   ModemManager is a D-Bus-activated service which allows controlling mobile
   broadband modems. Add kernel modules for your modems as needed.
   Select Utilities/usb-modeswitch if needed.
+endef
+
+define Package/modemmanager-rpcd
+  SECTION:=net
+  CATEGORY:=Network
+  TITLE:=RPC interface for ModemManager for rpcd
+  URL:=https://www.freedesktop.org/wiki/Software/ModemManager
+  DEPENDS:= \
+	modemmanager \
+	+lua-cjson
+endef
+
+define Package/modemmanager-rpcd/description
+  ModemManager is a D-Bus-activated service which allows controlling mobile
+  broadband modems.
+
+  This package enables an rpcd interface for getting information from
+  ModemManager using e.g. ubus.
 endef
 
 MESON_ARGS += \
@@ -140,4 +158,11 @@ define Package/modemmanager/install
 		$(1)/lib/netifd/proto
 endef
 
+define Package/modemmanager-rpcd/install
+	$(INSTALL_DIR) $(1)/usr/libexec/rpcd
+	$(INSTALL_BIN) ./files/usr/libexec/rpcd/modemmanager \
+		$(1)/usr/libexec/rpcd/
+endef
+
 $(eval $(call BuildPackage,modemmanager))
+$(eval $(call BuildPackage,modemmanager-rpcd))
