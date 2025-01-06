@@ -28,19 +28,6 @@ In file included from mibgroup/iwlib.h:33,
 .../include/net/if.h:176:8: note: originally defined here
  struct ifconf
         ^~~~~~
-...
-mibgroup/ucd-snmp/proc.c:45:2: error: invalid preprocessing directive #elifdef; did you mean #ifdef?
- #elifdef HAVE_PCRE_H
-  ^~~~~~~
-  ifdef
-make[4]: *** [Makefile:101: mibgroup/ucd-snmp/proc.lo] Error 1
-...
-mibgroup/ucd-snmp/proc.c: In function 'proc_parse_config':
-mibgroup/ucd-snmp/proc.c:243:2: error: invalid preprocessing directive #elifdef; did you mean #ifdef?
- #elifdef HAVE_PCRE_H
-  ^~~~~~~
-  ifdef
-make[5]: *** [Makefile:101: mibgroup/ucd-snmp/proc.lo] Error 1
 
 --
 
@@ -59,23 +46,4 @@ make[5]: *** [Makefile:101: mibgroup/ucd-snmp/proc.lo] Error 1
  #include <sys/time.h>		/* struct timeval */
  #include <unistd.h>
  
---- a/agent/mibgroup/ucd-snmp/proc.c
-+++ b/agent/mibgroup/ucd-snmp/proc.c
-@@ -42,7 +42,7 @@
- #ifdef HAVE_PCRE2_H
- #define PCRE2_CODE_UNIT_WIDTH 8
- #include <pcre2.h>
--#elifdef HAVE_PCRE_H
-+#elif defined(HAVE_PCRE_H)
- #include <pcre.h>
- #endif
- 
-@@ -240,7 +240,7 @@ proc_parse_config(const char *token, cha
-                 if ((*procp)->regexp.regex_ptr == NULL) {
-                     config_perror(pcre2_error_msg);
-                 }
--#elifdef HAVE_PCRE_H
-+#elif defined(HAVE_PCRE_H)
-                 const char *pcre_error;
-                 int pcre_error_offset;
- 
+
