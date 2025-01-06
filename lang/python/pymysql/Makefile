@@ -44,7 +44,7 @@ endef
 define Package/python3-pymysql-sha-pwd
 $(call Package/python3-pymysql/Default)
   TITLE+=w/ SHA256 password auth
-  DEPENDS:=+python3-pymysql $(RUST_ARCH_DEPENDS) +PACKAGE_python3-pymysql-sha-pwd:python3-cryptography
+  DEPENDS:=+python3-pymysql +PACKAGE_python3-pymysql-sha-pwd:python3-cryptography
 endef
 
 define Package/python3-pymysql-sha-pwd/description
