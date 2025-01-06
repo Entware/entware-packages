@@ -1,0 +1,60 @@
+--- a/cmake/libfmt.cmake
++++ b/cmake/libfmt.cmake
+@@ -34,7 +34,11 @@ MACRO (CHECK_LIBFMT)
+      int main() {
+        int answer= 4321;
+        fmt::format_args::format_arg arg=
++#if FMT_VERSION >= 110100
++         fmt::basic_format_arg<fmt::format_context>(answer);
++#else
+          fmt::detail::make_arg<fmt::format_context>(answer);
++#endif
+        return fmt::vformat(\"{:L}\", fmt::format_args(&arg, 1)).compare(\"4,321\");
+      }" HAVE_SYSTEM_LIBFMT)
+     SET(CMAKE_REQUIRED_INCLUDES)
+--- a/sql/item_strfunc.cc
++++ b/sql/item_strfunc.cc
+@@ -1605,19 +1605,31 @@ String *Item_func_sformat::val_str(Strin
+     {
+     case INT_RESULT:
+       fmt_args[carg-1].val_int= args[carg]->val_int();
++#if FMT_VERSION >= 110100
++      vargs[carg-1]= fmt::basic_format_arg<ctx>(fmt_args[carg-1].val_int);
++#else
+       vargs[carg-1]= fmt::detail::make_arg<ctx>(fmt_args[carg-1].val_int);
++#endif
+       break;
+     case DECIMAL_RESULT: // TODO
+     case REAL_RESULT:
+       if (args[carg]->field_type() == MYSQL_TYPE_FLOAT)
+       {
+         fmt_args[carg-1].val_float= (float)args[carg]->val_real();
++#if FMT_VERSION >= 110100
++        vargs[carg-1]= fmt::basic_format_arg<ctx>(fmt_args[carg-1].val_float);
++#else
+         vargs[carg-1]= fmt::detail::make_arg<ctx>(fmt_args[carg-1].val_float);
++#endif
+       }
+       else
+       {
+         fmt_args[carg-1].val_double= args[carg]->val_real();
++#if FMT_VERSION >= 110100
++        vargs[carg-1]= fmt::basic_format_arg<ctx>(fmt_args[carg-1].val_double);
++#else
+         vargs[carg-1]= fmt::detail::make_arg<ctx>(fmt_args[carg-1].val_double);
++#endif
+       }
+       break;
+     case STRING_RESULT:
+@@ -1627,7 +1639,11 @@ String *Item_func_sformat::val_str(Strin
+         delete [] fmt_args;
+         return NULL;
+       }
++#if FMT_VERSION >= 110100
++      vargs[carg-1]= fmt::basic_format_arg<ctx>(*parg);
++#else
+       vargs[carg-1]= fmt::detail::make_arg<ctx>(*parg);
++#endif
+       break;
+     case TIME_RESULT: // TODO
+     case ROW_RESULT: // TODO
