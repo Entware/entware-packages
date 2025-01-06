@@ -1,0 +1,11 @@
+--- a/nyx/arguments.py
++++ b/nyx/arguments.py
+@@ -16,7 +16,7 @@ import stem.util.connection
+ 
+ DEFAULT_ARGS = {
+   'control_port': ('127.0.0.1', 'default'),
+-  'control_socket': '/var/run/tor/control',
++  'control_socket': '/opt/var/run/tor/control',
+   'config': os.path.join(os.path.expanduser('~/.nyx'), 'config'),
+   'debug_path': None,
+   'logged_events': 'NOTICE,WARN,ERR,NYX_NOTICE,NYX_WARNING,NYX_ERROR',
