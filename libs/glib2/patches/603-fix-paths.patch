@@ -20,9 +20,9 @@
        g_once_init_leave_pointer (&alias_table, table);
      }
  
---- a/glib/gspawn.c
-+++ b/glib/gspawn.c
-@@ -2046,7 +2046,7 @@ fork_exec (gboolean              interme
+--- a/glib/gspawn-posix.c
++++ b/glib/gspawn-posix.c
+@@ -1404,7 +1404,7 @@ fork_exec (gboolean              interme
         * * what to search if PATH is unset. POSIX may, dunno.
         * */
  

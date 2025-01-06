@@ -1,6 +1,6 @@
 --- a/gio/gdbusaddress.c
 +++ b/gio/gdbusaddress.c
-@@ -1339,7 +1339,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
+@@ -1345,7 +1345,7 @@ g_dbus_address_get_for_bus_sync (GBusTyp
             * https://dbus.freedesktop.org/doc/dbus-specification.html#ftn.id-1.13.6.4.3.3
             * or, on systems where /run is the same as /var/run, runstatedir:
             * https://gitlab.freedesktop.org/dbus/dbus/-/merge_requests/209 */

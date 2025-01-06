@@ -1,6 +1,6 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -511,13 +511,13 @@ zone_identifier_illumos (void)
+@@ -512,13 +512,13 @@ zone_identifier_illumos (void)
  static const gchar *
  zone_info_base_dir (void)
  {
@@ -17,7 +17,7 @@
  }
  
  static gchar *
-@@ -532,13 +532,13 @@ zone_identifier_unix (void)
+@@ -533,13 +533,13 @@ zone_identifier_unix (void)
    struct stat file_status;
  
    /* Resolve the actual timezone pointed to by /etc/localtime. */
@@ -33,7 +33,7 @@
            g_free (resolved_identifier);
            resolved_identifier = g_steal_pointer (&absolute_resolved_identifier);
          }
-@@ -603,7 +603,7 @@ zone_identifier_unix (void)
+@@ -604,7 +604,7 @@ zone_identifier_unix (void)
    else
      {
        /* Resolve relative path */
@@ -42,7 +42,7 @@
        g_free (resolved_identifier);
        resolved_identifier = g_steal_pointer (&canonical_path);
      }
-@@ -664,7 +664,7 @@ zone_info_unix (const gchar *identifier,
+@@ -665,7 +665,7 @@ zone_info_unix (const gchar *identifier,
        if (resolved_identifier == NULL)
          goto out;
  
