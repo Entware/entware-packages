@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
 PKG_VERSION:=2.8.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.networkupstools.org/source/2.8/
@@ -517,12 +517,12 @@ CONFIGURE_ARGS += \
 	--without-libltdl \
 	--without-macosx_ups \
 	--with-statepath=/opt/var/run \
+	--with-pidpath=/opt/var/run \
 	--with-drvpath=/opt/lib/nut \
 	--with-user=root \
 	--with-group=root \
 	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-includes="-I$(STAGING_DIR)/opt/include") \
-	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lgd -lfreetype -ljpeg -lpng16 -ltiff -lwebp -lz") \
-	--with-pidpath=/opt/var/run
+	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lgd -lfreetype -ljpeg -lpng16 -ltiff -lwebp -lz")
 
 TARGET_CXXFLAGS += -std=c++98
 
