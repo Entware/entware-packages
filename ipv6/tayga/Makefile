@@ -4,7 +4,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tayga
 PKG_VERSION:=0.9.2
-PKG_RELEASE:=3
+PKG_RELEASE:=5
 
 PKG_SOURCE:=tayga-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.litech.org/tayga/
@@ -31,9 +31,19 @@ define Package/tayga/description
   kernel, which is the same driver used by OpenVPN and QEMU/KVM.
 endef
 
+#ifdef CONFIG_PACKAGE_netifd
+#  define Package/tayga/install
+#	$(INSTALL_DIR) $(1)/usr/sbin $(1)/lib/netifd/proto
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tayga $(1)/usr/sbin/
+#	$(INSTALL_BIN) ./files/tayga-proto.sh $(1)/lib/netifd/proto/tayga.sh
+#  endef
+#else
 define Package/tayga/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tayga $(1)/opt/sbin/
+#	$(INSTALL_DATA) ./files/tayga.sh $(1)/lib/network/tayga.sh
+#	$(INSTALL_DATA) ./files/tayga.hotplug $(1)/etc/hotplug.d/iface/95-tayga
 endef
+#endif
 
 $(eval $(call BuildPackage,tayga))
