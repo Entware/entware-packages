@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hwloc
-PKG_VERSION:=2.10.0
+PKG_VERSION:=2.11.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=https://download.open-mpi.org/release/$(PKG_NAME)/v2.10
-PKG_HASH:=0305dd60c9de2fbe6519fe2a4e8fdc6d3db8de574a0ca7812b92e80c05ae1392
+PKG_SOURCE_URL:=https://download.open-mpi.org/release/$(PKG_NAME)/v2.11
+PKG_HASH:=f7f88fecae067100f1a1a915b658add0f4f71561259482910a69baea22fe8409
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 PKG_LICENSE:=BSD-3-Clause
@@ -70,28 +70,28 @@ CONFIGURE_ARGS += \
 	--disable-libudev
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/hwloc.h $(STAGING_DIR)/usr/include/
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/include/hwloc
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/hwloc/*.h $(STAGING_DIR)/usr/include/hwloc/
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/include/hwloc/autogen
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/hwloc/autogen/*.h $(STAGING_DIR)/usr/include/hwloc/autogen/
-	$(INSTALL_DIR) $(STAGING_DIR)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib* $(STAGING_DIR)/usr/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/pkgconfig
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/hwloc.h $(STAGING_DIR)/opt/include/
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/include/hwloc
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/hwloc/*.h $(STAGING_DIR)/opt/include/hwloc/
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/include/hwloc/autogen
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/hwloc/autogen/*.h $(STAGING_DIR)/opt/include/hwloc/autogen/
+	$(INSTALL_DIR) $(STAGING_DIR)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/lib* $(STAGING_DIR)/opt/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
 	$(INSTALL_DATA) \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/*.pc \
-		$(1)/usr/lib/pkgconfig
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc \
+		$(1)/opt/lib/pkgconfig
 endef
 
 define Package/hwloc-utils/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/* $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/* $(1)/opt/bin/
 endef
 
 define Package/libhwloc/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/*.so* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/*.so* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,hwloc-utils))
