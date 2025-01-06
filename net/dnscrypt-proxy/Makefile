@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=dnscrypt-proxy
 PKG_SOURCE_DATE:=2019-08-20
 PKG_SOURCE_VERSION:=07ac3825b5069adc28e2547c16b1d983a8ed8d80
-PKG_RELEASE:=3a
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/dyne/dnscrypt-proxy
@@ -34,6 +34,7 @@ define Package/dnscrypt-proxy/Default
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
+  TITLE:=DNSCrypt-Proxy by Dyne, not actively maintained
   URL:=https://github.com/dyne/dnscrypt-proxy
 endef
 
