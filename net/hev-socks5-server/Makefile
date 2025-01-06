@@ -1,15 +1,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hev-socks5-server
-PKG_VERSION:=2.6.6
+PKG_VERSION:=2.6.9
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/heiher/hev-socks5-server/releases/download/$(PKG_VERSION)
-PKG_HASH:=93dfb20501cc2d19e9e144a38d949b2ff81d1c73bd1557ec8e378d888825501b
+PKG_HASH:=40b4c0df7d1982f56aecce0b51091111d81e08ee7def83920a23284fdaf91e84
 
 PKG_MAINTAINER:=Ray Wang <r@hev.cc>
-PKG_LICENSE:=GPL-3.0-only
+PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=License
 
 PKG_BUILD_FLAGS:=no-mips16
@@ -23,8 +23,6 @@ define Package/hev-socks5-server
   TITLE:=A high-performance socks5 server for Unix
   URL:=https://github.com/heiher/hev-socks5-server
 endef
-
-MAKE_FLAGS += REV_ID="$(PKG_VERSION)"
 
 define Package/hev-socks5-server/conffiles
 /etc/config/hev-socks5-server
