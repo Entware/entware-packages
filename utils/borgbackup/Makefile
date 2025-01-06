@@ -4,17 +4,16 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# XXX Entware specific: bump to 1.2.8; kernels are too old: rm deps python3-pyfuse3
-# fixed issues #1033 #1036
+# XXX Entware specific: kernels are too old: rm deps python3-pyfuse3
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=borgbackup
-PKG_VERSION:=1.2.8
+PKG_VERSION:=1.4.0
 PKG_RELEASE:=1
 
 PYPI_NAME:=borgbackup
-PKG_HASH:=d39d22b0d2cb745584d68608a179b6c75f7b40e496e96feb789e41d34991f4aa
+PKG_HASH:=c54c45155643fa66fed7f9ff2d134ea0a58d0ac197c18781ddc2fb236bf6ed29
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
