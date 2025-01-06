@@ -1,0 +1,11 @@
+--- a/unix/tcl.m4
++++ b/unix/tcl.m4
+@@ -1378,7 +1378,7 @@ AC_DEFUN([SC_CONFIG_CFLAGS], [
+ 	    # get rid of the warnings.
+ 	    #CFLAGS_OPTIMIZE="${CFLAGS_OPTIMIZE} -D__NO_STRING_INLINES -D__NO_MATH_INLINES"
+ 
+-	    SHLIB_LD='${CC} ${CFLAGS} ${LDFLAGS} -shared'
++	    SHLIB_LD='${CC} ${CFLAGS} ${LDFLAGS} -shared -fPIC -Wl,-soname,${@}'
+ 	    DL_OBJS="tclLoadDl.o"
+ 	    DL_LIBS="-ldl"
+ 	    LDFLAGS="$LDFLAGS -Wl,--export-dynamic"
