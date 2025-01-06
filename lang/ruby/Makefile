@@ -9,13 +9,14 @@
 #  - dirs not removed when uninstalling! opkg bug?
 #
 # Entware specific: --with-out-ext= for host build extended.
-# More host gems (json*,pty) are needed for rake->mkvtoolnix build system
+# More host gems (pty) are needed for rake->mkvtoolnix build system
 # remove key `--with-static-linked-ext` (segfault)
+# switch to rustc-dev
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ruby
-PKG_VERSION:=3.3.3
+PKG_VERSION:=3.3.6
 PKG_RELEASE:=1
 
 # First two numbes
@@ -23,13 +24,21 @@ PKG_ABI_VERSION:=$(subst $(space),.,$(wordlist 1, 2, $(subst .,$(space),$(PKG_VE
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://cache.ruby-lang.org/pub/ruby/$(PKG_ABI_VERSION)/
-PKG_HASH:=83c05b2177ee9c335b631b29b8c077b4770166d02fa527f3a9f6a40d13f3cce2
+PKG_HASH:=8dc48fffaf270f86f1019053f28e51e4da4cce32a36760a0603a9aee67d7fd8d
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:ruby-lang:ruby
 
-PKG_BUILD_DEPENDS:=ruby/host
+
+# YJIT may not be suitable for certain applications. It
+# currently only supports macOS, Linux and BSD on x86-64 and
+# arm64/aarch64 CPUs.
+# Ruby 3.3.5 (latest) still does not support cross-compiling. It
+# will only work when target matches the host arch. Anyway, we
+# will provide a working rustc for those supported archs to let
+# it work when they match.
+PKG_BUILD_DEPENDS:=ruby/host RUBY_ENABLE_YJIT:rustc-dev
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
@@ -46,6 +55,7 @@ HOST_CONFIGURE_ARGS += \
 	--disable-install-doc \
 	--disable-install-rdoc \
 	--disable-install-capi \
+	--disable-yjit \
 	--without-gmp \
 	--with-out-ext=-test-/*,bigdecimal,cgi/escape,continuation,coverage,etc,fcntl,fiddle,io/console,mathn/complex,mathn/rational,nkf,objspace,racc/cparse,rbconfig/sizeof,readline,rubyvm,syslog,win32,win32ole,win32/resolv
 
@@ -76,6 +86,12 @@ endif
 CONFIGURE_ARGS += --disable-jit-support
 # Host JIT does work but it is not worth it
 HOST_CONFIGURE_ARGS += --disable-jit-support
+
+ifndef CONFIG_RUBY_ENABLE_YJIT
+	# it is only worth it to enable yjit for target package
+	CONFIGURE_ARGS += --disable-yjit
+endif
+
 
 # Apple ld generates warning if LD_FLAGS var includes path to lib that is not 
 # exist (e.g. -L$(STAGING_DIR)/host/lib). configure script fails if ld generates 
@@ -158,6 +174,17 @@ define RubyDependency
 endef
 
 define Package/ruby/config
+    config RUBY_ENABLE_YJIT
+	bool "Enable YJIT"
+	depends on PACKAGE_ruby
+	depends on x86_64||aarch64
+	default y if x86_64||aarch64
+	help
+	 	YJIT is a lightweight, minimalistic Ruby JIT built
+	 	inside CRuby. It lazily compiles code using a Basic Block Versioning (BBV)
+	 	architecture. YJIT is currently supported for macOS, Linux and BSD on x86-64
+	 	and arm64/aarch64 CPUs.
+
     comment "Standard Library"
       depends on PACKAGE_ruby
 
@@ -209,7 +236,7 @@ define Package/ruby-dev/install
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/ruby-$(PKG_ABI_VERSION) $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libruby.so $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/ruby-$(PKG_ABI_VERSION).pc $(1)/opt/lib/pkgconfig/
-	# Entware specific: fix path
+	# Entware specific: fix paths
 	$(SED) 's,$(TOOLCHAIN_DIR),/opt,g; \
 		s,$(ICONV_PREFIX),/opt,g; \
 		s,$(INTL_PREFIX),/opt,g; \
@@ -550,6 +577,11 @@ define Package/ruby-minitest/files-excluded
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/minitest-*/*.txt
 endef
 
+# drop
+#define Package/ruby-mjit/files
+#/usr/lib/ruby/$(PKG_ABI_VERSION)/ruby_vm/mjit/
+#endef
+
 define Package/ruby-mkmf/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/mkmf.rb
 endef
@@ -796,6 +828,13 @@ define Package/ruby-readline/files
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/readline-0*
 /opt/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/readline-0*.gemspec
 endef
+
+# drop
+#define Package/ruby-readline-ext/files
+#/usr/lib/ruby/$(PKG_ABI_VERSION)/*/readline.so
+#/usr/lib/ruby/gems/$(PKG_ABI_VERSION)/gems/readline-ext-*
+#/usr/lib/ruby/gems/$(PKG_ABI_VERSION)/specifications/default/readline-ext-*.gemspec
+#endef
 
 define Package/ruby-reline/files
 /opt/lib/ruby/$(PKG_ABI_VERSION)/reline.rb
@@ -1136,6 +1175,7 @@ $(eval $(call RubyBuildPackage,json,JSON Implementation for Ruby,+ruby-bigdecima
 $(eval $(call RubyBuildPackage,logger,logger and syslog library,+ruby-monitor +ruby-rbconfig))
 $(eval $(call RubyBuildPackage,matrix,implementation of Matrix and Vector classes,))
 $(eval $(call RubyBuildPackage,minitest,Gem minitest,+ruby-gems +ruby-mutex_m))
+#drop#$(eval $(call RubyBuildPackage,mjit,Method Based Just-in-Time Compiler,+ruby-fiddle))
 $(eval $(call RubyBuildPackage,mkmf,makefile library,+ruby-shellwords +ruby-tmpdir))
 $(eval $(call RubyBuildPackage,monitor,Object or module methods are executed with mutual exclusion,))
 $(eval $(call RubyBuildPackage,mutex_m,extend objects to be handled like a Mutex,))
@@ -1168,6 +1208,7 @@ $(eval $(call RubyBuildPackage,random_formatter,Formats generated random numbers
 $(eval $(call RubyBuildPackage,rbconfig,RbConfig,))
 $(eval $(call RubyBuildPackage,rbs,RBS provides syntax and semantics definition for the Ruby Signature language,+ruby-abbrev +ruby-logger +ruby-rdoc))
 $(eval $(call RubyBuildPackage,rdoc,RDoc produces HTML and command-line documentation for Ruby projects,+ruby-did-you-mean +ruby-erb +ruby-racc +ruby-ripper +ruby-yaml))
+#drop#$(eval $(call RubyBuildPackage,readline-ext,support for native GNU readline,+libncurses +libreadline))
 $(eval $(call RubyBuildPackage,readline,loads readline-ext(native) or reline(ruby),+ruby-reline))
 $(eval $(call RubyBuildPackage,reline,alternative to readline-ext in pure ruby,+ruby-fiddle +ruby-forwardable +ruby-io-console +ruby-tempfile))
 $(eval $(call RubyBuildPackage,resolv,DNS resolver library,+ruby-securerandom +ruby-timeout))
