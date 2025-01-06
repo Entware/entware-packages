@@ -34,15 +34,16 @@
  	else
 --- a/src/main.c
 +++ b/src/main.c
-@@ -51,14 +51,14 @@
+@@ -51,7 +51,7 @@
  "  --pppd-ipparam=<string>       Provides an extra parameter to the ip-up, ip-pre-up\n" \
  "                                and ip-down scripts. See man (8) pppd.\n" \
  "  --pppd-call=<name>            Move most pppd options from pppd cmdline to\n" \
 -"                                /etc/ppp/peers/<name> and invoke pppd with\n" \
 +"                                /opt/etc/ppp/peers/<name> and invoke pppd with\n" \
- "                                'call <name>'.\n"
- #elif HAVE_USR_SBIN_PPP
- #define PPPD_USAGE \
+ "                                'call <name>'.\n" \
+ "  --pppd-accept-remote=[01]     Whether to invoke pppd with 'ipcp-accept-remote'.\n" \
+ "                                Disable for pppd < 2.5.0.\n"
+@@ -60,7 +60,7 @@
  "                    [--ppp-system=<system>]\n"
  #define PPPD_HELP \
  "  --ppp-system=<system>         Connect to the specified system as defined in\n" \
