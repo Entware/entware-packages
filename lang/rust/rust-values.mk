@@ -60,7 +60,7 @@ ifeq ($(ARCH),arm)
   ifeq ($(CONFIG_arm_v6)$(CONFIG_arm_v7),)
     RUSTC_TARGET_ARCH:=$(subst arm,armv5te,$(RUSTC_TARGET_ARCH))
 # XXX Entware specifics: TARGET_armv7_3_2 added
-  else ifeq ($(or $(CONFIG_arm_v7)$(CONFIG_TARGET_armv7_3_2)),y)
+  else ifeq ($(or $(CONFIG_arm_v7),$(CONFIG_TARGET_armv7_3_2)),y)
     RUSTC_TARGET_ARCH:=$(subst arm,armv7,$(RUSTC_TARGET_ARCH))
   endif
 
@@ -110,3 +110,5 @@ CARGO_PKG_CONFIG_VARS= \
 	TARGET_CFLAGS="$(TARGET_CFLAGS) $(RUSTC_CFLAGS)"
 
 CARGO_PKG_PROFILE:=$(if $(CONFIG_DEBUG),dev,release)
+
+CARGO_RUSTFLAGS+=-Clink-arg=-fuse-ld=$(TARGET_LINKER)
