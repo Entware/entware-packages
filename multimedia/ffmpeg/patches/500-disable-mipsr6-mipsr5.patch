@@ -5,7 +5,7 @@ Fixes following linking error while running configure
 
 --- a/configure
 +++ b/configure
-@@ -6019,10 +6019,6 @@ elif enabled mips; then
+@@ -6146,10 +6146,6 @@ elif enabled mips; then
  
          disable mips32r6 && disable mips32r5 && disable mips32r2
      else
