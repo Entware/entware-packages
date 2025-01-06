@@ -1,18 +1,14 @@
 --- a/src/xupnpd.lua
 +++ b/src/xupnpd.lua
-@@ -5,10 +5,10 @@ cfg.ui_auth_file='auth.txt'
+@@ -5,7 +5,7 @@ cfg.ui_auth_file='auth.txt'
  cfg.ui_session_file='/tmp/xupnpd.session'
  
  -- multicast interface for SSDP exchange, 'eth0', 'br0', 'br-lan' for example
--cfg.ssdp_interface='lo'
+-cfg.ssdp_interface='br-lan'
 +cfg.ssdp_interface='br0'
  
  -- 'cfg.ssdp_loop' enables multicast loop (if player and server in one host)
--cfg.ssdp_loop=1
-+cfg.ssdp_loop=0
- 
- -- SSDP announcement interval
- cfg.ssdp_notify_interval=15
+ cfg.ssdp_loop=0
 @@ -23,10 +23,10 @@ cfg.http_port=4044
  cfg.log_facility='local0'
  
@@ -35,7 +31,7 @@
  
  -- 'cfg.proxy' enables proxy for injection DLNA headers to stream
  -- 0-off, 1-radio, 2-radio/TV
-@@ -106,7 +106,7 @@ feeds=
+@@ -109,7 +109,7 @@ feeds=
  -- log ident, pid file end www root
  cfg.version='1.034'
  cfg.log_ident=arg[1] or 'xupnpd'
