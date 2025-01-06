@@ -8,12 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sslh
-PKG_VERSION:=v1.23.1
+PKG_VERSION:=2.1.2
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://rutschle.net/tech/sslh/
-PKG_HASH:=2aac006b40e5ae90e3b0fccb44acc994174e24e64457f25041b06aa2433ae637
+PKG_HASH:=dce8e1a77f48017b5164486084f000d9f20de2d54d293385aec18d606f9c61d9
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-v$(PKG_VERSION)
 
 PKG_MAINTAINER:=Jonathan McCrohan <jmccrohan@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -65,7 +66,7 @@ else
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sslh-fork $(1)/opt/sbin/sslh
 endif
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) files/S14$(PKG_NAME) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) files/S14sslh $(1)/opt/etc/init.d
 #	$(INSTALL_DIR) $(1)/etc/config
 #	$(INSTALL_CONF) files/$(PKG_NAME).config $(1)/etc/config/$(PKG_NAME)
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/basic.cfg $(1)/opt/etc/sslh.conf
