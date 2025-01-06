@@ -5,16 +5,12 @@
 # See /LICENSE for more information.
 #
 # Entware specific: -DHAVE_LINUXGPIO=OFF (uapi/linux/gpio.h >= 4.6)
-# Entware specific? add nls.mk
-# warning: libintl.so.8, needed by .../opt/lib/libelf.so, not found (try using -rpath or -rpath-link)
-# .../opt/lib/libelf.so: undefined reference to `libintl_dgettext'
-# collect2: error: ld returned 1 exit status
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=avrdude
 PKG_VERSION:=7.3
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/avrdudes/avrdude
@@ -27,7 +23,6 @@ PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
-# undefined reference to `libintl_dgettext'
 include $(INCLUDE_DIR)/nls.mk
 
 define Package/avrdude
