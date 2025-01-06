@@ -1,6 +1,6 @@
 --- a/libntfs-3g/Makefile.in
 +++ b/libntfs-3g/Makefile.in
-@@ -1168,9 +1168,9 @@ uninstall-am: uninstall-libLTLIBRARIES u
+@@ -1170,9 +1170,9 @@ uninstall-am: uninstall-libLTLIBRARIES u
  # We may need to move .so files to root
  # And create ldscript or symbolic link from /usr
  install-exec-hook: install-rootlibLTLIBRARIES
