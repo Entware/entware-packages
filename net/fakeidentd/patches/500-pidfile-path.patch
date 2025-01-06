@@ -1,8 +1,11 @@
 --- a/fakeidentd-2.6.c
 +++ b/fakeidentd-2.6.c
-@@ -526,7 +526,7 @@ static void godaemon(void)
+@@ -524,9 +524,9 @@ static void godaemon(void)
+ #endif
+ 
  #ifdef TRG
- #define PIDFILE "/var/run/" TRG ".pid"
+-#define PIDFILE "/var/run/" TRG ".pid"
++#define PIDFILE "/opt/var/run/" TRG ".pid"
  #else
 -#define PIDFILE "/var/run/identd.pid"
 +#define PIDFILE "/opt/var/run/identd.pid"
