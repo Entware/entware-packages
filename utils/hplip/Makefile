@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
-PKG_VERSION:=3.23.12
+PKG_VERSION:=3.24.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
-PKG_HASH:=a76c2ac8deb31ddb5f0da31398d25ac57440928a0692dcb060a48daa718e69ed
+PKG_HASH:=5d7643831893a5e2addf9d42d581a5dbfe5aaf023626886b8762c5645da0f1fb
 
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
@@ -83,7 +83,7 @@ CONFIGURE_ARGS += \
 	--disable-doc-build \
 	--disable-imageProcessor-build
 
-ifneq ($(CONFIG_PACKAGE_hplip-full),m)
+ifeq ($(CONFIG_PACKAGE_hplip-full),)
 CONFIGURE_ARGS += \
 	--disable-dbus-build \
 	--disable-hpijs-only-build \
@@ -93,7 +93,7 @@ CONFIGURE_ARGS += \
 	--enable-lite-build
 endif
 
-ifeq ($(CONFIG_PACKAGE_hplip-full),m)
+ifneq ($(CONFIG_PACKAGE_hplip-full),)
 
 PKG_INSTALL:=1
 

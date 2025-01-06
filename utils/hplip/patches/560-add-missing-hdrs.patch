@@ -1,0 +1,18 @@
+scan/sane/OrbliteScan/LinuxCommon.h:22:9: error: unknown type name 'uint64_t'
+   22 | typedef uint64_t                        UInt64;
+      |         ^~~~~~~~
+---
+
+--- a/scan/sane/OrbliteScan/LinuxCommon.h
++++ b/scan/sane/OrbliteScan/LinuxCommon.h
+@@ -3,6 +3,10 @@
+ 
+ #include <sys/types.h>
+ 
++#ifdef __GLIBC__
++#include <stdint.h>
++#endif
++
+ /* Common typedefs for Linux */
+ 
+ typedef unsigned char *			StringPtr;

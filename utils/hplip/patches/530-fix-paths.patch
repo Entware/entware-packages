@@ -14,7 +14,7 @@
  #	   If scanner build, add hpaio entry to sane dll.conf.
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -10222,9 +10222,9 @@ install-data-hook:
+@@ -10246,9 +10246,9 @@ install-data-hook:
  @HPLIP_BUILD_TRUE@		chmod 775 $(libdir)/libImageProcessor-x86_32.so ; \
  @HPLIP_BUILD_TRUE@		ln -sf $(libdir)/libImageProcessor-x86_32.so $(libdir)/libImageProcessor.so ; \
  @HPLIP_BUILD_TRUE@	fi
