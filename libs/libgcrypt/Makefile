@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libgcrypt
-PKG_VERSION:=1.10.3
+PKG_VERSION:=1.11.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://www.gnupg.org/ftp/gcrypt/libgcrypt/
-PKG_HASH:=8b0870897ac5ac67ded568dcfadf45969cfa8a6beb0fd60af2a9eadc2a3272aa
+PKG_HASH:=09120c9867ce7f2081d6aaa1775386b98c2f2f246135761aae47d81f58685b9c
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 PKG_CPE_ID:=cpe:/a:gnupg:libgcrypt
@@ -54,13 +54,14 @@ CONFIGURE_ARGS += \
 TARGET_CFLAGS += $(FPIC)
 
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/opt/bin $(2)/bin $(1)/opt/include $(1)/opt/lib $(1)/opt/share/aclocal
+	$(INSTALL_DIR) $(1)/opt/bin $(2)/bin $(1)/opt/include $(1)/opt/lib/pkgconfig $(1)/opt/share/aclocal
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/libgcrypt-config $(1)/opt/bin/
 	$(CP) $(PKG_INSTALL_DIR)/opt/include/gcrypt*.h $(1)/opt/include/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libgcrypt.{la,a,so*} $(1)/opt/lib/
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/aclocal/libgcrypt.m4 $(1)/opt/share/aclocal/
 	$(SED) 's,^\(prefix\|exec_prefix\)=.*,\1=$(STAGING_DIR)/opt,g' $(1)/opt/bin/libgcrypt-config
 	$(LN) ../../opt/bin/libgcrypt-config $(2)/bin/libgcrypt-config
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/*.pc $(1)/opt/lib/pkgconfig
 endef
 
 define Package/libgcrypt/install
