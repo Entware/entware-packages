@@ -1,17 +1,17 @@
 --- a/keepalived/core/global_data.c
 +++ b/keepalived/core/global_data.c
-@@ -767,7 +767,7 @@ dump_global_data(FILE *fp, data_t * data
+@@ -858,7 +858,7 @@ dump_global_data(FILE *fp, data_t * data
  #endif
  #ifdef _WITH_SNMP_
  	conf_write(fp, " SNMP traps %s", data->enable_traps ? "enabled" : "disabled");
 -	conf_write(fp, " SNMP socket = %s", data->snmp_socket ? data->snmp_socket : "default (unix:/var/agentx/master)");
 +	conf_write(fp, " SNMP socket = %s", data->snmp_socket ? data->snmp_socket : "default (unix:/opt/var/agentx/master)");
  #endif
- #ifdef _WITH_DBUS_
- 	conf_write(fp, " DBus %s", data->enable_dbus ? "enabled" : "disabled");
+ #ifdef _WITH_SNMP_CHECKER_
+ 	conf_write(fp, " SNMP VS stats update interval = %s", format_decimal(data->snmp_vs_stats_update_interval, TIMER_HZ_DIGITS));
 --- a/keepalived/core/main.c
 +++ b/keepalived/core/main.c
-@@ -1740,7 +1740,7 @@ set_debug_options(const char *options)
+@@ -1750,7 +1750,7 @@ set_debug_options(const char *options)
  static void
  report_distro(void)
  {
@@ -44,7 +44,7 @@
  #define	RT_DSFIELD_FILE IPROUTE2_DIR "rt_dsfield"
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -1286,7 +1286,7 @@ get_modprobe(void)
+@@ -1301,7 +1301,7 @@ get_modprobe(void)
  bool
  keepalived_modprobe(const char *mod_name)
  {

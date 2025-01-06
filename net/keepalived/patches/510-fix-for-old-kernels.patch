@@ -80,7 +80,7 @@
  	get_set_byname (set_name, &setinfo->match_set, NFPROTO_IPV6, ignore_errors);
 --- a/lib/config.h.in
 +++ b/lib/config.h.in
-@@ -569,6 +569,12 @@
+@@ -575,6 +575,12 @@
  /* Define to 1 if `vfork' works. */
  #undef HAVE_WORKING_VFORK
  
@@ -95,7 +95,7 @@
  
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1749,6 +1749,14 @@ AS_IF([test .$enable_iptables != .no],
+@@ -1764,6 +1764,14 @@ AS_IF([test .$enable_iptables != .no],
  		add_config_opt([LIBIPSET])
  	      fi
  
