@@ -44,6 +44,7 @@ endef
 
 # XXX warning: In the GNU C Library, "major" is defined by <sys/sysmacros.h>.
 TARGET_CFLAGS += -DMAJOR_IN_SYSMACROS
+CONFIGURE_ARGS += --disable-nls
 
 define Package/lrzsz/install
 	$(INSTALL_DIR) $(1)/opt/bin
