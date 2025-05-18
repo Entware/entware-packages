@@ -1,6 +1,6 @@
 --- a/contrib/pg_trgm/trgm_regexp.c
 +++ b/contrib/pg_trgm/trgm_regexp.c
-@@ -2205,7 +2205,7 @@ printSourceNFA(regex_t *regex, TrgmColor
+@@ -2193,7 +2193,7 @@ printSourceNFA(regex_t *regex, TrgmColor
  
  	{
  		/* dot -Tpng -o /tmp/source.png < /tmp/source.gv */
@@ -9,7 +9,7 @@
  
  		fprintf(fp, "%s", buf.data);
  		fclose(fp);
-@@ -2267,7 +2267,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
+@@ -2255,7 +2255,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
  
  	{
  		/* dot -Tpng -o /tmp/transformed.png < /tmp/transformed.gv */
@@ -18,7 +18,7 @@
  
  		fprintf(fp, "%s", buf.data);
  		fclose(fp);
-@@ -2358,7 +2358,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
+@@ -2346,7 +2346,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
  
  	{
  		/* dot -Tpng -o /tmp/packed.png < /tmp/packed.gv */
@@ -38,20 +38,9 @@
  		return resultbuf;
  
  	/* No luck, so search for the best-matching timezone file */
---- a/src/bin/initdb/initdb.c
-+++ b/src/bin/initdb/initdb.c
-@@ -1051,7 +1051,7 @@ setup_config(void)
- #else
- 	snprintf(repltok, sizeof(repltok), "#unix_socket_directories = ''");
- #endif
--	conflines = replace_token(conflines, "#unix_socket_directories = '/tmp'",
-+	conflines = replace_token(conflines, "#unix_socket_directories = '/opt/var/run'",
- 							  repltok);
- 
- #if DEF_PGPORT != 5432
 --- a/src/bin/psql/command.c
 +++ b/src/bin/psql/command.c
-@@ -3892,7 +3892,7 @@ do_edit(const char *filename_arg, PQExpB
+@@ -4112,7 +4112,7 @@ do_edit(const char *filename_arg, PQExpB
  		const char *tmpdir = getenv("TMPDIR");
  
  		if (!tmpdir)
@@ -62,7 +51,7 @@
  		int			ret;
 --- a/src/include/pg_config_manual.h
 +++ b/src/include/pg_config_manual.h
-@@ -224,7 +224,7 @@
+@@ -206,7 +206,7 @@
   * support them yet.
   */
  #ifndef WIN32
@@ -73,7 +62,7 @@
  #endif
 --- a/src/interfaces/ecpg/preproc/ecpg.c
 +++ b/src/interfaces/ecpg/preproc/ecpg.c
-@@ -251,6 +251,7 @@ main(int argc, char *const argv[])
+@@ -263,6 +263,7 @@ main(int argc, char *const argv[])
  	}
  
  	add_include_path(".");
@@ -83,7 +72,7 @@
  	add_include_path(include_path);
 --- a/src/test/regress/pg_regress.c
 +++ b/src/test/regress/pg_regress.c
-@@ -335,7 +335,7 @@ static const char *
+@@ -500,7 +500,7 @@ static const char *
  make_temp_sockdir(void)
  {
  	char	   *template = psprintf("%s/pg_regress-XXXXXX",
