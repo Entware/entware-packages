@@ -7,12 +7,12 @@ configure: failed program was:
 
 --- a/configure
 +++ b/configure
-@@ -89527,7 +89527,7 @@ fi
- printf %s "checking whether this system supports stdbuf... " >&6; }
- CFLAGS="-fPIC $CFLAGS"
- LDFLAGS="-shared $LDFLAGS"
--stdbuf_supported=no
-+stdbuf_supported=yes
+@@ -92515,7 +92515,7 @@ then :
+   printf %s "(cached) " >&6
+ else case e in #(
+   e)
+-utils_cv_stdbuf_supported=no
++utils_cv_stdbuf_supported=yes
  # Note we only LINK here rather than RUN to support cross compilation
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
