@@ -1,7 +1,7 @@
-From 6300b3c937f91042594cf0944a8ec358d5bed809 Mon Sep 17 00:00:00 2001
+From 81edc181f85395c39964104ef049a195bafb9737 Mon Sep 17 00:00:00 2001
 From: q66 <q66@chimera-linux.org>
 Date: Sun, 15 Dec 2024 03:04:53 +0100
-Subject: [PATCH] Update asiolink for boost 1.87
+Subject: [PATCH] [#3696] Update asiolink for boost 1.87
 
 ---
  src/lib/asiolink/io_address.cc         |  4 ++--
@@ -12,11 +12,9 @@ Subject: [PATCH] Update asiolink for boost 1.87
  src/lib/dhcp/iface_mgr.cc              |  2 +-
  6 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/src/lib/asiolink/io_address.cc b/src/lib/asiolink/io_address.cc
-index 43459bfe5a..06b7d3d990 100644
 --- a/src/lib/asiolink/io_address.cc
 +++ b/src/lib/asiolink/io_address.cc
-@@ -37,7 +37,7 @@ IOAddress::Hash::operator()(const IOAddress &io_address) const {
+@@ -37,7 +37,7 @@ IOAddress::Hash::operator()(const IOAddr
  // because we'd like to throw our own exception on failure.
  IOAddress::IOAddress(const std::string& address_str) {
      boost::system::error_code err;
@@ -34,11 +32,9 @@ index 43459bfe5a..06b7d3d990 100644
      } else {
          isc_throw(BadValue, "Can't convert " << toText()
                    << " address to IPv4.");
-diff --git a/src/lib/asiolink/io_service.cc b/src/lib/asiolink/io_service.cc
-index 411de64191..cc28d24c19 100644
 --- a/src/lib/asiolink/io_service.cc
 +++ b/src/lib/asiolink/io_service.cc
-@@ -30,7 +30,7 @@ class IOServiceImpl {
+@@ -30,7 +30,7 @@ public:
      /// @brief The constructor.
      IOServiceImpl() :
          io_service_(),
@@ -47,7 +43,7 @@ index 411de64191..cc28d24c19 100644
      };
  
      /// @brief The destructor.
-@@ -92,7 +92,7 @@ class IOServiceImpl {
+@@ -92,7 +92,7 @@ public:
  
      /// @brief Restarts the IOService in preparation for a subsequent @ref run() invocation.
      void restart() {
@@ -56,7 +52,7 @@ index 411de64191..cc28d24c19 100644
      }
  
      /// @brief Removes IO service work object to let it finish running
-@@ -115,12 +115,12 @@ class IOServiceImpl {
+@@ -115,12 +115,12 @@ public:
      ///
      /// @param callback The callback to be run on the IO service.
      void post(const std::function<void ()>& callback) {
@@ -71,11 +67,9 @@ index 411de64191..cc28d24c19 100644
  };
  
  IOService::IOService() : io_impl_(new IOServiceImpl()) {
-diff --git a/src/lib/asiolink/tcp_endpoint.h b/src/lib/asiolink/tcp_endpoint.h
-index 8ebd57551d..7c8cb35535 100644
 --- a/src/lib/asiolink/tcp_endpoint.h
 +++ b/src/lib/asiolink/tcp_endpoint.h
-@@ -42,7 +42,7 @@ class TCPEndpoint : public IOEndpoint {
+@@ -42,7 +42,7 @@ public:
      /// \param port The TCP port number of the endpoint.
      TCPEndpoint(const IOAddress& address, const unsigned short port) :
          asio_endpoint_placeholder_(
@@ -84,11 +78,9 @@ index 8ebd57551d..7c8cb35535 100644
                                port)),
          asio_endpoint_(*asio_endpoint_placeholder_)
      {}
-diff --git a/src/lib/asiolink/udp_endpoint.h b/src/lib/asiolink/udp_endpoint.h
-index f960bf3ce9..2a3da9f046 100644
 --- a/src/lib/asiolink/udp_endpoint.h
 +++ b/src/lib/asiolink/udp_endpoint.h
-@@ -42,7 +42,7 @@ class UDPEndpoint : public IOEndpoint {
+@@ -42,7 +42,7 @@ public:
      /// \param port The UDP port number of the endpoint.
      UDPEndpoint(const IOAddress& address, const unsigned short port) :
          asio_endpoint_placeholder_(
@@ -97,11 +89,9 @@ index f960bf3ce9..2a3da9f046 100644
                                port)),
          asio_endpoint_(*asio_endpoint_placeholder_)
      {}
-diff --git a/src/lib/asiolink/unix_domain_socket.cc b/src/lib/asiolink/unix_domain_socket.cc
-index f43e1c9e9b..43ff3c8f24 100644
 --- a/src/lib/asiolink/unix_domain_socket.cc
 +++ b/src/lib/asiolink/unix_domain_socket.cc
-@@ -83,7 +83,7 @@ class UnixDomainSocketImpl : public boost::enable_shared_from_this<UnixDomainSoc
+@@ -83,7 +83,7 @@ public:
      /// @param buffer Buffers holding the data to be sent.
      /// @param handler User supplied callback to be invoked when data have
      /// been sent or sending error is signalled.
@@ -110,7 +100,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                  const UnixDomainSocket::Handler& handler);
  
  
-@@ -103,7 +103,7 @@ class UnixDomainSocketImpl : public boost::enable_shared_from_this<UnixDomainSoc
+@@ -103,7 +103,7 @@ public:
      /// @param ec Error code returned as a result of sending the data.
      /// @param length Length of the data sent.
      void sendHandler(const UnixDomainSocket::Handler& remote_handler,
@@ -119,7 +109,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                       const boost::system::error_code& ec,
                       size_t length);
  
-@@ -127,7 +127,7 @@ class UnixDomainSocketImpl : public boost::enable_shared_from_this<UnixDomainSoc
+@@ -127,7 +127,7 @@ public:
      /// @param buffer A buffer into which the data should be received.
      /// @param handler User supplied callback invoked when data have been
      /// received on an error is signalled.
@@ -128,7 +118,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                     const UnixDomainSocket::Handler& handler);
  
      /// @brief Local handler invoked as a result of asynchronous receive.
-@@ -146,7 +146,7 @@ class UnixDomainSocketImpl : public boost::enable_shared_from_this<UnixDomainSoc
+@@ -146,7 +146,7 @@ public:
      /// @param ec Error code returned as a result of asynchronous receive.
      /// @param length Size of the received data.
      void receiveHandler(const UnixDomainSocket::Handler& remote_handler,
@@ -137,7 +127,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                          const boost::system::error_code& ec,
                          size_t length);
  
-@@ -197,7 +197,7 @@ UnixDomainSocketImpl::asyncSend(const void* data, const size_t length,
+@@ -197,7 +197,7 @@ UnixDomainSocketImpl::asyncSend(const vo
  }
  
  void
@@ -146,7 +136,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                               const UnixDomainSocket::Handler& handler) {
      auto local_handler = std::bind(&UnixDomainSocketImpl::sendHandler,
                                     shared_from_this(),
-@@ -207,7 +207,7 @@ UnixDomainSocketImpl::doSend(const boost::asio::const_buffers_1& buffer,
+@@ -207,7 +207,7 @@ UnixDomainSocketImpl::doSend(const boost
  
  void
  UnixDomainSocketImpl::sendHandler(const UnixDomainSocket::Handler& remote_handler,
@@ -155,7 +145,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                                    const boost::system::error_code& ec,
                                    size_t length) {
      // The asynchronous send may return EWOULDBLOCK or EAGAIN on some
-@@ -230,7 +230,7 @@ UnixDomainSocketImpl::asyncReceive(void* data, const size_t length,
+@@ -230,7 +230,7 @@ UnixDomainSocketImpl::asyncReceive(void*
  }
  
  void
@@ -164,7 +154,7 @@ index f43e1c9e9b..43ff3c8f24 100644
                                  const UnixDomainSocket::Handler& handler) {
      auto local_handler = std::bind(&UnixDomainSocketImpl::receiveHandler,
                                     shared_from_this(),
-@@ -240,7 +240,7 @@ UnixDomainSocketImpl::doReceive(const boost::asio::mutable_buffers_1& buffer,
+@@ -240,7 +240,7 @@ UnixDomainSocketImpl::doReceive(const bo
  
  void
  UnixDomainSocketImpl::receiveHandler(const UnixDomainSocket::Handler& remote_handler,
@@ -173,11 +163,9 @@ index f43e1c9e9b..43ff3c8f24 100644
                                       const boost::system::error_code& ec,
                                       size_t length) {
      // The asynchronous receive may return EWOULDBLOCK or EAGAIN on some
-diff --git a/src/lib/dhcp/iface_mgr.cc b/src/lib/dhcp/iface_mgr.cc
-index 01a1d63da5..419268bfe5 100644
 --- a/src/lib/dhcp/iface_mgr.cc
 +++ b/src/lib/dhcp/iface_mgr.cc
-@@ -1034,7 +1034,7 @@ IfaceMgr::getLocalAddress(const IOAddress& remote_addr, const uint16_t port) {
+@@ -1034,7 +1034,7 @@ IfaceMgr::getLocalAddress(const IOAddres
      }
  
      // Create socket that will be used to connect to remote endpoint.
