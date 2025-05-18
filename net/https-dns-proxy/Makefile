@@ -1,13 +1,15 @@
+# Entware specific: no prefix r before $(PKG_RELEASE)
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=https-dns-proxy
-PKG_VERSION:=2023.12.26
+PKG_VERSION:=2025.05.11
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/aarond10/https_dns_proxy/
-PKG_SOURCE_VERSION:=8afbba71502ddd5aee91602318875a03e86dfc4e
-PKG_MIRROR_HASH:=4865cf4cdfe77f75656f35f191e349c01cab7c5f43ad2a0a49308796d48006e5
+PKG_SOURCE_VERSION:=a34e20d6e24df603427d91bac8f58c2d3a8aa0a6
+PKG_MIRROR_HASH:=43a2dc631f925dbf43efaf53da925e1e8eb61f30cc02020ff3a5024b27e2dd91
 
 PKG_MAINTAINER:=Stan Grishin <stangri@melmac.ca>
 PKG_LICENSE:=MIT
@@ -53,7 +55,7 @@ define Package/https-dns-proxy/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/https_dns_proxy $(1)/opt/sbin/https-dns-proxy
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S09https-dns-proxy $(1)/opt/etc/init.d/
-#	$(SED) "s|^\(readonly PKG_VERSION\).*|\1='$(PKG_VERSION)-$(PKG_RELEASE)'|" $(1)/etc/init.d/https-dns-proxy
+#	$(SED) "s|^\(readonly PKG_VERSION\).*|\1='$(PKG_VERSION)-r$(PKG_RELEASE)'|" $(1)/etc/init.d/https-dns-proxy
 	$(INSTALL_DIR) $(1)/opt/etc/config
 	$(INSTALL_CONF) ./files/https-dns-proxy.conf $(1)/opt/etc/config/https-dns-proxy
 #	$(INSTALL_DIR) $(1)/etc/uci-defaults/
