@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=chrony
 PKG_VERSION:=4.6.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://chrony-project.org/releases/
@@ -79,10 +79,10 @@ CONFIGURE_ARGS+= \
 	--sysconfdir=/opt/etc/chrony \
 	--prefix=/opt \
 	--chronyrundir=/opt/var/run/chrony \
-	$(if $(findstring normal,$(BUILD_VARIANT)),--disable-nts,--enable,nts) \
+	$(if $(findstring normal,$(BUILD_VARIANT)),--disable-nts) \
 	--disable-readline \
 	--disable-rtc \
-	--disable-sechash \
+	$(if $(findstring normal,$(BUILD_VARIANT)),--disable-sechash) \
 	--with-hwclockfile=/opt/sbin/hwclock \
 	--with-pidfile=/opt/var/run/chrony/chronyd.pid \
 	--with-sendmail=/opt/sbin/sendmail
