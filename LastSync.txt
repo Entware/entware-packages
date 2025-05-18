@@ -1,9 +1,8 @@
-commit 1ebad043021a901613bb5f072a338be5224df15a (HEAD -> master, origin/master, origin/HEAD)
-Author: Stan Grishin <stangri@melmac.ca>
-Date:   Wed Jan 1 05:25:33 2025 +0000
+commit 7c268c3ac2cc3e3fb259c057036ec7032cc16395 (HEAD -> master, origin/master, origin/HEAD)
+Author: Thlv Alivs <zgmzzzz18@gmail.com>
+Date:   Sun May 18 12:40:32 2025 +0800
 
-    pbr: Makefile bugfixes
+    zabbix: update to 7.0.12
+    also fix build error
     
-    * remove indentation in postinst/prerm/postrm scripts to fix issues with APK
-    
-    Signed-off-by: Stan Grishin <stangri@melmac.ca>
+    Signed-off-by: Thlv Alivs <zgmzzzz18@gmail.com>
