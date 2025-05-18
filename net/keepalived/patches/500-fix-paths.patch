@@ -1,6 +1,6 @@
 --- a/keepalived/core/global_data.c
 +++ b/keepalived/core/global_data.c
-@@ -858,7 +858,7 @@ dump_global_data(FILE *fp, data_t * data
+@@ -907,7 +907,7 @@ dump_global_data(FILE *fp, data_t * data
  #endif
  #ifdef _WITH_SNMP_
  	conf_write(fp, " SNMP traps %s", data->enable_traps ? "enabled" : "disabled");
@@ -11,7 +11,7 @@
  	conf_write(fp, " SNMP VS stats update interval = %s", format_decimal(data->snmp_vs_stats_update_interval, TIMER_HZ_DIGITS));
 --- a/keepalived/core/main.c
 +++ b/keepalived/core/main.c
-@@ -1750,7 +1750,7 @@ set_debug_options(const char *options)
+@@ -1741,7 +1741,7 @@ set_debug_options(const char *options)
  static void
  report_distro(void)
  {
@@ -33,15 +33,15 @@
  	} else
 --- a/lib/rttables.c
 +++ b/lib/rttables.c
-@@ -34,7 +34,7 @@
- #include "parser.h"
- #include "rttables.h"
+@@ -83,7 +83,7 @@
  
--#define IPROUTE2_DIR	"/etc/iproute2/"
-+#define IPROUTE2_DIR	"/opt/etc/iproute2/"
  
- #define RT_TABLES_FILE	IPROUTE2_DIR "rt_tables"
- #define	RT_DSFIELD_FILE IPROUTE2_DIR "rt_dsfield"
+ #if !defined IPROUTE_USR_DIR && !defined IPROUTE_ETC_DIR
+-#define IPROUTE_ETC_DIR "/etc/iproute2"
++#define IPROUTE_ETC_DIR "/opt/etc/iproute2"
+ #endif
+ 
+ #define RT_TABLES_FILE	"rt_tables"
 --- a/lib/utils.c
 +++ b/lib/utils.c
 @@ -1301,7 +1301,7 @@ get_modprobe(void)
