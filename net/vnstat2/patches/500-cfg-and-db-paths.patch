@@ -1,6 +1,6 @@
 --- a/src/cfg.c
 +++ b/src/cfg.c
-@@ -486,10 +486,8 @@ int opencfgfile(const char *cfgfile, FIL
+@@ -482,10 +482,8 @@ int opencfgfile(const char *cfgfile, FIL
  		/* try to open first available config file */
  		if (tryhome && (*fd = fopen(buffer, "r")) != NULL) {
  			strncpy_nt(cfg.cfgfile, buffer, 512);
