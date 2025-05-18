@@ -1,0 +1,70 @@
+--- a/configure
++++ b/configure
+@@ -5,14 +5,14 @@
+ 
+ # Defaults
+ 
+-PREFIX="/usr/local"
++PREFIX="/opt"
+ SYSCONFDIR="$PREFIX/etc/luarocks"
+ ROCKS_TREE="$PREFIX"
+ LUA_SUFFIX=""
+-LUA_DIR="/usr"
+-LUA_BINDIR="/usr/bin"
+-LUA_INCDIR="/usr/include"
+-LUA_LIBDIR="/usr/lib"
++LUA_DIR="/opt"
++LUA_BINDIR="/opt/bin"
++LUA_INCDIR="/opt/include"
++LUA_LIBDIR="/opt/lib"
+ LUA_VERSION="5.1"
+ MULTIARCH_SUBDIR=""
+ 
+@@ -228,8 +228,8 @@ done
+ 
+ if [ "$PREFIX_SET" = "yes" -a ! "$SYSCONFDIR_SET" = "yes" ]
+ then
+-   if [ "$PREFIX" = "/usr" ]
+-   then SYSCONFDIR=/etc/luarocks
++   if [ "$PREFIX" = "/opt" ]
++   then SYSCONFDIR=/opt/etc/luarocks
+    else SYSCONFDIR=$PREFIX/etc/luarocks
+    fi
+ fi
+--- a/src/luarocks/cfg.lua
++++ b/src/luarocks/cfg.lua
+@@ -220,7 +220,7 @@ local defaults = {
+ 
+    lua_modules_path = "/share/lua/"..cfg.lua_version,
+    lib_modules_path = "/lib/lua/"..cfg.lua_version,
+-   rocks_subdir = site_config.LUAROCKS_ROCKS_SUBDIR or "/lib/luarocks/rocks",
++   rocks_subdir = site_config.LUAROCKS_ROCKS_SUBDIR or "/opt/lib/luarocks/rocks",
+ 
+    arch = "unknown",
+    lib_extension = "unknown",
+@@ -397,10 +397,10 @@ if detected.unix then
+    defaults.lib_extension = "so"
+    defaults.external_lib_extension = "so"
+    defaults.obj_extension = "o"
+-   defaults.external_deps_dirs = { "/usr/local", "/usr" }
+-   defaults.variables.LUA_BINDIR = site_config.LUA_BINDIR or "/usr/local/bin"
+-   defaults.variables.LUA_INCDIR = site_config.LUA_INCDIR or "/usr/local/include"
+-   defaults.variables.LUA_LIBDIR = site_config.LUA_LIBDIR or "/usr/local/lib"
++   defaults.external_deps_dirs = { "/opt", "/usr/local", "/usr" }
++   defaults.variables.LUA_BINDIR = site_config.LUA_BINDIR or "/opt/bin"
++   defaults.variables.LUA_INCDIR = site_config.LUA_INCDIR or "/opt/include"
++   defaults.variables.LUA_LIBDIR = site_config.LUA_LIBDIR or "/opt/lib"
+    defaults.variables.CFLAGS = "-O2"
+    defaults.cmake_generator = "Unix Makefiles"
+    defaults.platforms = { "unix" }
+--- a/src/luarocks/make_manifest.lua
++++ b/src/luarocks/make_manifest.lua
+@@ -35,7 +35,7 @@ function make_manifest.run(...)
+   
+    util.printout("Making manifest for "..repo)
+    
+-   if repo:match("/lib/luarocks") and not flags["local-tree"] then
++   if repo:match("/opt/lib/luarocks") and not flags["local-tree"] then
+       util.warning("This looks like a local rocks tree, but you did not pass --local-tree.")
+    end
+    

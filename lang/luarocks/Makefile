@@ -48,7 +48,7 @@ endef
 # My custom args, copied and modified from SDK_ROOT/include/package-defaults.mk
 CONFIGURE_ARGS = \
     --prefix=$(CONFIGURE_PREFIX) \
-    --sysconfdir=/etc \
+    --sysconfdir=/opt/etc \
     --with-lua=$(STAGING_DIR_HOSTPKG)
 
 HOST_CONFIGURE_ARGS= \
@@ -73,11 +73,13 @@ define Host/Compile
 endef
 
 define Package/luarocks/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/luarocks-5.1 $(1)/usr/bin/luarocks
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/luarocks-admin-5.1 $(1)/usr/bin/luarocks-admin
-	$(CP) $(PKG_INSTALL_DIR)/usr/share $(1)/usr/share
-	$(CP) $(PKG_INSTALL_DIR)/etc $(1)/etc
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/luarocks-5.1 $(1)/opt/bin/luarocks
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/luarocks-admin-5.1 $(1)/opt/bin/luarocks-admin
+	$(SED) 's,^#!.*lua,#!/opt/bin/lua,' $(1)/opt/bin/luarocks{,-admin}
+	$(CP) $(PKG_INSTALL_DIR)/opt/share $(1)/opt/share
+	$(SED) 's,$(STAGING_DIR_HOSTPKG),/opt,g' $(1)/opt/share/lua/5.1/luarocks/site_config.lua
+	$(CP) $(PKG_INSTALL_DIR)/opt/etc $(1)/opt/etc
 endef
 
 define Host/Install
