@@ -11,7 +11,7 @@
  		transport.l = mnd_sprintf(&transport.s, 0, "unix://%s", socket_or_pipe->s);
 --- a/ext/pdo_mysql/pdo_mysql.c
 +++ b/ext/pdo_mysql/pdo_mysql.c
-@@ -49,7 +49,7 @@ ZEND_DECLARE_MODULE_GLOBALS(pdo_mysql)
+@@ -52,7 +52,7 @@ ZEND_DECLARE_MODULE_GLOBALS(pdo_mysql)
  #  define PDO_MYSQL_UNIX_ADDR PHP_MYSQL_UNIX_SOCK_ADDR
  # else
  #  ifndef PHP_WIN32
