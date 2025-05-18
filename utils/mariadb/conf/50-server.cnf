@@ -2,7 +2,7 @@
 # These groups are read by MariaDB server.
 # Use it for options that only the server (but not clients) should see
 #
-# See the examples of server my.cnf files in /usr/share/mysql/
+# See the examples of server my.cnf files in /opt/share/mysql/
 #
 
 # this is read by the standalone daemon and embedded servers

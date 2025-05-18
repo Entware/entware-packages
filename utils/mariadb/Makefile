@@ -4,18 +4,18 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# XXX Entware specific: keep /opt/var/run/mysqld; fix fmtlib-11.1
+# XXX Entware specific: keep /opt/var/run/mysqld
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mariadb
-PKG_VERSION:=11.4.3
+PKG_VERSION:=11.4.4
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL := https://archive.mariadb.org/$(PKG_NAME)-$(PKG_VERSION)/source
 
-PKG_HASH:=6f0017b9901bb1897de0eed21caef9ffa9d66ef559345a0d8a6f011308413ece
+PKG_HASH:=96fbd2e6e93fb7e8b373eea75d85b6fea57c0e111a02090cbbefed52599dc77b
 PKG_MAINTAINER:=Michal Hrusecky <Michal@Hrusecky.net>
 PKG_LICENSE:=GPL-2.0-only
 PKG_LICENSE_FILES:=COPYING THIRDPARTY
@@ -375,6 +375,7 @@ CMAKE_OPTIONS += \
 	-DWITH_INNODB_LZO=OFF \
 	-DWITH_INNODB_SNAPPY=OFF \
 	-DWITH_JEMALLOC=OFF \
+	-DWITH_LIBAIO=$(if $(CONFIG_KERNEL_IO_URING),OFF,ON) \
 	-DWITH_LIBARCHIVE=OFF \
 	-DWITH_LIBFMT=system \
 	-DWITH_LIBWRAP=OFF \
@@ -384,6 +385,7 @@ CMAKE_OPTIONS += \
 	-DWITH_SAFEMALLOC=OFF \
 	-DWITH_SSL=system \
 	-DWITH_SYSTEMD=no \
+	-DWITH_URING=$(if $(CONFIG_KERNEL_IO_URING),ON,OFF) \
 	-DWITH_VALGRIND=OFF \
 	-DWITH_ZLIB=system \
 	-DMYSQLD_USER=root \
