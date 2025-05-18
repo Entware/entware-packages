@@ -6,13 +6,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=snort3
-PKG_VERSION:=3.1.84.0
-PKG_RELEASE:=4
+PKG_VERSION:=3.7.1.0
+PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/snort3/snort3
-PKG_MIRROR_HASH:=ffa69fdd95c55a943ab4dd782923caf31937dd8ad29e202d7fe781373ed84444
+PKG_MIRROR_HASH:=e70af1a4fc97260094a5ef44d6133c12e3da8e82769788e2677d4fdb020f0c44
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>, John Audia <therealgraysky@proton.me>
 PKG_LICENSE:=GPL-2.0-only
