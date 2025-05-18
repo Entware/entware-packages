@@ -1,0 +1,11 @@
+--- a/libs/charconv/config/Jamfile
++++ b/libs/charconv/config/Jamfile
+@@ -8,7 +8,7 @@ import path ;
+ lib quadmath ;
+ lib double-conversion ;
+ 
+-exe has_float128 : has_float128.cpp quadmath ;
++exe has_float128 : has_float128.cpp ;
+ exe has_double_conversion : has_double_conversion.cpp double-conversion ;
+ 
+ explicit has_float128 ;
