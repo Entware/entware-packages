@@ -1,17 +1,6 @@
---- a/common/argparse.c
-+++ b/common/argparse.c
-@@ -1738,7 +1738,7 @@ gnupg_argparser (gnupg_argparse_t *arg,
-           s = confname;
-         xfree (arg->internal->confname);
-         arg->internal->confname = make_filename_try
--          (confdir.sys? confdir.sys : "/etc", s, NULL);
-+          (confdir.sys? confdir.sys : "/opt/etc", s, NULL);
-         xfree (tmpname);
-         if (!arg->internal->confname)
-           return (arg->r_opt = ARGPARSE_OUT_OF_CORE);
 --- a/common/homedir.c
 +++ b/common/homedir.c
-@@ -475,7 +475,7 @@ unix_rootdir (int want_sysconfdir)
+@@ -566,7 +566,7 @@ unix_rootdir (enum wantdir_values wantdi
                    log_info ("error reading symlink '%s': %s\n",
                              MYPROC_SELF_EXE, gpg_strerror (err));
                    xfree  (buffer);
@@ -20,7 +9,7 @@
                    log_info ("trying fallback '%s'\n", buffer);
                  }
                break;
-@@ -514,7 +514,7 @@ unix_rootdir (int want_sysconfdir)
+@@ -605,7 +605,7 @@ unix_rootdir (enum wantdir_values wantdi
          {
            /* Strip one part and expect the file below a bin dir.  */
            *p = 0;
@@ -29,7 +18,7 @@
            xfree (buffer);
            buffer = p;
          }
-@@ -935,13 +935,13 @@ _gnupg_socketdir_internal (int skip_chec
+@@ -1092,13 +1092,13 @@ _gnupg_socketdir_internal (int skip_chec
  
    static const char * const bases[] = {
  #ifdef USE_RUN_GNUPG_USER_SOCKET
@@ -47,6 +36,17 @@
      NULL
    };
    int i;
+--- a/common/sysutils.c
++++ b/common/sysutils.c
+@@ -1530,7 +1530,7 @@ gnupg_chuid (const char *user, int silen
+ 
+   /* If we need to switch set PATH to a standard value and make sure
+    * GNUPGHOME is not set. */
+-  try_set_envvar ("PATH", "/usr/local/bin:/usr/bin:/bin", silent);
++  try_set_envvar ("PATH", "/opt/usr/bin:/opt/bin:/usr/local/bin:/usr/bin:/bin", silent);
+   if (gnupg_unsetenv ("GNUPGHOME"))
+     if (!silent)
+       log_info ("error unsetting envvar %s: %s\n", "GNUPGHOME",
 --- a/common/t-exectool.c
 +++ b/common/t-exectool.c
 @@ -39,8 +39,8 @@ static void
@@ -110,7 +110,7 @@
    int idx;
 --- a/dirmngr/dirmngr.c
 +++ b/dirmngr/dirmngr.c
-@@ -1190,13 +1190,13 @@ main (int argc, char **argv)
+@@ -1249,13 +1249,13 @@ main (int argc, char **argv)
            log_info (_("Note: '%s' is not considered an option\n"), argv[i]);
      }
  
@@ -129,7 +129,7 @@
      {
 --- a/dirmngr/dns.c
 +++ b/dirmngr/dns.c
-@@ -5444,7 +5444,7 @@ struct dns_resolv_conf *dns_resconf_loca
+@@ -5547,7 +5547,7 @@ struct dns_resolv_conf *dns_resconf_loca
  			goto error;
  	}
  
@@ -138,7 +138,7 @@
  		if (error != ENOENT)
  			goto error;
  	}
-@@ -10497,7 +10497,7 @@ static struct dns_resolv_conf *resconf(v
+@@ -10606,7 +10606,7 @@ static struct dns_resolv_conf *resconf(v
  	}
  
  	if (!MAIN.nssconf.count) {
@@ -149,7 +149,7 @@
  			MAIN.nssconf.path[MAIN.nssconf.count++] = path;
 --- a/dirmngr/dns-stuff.c
 +++ b/dirmngr/dns-stuff.c
-@@ -553,7 +553,7 @@ libdns_init (void)
+@@ -554,7 +554,7 @@ libdns_init (ctrl_t ctrl)
            goto leave;
          }
  
@@ -160,7 +160,7 @@
        if (err)
 --- a/g10/photoid.c
 +++ b/g10/photoid.c
-@@ -293,7 +293,7 @@ get_default_photo_command(void)
+@@ -406,7 +406,7 @@ get_default_photo_command(void)
        return "xdg-open %I";
      }
    else
@@ -171,7 +171,7 @@
  #endif
 --- a/g13/call-syshelp.c
 +++ b/g13/call-syshelp.c
-@@ -136,7 +136,7 @@ start_syshelp (ctrl_t ctrl, assuan_conte
+@@ -132,7 +132,7 @@ start_syshelp (ctrl_t ctrl, assuan_conte
      argv[2] = "gnupg-g13-syshelp";
      argv[3] = NULL;
  
@@ -229,7 +229,7 @@
    }
    if (err)
      {
-@@ -683,7 +683,7 @@ sh_dmcrypt_mount_container (ctrl_t ctrl,
+@@ -684,7 +684,7 @@ sh_dmcrypt_mount_container (ctrl_t ctrl,
      argv[1] = targetname;
      argv[2] = NULL;
      log_debug ("now running \"dmsetup create %s\"\n", targetname);
@@ -238,7 +238,7 @@
    }
    if (err)
      {
-@@ -706,7 +706,7 @@ sh_dmcrypt_mount_container (ctrl_t ctrl,
+@@ -709,7 +709,7 @@ sh_dmcrypt_mount_container (ctrl_t ctrl,
        argv[2] = NULL;
        log_debug ("now running \"mount %s %s\"\n",
                   targetname_abs, ctrl->devti->mountpoint);
@@ -247,25 +247,34 @@
        if (err)
          {
            log_error ("error running mount: %s\n", gpg_strerror (err));
-@@ -773,7 +773,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+@@ -776,7 +776,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
      argv[0] = targetname_abs;
      argv[1] = NULL;
-     log_debug ("now running \"umount %s\"\n", targetname_abs);
--    err = gnupg_exec_tool ("/bin/umount", argv, NULL, &result, NULL);
-+    err = gnupg_exec_tool ("/opt/bin/umount", argv, NULL, &result, NULL);
-   }
-   if (err)
-     {
-@@ -786,7 +786,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
-           argv[0] = "-mv";
-           argv[1] = targetname_abs;
-           argv[2] = NULL;
--          gnupg_exec_tool ("/bin/fuser", argv, NULL, &result, NULL);
-+          gnupg_exec_tool ("/opt/bin/fuser", argv, NULL, &result, NULL);
-         }
-       goto leave;
-     }
-@@ -803,7 +803,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+     log_debug ("now running \"findmnt %s\"\n", targetname_abs);
+-    err = gnupg_exec_tool ("/bin/findmnt", argv, NULL, &result, NULL);
++    err = gnupg_exec_tool ("/opt/bin/findmnt", argv, NULL, &result, NULL);
+ 
+     if (err)
+       log_info ("Note: device was not mounted\n");
+@@ -788,7 +788,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+         argv[0] = targetname_abs;
+         argv[1] = NULL;
+         log_debug ("now running \"umount %s\"\n", targetname_abs);
+-        err = gnupg_exec_tool ("/bin/umount", argv, NULL, &result, NULL);
++        err = gnupg_exec_tool ("/opt/bin/umount", argv, NULL, &result, NULL);
+         if (err)
+           {
+             log_error ("error running umount: %s\n", gpg_strerror (err));
+@@ -798,7 +798,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
+                 argv[0] = "-mv";
+                 argv[1] = targetname_abs;
+                 argv[2] = NULL;
+-                gnupg_exec_tool ("/bin/fuser", argv, NULL, &result, NULL);
++                gnupg_exec_tool ("/opt/bin/fuser", argv, NULL, &result, NULL);
+               }
+             goto leave;
+           }
+@@ -817,7 +817,7 @@ sh_dmcrypt_umount_container (ctrl_t ctrl
      argv[1] = targetname_abs;
      argv[2] = NULL;
      log_debug ("now running \"dmsetup remove %s\"\n", targetname_abs);
@@ -274,7 +283,7 @@
    }
    if (err)
      {
-@@ -872,7 +872,7 @@ sh_dmcrypt_suspend_container (ctrl_t ctr
+@@ -886,7 +886,7 @@ sh_dmcrypt_suspend_container (ctrl_t ctr
      argv[1] = targetname;
      argv[2] = NULL;
      log_debug ("now running \"dmsetup suspend %s\"\n", targetname);
@@ -283,7 +292,7 @@
    }
    if (err)
      {
-@@ -895,7 +895,7 @@ sh_dmcrypt_suspend_container (ctrl_t ctr
+@@ -909,7 +909,7 @@ sh_dmcrypt_suspend_container (ctrl_t ctr
      argv[3] = "key wipe";
      argv[4] = NULL;
      log_debug ("now running \"dmsetup message %s 0 key wipe\"\n", targetname);
@@ -292,7 +301,7 @@
    }
    if (err)
      {
-@@ -995,7 +995,7 @@ sh_dmcrypt_resume_container (ctrl_t ctrl
+@@ -1009,7 +1009,7 @@ sh_dmcrypt_resume_container (ctrl_t ctrl
      argv[2] = "0";
      argv[3] = NULL;
      log_debug ("now running \"dmsetup message %s 0 [key set]\"\n", targetname);
@@ -301,7 +310,7 @@
    }
    wipememory (hexkey, sizeof hexkey);
    if (err)
-@@ -1017,7 +1017,7 @@ sh_dmcrypt_resume_container (ctrl_t ctrl
+@@ -1031,7 +1031,7 @@ sh_dmcrypt_resume_container (ctrl_t ctrl
      argv[1] = targetname;
      argv[2] = NULL;
      log_debug ("now running \"dmsetup resume %s\"\n", targetname);
@@ -380,10 +389,21 @@
      # and with an pre-existing gnupg home directory
      [ -d "$home/.gnupg" ] || continue
      # but not root
+--- a/tools/gpg-mail-tube.c
++++ b/tools/gpg-mail-tube.c
+@@ -714,7 +714,7 @@ get_vsd_gpgbin (void)
+       if (!pend || p+1 == pend)
+         continue;
+       *pend = 0;
+-      gpgbin = xstrconcat (p+1, "/usr/bin/gpg", NULL);
++      gpgbin = xstrconcat (p+1, "/opt/bin/gpg", NULL);
+       break;
+     }
+   if (gpgbin && gnupg_access (gpgbin, X_OK))
 --- a/tools/gpg-wks-server.c
 +++ b/tools/gpg-wks-server.c
-@@ -310,7 +310,7 @@ main (int argc, char **argv)
-     opt.gpg_program = gnupg_module_name (GNUPG_MODULE_NAME_GPG);
+@@ -311,7 +311,7 @@ main (int argc, char **argv)
+     opt.gpg_program = xstrdup (gnupg_module_name (GNUPG_MODULE_NAME_GPG));
  
    if (!opt.directory)
 -    opt.directory = "/var/lib/gnupg/wks";
