@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bison
 PKG_VERSION:=3.8.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/$(PKG_NAME)
@@ -47,6 +47,9 @@ define Package/bison/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/bison $(1)/opt/bin
 	$(INSTALL_BIN) ./files/yacc $(1)/opt/bin/yacc
+# bison: /opt/share/bison/m4sugar/m4sugar.m4: cannot open: No such file or directory
+	$(INSTALL_DIR) $(1)/opt/share
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/{aclocal,bison} $(1)/opt/share
 endef
 
 $(eval $(call BuildPackage,bison))
