@@ -1,8 +1,5 @@
 #!/bin/sh
 
-mkdir -m 0700 -p /opt/var/racoon
-[ -f /opt/etc/ipsec.conf ] && /opt/sbin/setkey -f /opt/etc/ipsec.conf
-
 ENABLED=yes
 PROCS=pcscd
 ARGS=""
