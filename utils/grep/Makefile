@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=grep
 PKG_VERSION:=3.11
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/grep
@@ -23,9 +23,9 @@ PKG_CPE_ID:=cpe:/a:gnu:grep
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
-MAKE_FLAGS += SHELL="/bin/sh"
-
 include $(INCLUDE_DIR)/package.mk
+
+MAKE_FLAGS += SHELL="/bin/sh"
 
 define Package/grep
   SECTION:=utils
@@ -50,8 +50,6 @@ define Package/grep/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/egrep $(1)/opt/libexec/egrep-gnu
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/fgrep $(1)/opt/libexec/fgrep-gnu
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/grep $(1)/opt/libexec/grep-gnu
-	# Entware specific: fix exec path in scripts
-	$(SED) 's,^#!.*bash,#!/bin/sh,' $(1)/opt/libexec/{e,f}grep-gnu
 endef
 
 $(eval $(call BuildPackage,grep))
