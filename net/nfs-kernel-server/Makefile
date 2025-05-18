@@ -4,21 +4,27 @@
 # See /LICENSE for more information.
 #
 
+# Entware specifics:
+# add sqlite3 (PKG_BUILD_DEPENDS - .../support/reexport);
+# add nls.mk (libxml2);
+# add --disable-nfsdctl (NETLINK_EXT_ACK since Linux 4.12);
+# remove deps lsqlite3, libnl
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nfs-kernel-server
-PKG_VERSION:=2.6.2
-PKG_RELEASE:=4
-PKG_HASH:=26d46448982252e9e2c8346d10cf13e1143e7089c866f53e25db3359f3e9493c
+PKG_VERSION:=2.8.3
+PKG_RELEASE:=1
+PKG_HASH:=11e7c5847a8423a72931c865bd9296e7fd56ff270a795a849183900961711725
 
-PKG_SOURCE_URL:=@SF/nfs
+PKG_SOURCE_URL:=@KERNEL/linux/utils/nfs-utils/$(PKG_VERSION)
 PKG_SOURCE:=nfs-utils-$(PKG_VERSION).tar.xz
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/nfs-utils-$(PKG_VERSION)
 PKG_BUILD_DIR:=$(BUILD_DIR)/nfs-utils-$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=$(PKG_NAME)/host libevent2
+PKG_BUILD_DEPENDS:=$(PKG_NAME)/host libevent2 sqlite3
 HOST_BUILD_DEPENDS:=libtirpc/host
 
 PKG_CONFIG_DEPENDS:= \
@@ -27,14 +33,14 @@ PKG_CONFIG_DEPENDS:= \
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/nfs-kernel-server/Default
 	SECTION:=net
 	CATEGORY:=Network
 	SUBMENU:=Filesystem
-	DEPENDS:=+libblkid +libuuid +libtirpc
+	DEPENDS:=+libblkid +libuuid +libtirpc +libxml2
 	URL:=http://nfs.sourceforge.net/
-	MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 endef
 
 define Package/nfs-kernel-server
@@ -72,7 +78,6 @@ define Package/nfs-utils/Default
 	CATEGORY:=Utilities
 	DEPENDS+= +NFS_KERNEL_SERVER_V4:libkeyutils +NFS_KERNEL_SERVER_V4:libdevmapper
 	URL:=http://nfs.sourceforge.net/
-	MAINTAINER:=Peter Wagner <tripolar@gmx.at>
 endef
 
 define Package/nfs-utils
@@ -116,13 +121,14 @@ CONFIGURE_ARGS += \
 	--disable-caps \
 	--disable-gss \
 	--disable-nfsdcld \
+	--disable-nfsdctl \
 	--disable-nfsdcltrack \
 	--enable-shared \
 	--enable-static \
 	--with-rpcgen=internal \
 	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv4 \
 	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv41 \
-	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv4server
+	$(if $(CONFIG_NFS_KERNEL_SERVER_V4),--enable,--disable)-nfsv42
 
 ifeq ($(CONFIG_IPV6),n)
 	CONFIGURE_ARGS += --disable-ipv6
@@ -149,7 +155,10 @@ HOST_CONFIGURE_ARGS += \
 	--disable-gss \
 	--disable-nfsv4 \
 	--disable-nfsv41 \
+	--disable-nfsrahead \
+	--disable-nfsdctl \
 	--without-tcp-wrappers \
+	--disable-junction \
 	--with-rpcgen=internal
 
 HOST_CONFIGURE_VARS += \
@@ -165,12 +174,17 @@ HOST_CONFIGURE_VARS += \
 	ac_cv_func_getrpcbynumber=yes \
 	ac_cv_func_getrpcbynumber_r=yes \
 	enable_ipv6=no \
+	enable_nfsdctl=no \
 	GSSGLUE_CFLAGS=" " \
 	GSSGLUE_LIBS=" " \
 	RPCSECGSS_CFLAGS=" " \
 	RPCSECGSS_LIBS=" " \
 	CONFIG_SQLITE3_TRUE="\#" \
-	CONFIG_NFSDCLD_TRUE="\#"
+	CONFIG_NFSDCLD_TRUE="\#" \
+	ac_cv_lib_event_core_event_base_dispatch=yes \
+	ac_cv_header_event2_event_h=yes \
+	c_cv_lib_sqlite3_sqlite3_libversion_number=yes \
+	libsqlite3_cv_is_recent=yes
 
 define Host/Compile
 	$(MAKE) -C $(HOST_BUILD_DIR)/tools/rpcgen all

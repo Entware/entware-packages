@@ -67,7 +67,7 @@
  99-nfs.rules: 99-nfs.rules.in $(builddefs)
 --- a/tools/nfsrahead/Makefile.in
 +++ b/tools/nfsrahead/Makefile.in
-@@ -421,7 +421,7 @@ nfsrahead_LDFLAGS = -lmount
+@@ -431,7 +431,7 @@ nfsrahead_LDFLAGS = $(LIBMOUNT_LIBS)
  nfsrahead_LDADD = ../../support/nfs/libnfsconf.la
  man5_MANS = nfsrahead.man
  EXTRA_DIST = $(man5_MANS)
@@ -167,7 +167,7 @@
  man5_MANS	= nfs.man
 --- a/utils/mount/Makefile.in
 +++ b/utils/mount/Makefile.in
-@@ -448,7 +448,7 @@ unitdir = @unitdir@
+@@ -460,7 +460,7 @@ unitdir = @unitdir@
  # is disabled as may be appropriate when /sbin is a symlink.
  # Note that we don't use "if CONFIG_SBIN_OVERRIDE" as that
  # causes autotools to notice the override and disable it.
@@ -200,7 +200,7 @@
  EXTRA_DIST	= $(man8_MANS)
 --- a/utils/nfsdcltrack/Makefile.in
 +++ b/utils/nfsdcltrack/Makefile.in
-@@ -421,7 +421,7 @@ unitdir = @unitdir@
+@@ -431,7 +431,7 @@ unitdir = @unitdir@
  # disabled to install in /usr/sbin anyway.
  # Note that we don't use "if CONFIG_SBIN_OVERRIDE" as that
  # causes autotools to notice the override and disable it.
