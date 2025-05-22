@@ -1,0 +1,11 @@
+--- a/lib/sh/random.c
++++ b/lib/sh/random.c
+@@ -184,7 +184,7 @@ urandom_close ()
+ #  define GRND_RANDOM 2
+ #endif
+ 
+-static ssize_t
++ssize_t
+ getrandom (buf, len, flags)
+      void *buf;
+      size_t len;
