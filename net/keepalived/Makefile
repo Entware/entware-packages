@@ -278,6 +278,8 @@ ifeq ($(CONFIG_KEEPALIVED_DBUS),y)
 		$(1)/opt/share/dbus-1/interfaces/org.keepalived.Vrrp1.Vrrp.xml
 endif
 
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S81keepalived $(1)/opt/etc/init.d/
 endef
 
 define Package/keepalived-sync
