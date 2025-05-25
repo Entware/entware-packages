@@ -253,6 +253,7 @@ define Package/openssh-server/install
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/sshd $(1)/opt/sbin/
 	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/sshd-auth $(1)/opt/lib/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/sshd-session $(1)/opt/lib/
 	$(INSTALL_DIR) $(1)/opt/var/empty
 endef
