@@ -72,6 +72,8 @@ define Package/zerotier/install
 	$(LN) zerotier-one $(1)/opt/bin/zerotier-cli
 	$(LN) zerotier-one $(1)/opt/bin/zerotier-idtool
 #	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S27zerotier $(1)/opt/etc/init.d/
 
 ifeq ($(CONFIG_ZEROTIER_ENABLE_SELFTEST),y)
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/zerotier-selftest $(1)/opt/bin/
