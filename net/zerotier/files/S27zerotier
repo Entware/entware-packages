@@ -1,9 +1,9 @@
 #!/bin/sh
 
 ENABLED=yes
-PROCS=srelay
-ARGS="zerotier-one"
-PREARGS="-d"
+PROCS=zerotier-one
+ARGS="-d"
+PREARGS=""
 DESC=$PROCS
 PATH=/opt/sbin:/opt/bin:/opt/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
