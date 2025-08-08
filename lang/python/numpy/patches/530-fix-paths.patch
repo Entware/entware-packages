@@ -1,0 +1,22 @@
+--- a/vendored-meson/meson/mesonbuild/dependencies/data/CMakePathInfo.txt
++++ b/vendored-meson/meson/mesonbuild/dependencies/data/CMakePathInfo.txt
+@@ -13,7 +13,7 @@ list(APPEND TMP_PATHS_LIST ${CMAKE_SYSTE
+ 
+ set(LIB_ARCH_LIST)
+ if(CMAKE_LIBRARY_ARCHITECTURE_REGEX)
+-  file(GLOB implicit_dirs RELATIVE /lib /lib/*-linux-gnu* )
++  file(GLOB implicit_dirs RELATIVE /opt/usr/lib /opt/lib )
+   foreach(dir ${implicit_dirs})
+     if("${dir}" MATCHES "${CMAKE_LIBRARY_ARCHITECTURE_REGEX}")
+       list(APPEND LIB_ARCH_LIST "${dir}")
+--- a/vendored-meson/meson/mesonbuild/linkers/linkers.py
++++ b/vendored-meson/meson/mesonbuild/linkers/linkers.py
+@@ -1521,7 +1521,7 @@ class AIXDynamicLinker(PosixDynamicLinke
+         if len(sys_path) == 0:
+             # get_compiler_system_lib_dirs doesn't support our compiler.
+             # Use the default system library path
+-            all_paths.update(['/usr/lib', '/lib'])
++            all_paths.update(['/opt/usr/lib', '/opt/lib'])
+         else:
+             # Include the compiler's default library paths, but filter out paths that don't exist
+             for p in sys_path:
