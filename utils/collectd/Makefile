@@ -4,8 +4,10 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific:	battery, madwifi, write_log plugins added;
-#			dhcpleases,  iwinfo, routeros, snmp6 plugins removed.
+# Entware specific: 
+# * battery, madwifi, write_log plugins added;
+# * dhcpleases,  iwinfo, routeros, snmp6 plugins removed.
+# * --without-libstatgrab configure option added
 
 include $(TOPDIR)/rules.mk
 
@@ -268,7 +270,8 @@ CONFIGURE_ARGS+= \
 	--enable-daemon \
 	--with-nan-emulation \
 	--with-libyajl=no \
-	--without-perl-bindings
+	--without-perl-bindings \
+	--without-libstatgrab
 
 CONFIGURE_VARS+= \
 	CFLAGS="$$$$CFLAGS $(FPIC)" \
