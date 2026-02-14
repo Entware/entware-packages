@@ -1,0 +1,64 @@
+--- a/compat/tempnam.c
++++ b/compat/tempnam.c
+@@ -31,7 +31,7 @@
+ 
+ #undef TMP_MAX
+ 
+-#define _tmp        "/tmp/"
++#define _tmp        "/opt/tmp/"
+ #define lengthof_tmp    5
+ 
+ #ifndef LONG_BIT
+--- a/src/acl/external/kerberos_ldap_group/support_krb5.cc
++++ b/src/acl/external/kerberos_ldap_group/support_krb5.cc
+@@ -121,8 +121,8 @@ krb5_create_cache(char *domain, char *se
+      * prepare memory credential cache
+      */
+ #if  !HAVE_KRB5_MEMORY_CACHE || HAVE_SUN_LDAP_SDK
+-    mem_cache = (char *) xmalloc(strlen("FILE:/tmp/squid_ldap_") + strlen(domain) + 1 + 16);
+-    snprintf(mem_cache, strlen("FILE:/tmp/squid_ldap_") + strlen(domain) + 1 + 16, "FILE:/tmp/squid_ldap_%s_%d", domain, (int) getpid());
++    mem_cache = (char *) xmalloc(strlen("FILE:/opt/tmp/squid_ldap_") + strlen(domain) + 1 + 20);
++    snprintf(mem_cache, strlen("FILE:/opt/tmp/squid_ldap_") + strlen(domain) + 1 + 20, "FILE:/opt/tmp/squid_ldap_%s_%d", domain, (int) getpid());
+ #else
+     mem_cache = (char *) xmalloc(strlen("MEMORY:squid_ldap_") + strlen(domain) + 1 + 16);
+     snprintf(mem_cache, strlen("MEMORY:squid_ldap_") + strlen(domain) + 1 + 16, "MEMORY:squid_ldap_%s_%d", domain, (int) getpid());
+--- a/src/acl/external/kerberos_ldap_group/support_ldap.cc
++++ b/src/acl/external/kerberos_ldap_group/support_ldap.cc
+@@ -549,7 +549,7 @@ ldap_set_ssl_defaults(struct main_args *
+         }
+         ssl_cacertfile = xstrdup(getenv("TLS_CACERTFILE"));
+         if (!ssl_cacertfile) {
+-            ssl_cacertfile = xstrdup("/etc/ssl/certs/cert.pem");
++            ssl_cacertfile = xstrdup("/opt/etc/ssl/certs/cert.pem");
+         }
+         if (access(ssl_cacertfile, R_OK) == 0) {
+             debug((char *)
+@@ -571,7 +571,7 @@ ldap_set_ssl_defaults(struct main_args *
+             xfree(ssl_cacertfile);
+             ssl_cacertdir = xstrdup(getenv("TLS_CACERTDIR"));
+             if (!ssl_cacertdir) {
+-                ssl_cacertdir = xstrdup("/etc/ssl/certs");
++                ssl_cacertdir = xstrdup("/opt/etc/ssl/certs");
+             }
+             if (access(ssl_cacertdir, R_OK) == 0) {
+                 debug((char *)
+@@ -617,7 +617,7 @@ ldap_set_ssl_defaults(struct main_args *
+      */
+     ssl_certdbpath = getenv("SSL_CERTDBPATH");
+     if (!ssl_certdbpath) {
+-        ssl_certdbpath = xstrdup("/etc/certs");
++        ssl_certdbpath = xstrdup("/opt/etc/certs");
+     }
+     debug((char *)
+           "%s| %s: DEBUG: Set certificate database path for ldap server to %s. (Changeable through setting environment variable SSL_CERTDBPATH)\n",
+--- a/src/tools.cc
++++ b/src/tools.cc
+@@ -127,7 +127,7 @@ mail_warranty(void)
+     const mode_t prev_umask=umask(S_IXUSR|S_IXGRP|S_IWGRP|S_IWOTH|S_IXOTH);
+ 
+ #if HAVE_MKSTEMP
+-    char filename[] = "/tmp/squid-XXXXXX";
++    char filename[] = "/opt/tmp/squid-XXXXXX";
+     int tfd = mkstemp(filename);
+     if (tfd < 0 || (fp = fdopen(tfd, "w")) == nullptr) {
+         umask(prev_umask);

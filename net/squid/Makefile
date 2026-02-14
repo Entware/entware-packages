@@ -9,19 +9,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=squid
-PKG_VERSION:=6.11
+PKG_VERSION:=7.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=http://www2.pl.squid-cache.org/Versions/v6/ \
-	http://www.squid-cache.org/Versions/v6/
-PKG_HASH:=b6e60c08429314287925331b3da6c03b7d3c35b7e03319f78edb8bad6fc68899
+PKG_SOURCE_URL:=https://github.com/squid-cache/squid/releases/download/SQUID_$(subst .,_,$(PKG_VERSION))
+PKG_HASH:=763b5a78561cedc4e47634fa42b8e6b8d46c87c949a151b4e7ac2396d2f97dea
 
 PKG_MAINTAINER:=Marko Ratkaj <markoratkaj@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_CPE_ID:=cpe:/a:squid-cache:squid
 
-PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
@@ -37,7 +35,7 @@ endef
 define Package/squid
   $(call Package/squid/Default)
   MENU:=1
-  DEPENDS:=+libpthread +librt +libltdl +libstdcpp +libatomic +USE_GLIBC:libbsd
+  DEPENDS:= +USE_GLIBC:libbsd +libpthread +librt +libltdl +libstdcpp +libatomic #+USE_GLIBC:libcrypt-compat
   DEPENDS+= +SQUID_use-gnutls:libgnutls +SQUID_use-openssl:libopenssl
   DEPENDS+= +SQUID_with-libcap:libcap
   DEPENDS+= +SQUID_with-nettle:libnettle
@@ -61,18 +59,14 @@ define Package/squid/conffiles
 /opt/etc/squid/squid.conf
 endef
 
-define Package/squid-mod-cachemgr
-  $(call Package/squid/Default)
-  DEPENDS:=squid
-  TITLE:=Web based proxy manager and reporting tool
-endef
-
 CONFIGURE_ARGS += \
 	BUILDCXX=$(HOSTCXX_NOCACHE) \
 	BUILDCXXFLAGS="$(HOST_CXXFLAGS) $(HOST_CPPFLAGS) -std=c++17" \
 	--datadir=/opt/share/squid \
 	--libexecdir=/opt/lib/squid \
 	--sysconfdir=/opt/etc/squid \
+	--with-logdir=/opt/var/log/squid \
+	--with-pidfile=/opt/var/run/squid.pid \
 	--disable-static \
 	--enable-delay-pools \
 	--enable-cache-digests \
@@ -107,7 +101,7 @@ CONFIGURE_ARGS += \
 
 CONFIGURE_VARS += \
 	ac_cv_header_linux_netfilter_ipv4_h=yes \
-	ac_cv_epoll_works=yes
+	squid_cv_epoll_works=yes
 
 TARGET_CFLAGS += -Wno-error
 TARGET_CXXFLAGS += -std=c++17
@@ -140,10 +134,4 @@ define Package/squid/install
 	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/lib/squid/*
 endef
 
-define Package/squid-mod-cachemgr/install
-	$(INSTALL_DIR) $(1)/opt/share/www/cgi-bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/squid/cachemgr.cgi $(1)/opt/share/www/cgi-bin/
-endef
-
 $(eval $(call BuildPackage,squid))
-$(eval $(call BuildPackage,squid-mod-cachemgr))
