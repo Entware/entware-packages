@@ -8,20 +8,21 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=jool
-PKG_VERSION:=4.1.13
-PKG_RELEASE:=1
+PKG_VERSION:=4.1.14
+PKG_RELEASE:=3
 
 PKG_LICENSE:=GPL-2.0-only
 PKG_LICENSE_FILES:=COPYING
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/NICMx/Jool.git
-PKG_SOURCE_VERSION:=39ca69f8717a83733548bea3b7bfad2a4799572a
-PKG_MIRROR_HASH:=f00592d639f34bc6c38e9d012d59a694b159a57ada1b86985cd4df38e4f85d5f
+PKG_SOURCE_VERSION:=5afde37abf68df63c4beda091dfbeb2967d3ce80
+PKG_MIRROR_HASH:=af483e5d35cea029dca11fc20c048334b9b9e84cfdca10921bfdd9d63779aadd
 
 PKG_BUILD_DIR=$(KERNEL_BUILD_DIR)/$(PKG_SOURCE_SUBDIR)
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=!USE_GLIBC:argp-standalone
+PKG_FLAGS:=nonshared
 
 PKG_FIXUP:=autoreconf
 
@@ -83,8 +84,7 @@ define KernelPackage/jool-netfilter
 	DEPENDS:= \
 		@IPV6 \
 		+kmod-crypto-md5 \
-		+kmod-nf-conntrack \
-		+kmod-nf-conntrack6
+		+kmod-nf-conntrack
 	FILES:= \
 		$(PKG_BUILD_DIR)/src/mod/common/jool_common.$(LINUX_KMOD_SUFFIX) \
 		$(PKG_BUILD_DIR)/src/mod/nat64/jool.$(LINUX_KMOD_SUFFIX) \
