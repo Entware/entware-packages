@@ -1,0 +1,16 @@
+--- a/Makefile
++++ b/Makefile
+@@ -1,9 +1,9 @@
+-CFLAGS = -g -Wall
+-LDLIBS = -lcrypt
++CFLAGS += -I.
+ 
+-dht-example: dht-example.o dht.o
++all: libdht.a
+ 
+-all: dht-example
++libdht.a: dht.o
++	$(AR) $(ARFLAGS) $@ $^
+ 
+ clean:
+ 	-rm -f dht-example dht-example.o dht-example.id dht.o *~ core
