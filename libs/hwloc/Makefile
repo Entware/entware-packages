@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hwloc
-PKG_VERSION:=2.11.2
+PKG_VERSION:=2.12.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=https://download.open-mpi.org/release/$(PKG_NAME)/v2.11
-PKG_HASH:=f7f88fecae067100f1a1a915b658add0f4f71561259482910a69baea22fe8409
+PKG_SOURCE_URL:=https://download.open-mpi.org/release/$(PKG_NAME)/v2.12
+PKG_HASH:=563e61d70febb514138af0fac36b97621e01a4aacbca07b86e7bd95b85055ba0
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>
 PKG_LICENSE:=BSD-3-Clause
@@ -67,6 +67,7 @@ endef
 
 CONFIGURE_ARGS += \
 	--disable-libxml2 \
+	--disable-opencl \
 	--disable-libudev
 
 define Build/InstallDev
