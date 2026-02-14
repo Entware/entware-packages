@@ -1,0 +1,80 @@
+#!/bin/sh
+
+prefix="/opt"
+PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+
+if [ -z "`pidof rpcbind`" ] ; then
+	echo 'Error: rpcbind not started'
+	exit 1
+fi
+
+start() {
+	echo 'Starting NFSV3 server'
+	modprobe nfsd
+	#for module in sunrpc lockd exportfs nfsd; do
+	#       insmod /lib/modules/$(uname -r)/${module}.ko
+	#done;
+	mkdir -p /opt/var/lib/nfs/sm
+	mkdir -p /opt/var/lib/nfs/sm.bak
+	mkdir -p /opt/var/lib/nfs/v4recovery
+
+	echo -n > /opt/var/lib/nfs/etab
+	echo -n > /opt/var/lib/nfs/rmtab
+	echo -n > /opt/var/lib/nfs/xtab
+	echo 65536 > /proc/fs/nfsd/max_block_size
+
+	grep -q /proc/fs/nfsd /proc/mounts || \
+		mount -t nfsd nfsd /proc/fs/nfsd
+
+	exportfs -ra
+	rpc.nfsd --no-nfs-version 4 --no-tcp 1
+	rpc.mountd --no-nfs-version 4 --no-tcp
+	}
+
+stop() {
+	echo 'Stopping NFSV3 server'
+	killall -q rpc.mountd
+	killall -q -2 nfsd
+	exportfs -ua
+	grep -q /proc/fs/nfsd /proc/mounts && umount /proc/fs/nfsd
+	rm -f /opt/var/lib/nfs/*tab
+	}
+
+status() {
+	if [ -n "`pidof nfsd`" ] && [ -n "`pidof rpc.mountd`" ] ; then
+		echo 'NFSV3 server is running'
+	else
+		echo 'NFSV3 server is stopped'
+	fi
+	}
+
+reload() {
+	echo 'Reloading NFSV3 daemon'
+	exportfs -r
+	}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 2
+		start
+		;;
+	status)
+		status
+		;;
+	reload)
+		reload
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart|reload|status)"
+		exit 1
+		;;
+esac
+
+exit 0

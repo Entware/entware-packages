@@ -9,45 +9,51 @@ if [ -z "`pidof rpcbind`" ] ; then
 fi
 
 start() {
-	echo 'Starting NFS server'
+	echo 'Starting NFSV4 server'
 	modprobe nfsd
 	#for module in sunrpc lockd exportfs nfsd; do
 	#       insmod /lib/modules/$(uname -r)/${module}.ko
 	#done;
+	mkdir -p /opt/var/lib/nfs/rpc_pipefs
 	mkdir -p /opt/var/lib/nfs/sm
 	mkdir -p /opt/var/lib/nfs/sm.bak
-	mkdir -p /opt/var/lib/nfs/rpc_pipefs
+	mkdir -p /opt/var/lib/nfs/v4recovery
+
 	echo -n > /opt/var/lib/nfs/etab
 	echo -n > /opt/var/lib/nfs/rmtab
 	echo -n > /opt/var/lib/nfs/xtab
-	mount -t rpc_pipefs rpc_pipefs /opt/var/lib/nfs/rpc_pipefs
-	mount -t nfsd nfsd /proc/fs/nfsd
 	echo 65536 > /proc/fs/nfsd/max_block_size
+
+	grep -q /proc/fs/nfsd /proc/mounts || \
+		mount -t nfsd nfsd /proc/fs/nfsd
+	grep -q /proc/fs/rpc_pipefs /proc/mounts || \
+		mount -t rpc_pipefs sunrpc /opt/var/lib/nfs/rpc_pipefs
+
 	exportfs -ra
-	rpc.nfsd --no-nfs-version 4 --no-tcp 1
-	rpc.mountd --no-nfs-version 4 --no-tcp
+	nfsv4.exportd -f
+	rpc.nfsd -N3 --no-tcp 1
 	}
 
 stop() {
-	echo 'Stopping NFS server'
-	killall -q rpc.mountd
+	echo 'Stopping NFSV4 server'
 	killall -q -2 nfsd
 	exportfs -ua
-	umount /proc/fs/nfsd 2>/dev/null
-	umount /opt/var/lib/nfs/rpc_pipefs 2>/dev/null
-	rm -f /opt/var/lib/nfs/etab
+	exportfs -f
+	grep -q /proc/fs/rpc_pipefs /proc/mounts && umount /opt/var/lib/nfs/rpc_pipefs
+	grep -q /proc/fs/nfsd /proc/mounts && umount /proc/fs/nfsd
+	rm -f /opt/var/lib/nfs/*tab
 	}
 
 status() {
-	if [ -n "`pidof nfsd`" ] && [ -n "`pidof rpc.mountd`" ] ; then
-		echo 'NFS server is running'
+	if [ -n "`pidof nfsd`" ]; then
+		echo 'NFSV4 server is running'
 	else
-		echo 'NFS server is stopped'
+		echo 'NFSV4 server is stopped'
 	fi
 	}
 
 reload() {
-	echo 'Reloading /opt/etc/exports'
+	echo 'Reloading NFSV4 daemon'
 	exportfs -r
 	}
 
