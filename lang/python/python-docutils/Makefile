@@ -32,11 +32,17 @@ plaintext markup syntax.
 endef
 
 # XXX Entware specific: skip bite-code
-define Build/Prepare
-	$(Build/Prepare/Default)
-	cd $(PKG_BUILD_DIR)/tools; \
-	for scr in rst*.py; do \
-		mv $$$$scr `basename $$$$scr .py` ; \
+BINS:= \
+	rst2html rst2html4 rst2html5 rst2latex rst2man rst2odt \
+	rst2odt_prepstyles rst2pseudoxml rst2s5 rst2xetex rst2xml \
+	rstpep2html
+
+define Py3Package/python3-docutils/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(CP) $(PKG_INSTALL_DIR)/opt/bin/docutils $(1)/opt/bin
+	for bin in $(BINS); do \
+		$(CP) $(PKG_INSTALL_DIR)/opt/bin/$$$$bin.py \
+			$(1)/opt/bin/$$$${bin}; \
 	done
 endef
 
