@@ -1,0 +1,42 @@
+In file included from tayga.h:20,
+                 from nat64.c:19:
+tayga.h:244:1: error: static assertion failed: "64-bit time_t is required"
+ static_assert(sizeof(time_t) == 8, "64-bit time_t is required");
+ ^~~~~~~~~~~~~
+In file included from tayga.h:20,
+                 from addrmap.c:19:
+tayga.h:244:1: error: static assertion failed: "64-bit time_t is required"
+ static_assert(sizeof(time_t) == 8, "64-bit time_t is required");
+ ^~~~~~~~~~~~~
+In file included from tayga.h:20,
+                 from dynamic.c:19:
+tayga.h:244:1: error: static assertion failed: "64-bit time_t is required"
+ static_assert(sizeof(time_t) == 8, "64-bit time_t is required");
+ ^~~~~~~~~~~~~
+In file included from tayga.h:20,
+                 from tayga.c:19:
+tayga.h:244:1: error: static assertion failed: "64-bit time_t is required"
+ static_assert(sizeof(time_t) == 8, "64-bit time_t is required");
+ ^~~~~~~~~~~~~
+In file included from tayga.h:20,
+                 from conffile.c:19:
+tayga.h:244:1: error: static assertion failed: "64-bit time_t is required"
+ static_assert(sizeof(time_t) == 8, "64-bit time_t is required");
+ ^~~~~~~~~~~~~
+make[3]: *** [Makefile:36: all] Error 1
+---
+
+--- a/tayga.h
++++ b/tayga.h
+@@ -243,7 +243,11 @@ struct map_dynamic {
+ 	struct free_addr free;
+ };
+ 
++#if defined(__LP64__) || !defined(__GLIBC__)
+ static_assert(sizeof(time_t) == 8, "64-bit time_t is required");
++#else
++static_assert(sizeof(time_t) == 4, "32-bit time_t is required");
++#endif
+ 
+ /// Mapping entry (Dynamic Pool)
+ struct dynamic_pool {

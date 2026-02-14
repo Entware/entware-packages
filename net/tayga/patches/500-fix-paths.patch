@@ -1,0 +1,11 @@
+--- a/tayga.h
++++ b/tayga.h
+@@ -101,7 +101,7 @@ struct tun_pi {
+ 
+ /// Default configuration path
+ #ifndef TAYGA_CONF_PATH
+-#define TAYGA_CONF_PATH "/etc/tayga.conf"
++#define TAYGA_CONF_PATH "/opt/etc/tayga.conf"
+ #endif
+ 
+ 
