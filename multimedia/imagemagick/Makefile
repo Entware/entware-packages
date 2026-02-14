@@ -6,16 +6,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=imagemagick
-PKG_VERSION:=7.1.1.38
+PKG_VERSION:=7.1.2.1
 PKG_RELEASE:=1
-PKG_MAINTAINER:=Aleksey Vasilenko <aleksey.vasilenko@gmail.com>
+PKG_MAINTAINER:=
 
 _PKGVER:=$(basename $(PKG_VERSION))
 _PKGREV:=$(_PKGVER)-$(subst .,,$(suffix $(PKG_VERSION)))
 
 PKG_SOURCE:=ImageMagick-$(_PKGREV).tar.xz
 PKG_SOURCE_URL:=https://imagemagick.org/archive
-PKG_HASH:=48de548d4977fc226c982ca03b9d6ad8001b47d8dc142b49fdca69333bc4ad82
+PKG_HASH:=ead4b5d33efab77ec84335a0be9c34a0fa7e3693456bf05e76d3fa492ad6ebbb
 PKG_BUILD_DIR:=$(BUILD_DIR)/ImageMagick-$(_PKGREV)
 PKG_FIXUP:=autoreconf
 
@@ -32,33 +32,34 @@ define Package/imagemagick/Default
   SECTION:=multimedia
   CATEGORY:=Multimedia
   TITLE:=Image manipulation tools
-  URL:=https://www.imagemagick.org/
+  URL:=https://imagemagick.org/
 endef
 
 define Package/imagemagick
   $(call Package/imagemagick/Default)
   DEPENDS:=+libltdl +libpthread +zlib +libfreetype +libpng +libjpeg +libtiff +libzip
-  DEPENDS+=+dejavu-fonts-ttf-DejaVuSans \
-	+dejavu-fonts-ttf-DejaVuSans-Bold \
-	+dejavu-fonts-ttf-DejaVuSans-BoldOblique \
-	+dejavu-fonts-ttf-DejaVuSansCondensed \
-	+dejavu-fonts-ttf-DejaVuSansCondensed-Bold \
-	+dejavu-fonts-ttf-DejaVuSansCondensed-BoldOblique \
-	+dejavu-fonts-ttf-DejaVuSansCondensed-Oblique \
-	+dejavu-fonts-ttf-DejaVuSans-ExtraLight \
-	+dejavu-fonts-ttf-DejaVuSansMono \
-	+dejavu-fonts-ttf-DejaVuSansMono-Bold \
-	+dejavu-fonts-ttf-DejaVuSansMono-BoldOblique \
-	+dejavu-fonts-ttf-DejaVuSansMono-Oblique \
-	+dejavu-fonts-ttf-DejaVuSans-Oblique \
-	+dejavu-fonts-ttf-DejaVuSerif \
-	+dejavu-fonts-ttf-DejaVuSerif-Bold \
-	+dejavu-fonts-ttf-DejaVuSerif-BoldItalic \
-	+dejavu-fonts-ttf-DejaVuSerifCondensed \
-	+dejavu-fonts-ttf-DejaVuSerifCondensed-Bold \
-	+dejavu-fonts-ttf-DejaVuSerifCondensed-BoldItalic \
-	+dejavu-fonts-ttf-DejaVuSerifCondensed-Italic \
-	+dejavu-fonts-ttf-DejaVuSerif-Italic
+  EXTRA_DEPENDS:= \
+	dejavu-fonts-ttf-DejaVuSans, \
+	dejavu-fonts-ttf-DejaVuSans-Bold, \
+	dejavu-fonts-ttf-DejaVuSans-BoldOblique, \
+	dejavu-fonts-ttf-DejaVuSansCondensed, \
+	dejavu-fonts-ttf-DejaVuSansCondensed-Bold, \
+	dejavu-fonts-ttf-DejaVuSansCondensed-BoldOblique, \
+	dejavu-fonts-ttf-DejaVuSansCondensed-Oblique, \
+	dejavu-fonts-ttf-DejaVuSans-ExtraLight, \
+	dejavu-fonts-ttf-DejaVuSansMono, \
+	dejavu-fonts-ttf-DejaVuSansMono-Bold, \
+	dejavu-fonts-ttf-DejaVuSansMono-BoldOblique, \
+	dejavu-fonts-ttf-DejaVuSansMono-Oblique, \
+	dejavu-fonts-ttf-DejaVuSans-Oblique, \
+	dejavu-fonts-ttf-DejaVuSerif, \
+	dejavu-fonts-ttf-DejaVuSerif-Bold, \
+	dejavu-fonts-ttf-DejaVuSerif-BoldItalic, \
+	dejavu-fonts-ttf-DejaVuSerifCondensed, \
+	dejavu-fonts-ttf-DejaVuSerifCondensed-Bold, \
+	dejavu-fonts-ttf-DejaVuSerifCondensed-BoldItalic, \
+	dejavu-fonts-ttf-DejaVuSerifCondensed-Italic, \
+	dejavu-fonts-ttf-DejaVuSerif-Italic
 endef
 
 define Package/imagemagick/description
@@ -80,19 +81,20 @@ define Package/imagemagick/conffiles
 /opt/etc/ImageMagick-7/type-apple.xml
 /opt/etc/ImageMagick-7/type-dejavu.xml
 /opt/etc/ImageMagick-7/type-ghostscript.xml
+/opt/etc/ImageMagick-7/type-urw-base35-type1.xml
 /opt/etc/ImageMagick-7/type-urw-base35.xml
 /opt/etc/ImageMagick-7/type-windows.xml
 /opt/etc/ImageMagick-7/type.xml
 endef
 
 CONFIGURE_ARGS += \
-	--disable-static \
+	--disable-cipher \
 	--disable-docs \
+	--disable-hdri \
+	--disable-static \
 	--enable-dependency-tracking \
 	--with-modules \
-	--disable-hdri \
 	--with-quantum-depth=8 \
-	--disable-cipher \
 	--without-bzlib \
 	--without-djvu \
 	--without-fontconfig \
@@ -105,14 +107,14 @@ CONFIGURE_ARGS += \
 	--without-magick-plus-plus \
 	--without-openexr \
 	--without-openjp2 \
+	--without-pango \
 	--without-raqm \
 	--without-raw \
 	--without-webp \
-	--without-x \
-	--without-zstd \
-	--without-pango \
 	--without-wmf \
+	--without-x \
 	--without-xml \
+	--without-zstd \
 	--with-gs-font-dir=/opt/share/fonts/type1/gsfonts \
 	--with-dejavu-font-dir=/opt/share/fonts/ttf-dejavu
 

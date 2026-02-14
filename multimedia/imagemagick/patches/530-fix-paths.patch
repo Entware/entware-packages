@@ -1,0 +1,84 @@
+--- a/MagickCore/magick-baseconfig.h
++++ b/MagickCore/magick-baseconfig.h
+@@ -39,7 +39,7 @@
+ 
+ /* Directory where architecture-dependent configuration files live. */
+ #ifndef MAGICKCORE_CONFIGURE_PATH
+-#define MAGICKCORE_CONFIGURE_PATH "/etc/ImageMagick-7/"
++#define MAGICKCORE_CONFIGURE_PATH "/opt/etc/ImageMagick-7/"
+ #endif
+ 
+ /* Subdirectory of lib where architecture-dependent configuration files live.
+@@ -58,7 +58,7 @@
+ 
+ /* Directory where ImageMagick documents live. */
+ #ifndef MAGICKCORE_DOCUMENTATION_PATH
+-#define MAGICKCORE_DOCUMENTATION_PATH "/usr/share/doc/ImageMagick-7/"
++#define MAGICKCORE_DOCUMENTATION_PATH "/opt/share/doc/ImageMagick-7/"
+ #endif
+ 
+ /* Define to 1 to enable distributed pixel cache support. */
+@@ -74,7 +74,7 @@
+ 
+ /* Directory where executables are installed. */
+ #ifndef MAGICKCORE_EXECUTABLE_PATH
+-#define MAGICKCORE_EXECUTABLE_PATH "/usr/bin/"
++#define MAGICKCORE_EXECUTABLE_PATH "/opt/bin/"
+ #endif
+ 
+ /* Define if you have FFTW library */
+@@ -1114,12 +1114,12 @@
+ 
+ /* Directory where ImageMagick architecture headers live. */
+ #ifndef MAGICKCORE_INCLUDEARCH_PATH
+-#define MAGICKCORE_INCLUDEARCH_PATH "/usr/include/ImageMagick-7/"
++#define MAGICKCORE_INCLUDEARCH_PATH "/opt/include/ImageMagick-7/"
+ #endif
+ 
+ /* Directory where ImageMagick headers live. */
+ #ifndef MAGICKCORE_INCLUDE_PATH
+-#define MAGICKCORE_INCLUDE_PATH "/usr/include/ImageMagick-7/"
++#define MAGICKCORE_INCLUDE_PATH "/opt/include/ImageMagick-7/"
+ #endif
+ 
+ /* ImageMagick is formally installed under prefix */
+@@ -1152,7 +1152,7 @@
+ 
+ /* Directory where architecture-dependent files live. */
+ #ifndef MAGICKCORE_LIBRARY_ABSOLUTE_PATH
+-#define MAGICKCORE_LIBRARY_ABSOLUTE_PATH "/usr/lib64/ImageMagick-7.1.2/"
++#define MAGICKCORE_LIBRARY_ABSOLUTE_PATH "/opt/lib/ImageMagick-7.1.2/"
+ #endif
+ 
+ /* Subdirectory of lib where ImageMagick architecture dependent files are
+@@ -1304,7 +1304,7 @@
+ 
+ /* Directory where architecture-independent configuration files live. */
+ #ifndef MAGICKCORE_SHARE_PATH
+-#define MAGICKCORE_SHARE_PATH "/usr/share/ImageMagick-7/"
++#define MAGICKCORE_SHARE_PATH "/opt/share/ImageMagick-7/"
+ #endif
+ 
+ /* Subdirectory of lib where architecture-independent configuration files
+--- a/MagickCore/version.h
++++ b/MagickCore/version.h
+@@ -44,7 +44,7 @@ extern "C" {
+ #define MagickAuthoritativeLicense  \
+   "https://imagemagick.org/script/license.php"
+ #define MagickAuthoritativeURL  "https://imagemagick.org"
+-#define MagickHomeURL  "file:///usr/share/doc/ImageMagick-7/index.html"
++#define MagickHomeURL  "file:///opt/share/doc/ImageMagick-7/index.html"
+ #if (MAGICKCORE_QUANTUM_DEPTH == 8)
+ #define MagickQuantumDepth  "Q8"
+ #define MagickQuantumRange  "255"
+--- a/MagickCore/version.h.in
++++ b/MagickCore/version.h.in
+@@ -44,7 +44,7 @@ extern "C" {
+ #define MagickAuthoritativeLicense  \
+   "https://imagemagick.org/script/license.php"
+ #define MagickAuthoritativeURL  "https://imagemagick.org"
+-#define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
++#define MagickHomeURL  "file:///opt/share/doc/ImageMagick-7/index.html"
+ #if (MAGICKCORE_QUANTUM_DEPTH == 8)
+ #define MagickQuantumDepth  "Q8"
+ #define MagickQuantumRange  "255"
