@@ -1,0 +1,19 @@
+# https://github.com/curl/curl/pull/15026
+
+---
+
+--- a/lib/curl_trc.h
++++ b/lib/curl_trc.h
+@@ -175,6 +175,12 @@ void Curl_trc_ws(struct Curl_easy *data,
+ #if !defined(CURL_DISABLE_WEBSOCKETS) && !defined(CURL_DISABLE_HTTP)
+ #define CURL_TRC_WS    Curl_trc_ws
+ #endif
++#if defined(USE_WEBSOCKETS) && !defined(CURL_DISABLE_HTTP)
++static void Curl_trc_ws(struct Curl_easy *data, const char *fmt, ...)
++{
++  (void)data; (void)fmt;
++}
++#endif
+ 
+ #endif /* !CURL_HAVE_C99 */
+ 
