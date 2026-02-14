@@ -1,12 +1,12 @@
 # dns based ad/abuse domain blocking
-# Copyright (c) 2015-2025 Dirk Brenken (dev@brenken.org)
+# Copyright (c) 2015-2026 Dirk Brenken (dev@brenken.org)
 # This is free software, licensed under the GNU General Public License v3.
 #
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=adblock
-PKG_VERSION:=4.4.1
+PKG_VERSION:=4.5.1
 PKG_RELEASE:=2
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
@@ -17,7 +17,7 @@ define Package/adblock
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=adblock blocks ad/abuse domains by using DNS
-	DEPENDS:=+jshn +jsonfilter +coreutils +coreutils-sort +gawk +ca-bundle +rpcd +rpcd-mod-rpcsys
+	DEPENDS:=+jshn +jsonfilter +firewall4 +coreutils +coreutils-sort +gawk +ca-bundle +rpcd +rpcd-mod-rpcsys
 	PKGARCH:=all
 endef
 
@@ -62,8 +62,11 @@ define Package/adblock/install
 	$(INSTALL_CONF) ./files/adblock.feeds $(1)/etc/adblock
 	$(INSTALL_CONF) ./files/adblock.custom.feeds $(1)/etc/adblock
 
+	$(INSTALL_DIR) $(1)/www/cgi-bin
+	$(INSTALL_BIN) ./files/adblock.cgi $(1)/www/cgi-bin/adblock
+
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) ./files/95-adblock-housekeeping $(1)/etc/uci-defaults
 endef
 
-$(eval $(call BuildPackage,adblock))
+#$(eval $(call BuildPackage,adblock))
