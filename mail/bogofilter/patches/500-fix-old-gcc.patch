@@ -1,0 +1,52 @@
+https://sourceforge.net/p/bogofilter/git/ci/87cad54bc00973321b96e1d602f86739b5b01df7/
+https://sourceforge.net/p/bogofilter/git/ci/b46597b54311f643a7c24d8852352c3d9cb77451/
+
+xmalloc.h:69:1: error: wrong number of arguments specified for 'malloc' attribute
+ ;
+ ^
+...
+xstrdup.h:14:1: error: wrong number of arguments specified for 'malloc' attribute
+ ;
+ ^
+...
+mxcat.h:22:1: error: wrong number of arguments specified for 'malloc' attribute
+ ;
+ ^
+
+---
+
+--- a/bogofilter/src/mxcat.h
++++ b/bogofilter/src/mxcat.h
+@@ -16,8 +16,8 @@
+ char *mxcat(const char *first, ...)
+ #ifdef __clang__
+ __attribute__ ((returns_nonnull, malloc))
+-#elif defined(__GNUC__)
+-__attribute__ ((returns_nonnull, malloc (free))) 
++#elif defined(__GNUC__) && __GNUC__ > 8
++ __attribute__ ((returns_nonnull, malloc (free)))
+ #endif
+ ;
+ 
+--- a/bogofilter/src/xmalloc.h
++++ b/bogofilter/src/xmalloc.h
+@@ -63,7 +63,7 @@ __attribute__((malloc, returns_nonnull))
+ void *xrealloc(/*@only@*/ void *ptr, size_t size)
+ #if defined(__clang__)
+ __attribute__((malloc, returns_nonnull))
+-#elif defined(__GNUC__)
++#elif defined(__GNUC__) && __GNUC__ > 8
+  __attribute__((malloc, malloc (free, 1), returns_nonnull))
+ #endif
+ ;
+--- a/bogofilter/src/xstrdup.h
++++ b/bogofilter/src/xstrdup.h
+@@ -8,7 +8,7 @@
+ char *xstrdup(const char *s)
+ #if defined(__clang__)
+ __attribute__((malloc, returns_nonnull))
+-#elif defined(__GNUC__)
++#elif defined(__GNUC__) && __GNUC__ > 8
+  __attribute__((returns_nonnull, malloc, malloc (free)))
+ #endif
+ ;
