@@ -1,6 +1,6 @@
 --- a/etc/smartdns/smartdns.conf
 +++ b/etc/smartdns/smartdns.conf
-@@ -66,7 +66,7 @@ bind [::]:53
+@@ -77,7 +77,7 @@ bind [::]:53
  # cache-persist no
  
  # cache persist file
@@ -9,7 +9,7 @@
  
  # cache persist time
  # cache-checkpoint-time [second]
-@@ -155,7 +155,7 @@ force-qtype-SOA 65
+@@ -177,7 +177,7 @@ force-qtype-SOA 65
  # log-num: number of logs, 0 means disable log
  log-level info
  
@@ -18,15 +18,16 @@
  # log-size 128k
  # log-num 2
  # log-file-mode [mode]: file mode of log file.
-@@ -165,22 +165,22 @@ log-level info
+@@ -187,7 +187,7 @@ log-level info
  # audit-enable yes
  # audit-SOA [yes|no]: enable or disable log soa result.
  # audit-size size of each audit file, support k,m,g
 -# audit-file /var/log/smartdns-audit.log
 +# audit-file /opt/var/log/smartdns-audit.log
  # audit-console [yes|no]: output audit log to console.
+ # audit-syslog [yes|no]: output audit log to syslog.
  # audit-file-mode [mode]: file mode of audit file.
- # audit-size 128k
+@@ -195,15 +195,15 @@ log-level info
  # audit-num 2
  
  # Support reading dnsmasq dhcp file to resolve local hostname
@@ -40,8 +41,8 @@
  
  # certificate path
  # ca-path [path]
--# ca-path /etc/ss/certs
-+# ca-path /opt/etc/ss/certs
+-# ca-path /etc/ssl/certs
++# ca-path /opt/etc/ssl/certs
  
  # remote udp dns server list
  # server [IP]:[PORT]|URL [-blacklist-ip] [-whitelist-ip] [-check-edns] [-group [group] ...] [-exclude-default-group]

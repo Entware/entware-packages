@@ -1,6 +1,6 @@
 --- a/src/dns_client.c
 +++ b/src/dns_client.c
-@@ -938,8 +938,8 @@ static int _dns_client_set_trusted_cert(
+@@ -987,8 +987,8 @@ static int _dns_client_set_trusted_cert(
  
  		const STACK_OF(X509_NAME) *cas = SSL_CTX_get_client_CA_list(ssl_ctx);
  		if (cas && sk_X509_NAME_num(cas) == 0) {
@@ -13,9 +13,9 @@
  	}
 --- a/src/dns_conf.h
 +++ b/src/dns_conf.h
-@@ -60,12 +60,12 @@ extern "C" {
- #define MAX_QTYPE_NUM 65535
- #define DNS_MAX_REPLY_IP_NUM 8
+@@ -64,12 +64,12 @@ extern "C" {
+ #define DNS_MAX_SERVE_EXPIRED_TIME (3600 * 24 * 365)
+ #define MAX_INTERFACE_LEN 16
  
 -#define SMARTDNS_CONF_FILE "/etc/smartdns/smartdns.conf"
 -#define SMARTDNS_LOG_FILE "/var/log/smartdns/smartdns.log"
@@ -34,7 +34,7 @@
  enum domain_rule {
 --- a/src/smartdns.c
 +++ b/src/smartdns.c
-@@ -47,8 +47,8 @@
+@@ -51,8 +51,8 @@
  #include <ucontext.h>
  
  #define MAX_KEY_LEN 64
@@ -43,9 +43,9 @@
 +#define SMARTDNS_PID_FILE "/opt/var/run/smartdns.pid"
 +#define SMARTDNS_LEGACY_PID_FILE "/opt/var/run/smartdns.pid"
  #define TMP_BUFF_LEN_32 32
+ #define SMARTDNS_CRASH_CODE 254
  
- static int verbose_screen;
-@@ -763,7 +763,7 @@ int main(int argc, char *argv[])
+@@ -936,7 +936,7 @@ int main(int argc, char *argv[])
  
  	safe_strncpy(config_file, SMARTDNS_CONF_FILE, MAX_LINE_LEN);
  
@@ -56,7 +56,7 @@
  		safe_strncpy(pid_file, SMARTDNS_LEGACY_PID_FILE, MAX_LINE_LEN);
 --- a/src/tlog.c
 +++ b/src/tlog.c
-@@ -1732,7 +1732,7 @@ static void _tlog_get_gzip_cmd_path(void
+@@ -1882,7 +1882,7 @@ static void _tlog_get_gzip_cmd_path(void
      char *save_ptr = NULL;
  
      if (env_path == NULL) {
