@@ -1,0 +1,55 @@
+--- a/lib/plat/unix/unix-sockets.c
++++ b/lib/plat/unix/unix-sockets.c
+@@ -27,9 +27,9 @@
+ #endif
+ #include "private-lib-core.h"
+ 
+-#if defined(LWS_HAVE_LINUX_IPV6_H)
+-#include <linux/ipv6.h>
+-#endif
++//#if defined(LWS_HAVE_LINUX_IPV6_H)
++//#include <linux/ipv6.h>
++//#endif
+ 
+ #include <sys/ioctl.h>
+ 
+--- a/lib/roles/cgi/private-lib-roles-cgi.h
++++ b/lib/roles/cgi/private-lib-roles-cgi.h
+@@ -89,5 +89,5 @@ struct lws_cgi {
+ 	unsigned char gzip_inflate:1;
+ 	unsigned char gzip_init:1;
+ 
+-	unsigned char chunked_grace;
++	int chunked_grace;
+ };
+--- a/lib/roles/netlink/ops-netlink.c
++++ b/lib/roles/netlink/ops-netlink.c
+@@ -36,6 +36,14 @@
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
+ 
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++/* work around Entware -Wconversion problem */
++#undef RTA_ALIGNTO
++#define RTA_ALIGNTO 4U
++
+ //#define lwsl_netlink lwsl_notice
+ #define lwsl_cx_netlink		lwsl_cx_info
+ #define lwsl_cx_netlink_debug	lwsl_cx_debug
+@@ -207,10 +215,13 @@ rops_handle_POLLIN_netlink(struct lws_co
+ 					lws_sa46_write_numeric_address(&robj.dest, buf, sizeof(buf));
+ 					lwsl_cx_netlink_debug(cx, "IFA_ADDRESS: %s/%d", buf, robj.dest_len);
+ 					break;
++/* IFA_FLAGS since Linux 3.14 */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0)
+ 				case IFA_FLAGS:
+ 					lwsl_cx_netlink_debug(cx, "IFA_FLAGS: 0x%x (not handled)",
+ 							*(unsigned int*)RTA_DATA(ra));
+ 					break;
++#endif /* IFA_FLAGS since Linux 3.14 */
+ 				case IFA_BROADCAST:
+ 					lwsl_cx_netlink_debug(cx, "IFA_BROADCAST (not handled)");
+ 					break;
