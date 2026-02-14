@@ -7,13 +7,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pillow
-PKG_VERSION:=10.1.0
+PKG_VERSION:=12.0.0
 PKG_RELEASE:=1
 
-PYPI_NAME:=Pillow
-PKG_HASH:=e6bf8de6c36ed96c86ea3b6e1d5273c53f46ef518a062464cd7ef5dd2cf92e38
+PYPI_NAME:=pillow
+PKG_HASH:=87d4f8125c9988bfbed67af47dd7a953e2fc7b0cc1e7800ec6d2080d490bb353
 
-PKG_BUILD_DEPENDS:=python-setuptools-scm/host
+PKG_BUILD_DEPENDS:=python-pybind11/host python-setuptools/host
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=HPND
@@ -43,7 +43,6 @@ PYTHON3_PKG_BUILD_CONFIG_SETTINGS += \
 	--build-option=--enable-zlib \
 	--build-option=--enable-jpeg \
 	--build-option=--enable-webp \
-	--build-option=--enable-webpmux \
 	--build-option=--enable-tiff \
 	--build-option=--enable-freetype \
 	--build-option=--disable-lcms \
