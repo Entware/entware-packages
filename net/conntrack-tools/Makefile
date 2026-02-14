@@ -71,8 +71,10 @@ endef
 define Package/conntrackd/install
 	$(INSTALL_DIR) \
 		$(1)/opt/etc/conntrackd \
+		$(1)/opt/etc/init.d \
 		$(1)/opt/sbin
 	$(INSTALL_BIN) 	$(PKG_INSTALL_DIR)/opt/sbin/conntrackd $(1)/opt/sbin/
+	$(INSTALL_BIN) ./files/S21conntrackd $(1)/opt/etc/init.d
 endef
 
 $(eval $(call BuildPackage,conntrack))
