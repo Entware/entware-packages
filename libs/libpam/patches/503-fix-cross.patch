@@ -1,0 +1,29 @@
+--- a/meson.build
++++ b/meson.build
+@@ -3,7 +3,7 @@ project('Linux-PAM', 'c',
+         license: 'BSD-3-Clause OR GPL-2.0-or-later',
+         default_options: [
+           'b_pie=true',
+-          'prefix=/usr',
++          'prefix=/opt',
+           'warning_level=2',
+         ],
+         meson_version: '>= 0.62.0',
+@@ -205,7 +205,7 @@ if get_option('mailspool') != ''
+   cdata.set_quoted('PAM_PATH_MAILDIR', get_option('mailspool'))
+ else
+   have = cc.get_define('_PATH_MAILDIR', prefix: '#include <paths.h>') != ''
+-  cdata.set('PAM_PATH_MAILDIR', have ? '_PATH_MAILDIR' : '"/var/spool/mail"')
++  cdata.set('PAM_PATH_MAILDIR', have ? '_PATH_MAILDIR' : '"/opt/var/spool/mail"')
+ endif
+ 
+ 
+@@ -530,7 +530,7 @@ if enable_docs
+   )
+   xml_catalog = get_option('xml-catalog')
+   if xml_catalog == ''
+-    xml_catalog = '/etc/xml/catalog'
++    xml_catalog = '/opt/etc/xml/catalog'
+   endif
+ 
+   have = prog_xmlcatalog.found() and run_command(

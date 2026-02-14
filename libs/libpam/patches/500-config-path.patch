@@ -1,6 +1,6 @@
 --- a/libpam/pam_private.h
 +++ b/libpam/pam_private.h
-@@ -24,11 +24,11 @@
+@@ -25,11 +25,11 @@
  
  /* the Linux-PAM configuration file */
  
