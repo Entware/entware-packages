@@ -1,6 +1,6 @@
 --- a/server/gkrellmd.h
 +++ b/server/gkrellmd.h
-@@ -128,12 +128,12 @@ GKRELLMD_VERSION_REV >= (rev)))
+@@ -118,12 +118,12 @@
  
  #define GKRELLMD_PLUGINS_DIR		".gkrellm2/plugins-gkrellmd"
  #if !defined(WIN32)
