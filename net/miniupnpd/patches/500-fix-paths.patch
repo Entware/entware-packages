@@ -1,0 +1,26 @@
+--- a/Makefile.linux
++++ b/Makefile.linux
+@@ -54,8 +54,8 @@ DEPDIR := .depend
+ DEPFLAGS = -MMD -MP -MF $(@:%.o=$(DEPDIR)/%.d) -MT $@
+ # -M : with system headers, -MM : without
+ 
+-INSTALLPREFIX ?= $(PREFIX)/usr
+-ETCDIR ?= $(PREFIX)/etc
++INSTALLPREFIX ?= /opt
++ETCDIR ?= $(INSTALLPREFIX)/etc
+ SBINDIR ?= $(INSTALLPREFIX)/sbin
+ MANDIR ?= $(INSTALLPREFIX)/share/man
+ LIBDIR ?= $(INSTALLPREFIX)/lib
+--- a/Makefile.linux_nft
++++ b/Makefile.linux_nft
+@@ -50,8 +50,8 @@ DEPDIR := .depend
+ DEPFLAGS = -MMD -MP -MF $(@:%.o=$(DEPDIR)/%.d) -MT $@
+ # -M : with system headers, -MM : without
+ 
+-INSTALLPREFIX ?= $(PREFIX)/usr
+-ETCDIR ?= $(PREFIX)/etc
++INSTALLPREFIX ?= /opt
++ETCDIR ?= $(INSTALLPREFIX)/etc
+ SBINDIR ?= $(INSTALLPREFIX)/sbin
+ MANDIR ?= $(INSTALLPREFIX)/share/man
+ LIBDIR ?= $(INSTALLPREFIX)/lib
