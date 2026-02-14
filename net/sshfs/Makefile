@@ -5,11 +5,13 @@
 # See /LICENSE for more information.
 #
 
+# XXX libfuse3 bumped
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sshfs
 PKG_VERSION:=3.7.2
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/libfuse/sshfs/releases/download/$(PKG_NAME)-$(PKG_VERSION)
