@@ -1,6 +1,6 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -185,7 +185,7 @@ if os.path.exists('/var/run'):
+@@ -182,7 +182,7 @@ if os.path.exists('/var/run'):
  	# if we are on the system with /var/run -- we are to use it for having fail2ban/
  	# directory there for socket file etc.
  	# realpath is used to possibly resolve /var/run -> /run symlink
@@ -9,7 +9,7 @@
  
  # Installing documentation files only under Linux or other GNU/ systems
  # (e.g. GNU/kFreeBSD), since others might have protective mechanisms forbidding
-@@ -196,7 +196,7 @@ if platform_system in ('solaris', 'sunos
+@@ -193,7 +193,7 @@ if platform_system in ('solaris', 'sunos
  	doc_files.append('README.Solaris')
  if platform_system in ('linux', 'solaris', 'sunos') or platform_system.startswith('gnu'):
  	data_files_extra.append(
@@ -18,7 +18,7 @@
  	)
  
  
-@@ -243,26 +243,26 @@ setup(
+@@ -240,26 +240,26 @@ setup(
  				for f in w[2]]
  	} if with_tests else {},
  	data_files = [
@@ -52,7 +52,7 @@
  			''
  		),
  	] + data_files_extra,
-@@ -273,15 +273,15 @@ setup(
+@@ -270,15 +270,15 @@ setup(
  # Search for obsolete files.
  obsoleteFiles = []
  elements = {
@@ -71,8 +71,8 @@
  		[
  			"version.py",
  			"protocol.py"
-@@ -304,7 +304,7 @@ if obsoleteFiles:
- 		print("\t" + f)
+@@ -301,7 +301,7 @@ if obsoleteFiles:
+ 		print(("\t" + f))
  	print("")
  
 -if isdir("/usr/lib/fail2ban"):

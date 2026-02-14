@@ -47,10 +47,10 @@
  			["string", "syslogsocket", "auto"]
  		]
  		return ConfigReader.getOptions(self, "Definition", opts)
-@@ -53,7 +53,7 @@ class Fail2banReader(ConfigReader):
- 		opts = [["string", "loglevel", "INFO" ],
+@@ -54,7 +54,7 @@ class Fail2banReader(ConfigReader):
  				["string", "logtarget", "STDERR"],
  				["string", "syslogsocket", "auto"],
+ 				["string", "allowipv6", "auto"],
 -				["string", "dbfile", "/var/lib/fail2ban/fail2ban.sqlite3"],
 +				["string", "dbfile", "/opt/var/lib/fail2ban/fail2ban.sqlite3"],
  				["int",    "dbmaxmatches", None],
@@ -78,7 +78,7 @@
  			   help="set custom pattern used to match date/times"),
 --- a/fail2ban/server/asyncserver.py
 +++ b/fail2ban/server/asyncserver.py
-@@ -195,7 +195,7 @@ class AsyncServer(asyncore.dispatcher):
+@@ -201,7 +201,7 @@ class AsyncServer(asyncore.dispatcher):
  	def __init__(self, transmitter):
  		asyncore.dispatcher.__init__(self)
  		self.__transmitter = transmitter
@@ -89,7 +89,7 @@
  		self.__errCount = {'accept': 0, 'listen': 0}
 --- a/fail2ban/server/server.py
 +++ b/fail2ban/server/server.py
-@@ -93,8 +93,8 @@ class Server:
+@@ -88,8 +88,8 @@ class Server:
  		self.__verbose = None
  		self.__syslogSocket = None
  		self.__autoSyslogSocketPaths = {
@@ -120,7 +120,7 @@
  		output += "`- Actions\n"
  		output += "   |- Currently banned:	3\n"
  		output += "   |- Total banned:	3\n"
-@@ -116,8 +116,8 @@ class BeautifierTest(unittest.TestCase):
+@@ -200,8 +200,8 @@ class BeautifierTest(unittest.TestCase):
  
  	def testLogTarget(self):
  		self.b.setInputCmd(["get", "logtarget"])
@@ -131,7 +131,7 @@
  
  	def testLogLevel(self):
  		self.b.setInputCmd(["get", "loglevel"])
-@@ -126,7 +126,7 @@ class BeautifierTest(unittest.TestCase):
+@@ -210,7 +210,7 @@ class BeautifierTest(unittest.TestCase):
  
  	def testDbFile(self):
  		self.b.setInputCmd(["get", "dbfile"])
@@ -140,7 +140,7 @@
  		output = "Current database file is:\n`- " + response
  		self.assertEqual(self.b.beautify(response), output)
  		self.assertEqual(self.b.beautify(None), "Database currently disabled")
-@@ -142,18 +142,18 @@ class BeautifierTest(unittest.TestCase):
+@@ -226,18 +226,18 @@ class BeautifierTest(unittest.TestCase):
  		response = []
  		output = "No file is currently monitored"
  		self.assertEqual(self.b.beautify(response), output)
@@ -168,7 +168,7 @@
  	def testLogEncoding(self):
 --- a/fail2ban/tests/databasetestcase.py
 +++ b/fail2ban/tests/databasetestcase.py
-@@ -180,7 +180,7 @@ class DatabaseTest(LogCaptureTestCase):
+@@ -206,7 +206,7 @@ class DatabaseTest(LogCaptureTestCase):
  			os.path.join(TEST_FILES_DIR, 'database_v2.db'), self.dbFilename)
  		self.db = Fail2BanDb(self.dbFilename)
  		self.assertEqual(self.db.getJailNames(), set(['pam-generic']))
