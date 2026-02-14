@@ -10,13 +10,10 @@
 
 packages="
 python3-asyncio: asyncio
-python3-cgi: cgi
-python3-cgitb: cgitb
 python3-codecs: unicodedata
 python3-ctypes: ctypes
 python3-dbm: dbm dbm.dumb dbm.gnu dbm.ndbm
 python3-decimal: decimal
-python3-distutils: distutils
 python3-email: email
 python3-logging: logging
 python3-lzma: lzma
