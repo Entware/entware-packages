@@ -1,6 +1,6 @@
 --- a/osdep/OSUtils.cpp
 +++ b/osdep/OSUtils.cpp
-@@ -444,7 +444,7 @@ std::string OSUtils::platformDefaultHome
+@@ -454,7 +454,7 @@ std::string OSUtils::platformDefaultHome
  	return std::string("/var/db/zerotier-one");
  #else
  	// Use /var/lib for Linux and other *nix
