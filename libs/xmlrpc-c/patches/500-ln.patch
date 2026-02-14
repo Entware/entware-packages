@@ -1,0 +1,20 @@
+ln -s libxmlrpc_util.so.4.60 libxmlrpc_util.so.4
+ln -s libxmlrpc_util.so.4.60 libxmlrpc_util.so.4
+ln: failed to create symbolic link 'libxmlrpc_util.so.4': File exists
+rm -f libxmlrpc_util.so
+make[6]: *** [.../unix-common.mk:72: libxmlrpc_util.so.4] Error 1
+make[6]: *** Deleting file 'libxmlrpc_util.so.4'
+
+---
+
+--- a/unix-common.mk
++++ b/unix-common.mk
+@@ -55,6 +55,8 @@
+ # SONAME is the name of the library file being built, with the minor
+ #   version number cut off.  E.g. if we're building libfoo.so.1.2, SONAME
+ #   is libfoo.so.1 .
++LN_S = ln -sf
++
+ SONAME = $(@:%.$(MIN)=%)
+ 
+ SHLIB_CMD = $(CCLD) $(LADD) $(LDFLAGS_SHLIB) -o $@ $^ 
