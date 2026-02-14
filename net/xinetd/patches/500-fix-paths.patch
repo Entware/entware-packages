@@ -1,0 +1,31 @@
+--- a/src/confparse.c
++++ b/src/confparse.c
+@@ -902,7 +902,7 @@ status_e cnf_get( struct configuration *
+    /* get_conf eventually calls Srdline, try Sclosing to unmmap memory. */
+    Sclose( config_fd );
+    if( inetd_compat ) {
+-      current_file = "/etc/inetd.conf";
++      current_file = "/opt/etc/inetd.conf";
+       config_fd = open(current_file, O_RDONLY);
+       if( config_fd >= 0 ) {
+          parse_inet_conf_file( config_fd, confp );
+--- a/src/xconfig.h
++++ b/src/xconfig.h
+@@ -29,7 +29,7 @@
+ #endif
+ 
+ 
+-#define DEFAULT_CONFIG_FILE			"/etc/xinetd.conf"
++#define DEFAULT_CONFIG_FILE			"/opt/etc/xinetd.conf"
+ 
+ /*
+  * This is the facility used by xinetd to log syslog messages
+@@ -88,7 +88,7 @@
+  * receipt of STATE_DUMP_SIG
+  */
+ #ifndef DUMP_FILE
+-#define DUMP_FILE		"/var/run/xinetd.dump"
++#define DUMP_FILE		"/opt/var/run/xinetd.dump"
+ #endif
+ 
+ /*
