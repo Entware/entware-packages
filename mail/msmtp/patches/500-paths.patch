@@ -2,7 +2,7 @@
 +++ b/scripts/msmtpqueue/msmtp-enqueue.sh
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env sh
-+#!/opt/bin/sh
++#!/bin/sh
  
  QUEUEDIR=$HOME/.msmtpqueue
  
@@ -10,7 +10,7 @@
 +++ b/scripts/msmtpqueue/msmtp-listqueue.sh
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env sh
-+#!/opt/bin/sh
++#!/bin/sh
  
  QUEUEDIR=$HOME/.msmtpqueue
  
@@ -18,7 +18,7 @@
 +++ b/scripts/msmtpqueue/msmtp-runqueue.sh
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env sh
-+#!/opt/bin/sh
++#!/bin/sh
  
  QUEUEDIR="$HOME/.msmtpqueue"
  LOCKFILE="$QUEUEDIR/.lock"
@@ -34,7 +34,7 @@
 +++ b/scripts/msmtpq/msmtp-queue
 @@ -1,4 +1,4 @@
 -#!/usr/bin/env sh
-+#!/opt/bin/sh
++#!/bin/sh
  
  ##--------------------------------------------------------------
  ##
