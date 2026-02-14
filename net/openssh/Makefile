@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssh
-PKG_REALVERSION:=10.0p1
-PKG_VERSION:=10.0_p1
+PKG_REALVERSION:=10.2p1
+PKG_VERSION:=10.2_p1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_REALVERSION).tar.gz
 PKG_SOURCE_URL:=https://cdn.openbsd.org/pub/OpenBSD/OpenSSH/portable/ \
 		https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
-PKG_HASH:=021a2e709a0edf4250b1256bd5a9e500411a90dddabea830ed59cef90eb9d85c
+PKG_HASH:=ccc42c0419937959263fa1dbd16dafc18c56b984c03562d2937ce56a60f798b2
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(if $(BUILD_VARIANT),$(PKG_NAME)-$(BUILD_VARIANT)/)$(PKG_NAME)-$(PKG_REALVERSION)
 
 PKG_LICENSE:=BSD ISC
@@ -88,7 +88,7 @@ endef
 
 define Package/openssh-server
 	$(call Package/openssh/Default)
-	DEPENDS+= +libopenssl +zlib +openssh-keygen
+	DEPENDS+= +libopenssl +zlib +openssh-keygen #+USE_GLIBC:libcrypt-compat
 	TITLE+= server
 	USERID:=sshd=22:sshd=22
 	VARIANT:=without-pam
@@ -110,7 +110,7 @@ endef
 
 define Package/openssh-server-pam
 	$(call Package/openssh/Default)
-	DEPENDS+= +libopenssl +zlib +libpthread +openssh-keygen +libpam
+	DEPENDS+= +libopenssl +zlib +libpthread +openssh-keygen +libpam #+USE_GLIBC:libcrypt-compat
 	TITLE+= server (with PAM support)
 	VARIANT:=with-pam
 	USERID:=sshd=22:sshd=22
@@ -199,10 +199,6 @@ endif
 
 CONFIGURE_VARS += LD="$(TARGET_CC)" PATH_PASSWD_PROG="/bin/passwd"
 
-CONFIGURE_VARS += \
-	ac_cv_func_getentropy=no \
-	ac_cv_func_getrandom=no
-
 ifeq ($(BUILD_VARIANT),with-pam)
 TARGET_LDFLAGS += -lpthread
 endif
@@ -215,12 +211,12 @@ define Build/Compile
 endef
 
 define Package/openssh-moduli/install
-	install -d -m0700 $(1)/opt/etc/ssh
+	install -d -m0755 $(1)/opt/etc/ssh
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/ssh/moduli $(1)/opt/etc/ssh/
 endef
 
 define Package/openssh-client/install
-	install -d -m0700 $(1)/opt/etc/ssh
+	install -d -m0755 $(1)/opt/etc/ssh
 	$(CP) $(PKG_INSTALL_DIR)/opt/etc/ssh/ssh_config $(1)/opt/etc/ssh/
 	$(INSTALL_DIR) $(1)/opt/libexec
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ssh $(1)/opt/libexec/ssh-openssh
@@ -243,7 +239,7 @@ define Package/openssh-sk-helper/install
 endef
 
 define Package/openssh-server/install
-	install -d -m0700 $(1)/opt/etc/ssh $(1)/opt/etc/ssh/sshd_config.d
+	install -d -m0755 $(1)/opt/etc/ssh $(1)/opt/etc/ssh/sshd_config.d
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/ssh/sshd_config $(1)/opt/etc/ssh/
 	sed -r -i 's,^#(HostKey /opt/etc/ssh/ssh_host_(rsa|ed25519)_key)$$$$,\1,' $(1)/opt/etc/ssh/sshd_config
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
