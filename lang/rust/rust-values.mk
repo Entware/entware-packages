@@ -35,7 +35,7 @@ ifeq ($(HOST_OS),Darwin)
   endif
 endif
 
-# mips64 openwrt has a specific targed in rustc
+# mips64 openwrt has a specific target in rustc
 ifeq ($(ARCH),mips64)
   RUSTC_TARGET_ARCH:=$(REAL_GNU_TARGET_NAME)
 else
@@ -75,7 +75,7 @@ ifeq ($(ARCH),aarch64)
 endif
 
 # Support only a subset for now.
-RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||i686||mips||mipsel||mips64||mips64el||powerpc64||riscv64||x86_64)
+RUST_ARCH_DEPENDS:=@(aarch64||arm||i386||loongarch64||mips||mips64||mips64el||mipsel||powerpc||powerpc64||riscv64||x86_64)
 
 ifneq ($(CONFIG_RUST_SCCACHE),)
   RUST_SCCACHE_DIR:=$(if $(call qstrip,$(CONFIG_RUST_SCCACHE_DIR)),$(call qstrip,$(CONFIG_RUST_SCCACHE_DIR)),$(TOPDIR)/.sccache)
