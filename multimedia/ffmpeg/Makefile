@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ffmpeg
-PKG_VERSION:=6.1.2
-PKG_RELEASE:=3
+PKG_VERSION:=6.1.4
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://ffmpeg.org/releases/
-PKG_HASH:=3b624649725ecdc565c903ca6643d41f33bd49239922e45c9b1442c63dca4e38
+PKG_HASH:=a231e3d5742c44b1cdaebfb98ad7b6200d12763e0b6db9e1e2c5891f2c083a18
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>, \
 		Ian Leonard <antonlacon@gmail.com>
 
@@ -201,7 +201,6 @@ FFMPEG_AUDIO_PROTOCOLS:= \
 	file http icecast rtp tcp udp
 
 FFMPEG_PATENTED_DECODERS:= \
-	atrac3 \
 	h264 \
 	hevc \
 	vc1 \
@@ -238,7 +237,7 @@ define Package/ffmpeg/Default/description
  FFmpeg is a a software package that can record, convert and stream digital
  audio and video in numerous formats.
 
- FFmpeg licensing / patent issues are complex. It is the reponsibility of the
+ FFmpeg licensing / patent issues are complex. It is the responsibility of the
  user to understand any requirements in this regard with its usage. See:
  https://ffmpeg.org/legal.html for further information.
 endef
@@ -381,11 +380,11 @@ endef
 
 # Strip off FPU notation
 REAL_CPU_TYPE:=$(call qstrip,$(firstword $(subst +, ,$(CONFIG_CPU_TYPE))))
-# Fixup cpu types recogized by ffmpeg configure
+# Fixup cpu types recognized by ffmpeg configure
 REAL_CPU_TYPE:=$(subst octeonplus,octeon+,$(REAL_CPU_TYPE))
 
 FFMPEG_CONFIGURE:= \
-	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(FPIC) -Wno-error=incompatible-pointer-types" \
+	CFLAGS="$(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(FPIC)" \
 	LDFLAGS="$(TARGET_LDFLAGS)" \
 	./configure \
 	--enable-cross-compile \
