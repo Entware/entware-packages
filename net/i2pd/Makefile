@@ -6,31 +6,33 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# XXX boost bumped
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=i2pd
-PKG_VERSION:=2.55.0
-PKG_RELEASE:=1
+PKG_VERSION:=2.58.0
+PKG_RELEASE:=3
 PKG_BUILD_PARALLEL:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/PurpleI2P/i2pd
 PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_MIRROR_HASH:=9a1884cf5d024da33184b9c7287872fdc37493ff12d5823fef19483182cbd01d
+PKG_MIRROR_HASH:=e2a8374e12d8df40b35974fd9d7d10b1c37461f41bbdb6ae09c22ecca6da4a53
 
 PKG_MAINTAINER:=David Yang <mmyangfl@gmail.com>
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
 PKG_CPE_ID:=cpe:/a:i2pd:i2pd
 
+PKG_BUILD_DEPENDS:=boost
+
 include $(INCLUDE_DIR)/package.mk
 
 define Package/i2pd
 	SECTION:=net
 	CATEGORY:=Network
-	DEPENDS:=+libopenssl +boost +boost-system \
-	         +boost-program_options +libatomic +zlib
+	DEPENDS:=+libopenssl +boost +boost-program_options +libatomic +zlib
 	TITLE:=full-featured C++ implementation of I2P client
 	URL:=https://github.com/PurpleI2P/i2pd
 	USERID:=i2pd:i2pd

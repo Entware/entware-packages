@@ -1,0 +1,16 @@
+.../staging_dir/toolchain-*/lib/gcc/*-linux-*/8.4.0/../../../../*-linux-*/bin/ld.bfd: cannot find -lboost_system
+collect2: error: ld returned 1 exit status
+
+---
+
+--- a/Makefile.linux
++++ b/Makefile.linux
+@@ -15,7 +15,7 @@ ifeq ($(shell expr match $(CXX) 'clang')
+ 	NEEDED_CXXFLAGS += -std=c++17
+ else ifeq ($(shell expr match ${CXXVER} "[8-9]"),1) # gcc 8 - 9
+ 	NEEDED_CXXFLAGS += -std=c++17
+-	LDLIBS = -lboost_system -lstdc++fs
++	LDLIBS = -lstdc++fs
+ else ifeq ($(shell expr match ${CXXVER} "1[0-2]"),2) # gcc 10 - 12
+ 	NEEDED_CXXFLAGS += -std=c++17
+ else ifeq ($(shell expr match ${CXXVER} "1[3-9]"),2) # gcc 13+

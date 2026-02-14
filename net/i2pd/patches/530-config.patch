@@ -38,7 +38,7 @@
  loglevel = none
 @@ -120,7 +120,7 @@ ipv6 = false
  ## Enable the Web Console (default: true)
- enabled = true
+ # enabled = true
  ## Address and port service will listen on (default: 127.0.0.1:7070)
 -address = 192.168.1.1
 +address = 127.0.0.1
@@ -47,7 +47,7 @@
  # webroot = /
 @@ -140,7 +140,7 @@ address = 192.168.1.1
  ## Enable the HTTP proxy (default: true)
- enabled = true
+ # enabled = true
  ## Address and port service will listen on (default: 127.0.0.1:4444)
 -address = 192.168.1.1
 +address = 127.0.0.1
@@ -56,7 +56,7 @@
  # keys = http-proxy-keys.dat
 @@ -156,7 +156,7 @@ address = 192.168.1.1
  ## Enable the SOCKS proxy (default: true)
- enabled = true
+ # enabled = true
  ## Address and port service will listen on (default: 127.0.0.1:4447)
 -address = 192.168.1.1
 +address = 127.0.0.1
