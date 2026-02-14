@@ -9,24 +9,21 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=kea
-PKG_VERSION:=2.6.2
-PKG_RELEASE:=1
+PKG_VERSION:=3.0.2
+PKG_RELEASE:=4
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://ftp.isc.org/isc/kea/$(PKG_VERSION)
-PKG_HASH:=8a50b63103734b59c3b8619ccd6766d2dfee3f02e3a5f9f3abc1cd55f70fa424
+PKG_HASH:=29f4e44fa48f62fe15158d17411e003496203250db7b3459c2c79c09f379a541
 
-PKG_MAINTAINER:=BangLang Huang <banglang.huang@foxmail.com>, Rosy Song <rosysong@rosinson.com>
+PKG_MAINTAINER:=Philip Prindeville <philipp@redfish-solutions.com>, Noah Meyerhans <frodo@morgul.net>
 PKG_LICENSE:=MPL-2.0
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_PARALLEL:=1
 PKG_BUILD_FLAGS:=gc-sections
 
-PKG_INSTALL:=1
-PKG_FIXUP:=autoreconf
-
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/meson.mk
 
 define Package/kea/Default
   SECTION:=net
@@ -64,8 +61,7 @@ endef
 define Package/kea-libs
 	$(call Package/kea/Default)
 	TITLE+=Libraries
-	DEPENDS:=+libopenssl +log4cplus \
-	+boost +boost-system
+	DEPENDS:=+libopenssl +log4cplus +boost
 endef
 define Package/kea-libs/description
 		Kea required Libraries.
@@ -161,7 +157,7 @@ endef
 define Package/kea-perfdhcp
 	$(call Package/kea/Default)
 	TITLE+=perfdhcp (Benchmarking)
-	DEPENDS:=+kea-libs
+	DEPENDS:=+kea-libs +USE_GLIBC:libbsd
 endef
 define Package/kea-perfdhcp/description
      A DHCP benchmarking tool which simulates multiple clients to test both
@@ -192,23 +188,20 @@ endef
 
 ###### *************************************************************************
 
-CONFIGURE_ARGS += \
-	--with-boost-include="$(STAGING_DIR)/opt" \
-	--with-log4cplus="$(STAGING_DIR)/opt" \
-	--with-openssl="$(STAGING_DIR)/opt" \
-	--without-pic \
-	$(if $(CONFIG_PACKAGE_kea-perfdhcp),--enable-perfdhcp,) \
-	$(if $(CONFIG_PACKAGE_kea-shell),--enable-shell,)
+MESON_ARGS += \
+	-Dkrb5=disabled \
+	-Dmysql=disabled \
+	-Dnetconf=disabled \
+	-Dpostgresql=disabled \
+	-Drunstatedir=/opt/var/run
 
-CONFIGURE_VARS += \
-	cross_compiling="yes"
+# XXX undefined reference to `optreset'
+ifeq ($(CONFIG_USE_GLIBC),y)
+  TARGET_LDFLAGS += -lbsd
+endif
 
-TARGET_CXXFLAGS += \
-	$(FPIC) \
-	-std=c++17
-
-TARGET_LDFLAGS += \
-	-Wl,--as-needed
+# FIXME mips: .../cpp_int.hpp:836:7: error: statement is not a constant expression
+TARGET_CXXFLAGS += -std=c++17
 
 define Package/kea-libs/install
 	$(INSTALL_DIR) $(1)/opt/lib
