@@ -1,6 +1,28 @@
+--- a/ext/date/lib/parse_tz.c
++++ b/ext/date/lib/parse_tz.c
+@@ -600,7 +600,7 @@ void timelib_dump_tzinfo(timelib_tzinfo
+ #ifdef HAVE_SYSTEM_TZDATA_PREFIX
+ #define ZONEINFO_PREFIX HAVE_SYSTEM_TZDATA_PREFIX
+ #else
+-#define ZONEINFO_PREFIX "/usr/share/zoneinfo"
++#define ZONEINFO_PREFIX "/opt/share/zoneinfo"
+ #endif
+ 
+ /* System timezone database pointer. */
+--- a/ext/fileinfo/libmagic/file.h
++++ b/ext/fileinfo/libmagic/file.h
+@@ -89,7 +89,7 @@
+ #define ENABLE_CONDITIONALS
+ 
+ #ifndef MAGIC
+-#define MAGIC "/etc/magic"
++#define MAGIC "/opt/etc/magic"
+ #endif
+ 
+ #if defined(__EMX__) || defined (WIN32)
 --- a/ext/mysqlnd/mysqlnd_connection.c
 +++ b/ext/mysqlnd/mysqlnd_connection.c
-@@ -523,7 +523,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_sc
+@@ -533,7 +533,7 @@ MYSQLND_METHOD(mysqlnd_conn_data, get_sc
  	if (hostname.l == sizeof("localhost") - 1 && !strncasecmp(hostname.s, "localhost", hostname.l)) {
  		DBG_INF_FMT("socket=%s", socket_or_pipe->s? socket_or_pipe->s:"n/a");
  		if (!socket_or_pipe->s) {
