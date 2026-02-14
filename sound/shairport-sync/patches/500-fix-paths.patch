@@ -1,0 +1,51 @@
+--- a/audio_pipe.c
++++ b/audio_pipe.c
+@@ -42,7 +42,7 @@
+ static int fd = -1;
+ 
+ char *pipename = NULL;
+-char *default_pipe_name = "/tmp/shairport-sync-audio";
++char *default_pipe_name = "/opt/tmp/shairport-sync-audio";
+ 
+ static void start(__attribute__((unused)) int sample_rate,
+                   __attribute__((unused)) int sample_format) {
+--- a/shairport.c
++++ b/shairport.c
+@@ -319,8 +319,8 @@ void usage(char *progname) {
+ #endif
+ #ifdef CONFIG_METADATA
+     printf("    -M, --metadata-enable   Ask for metadata from the source and process it. Much more flexibility with configuration file settings.\n");
+-    printf("    --metadata-pipename=PIPE send metadata to PIPE, e.g. --metadata-pipename=/tmp/%s-metadata.\n", config.appName);
+-    printf("                            The default is /tmp/%s-metadata.\n", config.appName);
++    printf("    --metadata-pipename=PIPE send metadata to PIPE, e.g. --metadata-pipename=/opt/tmp/%s-metadata.\n", config.appName);
++    printf("                            The default is /opt/tmp/%s-metadata.\n", config.appName);
+     printf("    -g, --get-coverart      Include cover art in the metadata to be gathered and sent.\n");
+ #endif
+     printf("    --log-to-syslog         Send debug and statistics information through syslog\n");
+@@ -512,7 +512,7 @@ int parse_options(int argc, char **argv)
+   config.loudness_reference_volume_db = -20;
+ 
+ #ifdef CONFIG_METADATA_HUB
+-  config.cover_art_cache_dir = "/tmp/shairport-sync/.cache/coverart";
++  config.cover_art_cache_dir = "/opt/tmp/shairport-sync/.cache/coverart";
+   config.scan_interval_when_active =
+       1; // number of seconds between DACP server scans when playing something
+   config.scan_interval_when_inactive =
+@@ -1467,7 +1467,7 @@ int parse_options(int argc, char **argv)
+ #ifdef CONFIG_METADATA
+   if ((config.metadata_enabled == 1) && (config.metadata_pipename == NULL)) {
+     char temp_metadata_pipe_name[4096];
+-    strcpy(temp_metadata_pipe_name, "/tmp/");
++    strcpy(temp_metadata_pipe_name, "/opt/tmp/");
+     strcat(temp_metadata_pipe_name, config.appName);
+     strcat(temp_metadata_pipe_name, "-metadata");
+     config.metadata_pipename = strdup(temp_metadata_pipe_name);
+@@ -1536,7 +1536,7 @@ int parse_options(int argc, char **argv)
+   char *use_this_pid_dir = PIDDIR;
+ #else
+   char temp_pid_dir[4096];
+-  strcpy(temp_pid_dir, "/var/run/");
++  strcpy(temp_pid_dir, "/opt/var/run/");
+   strcat(temp_pid_dir, config.appName);
+   debug(3, "Default PID directory is \"%s\".", temp_pid_dir);
+   char *use_this_pid_dir = temp_pid_dir;
