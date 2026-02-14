@@ -1,0 +1,19 @@
+--- a/src/config/torrc.sample.in
++++ b/src/config/torrc.sample.in
+@@ -39,7 +39,7 @@
+ ## Send every possible message to @LOCALSTATEDIR@/log/tor/debug.log
+ #Log debug file @LOCALSTATEDIR@/log/tor/debug.log
+ ## Use the system log instead of Tor's logfiles
+-Log notice syslog
++#Log notice syslog
+ ## To send all messages to stderr:
+ #Log debug stderr
+ 
+@@ -249,6 +249,4 @@ DataDirectory @LOCALSTATEDIR@/lib/tor
+ ## folder will be parsed following lexical order. Files starting with a dot are ignored. Files
+ ## on subfolders are ignored.
+ ## The %include option can be used recursively.
+-#%include /etc/torrc.d/*.conf
+-
+-User tor
++#%include /opt/etc/torrc.d/*.conf
