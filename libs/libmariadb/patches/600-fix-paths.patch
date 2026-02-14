@@ -14,7 +14,7 @@
  #endif
 --- a/mariadb_config/mariadb_config.c.in
 +++ b/mariadb_config/mariadb_config.c.in
-@@ -214,7 +214,7 @@ end:
+@@ -216,7 +216,7 @@ end:
    if (p && p[0])
    {
      char *c, *search= alloca(6 + strlen(mariadb_progname));
