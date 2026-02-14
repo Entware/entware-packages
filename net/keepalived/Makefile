@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=keepalived
 PKG_VERSION:=2.3.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.keepalived.org/software
@@ -83,6 +83,7 @@ endef
 
 CONFIGURE_ARGS+= \
 	--enable-json \
+	--enable-reproducible-build \
 	--with-init=SYSV \
 	--disable-track-process \
 	--runstatedir="/opt/var/run" \
@@ -216,14 +217,16 @@ endif
 	$(INSTALL_DIR) $(1)/opt/etc/keepalived
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/keepalived/keepalived.conf.sample \
 		$(1)/opt/etc/keepalived/keepalived.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/keepalived/keepalived.config-opts \
+		$(1)/opt/etc/keepalived/
 
 #	$(INSTALL_DIR) $(1)/etc/uci-defaults
 #	$(INSTALL_BIN) ./files/etc/uci-defaults/keepalived \
 #		$(1)/etc/uci-defaults/keepalived
 
-#	$(INSTALL_DIR) $(1)/etc/init.d
-#	$(INSTALL_BIN) ./files/keepalived.init \
-#		$(1)/etc/init.d/keepalived
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+	$(INSTALL_BIN) ./files/S81keepalived \
+		$(1)/opt/etc/init.d
 
 #	$(INSTALL_DIR) $(1)/etc/config
 #	$(INSTALL_CONF) ./files/keepalived.config \
@@ -278,8 +281,6 @@ ifeq ($(CONFIG_KEEPALIVED_DBUS),y)
 		$(1)/opt/share/dbus-1/interfaces/org.keepalived.Vrrp1.Vrrp.xml
 endif
 
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S81keepalived $(1)/opt/etc/init.d/
 endef
 
 define Package/keepalived-sync
