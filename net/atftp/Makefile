@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=atftp
 PKG_VERSION:=0.8.0
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/$(PKG_NAME)
@@ -56,6 +56,11 @@ endef
 
 define Package/atftpd/install
 	$(INSTALL_DIR) $(1)/opt/etc
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/atftpd.init $(1)/etc/init.d/atftpd
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/atftpd.conf $(1)/etc/config/atftpd
+#	$(INSTALL_DIR) $(1)/srv/tftp
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/atftpd $(1)/opt/sbin/
 endef
