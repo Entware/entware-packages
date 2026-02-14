@@ -13,7 +13,7 @@ In file included from ../numpy/_core/src/common/npy_cpu_dispatch.h:41,
 
 --- a/numpy/_core/src/umath/loops_autovec.dispatch.c.src
 +++ b/numpy/_core/src/umath/loops_autovec.dispatch.c.src
-@@ -104,11 +104,13 @@ NPY_NO_EXPORT void NPY_CPU_DISPATCH_CURF
+@@ -97,11 +97,13 @@ NPY_NO_EXPORT void NPY_CPU_DISPATCH_CURF
  #endif
  }
  
