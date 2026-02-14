@@ -12,14 +12,14 @@ include $(TOPDIR)/rules.mk
 include ../python3-version.mk
 
 PKG_NAME:=python3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=07a4356e912900e61a15cb0949a06c4a05012e213ecd6b4e84d0f67aabbee372
+PKG_HASH:=ed5ef34cda36cfa2f3a340f07cac7e7814f91c7f3c411f6d3562323a866c5c66
 
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>, Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=Python-2.0.1 0BSD
 PKG_LICENSE_FILES:=LICENSE Doc/copyright.rst Doc/license.rst Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi_osx/LICENSE Modules/expat/COPYING
 PKG_CPE_ID:=cpe:/a:python:python
@@ -42,7 +42,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=bluez python3/host python-build/host python-installer/host python-wheel/host
-HOST_BUILD_DEPENDS:=bzip2/host libffi/host readline/host
+HOST_BUILD_DEPENDS:=bzip2/host libffi/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -71,7 +71,7 @@ endef
 define Package/libpython3
 $(call Package/python3/Default)
   TITLE+= core library
-  DEPENDS:=+libpthread
+  DEPENDS:=+libpthread +libatomic
   ABI_VERSION:=$(PYTHON3_VERSION)
 endef
 
@@ -97,7 +97,7 @@ endef
 define Package/python3-light
 $(call Package/python3/Default)
   TITLE+= light installation
-  DEPENDS:=+python3-base +libbz2 +zlib
+  DEPENDS:=+python3-base +libbz2 +zlib # +USE_GLIBC:libcrypt-compat
 endef
 
 define Package/python3-light/config
@@ -211,6 +211,8 @@ define Build/Install
 		s,-f\(file\|macro\)-prefix-map=$(PKG_BUILD_DIR)=Python-$(PKG_VERSION),,g; \
 		s,-L$(PKG_BUILD_DIR),,g;s,$(PKG_BUILD_DIR),,g' \
 			$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/_sysconfigdata_*.py
+	$(SED) 's,/bin/mkdir,mkdir,;s,/bin/sh -e,/bin/sh,' \
+			$(PKG_INSTALL_DIR)/opt/lib/python$(PYTHON3_VERSION)/_sysconfigdata_*.py
 endef
 
 define Build/InstallDev
@@ -258,7 +260,8 @@ PYTHON3_BASE_LIB_FILES:= \
 	/opt/lib/python$(PYTHON3_VERSION)/os.py \
 	/opt/lib/python$(PYTHON3_VERSION)/posixpath.py \
 	/opt/lib/python$(PYTHON3_VERSION)/site.py \
-	/opt/lib/python$(PYTHON3_VERSION)/sysconfig.py \
+	/opt/lib/python$(PYTHON3_VERSION)/sysconfig/__init__.py \
+	/opt/lib/python$(PYTHON3_VERSION)/sysconfig/__main__.py \
 	/opt/lib/python$(PYTHON3_VERSION)/stat.py
 
 PYTHON3_LIB_FILES_DEL+=$(PYTHON3_BASE_LIB_FILES)
@@ -272,7 +275,6 @@ endef
 
 define Py3Package/python3-light/filespec
 +|/opt/lib/python$(PYTHON3_VERSION)
--|/opt/lib/python$(PYTHON3_VERSION)/distutils/cygwinccompiler.py
 -|/opt/lib/python$(PYTHON3_VERSION)/idlelib
 -|/opt/lib/python$(PYTHON3_VERSION)/tkinter
 -|/opt/lib/python$(PYTHON3_VERSION)/turtledemo
@@ -308,7 +310,8 @@ endif
 
 # Bypass configure test
 HOST_CONFIGURE_VARS += \
-	ac_cv_working_openssl_hashlib=yes
+	py_cv_module__tkinter=n/a
+#	ac_cv_working_openssl_hashlib=yes
 
 ifeq ($(HOST_OS),Darwin)
 HOST_CONFIGURE_VARS += \
@@ -318,29 +321,28 @@ HOST_MAKE_VARS += \
 endif
 
 HOST_CONFIGURE_ARGS += \
+	--with-readline=no \
 	--enable-optimizations \
 	--disable-test-modules \
 	--with-ensurepip=upgrade \
+	--with-openssl=$(STAGING_DIR_HOST) \
+	--with-openssl-rpath=$(STAGING_DIR_HOST)/lib \
 	--with-ssl-default-suites=openssl \
 	--with-system-expat \
 	--without-cxx-main
 
+# ncurses and uuid have seemingly unsolvable issues with pkgconfig
+HOST_CFLAGS += \
+	-I$(STAGING_DIR_HOSTPKG)/include/ncursesw \
+	-I$(STAGING_DIR_HOST)/include/uuid
+
 define Host/Configure
 	$(SED) 's/^ENABLE_USER_SITE = None$$$$/ENABLE_USER_SITE = False/' $(HOST_BUILD_DIR)/Lib/site.py
 	$(call Host/Configure/Default)
-	ls $(HOST_BUILD_DIR)/Lib/ensurepip/_bundled/setuptools-$(PYTHON3_SETUPTOOLS_VERSION)-py3-none-any.whl
 	ls $(HOST_BUILD_DIR)/Lib/ensurepip/_bundled/pip-$(PYTHON3_PIP_VERSION)-py3-none-any.whl
 endef
 
 define Host/Install
-	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)),,
-		rm -rf \
-			$(HOST_PYTHON3_PKG_DIR)/pkg_resources \
-			$(HOST_PYTHON3_PKG_DIR)/setuptools \
-			$(HOST_PYTHON3_PKG_DIR)/setuptools-* \
-			$(HOST_PYTHON3_PKG_DIR)/.setuptools-patched* \
-			$(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_*
-	)
 	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.pip_installed_$(PYTHON3_PIP_VERSION)-$(PYTHON3_PIP_PKG_RELEASE)),,
 		rm -rf \
 			$(HOST_PYTHON3_PKG_DIR)/pip \
@@ -349,10 +351,6 @@ define Host/Install
 			$(HOST_PYTHON3_PKG_DIR)/.pip_installed_*
 	)
 	$(call Host/Install/Default)
-	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)),,
-		$(call HostPatchDir,$(HOST_PYTHON3_PKG_DIR),./patches-host-setuptools,)
-		touch $(HOST_PYTHON3_PKG_DIR)/.setuptools_installed_$(PYTHON3_SETUPTOOLS_VERSION)-$(PYTHON3_SETUPTOOLS_PKG_RELEASE)
-	)
 	$(if $(wildcard $(HOST_PYTHON3_PKG_DIR)/.pip_installed_$(PYTHON3_PIP_VERSION)-$(PYTHON3_PIP_PKG_RELEASE)),,
 		$(call HostPatchDir,$(HOST_PYTHON3_PKG_DIR),./patches-host-pip,)
 		touch $(HOST_PYTHON3_PKG_DIR)/.pip_installed_$(PYTHON3_PIP_VERSION)-$(PYTHON3_PIP_PKG_RELEASE)

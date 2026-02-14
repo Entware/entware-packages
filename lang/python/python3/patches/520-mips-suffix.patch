@@ -1,0 +1,11 @@
+--- a/Misc/platform_triplet.c
++++ b/Misc/platform_triplet.c
+@@ -68,7 +68,7 @@ PLATFORM_TRIPLET=arm-linux-androideabi
+ #    endif
+ #   else
+ #    if defined(_ABIO32) && _MIPS_SIM == _ABIO32
+-#     define LIBC_MIPS gnusf
++#     define LIBC_MIPS gnu
+ #    elif defined(_ABIN32) && _MIPS_SIM == _ABIN32
+ #     define LIBC_MIPS gnuabin32sf
+ #    elif defined(_ABI64) && _MIPS_SIM == _ABI64

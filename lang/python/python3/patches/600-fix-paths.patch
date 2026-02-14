@@ -1,6 +1,6 @@
 --- a/Lib/ctypes/util.py
 +++ b/Lib/ctypes/util.py
-@@ -289,7 +289,7 @@ elif os.name == "posix":
+@@ -298,7 +298,7 @@ elif os.name == "posix":
              regex = r'\s+(lib%s\.[^\s]+)\s+\(%s'
              regex = os.fsencode(regex % (re.escape(name), abi_type))
              try:
@@ -9,33 +9,22 @@
                                        stdin=subprocess.DEVNULL,
                                        stderr=subprocess.DEVNULL,
                                        stdout=subprocess.PIPE,
---- a/Lib/idlelib/editor.py
-+++ b/Lib/idlelib/editor.py
-@@ -80,10 +80,10 @@ class EditorWindow:
-             if sys.platform.count('linux'):
-                 # look for html docs in a couple of standard places
-                 pyver = 'python-docs-' + '%s.%s.%s' % sys.version_info[:3]
--                if os.path.isdir('/var/www/html/python/'):  # "python2" rpm
--                    dochome = '/var/www/html/python/index.html'
-+                if os.path.isdir('/opt/var/www/html/python/'):  # "python2" rpm
-+                    dochome = '/opt/var/www/html/python/index.html'
-                 else:
--                    basepath = '/usr/share/doc/'  # standard location
-+                    basepath = '/opt/share/doc/'  # standard location
-                     dochome = os.path.join(basepath, pyver,
-                                            'Doc', 'index.html')
-             elif sys.platform[:3] == 'win':
---- a/Lib/mailcap.py
-+++ b/Lib/mailcap.py
-@@ -66,7 +66,7 @@ def listmailcapfiles():
+--- a/Lib/idlelib/help.py
++++ b/Lib/idlelib/help.py
+@@ -301,10 +301,10 @@ def _get_dochome():
+     if sys.platform.count('linux'):
+         # look for html docs in a couple of standard places
+         pyver = 'python-docs-' + '%s.%s.%s' % sys.version_info[:3]
+-        if os.path.isdir('/var/www/html/python/'):  # rpm package manager
+-            dochome = '/var/www/html/python/index.html'
++        if os.path.isdir('/opt/var/www/html/python/'):  # rpm package manager
++            dochome = '/opt/var/www/html/python/index.html'
          else:
-             # Don't bother with getpwuid()
-             home = '.' # Last resort
--        mailcaps = [home + '/.mailcap', '/etc/mailcap',
-+        mailcaps = [home + '/.mailcap', '/opt/etc/mailcap', '/etc/mailcap',
-                 '/usr/etc/mailcap', '/usr/local/etc/mailcap']
-     return mailcaps
+-            basepath = '/usr/share/doc/'  # dnf/apt package managers
++            basepath = '/opt/share/doc/'  # dnf/apt package managers
+             dochome = os.path.join(basepath, pyver, 'Doc', 'index.html')
  
+     elif sys.platform[:3] == 'win':
 --- a/Lib/mimetypes.py
 +++ b/Lib/mimetypes.py
 @@ -46,6 +46,10 @@ __all__ = [
@@ -51,9 +40,9 @@
      "/etc/httpd/conf/mime.types",               # Apache
 --- a/Lib/platform.py
 +++ b/Lib/platform.py
-@@ -1269,7 +1269,7 @@ _os_release_line = re.compile(
- # unescape five special characters mentioned in the standard
- _os_release_unescape = re.compile(r"\\([\\\$\"\'`])")
+@@ -1390,7 +1390,7 @@ def platform(aliased=False, terse=False)
+ # https://www.freedesktop.org/software/systemd/man/os-release.html
+ 
  # /etc takes precedence over /usr/lib
 -_os_release_candidates = ("/etc/os-release", "/usr/lib/os-release")
 +_os_release_candidates = ("/opt/etc/os-release", "/etc/os-release", "/usr/lib/os-release")
@@ -73,7 +62,7 @@
  
 --- a/Lib/tempfile.py
 +++ b/Lib/tempfile.py
-@@ -171,7 +171,7 @@ def _candidate_tempdir_list():
+@@ -170,7 +170,7 @@ def _candidate_tempdir_list():
                           _os.path.expandvars(r'%SYSTEMROOT%\Temp'),
                           r'c:\temp', r'c:\tmp', r'\temp', r'\tmp' ])
      else:
@@ -84,7 +73,7 @@
      try:
 --- a/Lib/uuid.py
 +++ b/Lib/uuid.py
-@@ -362,7 +362,7 @@ def _get_command_stdout(command, *args):
+@@ -365,7 +365,7 @@ def _get_command_stdout(command, *args):
  
      try:
          path_dirs = os.environ.get('PATH', os.defpath).split(os.pathsep)

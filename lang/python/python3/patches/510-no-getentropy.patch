@@ -1,11 +1,11 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4431,7 +4431,7 @@ AC_CHECK_FUNCS([ \
-   copy_file_range ctermid dup dup3 execv explicit_bzero explicit_memset \
-   faccessat fchmod fchmodat fchown fchownat fdopendir fdwalk fexecve \
-   fork fork1 fpathconf fstatat ftime ftruncate futimens futimes futimesat \
--  gai_strerror getegid getentropy geteuid getgid getgrgid getgrgid_r \
-+  gai_strerror getegid geteuid getgid getgrgid getgrgid_r \
-   getgrnam_r getgrouplist getgroups gethostname getitimer getloadavg getlogin \
-   getpeername getpgid getpid getppid getpriority _getpty \
-   getpwent getpwnam_r getpwuid getpwuid_r getresgid getresuid getrusage getsid getspent \
+@@ -5255,7 +5255,7 @@ fi
+ # header definition prevents usage - autoconf doesn't use the headers), or
+ # raise an error if used at runtime. Force these symbols off.
+ if test "$ac_sys_system" != "iOS" ; then
+-  AC_CHECK_FUNCS([getentropy getgroups system])
++  AC_CHECK_FUNCS([getgroups system])
+ fi
+ 
+ AC_CHECK_DECL([dirfd],
