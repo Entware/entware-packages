@@ -4,8 +4,8 @@
  
  ############ GENERAL PARAMETERS #################
  
--# We do not need PidFile with procd
--# PidFile=/var/run/zabbix_agentd.pid
+-# Zabbix always creates a PidFile. Make sure it is where we want it.
+-PidFile=/var/run/zabbix-agent/zabbix_agentd.pid
 -
 -# use syslog
 -LogType=system
@@ -14,19 +14,62 @@
 +#
 +# Mandatory: no
 +# Default:
-+# PidFile=/opt/var/run/zabbix_agentd.pid
++PidFile=/opt/var/run/zabbix-agent/zabbix_agentd.pid
  
  ### Option: LogType
  #	Specifies where log messages are written to:
-@@ -26,6 +27,8 @@ LogType=system
+@@ -24,7 +25,8 @@ LogType=system
+ #
+ # Mandatory: yes, if LogType is set to file, otherwise no
+ # Default:
+-# LogFile=
++
++LogFile=/opt/var/log/zabbix-agent/zabbix_agentd.log
+ 
+ ### Option: LogFileSize
+ #	Maximum size of log file in MB.
+@@ -540,4 +542,4 @@ User=zabbix-agent
+ 
+ # Include=/usr/local/etc/zabbix_agentd.userparams.conf
+ # Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
+-Include=/etc/zabbix_agentd.conf.d/
++Include=/opt/etc/zabbix_agentd.conf.d/
+--- a/conf/zabbix_server.conf
++++ b/conf/zabbix_server.conf
+@@ -27,7 +27,6 @@
+ # Mandatory: no
+ # Default:
+ # LogType=file
+-LogType=system
+ 
+ ### Option: LogFile
+ #	Log file name for LogType 'file' parameter.
+@@ -36,7 +35,7 @@ LogType=system
  # Default:
  # LogFile=
  
-+LogFile=/opt/var/log/zabbix_agentd.log
-+
+-# LogFile=/tmp/zabbix_server.log
++LogFile=/opt/var/log/zabbix-server/zabbix_server.log
+ 
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
- #	0 - disable automatic log rotation.
+@@ -46,7 +45,6 @@ LogType=system
+ # Range: 0-1024
+ # Default:
+ # LogFileSize=1
+-LogFileSize=0
+ 
+ ### Option: DebugLevel
+ #	Specifies debug level:
+@@ -71,7 +69,7 @@ LogFileSize=0
+ 
+ # Although procd does not require a pid file, zabbix uses the pidfile to
+ # shut down correctly on receipt of a TERM or INT signal.
+-PidFile=/var/run/zabbix-server/zabbix_server.pid
++PidFile=/opt/var/run/zabbix-server/zabbix_server.pid
+ 
+ ### Option: SocketDir
+ #	IPC socket directory.
 --- a/ui/locale/add_new_language.sh
 +++ b/ui/locale/add_new_language.sh
 @@ -1,4 +1,4 @@
