@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hev-socks5-tproxy
-PKG_VERSION:=2.8.0
+PKG_VERSION:=2.10.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/heiher/hev-socks5-tproxy/releases/download/$(PKG_VERSION)
-PKG_HASH:=94fdc315b5a6d818c18aaf26c7b610e8d2f67814aded05052899bc27cf2c4221
+PKG_HASH:=4f495a7393afe4b4d36f86e94faddf992def010ff67c02e8ce09693a3a1bd20d
 
 PKG_MAINTAINER:=Ray Wang <git@hev.cc>
 PKG_LICENSE:=MIT
@@ -32,22 +32,21 @@ client devices.
 endef
 
 define Package/hev-socks5-tproxy/conffiles
-/etc/config/hev-socks5-tproxy
-/etc/hev-socks5-tproxy/
+/opt/etc/hev-socks5-tproxy/
 endef
 
 define Package/hev-socks5-tproxy/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/hev-socks5-tproxy $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/hev-socks5-tproxy $(1)/opt/bin/
 
-	$(INSTALL_DIR) $(1)/etc/hev-socks5-tproxy/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/main.yml $(1)/etc/hev-socks5-tproxy/main.yml
+	$(INSTALL_DIR) $(1)/opt/etc/hev-socks5-tproxy/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/main.yml $(1)/opt/etc/hev-socks5-tproxy/main.yml
 
-	$(INSTALL_DIR) $(1)/etc/config/
-	$(INSTALL_CONF) ./files/hev-socks5-tproxy.config $(1)/etc/config/hev-socks5-tproxy
+#	$(INSTALL_DIR) $(1)/etc/config/
+#	$(INSTALL_CONF) ./files/hev-socks5-tproxy.config $(1)/etc/config/hev-socks5-tproxy
 
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) ./files/hev-socks5-tproxy.init $(1)/etc/init.d/hev-socks5-tproxy
+	$(INSTALL_DIR) $(1)/opt/etc/init.d/
+	$(INSTALL_BIN) ./files/S99hev-socks5-tproxy $(1)/opt/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,hev-socks5-tproxy))
