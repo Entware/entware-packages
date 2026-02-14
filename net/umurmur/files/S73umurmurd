@@ -2,7 +2,7 @@
 
 ENABLED=yes
 PROCS=umurmurd
-ARGS="-r -c /opt/etc/umurmur.conf"
+ARGS="-c /opt/etc/umurmur/umurmur.conf"
 PREARGS=""
 DESC=$PROCS
 PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

@@ -1,0 +1,51 @@
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -90,23 +90,23 @@ const char *getStrConf(param_t param)
+ 		case CERTIFICATE:
+ 			setting = config_lookup(&configuration, "certificate");
+ 			if (!setting)
+-				return "/etc/umurmur/certificate.crt";
++				return "/opt/etc/umurmur/certificate.crt";
+ 			else {
+ 				if ((strsetting = config_setting_get_string(setting)) != NULL)
+ 					return strsetting;
+ 				else
+-					return "/etc/umurmur/certificate.crt";
++					return "/opt/etc/umurmur/certificate.crt";
+ 			}
+ 			break;
+ 		case KEY:
+ 			setting = config_lookup(&configuration, "private_key");
+ 			if (!setting)
+-				return "/etc/umurmur/private_key.key";
++				return "/opt/etc/umurmur/private_key.key";
+ 			else {
+ 				if ((strsetting = config_setting_get_string(setting)) != NULL)
+ 					return strsetting;
+ 				else
+-					return "/etc/umurmur/private_key.key";
++					return "/opt/etc/umurmur/private_key.key";
+ 			}
+ 			break;
+ 		case CAPATH:
+--- a/umurmur.conf.example
++++ b/umurmur.conf.example
+@@ -1,7 +1,7 @@
+ max_bandwidth = 48000;
+ welcometext = "Welcome to uMurmur!";
+-certificate = "/etc/umurmur/cert.crt";
+-private_key = "/etc/umurmur/key.key";
++certificate = "/opt/etc/umurmur/cert.crt";
++private_key = "/opt/etc/umurmur/key.key";
+ password = "";
+ # admin_password = "test";   # Set to enable admin functionality.
+ # ban_length = 0;            # Length in seconds for a ban. Default is 0. 0 = forever.
+@@ -24,7 +24,7 @@ max_users = 10;
+ 
+ # Log to file option. Default is logging to syslog.
+ # umurmurd will close and reopen the logfile if SIGHUP is received.
+-# logfile = "/var/log/umurmurd.log";
++# logfile = "/opt/var/log/umurmurd.log";
+ 
+ # CA location for CA-signed certificates
+ # ca_path = "/path/to/ca/certificates/";
