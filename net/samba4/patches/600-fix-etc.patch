@@ -22,7 +22,7 @@
  /* There can be this many printing tdb's open, plus any locked ones. */
 --- a/source3/libads/kerberos.c
 +++ b/source3/libads/kerberos.c
-@@ -749,7 +749,7 @@ bool create_local_private_krb5_conf_for_
+@@ -1445,7 +1445,7 @@ bool create_local_private_krb5_conf_for_
  
  #if !defined(SAMBA4_USES_HEIMDAL)
  	if (lp_include_system_krb5_conf()) {
@@ -31,7 +31,7 @@
  	}
  #endif
  
-@@ -838,7 +838,7 @@ bool create_local_private_krb5_conf_for_
+@@ -1541,7 +1541,7 @@ bool create_local_private_krb5_conf_for_
  
  #if defined(OVERWRITE_SYSTEM_KRB5_CONF)
  
@@ -40,7 +40,7 @@
  	/* Insanity, sheer insanity..... */
  
  	if (strequal(realm, lp_realm())) {
-@@ -891,7 +891,7 @@ bool create_local_private_krb5_conf_for_
+@@ -1594,7 +1594,7 @@ bool create_local_private_krb5_conf_for_
  
  			if (symlink(fname, SYSTEM_KRB5_CONF_PATH) == -1) {
  				DEBUG(0,("create_local_private_krb5_conf_for_domain: "
@@ -51,7 +51,7 @@
  			}
 --- a/source3/param/loadparm.c
 +++ b/source3/param/loadparm.c
-@@ -4573,7 +4573,7 @@ const char *lp_printcapname(void)
+@@ -4620,7 +4620,7 @@ const char *lp_printcapname(void)
  	}
  
  	if (sDefault.printing == PRINT_BSD)
@@ -62,40 +62,40 @@
  }
 --- a/source3/torture/test_posix.c
 +++ b/source3/torture/test_posix.c
-@@ -112,7 +112,7 @@ bool run_posix_ls_wildcard_test(int dumm
+@@ -131,7 +131,7 @@ bool run_posix_ls_wildcard_test(int dumm
  	const char *symlnk_in_share = "symlnk_in_share";
  	const char *symlnk_dst_in_share = file;
  	const char *symlnk_outside_share = "symlnk_outside_share";
 -	const char *symlnk_dst_outside_share = "/etc/passwd";
 +	const char *symlnk_dst_outside_share = "/opt/etc/passwd";
- 	struct posix_test_entry state[] = {
+ 	struct posix_test_entry entries[] = {
+ 		{
+ 			.name = file,
+@@ -322,7 +322,7 @@ bool run_posix_ls_single_test(int dummy)
+ 	const char *symlnk_in_share = "symlnk_in_share";
+ 	const char *symlnk_dst_in_share = file;
+ 	const char *symlnk_outside_share = "symlnk_outside_share";
+-	const char *symlnk_dst_outside_share = "/etc/passwd";
++	const char *symlnk_dst_outside_share = "/opt/etc/passwd";
+ 	struct posix_test_entry entries[] = {
+ 		{
+ 			.name = file,
+@@ -536,7 +536,7 @@ bool run_posix_readlink_test(int dummy)
+ 	const char *symlnk_in_share = "symlnk_in_share";
+ 	const char *symlnk_dst_in_share = file;
+ 	const char *symlnk_outside_share = "symlnk_outside_share";
+-	const char *symlnk_dst_outside_share = "/etc/passwd";
++	const char *symlnk_dst_outside_share = "/opt/etc/passwd";
+ 	struct posix_test_entry entries[] = {
  		{
  			.name = symlnk_dangling,
-@@ -279,7 +279,7 @@ bool run_posix_ls_single_test(int dummy)
+@@ -688,7 +688,7 @@ bool run_posix_stat_test(int dummy)
  	const char *symlnk_in_share = "symlnk_in_share";
  	const char *symlnk_dst_in_share = file;
  	const char *symlnk_outside_share = "symlnk_outside_share";
 -	const char *symlnk_dst_outside_share = "/etc/passwd";
 +	const char *symlnk_dst_outside_share = "/opt/etc/passwd";
- 	struct posix_test_entry state[] = {
- 		{
- 			.name = symlnk_dangling,
-@@ -464,7 +464,7 @@ bool run_posix_readlink_test(int dummy)
- 	const char *symlnk_in_share = "symlnk_in_share";
- 	const char *symlnk_dst_in_share = file;
- 	const char *symlnk_outside_share = "symlnk_outside_share";
--	const char *symlnk_dst_outside_share = "/etc/passwd";
-+	const char *symlnk_dst_outside_share = "/opt/etc/passwd";
- 	struct posix_test_entry state[] = {
- 		{
- 			.name = symlnk_dangling,
-@@ -614,7 +614,7 @@ bool run_posix_stat_test(int dummy)
- 	const char *symlnk_in_share = "symlnk_in_share";
- 	const char *symlnk_dst_in_share = file;
- 	const char *symlnk_outside_share = "symlnk_outside_share";
--	const char *symlnk_dst_outside_share = "/etc/passwd";
-+	const char *symlnk_dst_outside_share = "/opt/etc/passwd";
- 	struct posix_test_entry state[] = {
+ 	struct posix_test_entry entries[] = {
  		{
  			.name = symlnk_dangling,
 --- a/source3/utils/ntlm_auth.c
@@ -111,7 +111,7 @@
  #define WINBIND_KRB5_AUTH	0x00000080
 --- a/third_party/heimdal/kdc/httpkadmind.c
 +++ b/third_party/heimdal/kdc/httpkadmind.c
-@@ -1856,8 +1856,8 @@ get_config(kadmin_request_desc r)
+@@ -1857,8 +1857,8 @@ get_config(kadmin_request_desc r)
      krb5_tl_data *tl_next;
      const char *pname;
      /* Default configuration for principals that have none set: */
@@ -142,8 +142,8 @@
 -	fd = open("/etc/shadow", O_RDONLY, 0);
 +	fd = open("/opt/etc/shadow", O_RDONLY, 0);
  	if (fd >= 0) {
- 	    ssize_t n;
  	    rk_cloexec(fd);
+ 	    /* add_entropy will hash the buf */
 --- a/third_party/heimdal/lib/hx509/cert.c
 +++ b/third_party/heimdal/lib/hx509/cert.c
 @@ -135,7 +135,7 @@ SYSCONFDIR "/hx509.conf" PATH_SEP

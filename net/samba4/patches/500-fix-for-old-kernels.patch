@@ -1,0 +1,68 @@
+../../lib/replace/replace.c:1098:26: error: storage size of 'cr' isn't known
+  struct file_clone_range cr;
+                          ^~
+../../lib/replace/replace.c:1101:4: error: 'struct file_clone_range' has no member named 'src_fd'
+   .src_fd = src_fd,
+    ^~~~~~
+../../lib/replace/replace.c:1101:13: warning: excess elements in struct initializer
+   .src_fd = src_fd,
+             ^~~~~~
+../../lib/replace/replace.c:1101:13: note: (near initialization for '(anonymous)')
+../../lib/replace/replace.c:1102:4: error: 'struct file_clone_range' has no member named 'src_offset'
+   .src_offset = (uint64_t)src_off,
+    ^~~~~~~~~~
+../../lib/replace/replace.c:1102:17: warning: excess elements in struct initializer
+   .src_offset = (uint64_t)src_off,
+                 ^
+../../lib/replace/replace.c:1102:17: note: (near initialization for '(anonymous)')
+../../lib/replace/replace.c:1103:4: error: 'struct file_clone_range' has no member named 'dest_offset'
+   .dest_offset = (uint64_t)dst_off,
+    ^~~~~~~~~~~
+../../lib/replace/replace.c:1103:18: warning: excess elements in struct initializer
+   .dest_offset = (uint64_t)dst_off,
+                  ^
+../../lib/replace/replace.c:1103:18: note: (near initialization for '(anonymous)')
+../../lib/replace/replace.c:1104:4: error: 'struct file_clone_range' has no member named 'src_length'
+   .src_length = (uint64_t)to_copy,
+    ^~~~~~~~~~
+../../lib/replace/replace.c:1104:17: warning: excess elements in struct initializer
+   .src_length = (uint64_t)to_copy,
+                 ^
+../../lib/replace/replace.c:1104:17: note: (near initialization for '(anonymous)')
+../../lib/replace/replace.c:1100:33: error: invalid use of undefined type 'struct file_clone_range'
+  cr = (struct file_clone_range) {
+                                 ^
+../../lib/replace/replace.c:1107:23: error: 'FICLONERANGE' undeclared (first use in this function); did you mean 'ERANGE'?
+  return ioctl(dst_fd, FICLONERANGE, &cr);
+                       ^~~~~~~~~~~~
+                       ERANGE
+../../lib/replace/replace.c:1107:23: note: each undeclared identifier is reported only once for each function it appears in
+
+Waf: Leaving directory `.../samba-4.22.2/bin/default'
+Build failed
+ -> task in 'LIBREPLACE_HOSTCC' failed with exit status 1 (run with -v to display more information)
+
+---
+
+--- a/lib/replace/replace.c
++++ b/lib/replace/replace.c
+@@ -1088,13 +1088,18 @@ ssize_t rep_copy_file_range(int fd_in,
+ # include <sys/ioctl.h>
+ #endif
+ 
++/* FICLONERANGE since Linux 4.5 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ ssize_t rep_copy_reflink(int src_fd,
+ 			 off_t src_off,
+ 			 int dst_fd,
+ 			 off_t dst_off,
+ 			 off_t to_copy)
+ {
+-#ifdef HAVE_LINUX_IOCTL
++#if defined(HAVE_LINUX_IOCTL) && LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
+ 	struct file_clone_range cr;
+ 
+ 	cr = (struct file_clone_range) {
