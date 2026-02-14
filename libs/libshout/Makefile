@@ -3,11 +3,13 @@
 # See /LICENSE for more information.
 #
 
+# XXX libtheora bumped
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libshout
 PKG_VERSION:=2.4.6
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://downloads.us.xiph.org/releases/libshout/
