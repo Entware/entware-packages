@@ -1,0 +1,89 @@
+In file included from .../staging_dir/*/include/linux/ipv6.h:5,
+                 from networking/tun_device.c:62:
+.../staging_dir/*/include/linux/in6.h:30:8: error: redefinition of 'struct in6_addr'
+ struct in6_addr {
+        ^~~~~~~~
+In file included from .../staging_dir/*/include/arpa/inet.h:22,
+                 from ./utils/utils.h:42,
+                 from ./networking/host.h:28,
+                 from networking/tun_device.h:31,
+                 from networking/tun_device.c:20:
+.../staging_dir/*/include/netinet/in.h:211:8: note: originally defined here
+ struct in6_addr
+        ^~~~~~~~
+In file included from .../staging_dir/*/include/linux/ipv6.h:5,
+                 from networking/tun_device.c:62:
+.../staging_dir/*/include/linux/in6.h:41:8: error: redefinition of 'struct sockaddr_in6'
+ struct sockaddr_in6 {
+        ^~~~~~~~~~~~
+In file included from .../staging_dir/*/include/arpa/inet.h:22,
+                 from ./utils/utils.h:42,
+                 from ./networking/host.h:28,
+                 from networking/tun_device.h:31,
+                 from networking/tun_device.c:20:
+.../staging_dir/*/include/netinet/in.h:252:8: note: originally defined here
+ struct sockaddr_in6
+        ^~~~~~~~~~~~
+In file included from .../staging_dir/*/include/linux/ipv6.h:5,
+                 from networking/tun_device.c:62:
+.../staging_dir/*/include/linux/in6.h:49:8: error: redefinition of 'struct ipv6_mreq'
+ struct ipv6_mreq {
+        ^~~~~~~~~
+In file included from .../staging_dir/*/include/arpa/inet.h:22,
+                 from ./utils/utils.h:42,
+                 from ./networking/host.h:28,
+                 from networking/tun_device.h:31,
+                 from networking/tun_device.c:20:
+.../staging_dir/*/include/netinet/in.h:288:8: note: originally defined here
+ struct ipv6_mreq
+        ^~~~~~~~~
+In file included from networking/tun_device.c:62:
+.../staging_dir/*/include/linux/ipv6.h:19:8: error: redefinition of 'struct in6_pktinfo'
+ struct in6_pktinfo {
+        ^~~~~~~~~~~
+In file included from .../staging_dir/*/include/arpa/inet.h:22,
+                 from ./utils/utils.h:42,
+                 from ./networking/host.h:28,
+                 from networking/tun_device.h:31,
+                 from networking/tun_device.c:20:
+.../staging_dir/*/include/netinet/in.h:536:8: note: originally defined here
+ struct in6_pktinfo
+        ^~~~~~~~~~~
+In file included from networking/tun_device.c:62:
+.../staging_dir/*/include/linux/ipv6.h:24:8: error: redefinition of 'struct ip6_mtuinfo'
+ struct ip6_mtuinfo {
+        ^~~~~~~~~~~
+In file included from .../staging_dir/*/include/arpa/inet.h:22,
+                 from ./utils/utils.h:42,
+                 from ./networking/host.h:28,
+                 from networking/tun_device.h:31,
+                 from networking/tun_device.c:20:
+.../staging_dir/*/include/netinet/in.h:543:8: note: originally defined here
+ struct ip6_mtuinfo
+        ^~~~~~~~~~~
+make[8]: *** [Makefile:2285: networking/tun_device.lo] Error 1
+
+---
+
+--- a/src/libstrongswan/networking/tun_device.c
++++ b/src/libstrongswan/networking/tun_device.c
+@@ -17,6 +17,10 @@
+  * for more details.
+  */
+ 
++#ifdef __linux__
++#include <linux/ipv6.h>
++#endif
++
+ #include "tun_device.h"
+ 
+ #include <utils/debug.h>
+@@ -59,7 +63,7 @@ tun_device_t *tun_device_create(const ch
+ #elif defined(__linux__)
+ #include <linux/types.h>
+ #include <linux/if_tun.h>
+-#include <linux/ipv6.h>
++//#include <linux/ipv6.h>
+ #else
+ #include <net/if_tun.h>
+ #include <net/if_var.h>
