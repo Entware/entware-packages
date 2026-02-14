@@ -1,0 +1,37 @@
+--- a/setuptools/_distutils/sysconfig.py
++++ b/setuptools/_distutils/sysconfig.py
+@@ -134,6 +134,9 @@ def get_python_inc(plat_specific: bool =
+     sys.base_exec_prefix -- i.e., ignore 'plat_specific'.
+     """
+     default_prefix = BASE_EXEC_PREFIX if plat_specific else BASE_PREFIX
++    if os.environ.get('STAGING_DIR', ""):
++        staging_dir_include = os.environ.get('STAGING_DIR') + '/opt/include'
++        default_prefix = staging_dir_include.rstrip('include')
+     resolved_prefix = prefix if prefix is not None else default_prefix
+     # MinGW imitates posix like layout, but os.name != posix
+     os_name = "posix" if is_mingw() else os.name
+@@ -246,7 +249,14 @@ def get_python_lib(
+ 
+     early_prefix = prefix
+ 
+-    if prefix is None:
++    if os.environ.get('STAGING_DIR', ""):
++        staging_dir_libs = os.environ.get('STAGING_DIR') + '/opt/lib'
++        lib_basename = staging_dir_libs.split('/')[-1]
++    else:
++        lib_basename = "lib"
++    if prefix is None and os.environ.get('STAGING_DIR', ""):
++        prefix = staging_dir_libs.rstrip(lib_basename)
++    elif prefix is None:
+         if standard_lib:
+             prefix = plat_specific and BASE_EXEC_PREFIX or BASE_PREFIX
+         else:
+@@ -261,7 +271,7 @@ def get_python_lib(
+             # Pure Python
+             libdir = "lib"
+         implementation = 'pypy' if IS_PYPY else 'python'
+-        libpython = os.path.join(prefix, libdir, implementation + get_python_version())
++        libpython = os.path.join(prefix, lib_basename, implementation + get_python_version())
+         return _posix_lib(standard_lib, libpython, early_prefix, prefix)
+     elif os.name == "nt":
+         if standard_lib:

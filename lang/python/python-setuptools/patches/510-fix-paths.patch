@@ -1,0 +1,47 @@
+--- a/setuptools/_vendor/platformdirs/unix.py
++++ b/setuptools/_vendor/platformdirs/unix.py
+@@ -48,7 +48,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+     def _site_data_dirs(self) -> list[str]:
+         path = os.environ.get("XDG_DATA_DIRS", "")
+         if not path.strip():
+-            path = f"/usr/local/share{os.pathsep}/usr/share"
++            path = f"/opt/usr/share{os.pathsep}/opt/share{os.pathsep}/usr/local/share{os.pathsep}/usr/share"
+         return [self._append_app_name_and_version(p) for p in path.split(os.pathsep)]
+ 
+     @property
+@@ -79,7 +79,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+     def _site_config_dirs(self) -> list[str]:
+         path = os.environ.get("XDG_CONFIG_DIRS", "")
+         if not path.strip():
+-            path = "/etc/xdg"
++            path = "/opt/etc/xdg"
+         return [self._append_app_name_and_version(p) for p in path.split(os.pathsep)]
+ 
+     @property
+@@ -109,7 +109,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+     @property
+     def site_cache_dir(self) -> str:
+         """:return: cache directory shared by users, e.g. ``/var/cache/$appname/$version``"""
+-        return self._append_app_name_and_version("/var/cache")
++        return self._append_app_name_and_version("/opt/var/cache")
+ 
+     @property
+     def user_state_dir(self) -> str:
+@@ -178,7 +178,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+                 if not Path(path).exists():
+                     path = f"/tmp/runtime-{getuid()}"  # noqa: S108
+             else:
+-                path = f"/run/user/{getuid()}"
++                path = f"/opt/run/user/{getuid()}"
+         return self._append_app_name_and_version(path)
+ 
+     @property
+@@ -200,7 +200,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+             if sys.platform.startswith(("freebsd", "openbsd", "netbsd")):
+                 path = "/var/run"
+             else:
+-                path = "/run"
++                path = "/opt/var/run"
+         return self._append_app_name_and_version(path)
+ 
+     @property
