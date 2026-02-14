@@ -1,0 +1,59 @@
+# https://github.com/DanBloomberg/leptonica/commit/8498d83a3f9d5f3e663e81e7a0afb62d6ee75e3e
+
+--- a/prog/CMakeLists.txt
++++ b/prog/CMakeLists.txt
+@@ -343,7 +343,7 @@ set(INSTALL_PROGS
+ foreach(make_install ${INSTALL_PROGS})
+   install(
+     TARGETS ${make_install}
+-    RUNTIME DESTINATION bin
+-    LIBRARY DESTINATION lib
+-    ARCHIVE DESTINATION lib)
++    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ endforeach()
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -78,7 +78,7 @@ if(UNIX)
+       ${old_target}
+       DEPENDS ${PROJECT_NAME}
+       COMMENT "Creating lept symlink")
+-    install(FILES ${CMAKE_BINARY_DIR}/src/${old_target} DESTINATION lib)
++    install(FILES ${CMAKE_BINARY_DIR}/src/${old_target} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+   endif(SYM_LINK)
+ endif()
+ 
+@@ -105,9 +105,9 @@ endif()
+ install(
+   TARGETS leptonica
+   EXPORT LeptonicaTargets
+-  RUNTIME DESTINATION bin
+-  LIBRARY DESTINATION lib
+-  ARCHIVE DESTINATION lib)
++  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ install(EXPORT LeptonicaTargets DESTINATION ${leptonica_INSTALL_CMAKE_DIR})
+ install(FILES ${hdr} ${CMAKE_BINARY_DIR}/src/endianness.h
+         DESTINATION include/leptonica)
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -71,7 +71,7 @@ option(ENABLE_WEBP "Enable WebP support"
+ option(ENABLE_OPENJPEG "Enable OpenJPEG support" ON)
+ 
+ set(leptonica_INSTALL_CMAKE_DIR
+-    "lib/cmake/leptonica"
++    "${CMAKE_INSTALL_LIBDIR}/cmake/leptonica"
+     CACHE STRING "Install destination for CMake package files")
+ 
+ include(LeptonicaFunc)
+@@ -344,7 +344,7 @@ configure_file(
+   ${CMAKE_CURRENT_BINARY_DIR}/LeptonicaConfig.cmake @ONLY)
+ 
+ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${pkg_conf_name}
+-        DESTINATION lib/pkgconfig)
++        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/LeptonicaConfig.cmake
+               ${CMAKE_CURRENT_BINARY_DIR}/LeptonicaConfig-version.cmake
+         DESTINATION ${leptonica_INSTALL_CMAKE_DIR})

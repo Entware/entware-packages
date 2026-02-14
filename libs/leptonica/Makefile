@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=leptonica
-PKG_VERSION:=1.84.1
-PKG_RELEASE:=1
+PKG_VERSION:=1.86.0
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=http://www.leptonica.org/source/
-PKG_HASH:=2b3e1254b1cca381e77c819b59ca99774ff43530209b9aeb511e1d46588a64f6
+PKG_HASH:=1fa08e40bb37fd45802d5e6e7b43927449a5c47d4608ef99d3bd3f0fa76baedc
 
-PKG_MAINTAINER:=Valentín Kivachuk <vk18496@gmail.com>
+PKG_MAINTAINER:=
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=leptonica-license.txt
 PKG_CPE_ID:=cpe:/a:leptonica:leptonica
@@ -42,13 +42,13 @@ TARGET_CFLAGS:=$(filter-out -O%,$(TARGET_CFLAGS)) -O3
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/leptonica
-	$(CP) $(PKG_INSTALL_DIR)/opt/include/leptonica/*.h $(1)/opt/include/leptonica/
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/leptonica/*.h $(1)/opt/include/leptonica
 	$(INSTALL_DIR) $(1)/opt/lib
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libleptonica.so* $(1)/opt/lib/
-	$(INSTALL_DIR) $(1)/opt/lib/cmake
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/cmake/leptonica/*.cmake $(1)/opt/lib/cmake/
+	$(INSTALL_DIR) $(1)/opt/lib/cmake/leptonica
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/cmake/leptonica/*.cmake $(1)/opt/lib/cmake/leptonica
 	$(INSTALL_DIR) $(1)/opt/lib/pkgconfig
-	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/lept_Release.pc $(1)/opt/lib/pkgconfig/lept.pc
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/pkgconfig/lept.pc $(1)/opt/lib/pkgconfig/
 endef
 
 define Package/libleptonica/install
