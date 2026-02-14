@@ -55,6 +55,6 @@ define Package/onionshare-cli/description
   anonymously share files, host websites, and chat with friends using the Tor network.
 endef
 
-$(eval $(call Py3Package,onionshare-cli))
-$(eval $(call BuildPackage,onionshare-cli))
-$(eval $(call BuildPackage,onionshare-cli-src))
+#$(eval $(call Py3Package,onionshare-cli))
+#$(eval $(call BuildPackage,onionshare-cli))
+#$(eval $(call BuildPackage,onionshare-cli-src))
