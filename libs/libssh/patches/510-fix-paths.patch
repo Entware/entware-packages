@@ -1,6 +1,6 @@
 --- a/DefineOptions.cmake
 +++ b/DefineOptions.cmake
-@@ -50,11 +50,11 @@ if (WITH_ABI_BREAK)
+@@ -52,11 +52,11 @@ if (WITH_ABI_BREAK)
  endif (WITH_ABI_BREAK)
  
  if (NOT GLOBAL_BIND_CONFIG)
@@ -16,7 +16,7 @@
  if (FUZZ_TESTING)
 --- a/src/config.c
 +++ b/src/config.c
-@@ -534,13 +534,13 @@ ssh_config_make_absolute(ssh_session ses
+@@ -603,13 +603,13 @@ ssh_config_make_absolute(ssh_session ses
      /* relative path */
      if (global) {
          /* Parsing global config */
@@ -45,7 +45,7 @@
  /* 0x04  Probabilistic Miller-Rabin primality tests. */
 --- a/src/options.c
 +++ b/src/options.c
-@@ -690,7 +690,7 @@ int ssh_options_set(ssh_session session,
+@@ -861,7 +861,7 @@ int ssh_options_set(ssh_session session,
              SAFE_FREE(session->opts.global_knownhosts);
              if (v == NULL) {
                  session->opts.global_knownhosts =
@@ -54,7 +54,7 @@
                  if (session->opts.global_knownhosts == NULL) {
                      ssh_set_error_oom(session);
                      return -1;
-@@ -1524,7 +1524,7 @@ int ssh_options_apply(ssh_session sessio
+@@ -1900,7 +1900,7 @@ int ssh_options_apply(ssh_session sessio
  
      if ((session->opts.exp_flags & SSH_OPT_EXP_FLAG_GLOBAL_KNOWNHOSTS) == 0) {
          if (session->opts.global_knownhosts == NULL) {
@@ -65,9 +65,9 @@
                                           session->opts.global_knownhosts);
 --- a/src/socket.c
 +++ b/src/socket.c
-@@ -925,11 +925,11 @@ ssh_execute_command(const char *command,
+@@ -924,11 +924,11 @@ ssh_execute_command(const char *command,
      if (shell == NULL || shell[0] == '\0') {
-         /* Fall back to the /bin/sh only if the bash is not available. But there are 
+         /* Fall back to the /bin/sh only if the bash is not available. But there are
           * issues with dash or whatever people tend to link to /bin/sh */
 -        rc = access("/bin/bash", 0);
 +        rc = access("$SHELL", 0);
