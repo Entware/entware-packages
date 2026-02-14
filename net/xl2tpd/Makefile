@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xl2tpd
 PKG_VERSION:=1.3.18
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 PKG_MAINTAINER:=Yousong Zhou <yszhou4tech@gmail.com>
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=LICENSE
@@ -38,7 +38,7 @@ endef
 define Package/xl2tpd/description
 l2tpd is the open source implementation of the L2TP tunneling protocol (RFC2661).
 It does implement both LAC and LNS role in a L2TP networking architecture. The
-main goal of this protocol is to tunnel PPP frame trough an IP network.
+main goal of this protocol is to tunnel PPP frame through an IP network.
 endef
 
 ifneq (0,0)
@@ -78,6 +78,10 @@ define Package/xl2tpd/install
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
 	$(INSTALL_BIN) ./files/S20xl2tpd $(1)/opt/etc/init.d/
 
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/xl2tp.config \
+#		$(1)/etc/config/xl2tp
+
 	$(INSTALL_DIR) $(1)/opt/etc/xl2tpd
 	$(INSTALL_DATA) ./files/xl2tpd.conf $(1)/opt/etc/xl2tpd/
 	$(INSTALL_CONF) ./files/xl2tp-secrets $(1)/opt/etc/xl2tpd/
@@ -89,6 +93,9 @@ define Package/xl2tpd/install
 	$(INSTALL_BIN) ./files/ip-up.sh $(1)/opt/etc/ppp/
 	$(INSTALL_BIN) ./files/ip-down.sh $(1)/opt/etc/ppp/
 	$(INSTALL_DIR) $(1)/opt/var/run/xl2tpd
+
+#	$(INSTALL_DIR) $(1)/lib/netifd/proto
+#	$(INSTALL_BIN) ./files/l2tp.sh $(1)/lib/netifd/proto
 endef
 
 $(eval $(call BuildPackage,xl2tpd))
