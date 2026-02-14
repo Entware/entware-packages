@@ -1,24 +1,21 @@
+# SPDX-License-Identifier: GPL-2.0-only
 #
-# Copyright (C) 2006-2014 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2006-2025 OpenWrt.org
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sqlite
-PKG_VERSION:=3.49.1
-PKG_SRC_VERSION:=3490100
-PKG_RELEASE:=2
+PKG_VERSION:=3.51.2
+PKG_SRC_VERSION:=3510200
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-autoconf-$(PKG_SRC_VERSION).tar.gz
-PKG_SOURCE_URL:=https://www.sqlite.org/2025/
-PKG_HASH:=106642d8ccb36c5f7323b64e4152e9b719f7c0215acf5bfeac3d5e7f97b59254
+PKG_SOURCE_URL:=https://www.sqlite.org/2026/
+PKG_HASH:=fbd89f866b1403bb66a143065440089dd76100f2238314d92274a082d4f2b7bb
 
 PKG_CPE_ID:=cpe:/a:sqlite:sqlite
-PKG_LICENSE:=PUBLICDOMAIN
-PKG_LICENSE_FILES:=
+PKG_LICENSE:=blessing
+PKG_LICENSE_FILES:=LICENSE.md
 PKG_MAINTAINER:=
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-autoconf-$(PKG_SRC_VERSION)
@@ -34,9 +31,12 @@ PKG_CONFIG_DEPENDS := \
 	CONFIG_SQLITE3_FTS4 \
 	CONFIG_SQLITE3_FTS5 \
 	CONFIG_SQLITE3_LIBEDIT \
+	CONFIG_SQLITE3_LINENOISE \
 	CONFIG_SQLITE3_READLINE \
 	CONFIG_SQLITE3_RTREE \
 	CONFIG_SQLITE3_SESSION
+
+PKG_BUILD_DEPENDS += SQLITE3_LINENOISE:linenoise
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -75,10 +75,10 @@ define Package/sqlite3-cli
   SECTION:=utils
   CATEGORY:=Utilities
   DEPENDS := \
-	  +libsqlite3 \
-	  +SQLITE3_LIBEDIT:libedit \
-	  +SQLITE3_READLINE:libreadline \
-	  +SQLITE3_READLINE:libncursesw
+    +libsqlite3 \
+    +SQLITE3_LIBEDIT:libedit \
+    +SQLITE3_READLINE:libreadline
+  EXTRA_DEPENDS:=libsqlite3 (=$(PKG_VERSION)-$(PKG_RELEASE))
   TITLE+= (cli)
 endef
 
@@ -98,7 +98,9 @@ TARGET_CFLAGS += \
 	-DHAVE_MALLOC_USABLE_SIZE \
 	-DSQLITE_ENABLE_UNLOCK_NOTIFY \
 	$(if $(CONFIG_SQLITE3_BATCH_ATOMIC_WRITE),-DSQLITE_ENABLE_BATCH_ATOMIC_WRITE) \
-	$(if $(CONFIG_SQLITE3_COLUMN_METADATA),-DSQLITE_ENABLE_COLUMN_METADATA)
+	$(if $(CONFIG_SQLITE3_COLUMN_METADATA),-DSQLITE_ENABLE_COLUMN_METADATA) \
+	-DHAVE_EDITLINE=$(if $(CONFIG_SQLITE3_LIBEDIT),1,0) \
+	-DHAVE_READLINE=$(if $(CONFIG_SQLITE3_READLINE),1,0)
 
 CONFIGURE_ARGS := \
 	$(filter-out --target=% $(DISABLE_IPV6) $(DISABLE_NLS),$(CONFIGURE_ARGS)) \
@@ -116,9 +118,11 @@ CONFIGURE_ARGS := \
 	$(if $(CONFIG_SQLITE3_SESSION),--enable-session,--disable-session)
 
 ifeq ($(CONFIG_SQLITE3_LIBEDIT),y)
-CONFIGURE_ARGS+=--disable-readline
+CONFIGURE_ARGS+=--editline --with-readline-header=$(STAGING_DIR)/opt/include/editline/readline.h
 else ifeq ($(CONFIG_SQLITE3_READLINE),y)
-CONFIGURE_ARGS+=--disable-editline
+CONFIGURE_ARGS+=--readline --with-readline-header=$(STAGING_DIR)/opt/include/readline/readline.h
+else ifeq ($(CONFIG_SQLITE3_LINENOISE),y)
+CONFIGURE_ARGS+=--with-linenoise=$(STAGING_DIR)/opt/include/linenoise
 else
 CONFIGURE_ARGS+=--disable-editline --disable-readline
 endif
