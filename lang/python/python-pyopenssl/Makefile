@@ -4,15 +4,16 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
+# XXX Entware specifics: bump version
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pyopenssl
-PKG_VERSION:=24.1.0
+PKG_VERSION:=25.1.0
 PKG_RELEASE:=1
 
-PYPI_NAME:=pyOpenSSL
-PKG_HASH:=cabed4bfaa5df9f1a16c0ef64a0cb65318b5cd077a7eda7d6970131ca2f41a6f
+PYPI_NAME:=pyopenssl
+PKG_HASH:=8d031884482e0c67ee92bf9a4d8cceb08d92aba7136432ffb0703c5280fc205b
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
