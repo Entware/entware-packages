@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hev-socks5-tunnel
-PKG_VERSION:=2.10.0
+PKG_VERSION:=2.14.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/heiher/hev-socks5-tunnel/releases/download/$(PKG_VERSION)
-PKG_HASH:=69736617530d692a678c2935a4ee1e96a61c3927ba3e4ce2d0474b9887d9e968
+PKG_HASH:=d517a16072eea7320b0430bdf8a152a901a3f3569ff86858729d1a80fa9d5cd0
 
 PKG_MAINTAINER:=Ray Wang <git@hev.cc>
 PKG_LICENSE:=MIT
@@ -32,22 +32,21 @@ and optimized online connections.
 endef
 
 define Package/hev-socks5-tunnel/conffiles
-/etc/config/hev-socks5-tunnel
-/etc/hev-socks5-tunnel/
+/opt/etc/hev-socks5-tunnel/
 endef
 
 define Package/hev-socks5-tunnel/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/hev-socks5-tunnel $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/hev-socks5-tunnel $(1)/opt/bin/
 
-	$(INSTALL_DIR) $(1)/etc/hev-socks5-tunnel/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/main.yml $(1)/etc/hev-socks5-tunnel/main.yml
+	$(INSTALL_DIR) $(1)/opt/etc/hev-socks5-tunnel/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/main.yml $(1)/opt/etc/hev-socks5-tunnel/main.yml
 
-	$(INSTALL_DIR) $(1)/etc/config/
-	$(INSTALL_CONF) ./files/hev-socks5-tunnel.config $(1)/etc/config/hev-socks5-tunnel
+#	$(INSTALL_DIR) $(1)/etc/config/
+#	$(INSTALL_CONF) ./files/hev-socks5-tunnel.config $(1)/etc/config/hev-socks5-tunnel
 
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) ./files/hev-socks5-tunnel.init $(1)/etc/init.d/hev-socks5-tunnel
+	$(INSTALL_DIR) $(1)/opt/etc/init.d/
+	$(INSTALL_BIN) ./files/S99hev-socks5-tunnel $(1)/opt/etc/init.d/
 endef
 
 $(eval $(call BuildPackage,hev-socks5-tunnel))

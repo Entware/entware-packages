@@ -1,0 +1,75 @@
+In file included from .../staging_dir/toolchain-*/include/linux/ipv6.h:5,
+                 from src/hev-tunnel-linux.c:24:
+.../staging_dir/toolchain-*/include/linux/in6.h:30:8: error: redefinition of 'struct in6_addr'
+ struct in6_addr {
+        ^~~~~~~~
+In file included from .../staging_dir/toolchain-*/include/arpa/inet.h:22,
+                 from src/hev-tunnel-linux.c:22:
+.../staging_dir/toolchain-*/include/netinet/in.h:211:8: note: originally defined here
+ struct in6_addr
+        ^~~~~~~~
+In file included from .../staging_dir/toolchain-*/include/linux/ipv6.h:5,
+                 from src/hev-tunnel-linux.c:24:
+.../staging_dir/toolchain-*/include/linux/in6.h:46:8: error: redefinition of 'struct sockaddr_in6'
+ struct sockaddr_in6 {
+        ^~~~~~~~~~~~
+In file included from .../staging_dir/toolchain-*/include/arpa/inet.h:22,
+                 from src/hev-tunnel-linux.c:22:
+.../staging_dir/toolchain-*/include/netinet/in.h:252:8: note: originally defined here
+ struct sockaddr_in6
+        ^~~~~~~~~~~~
+In file included from .../staging_dir/toolchain-*/include/linux/ipv6.h:5,
+                 from src/hev-tunnel-linux.c:24:
+.../staging_dir/toolchain-*/include/linux/in6.h:54:8: error: redefinition of 'struct ipv6_mreq'
+ struct ipv6_mreq {
+        ^~~~~~~~~
+In file included from .../staging_dir/toolchain-*/include/arpa/inet.h:22,
+                 from src/hev-tunnel-linux.c:22:
+.../staging_dir/toolchain-*/include/netinet/in.h:288:8: note: originally defined here
+ struct ipv6_mreq
+        ^~~~~~~~~
+src/hev-tunnel-linux.c: In function 'hev_tunnel_open':
+src/hev-tunnel-linux.c:47:26: error: 'IFF_MULTI_QUEUE' undeclared (first use in this function); did you mean 'IFF_ONE_QUEUE'?
+         ifr.ifr_flags |= IFF_MULTI_QUEUE;
+                          ^~~~~~~~~~~~~~~
+                          IFF_ONE_QUEUE
+
+---
+
+--- a/src/hev-tunnel-linux.c
++++ b/src/hev-tunnel-linux.c
+@@ -7,6 +7,14 @@
+  ============================================================================
+  */
+ 
++#ifdef __linux__
++#include <linux/ipv6.h>
++#endif
++
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ #if defined(__linux__)
+ 
+ #include <errno.h>
+@@ -21,7 +29,6 @@
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
+ #include <netinet/in.h>
+-#include <linux/ipv6.h>
+ #include <linux/if_tun.h>
+ 
+ #include <hev-task.h>
+@@ -43,8 +50,11 @@ hev_tunnel_open (const char *name, int m
+         goto exit;
+ 
+     ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
++/* IFF_MULTI_QUEUE since Linux 3.8 */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
+     if (multi_queue)
+         ifr.ifr_flags |= IFF_MULTI_QUEUE;
++#endif /* IFF_MULTI_QUEUE since Linux 3.8 */
+     if (name)
+         strncpy (ifr.ifr_name, name, IFNAMSIZ - 1);
+ 
