@@ -1,0 +1,78 @@
+../utils/edid-decode/ddc.cpp: In function 'int read_edid_block(int, __u8*, uint8_t, uint8_t, uint8_t, bool)':
+../utils/edid-decode/ddc.cpp:111:2: error: no match for 'operator=' (operand types are 'i2c_msg' and '<brace-enclosed initializer list>')
+  };
+  ^
+In file included from ../utils/edid-decode/ddc.cpp:27:
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(const i2c_msg&)'
+ struct i2c_msg {
+        ^~~~~~~
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'const i2c_msg&'
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(i2c_msg&&)'
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'i2c_msg&&'
+../utils/edid-decode/ddc.cpp:116:2: error: no match for 'operator=' (operand types are 'i2c_msg' and '<brace-enclosed initializer list>')
+  };
+  ^
+In file included from ../utils/edid-decode/ddc.cpp:27:
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(const i2c_msg&)'
+ struct i2c_msg {
+        ^~~~~~~
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'const i2c_msg&'
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(i2c_msg&&)'
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'i2c_msg&&'
+../utils/edid-decode/ddc.cpp: In function 'int read_hdcp_registers(int, __u8*, __u8*, __u8*)':
+../utils/edid-decode/ddc.cpp:260:2: error: no match for 'operator=' (operand types are 'i2c_msg' and '<brace-enclosed initializer list>')
+  };
+  ^
+In file included from ../utils/edid-decode/ddc.cpp:27:
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(const i2c_msg&)'
+ struct i2c_msg {
+        ^~~~~~~
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'const i2c_msg&'
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(i2c_msg&&)'
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'i2c_msg&&'
+../utils/edid-decode/ddc.cpp:284:2: error: no match for 'operator=' (operand types are 'i2c_msg' and '<brace-enclosed initializer list>')
+  };
+  ^
+In file included from ../utils/edid-decode/ddc.cpp:27:
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(const i2c_msg&)'
+ struct i2c_msg {
+        ^~~~~~~
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'const i2c_msg&'
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(i2c_msg&&)'
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'i2c_msg&&'
+../utils/edid-decode/ddc.cpp:309:2: error: no match for 'operator=' (operand types are 'i2c_msg' and '<brace-enclosed initializer list>')
+  };
+  ^
+In file included from ../utils/edid-decode/ddc.cpp:27:
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(const i2c_msg&)'
+ struct i2c_msg {
+        ^~~~~~~
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'const i2c_msg&'
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(i2c_msg&&)'
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'i2c_msg&&'
+../utils/edid-decode/ddc.cpp: In function 'int read_hdcp_ri_register(int, __u16*)':
+../utils/edid-decode/ddc.cpp:441:2: error: no match for 'operator=' (operand types are 'i2c_msg' and '<brace-enclosed initializer list>')
+  };
+  ^
+In file included from ../utils/edid-decode/ddc.cpp:27:
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(const i2c_msg&)'
+ struct i2c_msg {
+        ^~~~~~~
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'const i2c_msg&'
+.../include/linux/i2c.h:68:8: note: candidate: 'i2c_msg& i2c_msg::operator=(i2c_msg&&)'
+.../include/linux/i2c.h:68:8: note:   no known conversion for argument 1 from '<brace-enclosed initializer list>' to 'i2c_msg&&'
+ninja: build stopped: subcommand failed.
+
+---
+
+--- a/utils/meson.build
++++ b/utils/meson.build
+@@ -26,7 +26,7 @@ subdir('cec-ctl')
+ subdir('cec-follower')
+ subdir('cx18-ctl')
+ subdir('dvb', if_found : dep_libdvbv5)
+-subdir('edid-decode')
++#subdir('edid-decode')
+ subdir('ir-ctl')
+ subdir('ivtv-ctl')
+ subdir('keytable')
