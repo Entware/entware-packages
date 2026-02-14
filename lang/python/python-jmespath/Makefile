@@ -30,9 +30,9 @@ how to extract elements from a JSON document.
 endef
 
 # XXX Entware specific: skip bite-code
-define Build/Prepare
-	$(Build/Prepare/Default)
-	mv $(PKG_BUILD_DIR)/bin/jp.py $(PKG_BUILD_DIR)/bin/jp
+define Py3Package/python3-jmespath/install
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/jp.py $(1)/opt/bin/jp
 endef
 
 $(eval $(call Py3Package,python3-jmespath))
