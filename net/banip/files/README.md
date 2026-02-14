@@ -26,7 +26,8 @@ IP address blocking is commonly used to protect against brute force attacks, pre
 | country             | country blocks                 |    x    |          |                   | [Link](https://www.ipdeny.com/ipblocks)                      |
 | cinsscore           | suspicious attacker IPs        |    x    |          |                   | [Link](https://cinsscore.com/#list)                          |
 | debl                | fail2ban IP blacklist          |    x    |          |                   | [Link](https://www.blocklist.de)                             |
-| doh                 | public DoH-Provider            |         |    x     | tcp, udp: 80, 443 | [Link](https://github.com/dibdot/DoH-IP-blocklists)          |
+| dns                 | public DNS-Server              |         |    x     | tcp, udp: 53, 853 | [Link](https://public-dns.info)                              |
+| doh                 | public DoH-Server              |         |    x     | tcp, udp: 80, 443 | [Link](https://github.com/dibdot/DoH-IP-blocklists)          |
 | drop                | spamhaus drop compilation      |    x    |          |                   | [Link](https://www.spamhaus.org)                             |
 | dshield             | dshield IP blocklist           |    x    |          |                   | [Link](https://www.dshield.org)                              |
 | etcompromised       | ET compromised hosts           |    x    |          |                   | [Link](https://iplists.firehol.org/?ipset=et_compromised)    |
@@ -38,11 +39,11 @@ IP address blocking is commonly used to protect against brute force attacks, pre
 | greensnow           | suspicious server IPs          |    x    |          |                   | [Link](https://greensnow.co)                                 |
 | hagezi              | Threat IP blocklist            |         |    x     | tcp, udp: 80, 443 | [Link](https://github.com/hagezi/dns-blocklists)             |
 | ipblackhole         | blackhole IPs                  |    x    |          |                   | [Link](https://github.com/BlackHoleMonster/IP-BlackHole)     |
+| ipexdbl             | IPEX dynamic blocklists        |    x    |          |                   | [Link](https://github.com/ZEROF/ipextractor)                 |
 | ipsum               | malicious IPs                  |    x    |          |                   | [Link](https://github.com/stamparm/ipsum)                    |
 | ipthreat            | hacker and botnet TPs          |    x    |          |                   | [Link](https://ipthreat.net)                                 |
 | myip                | real-time IP blocklist         |    x    |          |                   | [Link](https://myip.ms)                                      |
 | nixspam             | iX spam protection             |    x    |          |                   | [Link](http://www.nixspam.org)                               |
-| pallebone           | curated IP blocklist           |    x    |          |                   | [Link](https://github.com/pallebone/StrictBlockPAllebone)    |
 | proxy               | open proxies                   |    x    |          |                   | [Link](https://iplists.firehol.org/?ipset=proxylists)        |
 | threat              | emerging threats               |    x    |          |                   | [Link](https://rules.emergingthreats.net)                    |
 | threatview          | malicious IPs                  |    x    |          |                   | [Link](https://threatview.io)                                |
@@ -81,6 +82,7 @@ IP address blocking is commonly used to protect against brute force attacks, pre
 * Supports external allowlist URLs to reference additional IPv4/IPv6 feeds
 * Optionally always allow certain protocols/destination ports in the inbound chain
 * Deduplicate IPs accross all Sets (single IPs only, no intervals)
+* Implements BCP38 ingress filtering to prevent IP address spoofing
 * Provides comprehensive runtime information
 * Provides a detailed Set report, incl. a map that shows the geolocation of your own uplink addresses (in green) and the location of potential attackers (in red)
 * Provides a Set search engine for certain IPs
@@ -95,25 +97,26 @@ IP address blocking is commonly used to protect against brute force attacks, pre
 
 <a id="prerequisites"></a>
 ## Prerequisites
-* **[OpenWrt](https://openwrt.org)**, latest stable release 24.x or a development snapshot with nft/firewall 4 support
+* **[OpenWrt](https://openwrt.org)**, latest stable release or a development snapshot with nft/firewall 4 support
 * A download utility with SSL support: 'curl', full 'wget' or 'uclient-fetch' with one of the 'libustream-*' SSL libraries, the latter one doesn't provide support for ETag HTTP header
 * A certificate store like 'ca-bundle', as banIP checks the validity of the SSL certificates of all download sites by default
 * For E-Mail notifications you need to install and setup the additional 'msmtp' package
 
 **Please note:**
 * Devices with less than 256MB of RAM are **_not_** supported
-* Latest banIP 1.5.x does **_not_** support OpenWrt 23.x because the kernel and the nft library are outdated (use former banIP 1.0.x instead)
+* Latest banIP does **_not_** support OpenWrt 23.x because the kernel and the nft library are outdated (use former banIP 1.0.x instead)
 * Any previous custom feeds file of banIP 1.0.x must be cleared and it's recommended to start with a fresh banIP default config
 
 <a id="installation-and-usage"></a>
 ## Installation and Usage
-* Update your local opkg/apk repository
+* Update your routers apk repository (apk Update)
 * Install the LuCI companion package 'luci-app-banip' which also installs the main 'banip' package as a dependency
+* Enable the banIP system service (System -> Startup) and enable banIP itself (banIP -> General Settings)
 * It's strongly recommended to use the LuCI frontend to easily configure all aspects of banIP, the application is located in LuCI under the 'Services' menu
 * It's also recommended to configure a 'Reload Trigger Interface' to depend on your WAN ifup events during boot or restart of your router
 * To be able to use banIP in a meaningful way, you must activate the service and possibly also activate a few blocklist feeds
 * If you're using a complex network setup, e.g. special tunnel interfaces, than untick the 'Auto Detection' option under the 'General Settings' tab and set the required options manually
-* Start the service with '/etc/init.d/banip start' and check everything is working by running '/etc/init.d/banip status' and also check the 'Firewall Log' and 'Processing Log' tabs
+* Start the service with '/etc/init.d/banip start' and check everything is working by running '/etc/init.d/banip status', also check the 'Processing Log' tab
 
 <a id="banip-cli-interface"></a>
 ## banIP CLI interface
@@ -133,7 +136,7 @@ Available commands:
 	enabled         Check if service is started on boot
 	report          [text|json|mail] Print banIP related Set statistics
 	search          [<IPv4 address>|<IPv6 address>] Check if an element exists in a banIP Set
-	content         [<Set name>] List all elements of a given banIP Set
+	content         [<Set name>] [true|false] Listing of all or only elements with hits of a given banIP Set
 	running         Check if service is running
 	status          Service status
 	trace           Start with syscall trace
@@ -189,6 +192,7 @@ Available commands:
 | ban_nftexpiry           | option | -                             | expiry time for auto added blocklist members, e.g. '5m', '2h' or '1d'                                             |
 | ban_nftretry            | option | 5                             | number of Set load attempts in case of an error                                                                   |
 | ban_nftcount            | option | 0                             | enable nft counter for every Set element                                                                          |
+| ban_bcp38               | option | 0                             | block packets with spoofed source IP addresses in all supported chains                                            |
 | ban_map                 | option | 0                             | enable a GeoIP Map with suspicious Set elements                                                                   |
 | ban_feed                | list   | -                             | external download feeds, e.g. 'yoyo', 'doh', 'country' or 'talos' (see feed table)                                |
 | ban_asn                 | list   | -                             | ASNs for the 'asn' feed, e.g.'32934'                                                                              |
@@ -225,44 +229,37 @@ Available commands:
 :::
 ::: banIP Set Statistics
 :::
-    Timestamp: 2025-01-13 22:08:39
+    Timestamp: 2026-01-12 19:33:11
     ------------------------------
     blocked syn-flood packets  : 0
-    blocked udp-flood packets  : 0
-    blocked icmp-flood packets : 0
-    blocked invalid ct packets : 1
+    blocked udp-flood packets  : 10
+    blocked icmp-flood packets : 11480
+    blocked invalid ct packets : 1653
     blocked invalid tcp packets: 0
+    blocked bcp38 packets      : 0
     ---
     auto-added IPs to allowlist: 0
     auto-added IPs to blocklist: 0
 
-    Set                  | Count        | Inbound (packets)     | Outbound (packets)    | Port/Protocol         | Elements              
+    Set                  | Count        | Inbound (packets)     | Outbound (packets)    | Port/Protocol         | Elements (max. 50)    
     ---------------------+--------------+-----------------------+-----------------------+-----------------------+------------------------
-    allowlist_v4MAC      | 0            | -                     | ON: 0                 | -                     | -                     
-    allowlist_v6MAC      | 0            | -                     | ON: 0                 | -                     | -                     
-    allowlist_v4         | 1            | ON: 0                 | ON: 0                 | -                     | -                     
-    allowlist_v6         | 2            | ON: 0                 | ON: 0                 | -                     | -                     
-    cinsscore_v4         | 11984        | ON: 5                 | -                     | -                     | 66.240.205.34, 137.184.2
-                         |              |                       |                       |                       | 4.204, 185.224.3.227, 18
-                         |              |                       |                       |                       | 9.179.109.68, 193.200.78
-                         |              |                       |                       |                       | .3                    
-    country_v6           | 22188        | ON: 0                 | -                     | -                     | -                     
-    country_v4           | 34925        | ON: 3                 | -                     | -                     | 43.255.244.0(r), 205.210
-                         |              |                       |                       |                       | .31.0(r), 222.16.0.0(r),
-                         |              |                       |                       |                       |  185.242.224.0(p)     
-    debl_v4              | 13646        | ON: 0                 | -                     | -                     | -                     
-    debl_v6              | 131          | ON: 0                 | -                     | -                     | -                     
-    doh_v6               | 1218         | -                     | ON: 0                 | tcp, udp: 80, 443     | -                     
-    doh_v4               | 1756         | -                     | ON: 0                 | tcp, udp: 80, 443     | -                     
-    threat_v4            | 943          | ON: 2                 | -                     | -                     | 45.142.193.0(p), 141.98.
-                         |              |                       |                       |                       | 10.0(p)               
-    turris_v4            | 8017         | ON: 1                 | -                     | -                     | 78.128.113.38         
-    blocklist_v4MAC      | 0            | -                     | ON: 0                 | -                     | -                     
-    blocklist_v6MAC      | 0            | -                     | ON: 0                 | -                     | -                     
-    blocklist_v4         | 0            | ON: 0                 | ON: 0                 | -                     | -                     
-    blocklist_v6         | 0            | ON: 0                 | ON: 0                 | -                     | -                     
+    allowlist.v4         | 1            | ON: 0                 | ON: 0                 | -                     |                       
+    allowlist.v4MAC      | 0            | -                     | ON: 0                 | -                     |                       
+    allowlist.v6         | 1            | ON: 0                 | ON: 0                 | -                     |                       
+    allowlist.v6MAC      | 0            | -                     | ON: 0                 | -                     |                       
+    blocklist.v4         | 7            | ON: 358               | ON: 812               | -                     | 5.187.35.0, 20.160.0.0, 
+                         |              |                       |                       |                       | 45.135.232.0, 91.202.233
+                         |              |                       |                       |                       | .0                    
+    blocklist.v4MAC      | 0            | -                     | ON: 0                 | -                     |                       
+    blocklist.v6         | 0            | ON: 4                 | ON: 0                 | -                     |                       
+    blocklist.v6MAC      | 0            | -                     | ON: 0                 | -                     |                       
+    dns.v4               | 95493        | -                     | ON: 2039              | tcp, udp: 53, 853     | 8.8.8.8               
+    dns.v6               | 251          | -                     | ON: 0                 | tcp, udp: 53, 853     |                       
+    doh.v4               | 1663         | -                     | ON: 0                 | tcp, udp: 80, 443     |                       
+    doh.v6               | 1204         | -                     | ON: 0                 | tcp, udp: 80, 443     |                       
+    hagezi.v4            | 39535        | -                     | ON: 0                 | tcp, udp: 80, 443     |                       
     ---------------------+--------------+-----------------------+-----------------------+-----------------------+------------------------
-    17                   | 94811        | 11 (11)               | 10 (0)                | 2                     | 12                    
+    13                   | 138155       | 4 (362)               | 13 (2851)             | 10                    | 5                     
 ```
 
 **banIP runtime information**  
@@ -271,16 +268,17 @@ Available commands:
 ~# /etc/init.d/banip status
 ::: banIP runtime information
   + status            : active (nft: ✔, monitor: ✔)
-  + version           : 1.5.5-r1
-  + element_count     : 92 615 (chains: 7, sets: 18, rules: 46)
-  + active_feeds      : allowlist.v4MAC, allowlist.v6MAC, allowlist.v4, allowlist.v6, cinsscore.v4, debl.v4, country.v6, debl.v6, doh.v4, doh.v6, threat.v4, turris.v4, turris.v6, blocklist.v4MAC, blocklist.v6MAC, blocklist.v4, blocklist.v6, country.v4
+  + frontend_ver      : 1.8.0-r1
+  + backend_ver       : 1.8.0-r1
+  + element_count     : 138 148 (chains: 7, sets: 13, rules: 50)
+  + active_feeds      : allowlist.v4MAC, allowlist.v6MAC, allowlist.v4, allowlist.v6, dns.v4, blocklist.v4MAC, blocklist.v6MAC, doh.v6, blocklist.v4, doh.v4, blocklist.v6, dns.v6, hagezi.v4
   + active_devices    : wan: pppoe-wan / wan-if: wan, wan_6 / vlan-allow: - / vlan-block: -
-  + active_uplink     : 91.61.217.158, 2001:fc:37ff:f64:b513:16dd:6903:7710
-  + nft_info          : ver: 1.1.1-r1, priority: -100, policy: performance, loglevel: warn, expiry: 2h, limit (icmp/syn/udp): 25/10/100
+  + active_uplink     : 5.73.162.23, 2a13:4800:204:319e:b26d:238b:d7fe:8213
+  + nft_info          : ver: 1.1.6-r1, priority: -100, policy: performance, loglevel: warn, expiry: 2h, limit (icmp/syn/udp): 25/10/100
   + run_info          : base: /mnt/data/banIP, backup: /mnt/data/banIP/backup, report: /mnt/data/banIP/report, error: /mnt/data/banIP/error
-  + run_flags         : auto: ✘, proto (4/6): ✔/✔, log (pre/in/out): ✘/✘/✘, count: ✔, dedup: ✔, split: ✘, custom feed: ✘, allowed only: ✘
-  + last_run          : 2025-03-27 21:54:29, mode: restart, duration: 0m 21s, memory: 1281.87 MB available, 2.00 MB max. used
-  + system_info       : cores: 4, log: logread, fetch: curl, Bananapi BPI-R3, mediatek/filogic, OpenWrt SNAPSHOT r29070-8d1fe32c2c 
+  + run_flags         : auto: ✔, proto (4/6): ✔/✔, bcp38: ✔, log (pre/in/out): ✘/✘/✔, count: ✔, dedup: ✔, split: ✘, custom feed: ✘, allowed only: ✘
+  + last_run          : mode: restart, 2026-01-12 06:16:19, duration: 0m 36s, memory: 1446.84 MB available
+  + system_info       : cores: 4, log: logread, fetch: curl, Bananapi BPI-R3, mediatek/filogic, OpenWrt SNAPSHOT (r32542-bf46d119a2)
 ```
 
 **banIP search information**  
@@ -297,26 +295,48 @@ Available commands:
 ```
 
 **banIP Set content information**  
+List all elements of a given Set with hit counters, e.g.:  
 
 ```
-~# /etc/init.d/banip content doh.v4
+~# /etc/init.d/banip content turris.v4
 :::
 ::: banIP Set Content
 :::
-    List elements of the Set 'doh.v4' on 2025-01-13 22:35:57
+    List elements of the Set 'turris.v4' on 2025-06-08 23:28:55
     ---
-{ "range": [ "1.0.0.1", "1.0.0.3" ] }
-{ "range": [ "1.1.1.1", "1.1.1.3" ] }
-1.236.250.173
-2.58.59.12
-2.135.147.99
-3.9.180.22
-3.10.65.124
-3.15.159.180
-3.33.139.32
-3.33.242.199
-3.34.32.82
+1.4.228.135, packets:  0
+1.23.16.3, packets:  0
+1.33.35.42, packets:  0
+1.33.231.132, packets:  0
+1.34.29.158, packets:  0
+1.34.231.106, packets:  0
+1.52.91.174, packets:  0
+1.64.149.142, packets:  0
+1.69.243.13, packets:  0
+1.70.139.250, packets:  0
+1.70.171.246, packets:  0
+1.82.191.114, packets:  0
 [...]
+```
+
+List only elements with hits of a given Set with hit counters, e.g.:  
+```
+~# /etc/init.d/banip content turris.v4 true
+:::
+::: banIP Set Content
+:::
+    List elements of the Set 'turris.v4' on 2025-06-08 23:30:59
+    ---
+74.50.211.178, packets:  1
+109.205.213.115, packets:  18
+109.205.213.123, packets:  35
+109.205.213.248, packets:  29
+109.205.213.250, packets:  20
+109.205.213.252, packets:  30
+122.222.152.65, packets:  1
+186.91.25.141, packets:  2
+190.203.106.113, packets:  2
+200.123.238.20, packets:  1
 ```
 
 <a id="best-practise-and-tweaks"></a>
@@ -389,7 +409,24 @@ C8:C2:9B:F7:80:12 192.168.1.10                     => this will be populated to 
 C8:C2:9B:F7:80:12                                  => this will be populated to v6MAC-Set with the IP-wildcard ::/0
 ```
 
+**MAC-address logging in nftables**  
+The MAC-address logging format in nftables is a little bit unusual. It is generated by the kernel's NF_LOG module and places all MAC-related data into one flat field, without separators or labels. For example, the field MAC=7e:1a:2f:fc:ee:29:68:34:21:1f:a7:b1:08:00 is actually a concatenation of the following:  
+
+```
+[Source MAC (6 bytes)] + [Destination MAC (6 bytes)] + [EtherType (2 bytes)]
+7e:1a:2f:fc:ee:29 → the source MAC address
+68:34:21:1f:a7:b1 → the destination MAC address
+08:00 → the EtherType for IPv4 (0x0800)
+```
+**BCP38**  
+BCP38 (**B**est **C**urrent **P**ractice, RFC 2827) defines ingress filtering to prevent IP address spoofing. In practice, this means:  
+* dropping packets arriving on the WAN whose source address is not valid or routable via that interface
+* dropping packets leaving LAN => WAN whose source address does not belong to the local/internal prefixes
+
+In banIP, the BCP38 implementation uses nftables’ FIB lookup to enforce this. It checks whether the packet’s source address is not valid for the incoming interface or whether the routing table reports no route for this source on this interface. Packets that fail this check are dropped.  
+
 **Set reporting, enable the GeoIP Map**  
+banIP includes a powerful reporting tool on the Set Reporting tab which shows the latest NFT banIP Set statistics. To get the latest statistics always press the "Refresh" button.  
 In addition to a tabular overview banIP reporting includes a GeoIP map in a modal popup window/iframe that shows the geolocation of your own uplink addresses (in green) and the locations of potential attackers (in red). To enable the GeoIP Map set the following options (in "Feed/Set Settings" config tab):  
 
     * set 'ban_nftcount' to '1' to enable the nft counter for every Set element
@@ -468,16 +505,21 @@ A valid JSON source object contains the following information, e.g.:
 	"doh":{
 		"url_4": "https://raw.githubusercontent.com/dibdot/DoH-IP-blocklists/master/doh-ipv4.txt",
 		"url_6": "https://raw.githubusercontent.com/dibdot/DoH-IP-blocklists/master/doh-ipv6.txt",
-		"rule_4": "/^127\\./{next}/^(([1-9][0-9]{0,2}\\.){1}([0-9]{1,3}\\.){2}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])(\\/(1?[0-9]|2?[0-9]|3?[0-2]))?)[[:space:]]/{printf \"%s,\\n\",$1}",
-		"rule_6": "/^(([0-9A-f]{0,4}:){1,7}[0-9A-f]{0,4}:?(\\/(1?[0-2][0-8]|[0-9][0-9]))?)[[:space:]]/{printf \"%s,\\n\",$1}",
+		"rule": "feed 1",
 		"chain": "out",
-		"descr": "public DoH-Provider",
+		"descr": "public DoH-Server",
 		"flag": "tcp udp 80 443"
 	},
 	[...]
 ```
 
-Add an unique feed name (no spaces, no special chars) and make the required changes: adapt at least the URL, the regex, the chain and the description for a new feed.  
+Add an unique feed name (no spaces, no special chars) and make the required changes: adapt at least the URL, check/change the rule, the size and the description for a new feed.  
+The rule consist of max. 4 individual, space separated parameters:
+1. type: 'feed' or 'suricata' (required)
+2. prefix: an optional search term (a string literal, no regex) to identify valid IP list entries
+3. column: the IP column within the feed file, e.g. '1' (required)
+4. separator: an optional field separator, default is the character class '[[:space:]]'
+
 Please note: the flag field is optional, it's a space separated list of options: supported are 'gz' as an archive format and protocols 'tcp' or 'udp' with port numbers/port ranges for destination port limitations.  
 
 **Debug options**  
