@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nnn
-PKG_VERSION:=4.9
+PKG_VERSION:=5.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/jarun/nnn/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=9e25465a856d3ba626d6163046669c0d4010d520f2fb848b0d611e1ec6af1b22
+PKG_HASH:=9faaff1e3f5a2fd3ed570a83f6fb3baf0bfc6ebd6a9abac16203d057ac3fffe3
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>
 PKG_LICENSE:=BSD-2-Clause
@@ -21,7 +21,7 @@ define Package/nnn
   CATEGORY:=Utilities
   TITLE:=Full-featured terminal file manager
   URL:=https://github.com/jarun/nnn
-  DEPENDS:=+libncurses +libreadline
+  DEPENDS:=+libncurses +libreadline +USE_MUSL:musl-fts
 endef
 
 define Package/nnn/description
@@ -29,6 +29,10 @@ define Package/nnn/description
   disk usage analyzer, fuzzy app launcher, batch file renamer
   and file picker.
 endef
+
+ifeq ($(CONFIG_USE_MUSL),y)
+TARGET_LDFLAGS += -lfts
+endif
 
 define Package/nnn/install
 	$(INSTALL_DIR) $(1)/opt/bin
