@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=zsh
 PKG_VERSION:=5.9
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/zsh
@@ -56,10 +56,8 @@ endef
 define Build/Configure
 	$(call Build/Configure/Default, \
 		--bindir=/opt/bin \
-		--enable-etcdir=/opt/etc \
 		--disable-gdbm \
 		$(if $(CONFIG_USE_MUSL),--enable-libc-musl) \
-		--enable-dynamic \
 		--enable-pcre \
 		--enable-cap \
 		--enable-multibyte \
@@ -68,6 +66,8 @@ define Build/Configure
 		--enable-fndir=/opt/share/zsh/$(PKG_VERSION)/functions \
 		--enable-site-fndir=/opt/share/zsh/site-functions \
 		--enable-function-subdirs \
+		--enable-etcdir=/opt/etc/zsh \
+		--enable-zprofile=/opt/etc/zsh/zprofile \
 		--with-tcsetpgrp \
 		--with-term-lib="ncursesw", \
 		zsh_cv_shared_environ=yes \
@@ -99,12 +99,14 @@ TARGET_LDFLAGS += $(FPIC)
 
 define Package/zsh/install
 	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_DIR) $(1)/opt/etc/zsh
 	$(INSTALL_DIR) $(1)/opt/share/zsh/$(PKG_VERSION)
 	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh
 	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/net
 	$(INSTALL_DIR) $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/param
 
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/zsh $(1)/opt/bin/
+	$(INSTALL_DATA) ./files/zprofile $(1)/opt/etc/zsh
 	$(CP) $(PKG_INSTALL_DIR)/opt/share/zsh/$(PKG_VERSION)/* $(1)/opt/share/zsh/$(PKG_VERSION)/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/zsh/$(PKG_VERSION)/zsh/net/* $(1)/opt/lib/zsh/$(PKG_VERSION)/zsh/net/
@@ -113,5 +115,6 @@ define Package/zsh/install
 	$(FIND) $(1)/opt/share/zsh/$(PKG_VERSION)/functions -type f | \
 		$(XARGS) $(SED) 's,^#!.*zsh,#!/opt/bin/zsh,'
 endef
+
 
 $(eval $(call BuildPackage,zsh))
