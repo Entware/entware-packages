@@ -9,15 +9,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=LVM2
-PKG_VERSION:=2.03.31
-PKG_VERSION_DM:=1.02.205
-PKG_RELEASE:=3
+PKG_VERSION:=2.03.33
+PKG_VERSION_DM:=1.02.207
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME).$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=https://sourceware.org/pub/lvm2 \
                 https://www.mirrorservice.org/sites/sourceware.org/pub/lvm2
 
-PKG_HASH:=5db2956a00fbf87d92274cccc92436387ec0c3faadece7413ece1ba1c10c98ff
+PKG_HASH:=be4babd8a986d73279f1e75fbb1d33cb41559b75c2063611781bfeb8c2def139
 PKG_BUILD_DIR:=$(BUILD_DIR)/lvm2-$(BUILD_VARIANT)/$(PKG_NAME).$(PKG_VERSION)
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
@@ -68,7 +68,7 @@ define Package/lvm2/default
   SUBMENU:=Disc
   TITLE:=The Linux Logical Volume Manager
   URL:=https://sourceware.org/lvm2/
-  DEPENDS:=+libreadline +libncurses +libaio
+  DEPENDS:=+libaio
 endef
 
 define Package/lvm2
@@ -105,6 +105,8 @@ CONFIGURE_ARGS += \
 	--with-default-run-dir=/opt/var/run/lvm \
 	--with-default-locking-dir=/opt/var/lock/lvm \
 	--without-libnvme \
+	--disable-readline \
+	--disable-libedit \
 	--$(if $(findstring selinux,$(BUILD_VARIANT)),en,dis)able-selinux
 
 ifneq ($(shell /bin/sh -c "echo -n 'X'"),X)
@@ -152,7 +154,7 @@ define Package/lvm2/install
 	$(INSTALL_BIN) ./files/S06lvm2 $(1)/opt/etc/init.d
 #	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 #	$(INSTALL_DATA) ./files/lvm2.hotplug $(1)/etc/hotplug.d/block/20-lvm2
-	$(FIND) $(PKG_INSTALL_DIR)/opt/sbin/ -type l -exec $(CP) -a {} $(1)/opt/sbin/ \;
+	$(FIND) $(PKG_INSTALL_DIR)/opt/sbin/ -type l -print0 | xargs -0 -r $(CP) -a -t $(1)/opt/sbin/
 	# fix /opt
 	$(SED) 's|/etc/lvm|/opt/etc/lvm|g;s|/run/lock|/opt/run/lock|' $(1)/opt/etc/lvm/lvm.conf
 endef
