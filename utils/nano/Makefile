@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nano
-PKG_VERSION:=8.4
+PKG_VERSION:=8.7.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/nano
-PKG_HASH:=5ad29222bbd55624d87ea677928b3106a743114d6c6f9b41f36c97be2a8e628d
+PKG_HASH:=76f0dcb248f2e2f1251d4ecd20fd30fb400a360a3a37c6c340e0a52c2d1cdedf
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
@@ -67,6 +67,7 @@ endef
 define Package/nano-plus/description
   nano-plus - Additional features enabled, larger size than default nano.
   (multibuffer, Unicode/UTF-8, help, justify, nanorc, some key bindings)
+  Nano set as the default EDITOR in the shell profile.
 
   $(call Package/nano/description)
 endef
@@ -75,6 +76,7 @@ define Package/nano-full/description
   nano-full - all features, including syntax highlighting (also uci),
   multibuffer, Unicode/UTF-8, nanorc, some key bindings.
   (libmagic-based file type detection is disabled)
+  Nano set as the default EDITOR in the shell profile.
 
   Example /etc/nanorc is included. nanorc documentation at
   https://www.nano-editor.org/dist/latest/nanorc.5.html
@@ -121,9 +123,7 @@ else
 endif
 
 CONFIGURE_VARS += \
-	ac_cv_header_regex_h=no \
-	ac_cv_func_strcasecmp=no \
-	ac_cv_func_strncasecmp=no
+	ac_cv_header_regex_h=no
 
 define Package/nano-plus/conffiles
 /opt/etc/nanorc
@@ -140,6 +140,8 @@ endef
 
 define Package/nano-plus/install
 	$(call Package/nano/install,$1)
+#	$(INSTALL_DIR) $(1)/etc/profile.d
+#	$(INSTALL_DATA) ./files/nano-default-editor.sh $(1)/etc/profile.d
 endef
 
 define Package/nano-full/install
