@@ -1,8 +1,15 @@
-commit 7c268c3ac2cc3e3fb259c057036ec7032cc16395 (HEAD -> master, origin/master, origin/HEAD)
-Author: Thlv Alivs <zgmzzzz18@gmail.com>
-Date:   Sun May 18 12:40:32 2025 +0800
+commit 4fa6e1225f9920286c761fbb3c570bb40d5cc46c (HEAD -> master, origin/master, origin/HEAD)
+Author: Andrey Zotikov <andrey.zotikov@gmail.com>
+Date:   Fri Feb 6 09:18:55 2026 +0300
 
-    zabbix: update to 7.0.12
-    also fix build error
+    haproxy: update config (maxconn, nbthread, ssl)
     
-    Signed-off-by: Thlv Alivs <zgmzzzz18@gmail.com>
+    Configuration changes:
+    
+    - max connections adjusted
+    - ulimit-n disabled
+    - nbprocs removed
+    - nbthread added
+    - ssl params added
+    
+    Signed-off-by: Andrey Zotikov <andrey.zotikov@gmail.com>
