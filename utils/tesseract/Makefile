@@ -18,6 +18,7 @@ PKG_HASH:=c4bc2a81c12a472f445b7c2fb4705a08bd643ef467f51ec84f0e148bd368051b
 PKG_MAINTAINER:=Valentin Kivachuk <vk18496@gmail.com>
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:tesseract_project:tesseract
 
 CMAKE_BINARY_SUBDIR:=openwrt-build
 
@@ -34,6 +35,7 @@ define Package/tesseract
 endef
 
 TARGET_CFLAGS:=$(filter-out -O%,$(TARGET_CFLAGS)) -O3
+TARGET_CXXFLAGS += -I$(STAGING_DIR)/opt/include/leptonica
 
 CMAKE_OPTIONS += \
 	-DAUTO_OPTIMIZE=OFF \
