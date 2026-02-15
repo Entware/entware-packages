@@ -1,6 +1,6 @@
 --- a/bus/config-parser.c
 +++ b/bus/config-parser.c
-@@ -3708,6 +3708,7 @@ static const char *test_session_service_
+@@ -3726,6 +3726,7 @@ static const char *test_session_service_
           NULL, /* XDG_DATA_DIRS-based */
           NULL, /* XDG_DATA_DIRS-based */
           DBUS_DATADIR "/dbus-1/services",
@@ -8,7 +8,7 @@
  #endif
           NULL
          };
-@@ -3951,10 +3952,9 @@ out:
+@@ -3969,10 +3970,9 @@ out:
  #ifndef DBUS_WIN
  static const char *test_system_service_dir_matches[] = 
          {
@@ -23,7 +23,7 @@
  
 --- a/dbus/dbus-sysdeps-util-unix.c
 +++ b/dbus/dbus-sysdeps-util-unix.c
-@@ -1453,7 +1453,7 @@ _dbus_get_standard_session_servicedirs (
+@@ -1407,7 +1407,7 @@ _dbus_get_standard_session_servicedirs (
      }
    else
      {
@@ -32,7 +32,7 @@
          goto oom;
      }
  
-@@ -1511,10 +1511,9 @@ _dbus_get_standard_system_servicedirs (D
+@@ -1465,10 +1465,9 @@ _dbus_get_standard_system_servicedirs (D
     * be available.
     */
    static const char standard_search_path[] =
