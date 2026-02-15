@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=screen
-PKG_VERSION:=4.9.1
-PKG_RELEASE:=2
+PKG_VERSION:=5.0.1
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@GNU/screen
-PKG_HASH:=26cef3e3c42571c0d484ad6faf110c5c15091fbf872b06fa7aa4766c7405ac69
+PKG_HASH:=2dae36f4db379ffcd14b691596ba6ec18ac3a9e22bc47ac239789ab58409869d
 
 PKG_MAINTAINER:=Etienne CHAMPETIER <champetier.etienne@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -29,7 +29,7 @@ define Package/screen
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Terminal
-  DEPENDS:=+libncurses
+  DEPENDS:= +libncurses #+USE_GLIBC:libcrypt-compat
   TITLE:=Full-screen terminal window manager
   URL:=https://www.gnu.org/software/screen/
 endef
@@ -41,6 +41,7 @@ endef
 
 CONFIGURE_ARGS += \
 	--enable-colors256 \
+	--disable-pam \
 	--with-sys-screenrc=/opt/etc/screenrc \
 	--with-socket-dir=/opt/tmp/screens
 
