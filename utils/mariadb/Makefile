@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2021 Michal Hrusecky <michal@hrusecky.net>
+# Copyright (C) 2025 Michal Hrusecky <michal@hrusecky.net>
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,13 +9,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mariadb
-PKG_VERSION:=11.4.4
-PKG_RELEASE:=2
+PKG_VERSION:=11.8.3
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL := https://archive.mariadb.org/$(PKG_NAME)-$(PKG_VERSION)/source
 
-PKG_HASH:=96fbd2e6e93fb7e8b373eea75d85b6fea57c0e111a02090cbbefed52599dc77b
+PKG_HASH:=1014a85c768de8f9e9c6d4bf0b42617f3b1588be1ad371f71674ea32b87119c0
 PKG_MAINTAINER:=Michal Hrusecky <Michal@Hrusecky.net>
 PKG_LICENSE:=GPL-2.0-only
 PKG_LICENSE_FILES:=COPYING THIRDPARTY
@@ -235,7 +235,10 @@ endef
 define Package/mariadb-client-extra
   $(call Package/mariadb/Default)
   TITLE:=MariaDB database client extra
-  DEPENDS:=mariadb-client
+  DEPENDS:=mariadb-client \
+	  +KERNEL_IO_URING:liburing \
+	  +libaio \
+	  +libpcre2
 endef
 
 define Package/mariadb-client-extra/description
@@ -268,8 +271,8 @@ define Package/mariadb-server-base
   $(call Package/mariadb/Default)
   DEPENDS:= \
 	  $(MARIADB_COMMON_DEPENDS) \
-	  +!KERNEL_IO_URING:libaio \
 	  +KERNEL_IO_URING:liburing \
+	  +libaio \
 	  +liblzma \
 	  +libpcre2 \
 	  +resolveip
@@ -310,15 +313,6 @@ endef
 # We won't need unit tests
 CMAKE_OPTIONS += -DWITH_UNIT_TESTS=0
 
-# This value is determined automatically during straight compile by compiling
-# and running a test code. You cannot do that during cross-compile. However the
-# stack grows downward in most if not all modern systems. The only exception
-# according to buildroot is PA-RISC which is not supported by OpenWrt as far as
-# I know. Therefore it makes sense to hardcode the value. If an arch is added
-# the stack of which grows up one should expect unpredictable behavior at run
-# time.
-CMAKE_OPTIONS += -DSTACK_DIRECTION=-1
-
 # Make it explicit that we are cross-compiling
 CMAKE_OPTIONS += -DCMAKE_CROSSCOMPILING=1
 
@@ -340,6 +334,7 @@ CMAKE_OPTIONS += -DWITHOUT_SERVER=OFF -DPLUGIN_AUTH_SOCKET=STATIC
 endif
 
 CMAKE_OPTIONS += \
+	-DCMAKE_DISABLE_FIND_PACKAGE_URING=$(if $(CONFIG_KERNEL_IO_URING),OFF,ON) \
 	-DCONNECT_WITH_JDBC=NO \
 	-DCONNECT_WITH_LIBXML2=system \
 	-DCONNECT_WITH_MONGO=NO \
@@ -364,10 +359,11 @@ CMAKE_OPTIONS += \
 	-DINSTALL_SQLBENCHDIR="" \
 	-DINSTALL_SUPPORTFILESDIR=share/mariadb \
 	-DINSTALL_UNIX_ADDRDIR=$(MARIADB_SOCKET) \
+	-DHOSTNAME="" \
 	-DMYSQL_DATADIR=/opt/var/lib/mysql \
 	-DMYSQL_UNIX_ADDR=$(MARIADB_SOCKET) \
+	-DSEMODULE_PACKAGE_EXECUTABLE=NOT-FOUND \
 	-DSKIP_TESTS=ON \
-	-DWITH_DEBUG=OFF \
 	-DWITH_EMBEDDED_SERVER=OFF \
 	-DWITH_INNODB_BZIP2=OFF \
 	-DWITH_INNODB_LZ4=OFF \

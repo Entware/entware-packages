@@ -33,7 +33,7 @@
  #define TO_UPPER_TABLE_SIZE   256
 --- a/mysys/my_default.c
 +++ b/mysys/my_default.c
-@@ -1060,8 +1060,8 @@ static const char **init_default_directo
+@@ -1063,8 +1063,8 @@ static const char **init_default_directo
    if (DEFAULT_SYSCONFDIR[0])
      errors += add_directory(alloc, DEFAULT_SYSCONFDIR, dirs);
  #else
@@ -125,7 +125,7 @@
  /*
 --- a/scripts/CMakeLists.txt
 +++ b/scripts/CMakeLists.txt
-@@ -187,7 +187,7 @@ ENDIF(UNIX)
+@@ -186,7 +186,7 @@ ENDIF(UNIX)
  # the documentation, so better not change this.
  
  IF(INSTALL_LAYOUT MATCHES "STANDALONE")
