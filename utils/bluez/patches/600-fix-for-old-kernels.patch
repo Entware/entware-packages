@@ -16,9 +16,9 @@
 +#else
  #include <linux/uhid.h>
 +#endif /* <linux/uhid.h> since Linux 3.18 */
+ #include <bluetooth/bluetooth.h>
  
  struct bt_uhid;
- 
 --- /dev/null
 +++ b/src/shared/uhid_copy.h
 @@ -0,0 +1,200 @@

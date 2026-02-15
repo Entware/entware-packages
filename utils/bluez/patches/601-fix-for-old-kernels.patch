@@ -1,0 +1,60 @@
+profiles/audio/media.c: In function 'probe_tx_timestamping':
+profiles/audio/media.c:3369:9: error: variable 'cmd' has initializer but incomplete type
+  struct ethtool_ts_info cmd = {};
+         ^~~~~~~~~~~~~~~
+profiles/audio/media.c:3369:25: error: storage size of 'cmd' isn't known
+  struct ethtool_ts_info cmd = {};
+                         ^~~
+profiles/audio/media.c:3383:12: error: 'ETHTOOL_GET_TS_INFO' undeclared (first use in this function); did you mean 'ETHTOOL_GSSET_INFO'?
+  cmd.cmd = ETHTOOL_GET_TS_INFO;
+            ^~~~~~~~~~~~~~~~~~~
+            ETHTOOL_GSSET_INFO
+profiles/audio/media.c:3383:12: note: each undeclared identifier is reported only once for each function it appears in
+
+---
+
+--- a/profiles/audio/media.c
++++ b/profiles/audio/media.c
+@@ -67,6 +67,11 @@
+ #include "a2dp.h"
+ #endif
+ 
++/* ethtool_ts_info && ETHTOOL_GET_TS_INFO since Linux 3.5 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ #define MEDIA_INTERFACE "org.bluez.Media1"
+ #define MEDIA_ENDPOINT_INTERFACE "org.bluez.MediaEndpoint1"
+ #define MEDIA_PLAYER_INTERFACE "org.mpris.MediaPlayer2.Player"
+@@ -3564,7 +3569,9 @@ static gboolean supported_uuids(const GD
+ static bool probe_tx_timestamping(struct media_adapter *adapter)
+ {
+ 	struct ifreq ifr = {};
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	struct ethtool_ts_info cmd = {};
++#endif /* ethtool_ts_info since Linux 3.5 */
+ 	int sk = -1;
+ 
+ 	/* TX timestamping requires support from BlueZ in order to not mistake
+@@ -3577,8 +3584,10 @@ static bool probe_tx_timestamping(struct
+ 
+ 	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "hci%u",
+ 				btd_adapter_get_index(adapter->btd_adapter));
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	ifr.ifr_data = (void *)&cmd;
+ 	cmd.cmd = ETHTOOL_GET_TS_INFO;
++#endif /* ETHTOOL_GET_TS_INFO since Linux 3.5 */
+ 
+ 	/* Check kernel reports some support for TX timestamping for L2CAP. If
+ 	 * yes then kernel version is new enough to have TX timestamping
+@@ -3591,7 +3600,9 @@ static bool probe_tx_timestamping(struct
+ 		goto error;
+ 	close(sk);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
+ 	adapter->so_timestamping = cmd.so_timestamping;
++#endif
+ 
+ done:
+ 	return adapter->so_timestamping & SOF_TIMESTAMPING_TX_SOFTWARE;
