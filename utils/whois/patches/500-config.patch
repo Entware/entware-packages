@@ -23,7 +23,7 @@
  
  
  /* autoconf in cpp macros */
-@@ -127,7 +125,7 @@
+@@ -133,7 +131,7 @@
  #  define NLS_CAT_NAME   "whois"
  # endif
  # ifndef LOCALEDIR
