@@ -42,6 +42,8 @@ define Package/lrzsz/description
   from a variety of programs running under various operating systems.
 endef
 
+TARGET_CFLAGS += -std=gnu11
+
 # XXX warning: In the GNU C Library, "major" is defined by <sys/sysmacros.h>.
 TARGET_CFLAGS += -DMAJOR_IN_SYSMACROS
 CONFIGURE_ARGS += --disable-nls
