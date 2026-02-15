@@ -7,7 +7,7 @@ configure: failed program was:
 
 --- a/configure
 +++ b/configure
-@@ -92515,7 +92515,7 @@ then :
+@@ -97452,7 +97452,7 @@ then :
    printf %s "(cached) " >&6
  else case e in #(
    e)

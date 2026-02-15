@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2008-2014 OpenWrt.org
+# Copyright (C) 2008-2025 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,12 +9,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=coreutils
-PKG_VERSION:=9.6
-PKG_RELEASE:=5
+PKG_VERSION:=9.9
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@GNU/coreutils
-PKG_HASH:=7a0124327b398fd9eb1a6abde583389821422c744ffa10734b24f557610d3283
+PKG_HASH:=19bcb6ca867183c57d77155eae946c5eced88183143b45ca51ad7d26c628ca75
 
 PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -27,12 +27,12 @@ PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
 
 COREUTILS_APPLETS := \
-	base32 base64 basename basenc b2sum cat chcon chgrp chmod chown chroot	\
+	base32 base64 basename basenc b2sum cat chgrp chmod chown chroot	\
 	cksum comm cp csplit cut date dd df dir dircolors dirname du echo env	\
 	expand expr factor false fmt fold groups head hostid id install join	\
 	kill link ln logname ls md5sum mkdir mkfifo mknod mktemp mv nice nl	\
 	nohup nproc numfmt od paste pathchk pinky pr printenv printf ptx pwd	\
-	readlink realpath rm rmdir runcon seq sha1sum sha224sum sha256sum	\
+	readlink realpath rm rmdir seq sha1sum sha224sum sha256sum		\
 	sha384sum sha512sum shred shuf sleep sort split stat stdbuf stty sum	\
 	sync tac tail tee test timeout touch tr true truncate tsort tty uname	\
 	unexpand uniq unlink uptime users vdir wc who whoami yes
@@ -43,9 +43,9 @@ DIR_BIN := \
 	touch true uname
 
 DIR_USR_BIN := \
-	basename chcon cksum comm cut dirname du env expand expr factor fold	\
+	basename cksum comm cut dirname du env expand expr factor fold		\
 	groups head hostid id install logname md5sum mkfifo nl nohup nproc od	\
-	paste printf readlink realpath runcon seq sha1sum sha256sum sha512sum	\
+	paste printf readlink realpath seq sha1sum sha256sum sha512sum		\
 	shred shuf sort split sum tac tail tee test timeout tr truncate tty	\
 	unexpand uniq unlink uptime users wc who whoami yes
 
@@ -61,15 +61,16 @@ $(eval $(foreach a,$(DIR_BIN),ALTS_$(a):=300:/opt/bin/$(a):/opt/libexec/$(a)-cor
 $(eval $(foreach a,$(DIR_USR_BIN),ALTS_$(a):=300:/opt/bin/$(a):/opt/libexec/$(a)-coreutils$(newline)))
 $(eval $(foreach a,$(DIR_USR_SBIN),ALTS_$(a):=300:/opt/sbin/$(a):/opt/libexec/$(a)-coreutils$(newline)))
 
-DEPENDS_sort = +libpthread
-DEPENDS_timeout = +librt
-DEPENDS_expr = +libgmp
-DEPENDS_factor = +libgmp
+DEPENDS_basenc = +libgmp
 DEPENDS_cp = +libacl
 DEPENDS_dir = +libacl +libcap
+DEPENDS_expr = +libgmp
+DEPENDS_factor = +libgmp
 DEPENDS_install = +libacl
 DEPENDS_ls = +libacl +libcap
 DEPENDS_mv = +libacl
+DEPENDS_sort = +libpthread
+DEPENDS_timeout = +librt
 DEPENDS_vdir = +libacl +libcap
 
 FILES_stdbuf := opt/lib/coreutils/libstdbuf.so
@@ -78,7 +79,7 @@ define Package/coreutils/Default
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=The GNU core utilities
-  URL:=http://www.gnu.org/software/coreutils/
+  URL:=https://www.gnu.org/software/coreutils/
 endef
 
 define Package/coreutils
@@ -120,7 +121,6 @@ CONFIGURE_VARS += \
 
 CONFIGURE_ARGS += \
 	--disable-xattr \
-	--enable-install-program=su \
 	--enable-threads=posix \
 	--enable-acl \
 	--disable-assert \
@@ -130,10 +130,9 @@ CONFIGURE_ARGS += \
 	--without-linux-crypto \
 	--without-openssl \
 	--$(if $(CONFIG_USE_MUSL),with,without)-included-regex \
-	--without-selinux \
-	--with-gmp
+	--without-selinux
 
-TARGET_CFLAGS += -std=c17
+TARGET_CFLAGS += -std=gnu17
 
 define Package/coreutils/install
 	true
