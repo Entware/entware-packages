@@ -4,16 +4,15 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: 
-# * battery, madwifi, write_log plugins added;
-# * dhcpleases,  iwinfo, routeros, snmp6 plugins removed.
-# * --without-libstatgrab configure option added
+# Entware specific:	battery, madwifi, write_log plugins added;
+#			dhcpleases,  iwinfo, routeros, snmp6 plugins removed.
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.12.0
-PKG_RELEASE:=53
+# libxml2
+PKG_RELEASE:=55
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
