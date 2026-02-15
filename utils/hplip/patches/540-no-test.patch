@@ -1,6 +1,6 @@
 --- a/configure.in
 +++ b/configure.in
-@@ -255,7 +255,6 @@ if test "$class_driver" = "yes"; then
+@@ -257,7 +257,6 @@ if test "$class_driver" = "yes"; then
     test `sh ./createPPD.sh -f` == 0
  else
     AC_MSG_RESULT(no)

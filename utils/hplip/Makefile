@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hplip
-PKG_VERSION:=3.24.4
+PKG_VERSION:=3.25.6
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=@SF/hplip
-PKG_HASH:=5d7643831893a5e2addf9d42d581a5dbfe5aaf023626886b8762c5645da0f1fb
+PKG_HASH:=a6af314a7af0572f2ab6967b2fe68760e64d74628ef0e6237f8504d81047edbe
 
 PKG_MAINTAINER:=Luiz Angelo Daros de Luca <luizluca@gmail.com>
 PKG_LICENSE:=GPL-2.0 GPL-2.0-or-later
@@ -97,28 +97,26 @@ ifneq ($(CONFIG_PACKAGE_hplip-full),)
 
 PKG_INSTALL:=1
 
+CONFIGURE_ARGS += \
+	--enable-cups-ppd-install \
+	--with-cupsbackenddir=/opt/lib/cups/backend \
+	--with-cupsfilterdir=/opt/lib/cups/filter \
+	--with-icondir=/opt/var \
+	--with-systraydir=/opt/var \
+	LIBS="-lz -ljpeg -lusb -lcups -lpng -ltiff" \
+	PYTHON="$(STAGING_DIR_HOSTPKG)/bin/python3" \
+	PYTHON_PLATFORM="linux" \
+	PYTHONINCLUDEDIR="/opt/include/python$(PYTHON3_VERSION)" \
+	PYTHONEXECDIR="/opt/lib/python$(PYTHON3_VERSION)/site-packages"
+
+CONFIGURE_VARS += \
+	ac_cv_lib_cups_cupsDoFileRequest=yes \
+	am_cv_python_version=$(PYTHON3_VERSION)
+
 TARGET_CPPFLAGS += \
 	-I$(STAGING_DIR)/opt/include/libusb-1.0 \
 	-I$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)
 
-  define Build/Configure
-	$(call Build/Configure/Default,\
-		$(CONFIGURE_ARGS) \
-		--enable-cups-ppd-install \
-		--with-cupsbackenddir=/opt/lib/cups/backend \
-		--with-cupsfilterdir=/opt/lib/cups/filter \
-		--with-icondir=/opt/var \
-		--with-systraydir=/opt/var \
-		ac_cv_lib_cups_cupsDoFileRequest=yes \
-		am_cv_python_version=$(PYTHON3_VERSION) \
-		LIBS="-lz -ljpeg -lusb -lcups -lpng -ltiff" \
-		PYTHON="$(STAGING_DIR_HOSTPKG)/bin/python3" \
-		PYTHON_PREFIX="$(STAGING_DIR_HOSTPKG)" \
-		PYTHON_EXEC_PREFIX="$(STAGING_DIR_HOSTPKG)" \
-		PYTHON_PLATFORM="linux" \
-		PYTHONINCLUDEDIR="$(STAGING_DIR)/opt/include/python$(PYTHON3_VERSION)" \
-	)
-  endef
 endif
 
 #define Build/Install
