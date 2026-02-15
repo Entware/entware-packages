@@ -11,7 +11,7 @@
  #ifdef HAVE_LOCALE_H
 --- a/src/ps/display.c
 +++ b/src/ps/display.c
-@@ -626,7 +626,7 @@ int main(int argc, char *argv[]){
+@@ -653,7 +653,7 @@ int main(int argc, char *argv[]){
    setlocale (LC_ALL, "");
    bindtextdomain(PACKAGE, LOCALEDIR);
    textdomain(PACKAGE);
@@ -22,7 +22,7 @@
    init_stack_trace(argv[0]);
 --- a/src/sysctl.c
 +++ b/src/sysctl.c
-@@ -58,7 +58,7 @@
+@@ -59,7 +59,7 @@
   *    Globals...
   */
  static const char PROC_PATH[] = "/proc/sys/";
@@ -31,7 +31,7 @@
  static const char *DEPRECATED[] = {
  	"base_reachable_time",
  	"retrans_time",
-@@ -810,6 +810,8 @@ static int PreloadSystem(SettingList *se
+@@ -833,6 +833,8 @@ static int PreloadSystem(SettingList *se
  {
  	unsigned di, i;
  	const char *dirs[] = {
@@ -42,7 +42,7 @@
  		"/usr/local/lib/sysctl.d",
 --- a/src/top/top.h
 +++ b/src/top/top.h
-@@ -524,8 +524,8 @@ typedef struct WIN_t {
+@@ -555,8 +555,8 @@ typedef struct WIN_t {
  /*      ( see module top_nls.c for the nls translatable data ) */
  
          /* Configuration files support */
