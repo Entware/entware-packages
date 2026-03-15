@@ -47,22 +47,22 @@ define Build/Install
 endef
 
 define Package/proxychains-ng/conffiles
-/etc/proxychains.conf
+/opt/etc/proxychains.conf
 endef
 
 define Package/proxychains-ng/install
 	# binary executable
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/proxychains4 $(1)/usr/bin/
-	$(LN) proxychains4 $(1)/usr/bin/proxychains
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/proxychains4 $(1)/opt/bin/
+	$(LN) proxychains4 $(1)/opt/bin/proxychains
 	
 	# library
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libproxychains4.so $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/libproxychains4.so $(1)/opt/lib/
 	
 	# config
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/proxychains.conf $(1)/etc/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/etc/proxychains.conf $(1)/opt/etc/
 endef
 
 $(eval $(call BuildPackage,proxychains-ng))

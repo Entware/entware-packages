@@ -1,0 +1,81 @@
+--- a/src/common.c
++++ b/src/common.c
+@@ -87,42 +87,42 @@ char *get_config_path(char* default_path
+ 	if(check_path(path))
+ 		goto have;
+ 
+-	// priority 1: env var PROXYCHAINS_CONF_FILE
++	// priority 1: /etc/proxychains.conf
++	path = "/opt/etc/" PROXYCHAINS_CONF_FILE;
++	if(check_path(path))
++		goto have;
++
++	// priority 2: $SYSCONFDIR/proxychains.conf
++	path = SYSCONFDIR "/" PROXYCHAINS_CONF_FILE;
++	if(check_path(path))
++		goto have;
++
++	// priority 3: env var PROXYCHAINS_CONF_FILE
+ 	path = getenv(PROXYCHAINS_CONF_FILE_ENV_VAR);
+ 	if(check_path(path))
+ 		goto have;
+ 
+-	// priority 2; proxychains conf in actual dir
++	// priority 4; proxychains conf in actual dir
+ 	path = getcwd(buf, sizeof(buf));
+ 	snprintf(pbuf, bufsize, "%s/%s", path, PROXYCHAINS_CONF_FILE);
+ 	path = pbuf;
+ 	if(check_path(path))
+ 		goto have;
+ 
+-	// priority 3; $HOME/.proxychains/proxychains.conf
++	// priority 5; $HOME/.proxychains/proxychains.conf
+ 	path = getenv("HOME");
+ 	snprintf(pbuf, bufsize, "%s/.proxychains/%s", path, PROXYCHAINS_CONF_FILE);
+ 	path = pbuf;
+ 	if(check_path(path))
+ 		goto have;
+     
+-    // priority 3b: ~/config/settings/proxychains.conf (for haiku)
++	// priority 5b: ~/config/settings/proxychains.conf (for haiku)
+ 	path = getenv("HOME");
+ 	snprintf(pbuf, bufsize, "%s/config/settings/%s", path, PROXYCHAINS_CONF_FILE);
+ 	path = pbuf;
+ 	if(check_path(path))
+ 		goto have;
+ 
+-	// priority 4: $SYSCONFDIR/proxychains.conf
+-	path = SYSCONFDIR "/" PROXYCHAINS_CONF_FILE;
+-	if(check_path(path))
+-		goto have;
+-
+-	// priority 5: /etc/proxychains.conf
+-	path = "/etc/" PROXYCHAINS_CONF_FILE;
+-	if(check_path(path))
+-		goto have;
+-
+ 	perror("couldnt find configuration file");
+ 	exit(1);
+ 
+--- a/src/common.h
++++ b/src/common.h
+@@ -6,7 +6,7 @@
+ #define PROXYCHAINS_CONF_FILE "proxychains.conf"
+ #define LOG_PREFIX "[proxychains] "
+ #ifndef SYSCONFDIR
+-#define SYSCONFDIR "/etc"
++#define SYSCONFDIR "/opt/etc"
+ #endif
+ 
+ #include <stddef.h>
+--- a/src/main.c
++++ b/src/main.c
+@@ -40,6 +40,8 @@ static const char *dll_dirs[] = {
+ #endif
+ 	own_dir,
+ 	LIB_DIR,
++	"/opt/lib",
++	"/opt/usr/lib",
+ 	"/lib",
+ 	"/usr/lib",
+ 	"/usr/local/lib",
