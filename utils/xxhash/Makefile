@@ -87,8 +87,9 @@ endef
 define Package/xxhash/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/xxhsum $(1)/opt/bin/
+	$(LN) xxhsum $(1)/opt/bin/xxh3sum
 	$(LN) xxhsum $(1)/opt/bin/xxh32sum
-	$(LN) xxhsum $(1)/opt/bin/xxh64sumn
+	$(LN) xxhsum $(1)/opt/bin/xxh64sum
 	$(LN) xxhsum $(1)/opt/bin/xxh128sum
 endef
 
