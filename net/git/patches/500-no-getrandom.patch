@@ -1,0 +1,17 @@
+--- a/Makefile
++++ b/Makefile
+@@ -2195,14 +2195,6 @@ ifneq ($(findstring libbsd,$(CSPRNG_METH
+ 	EXTLIBS += -lbsd
+ endif
+ 
+-ifneq ($(findstring getrandom,$(CSPRNG_METHOD)),)
+-	BASIC_CFLAGS += -DHAVE_GETRANDOM
+-endif
+-
+-ifneq ($(findstring getentropy,$(CSPRNG_METHOD)),)
+-	BASIC_CFLAGS += -DHAVE_GETENTROPY
+-endif
+-
+ ifneq ($(findstring rtlgenrandom,$(CSPRNG_METHOD)),)
+ 	BASIC_CFLAGS += -DHAVE_RTLGENRANDOM
+ endif
