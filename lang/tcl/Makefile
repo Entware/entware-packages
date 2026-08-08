@@ -7,6 +7,8 @@
 
 include $(TOPDIR)/rules.mk
 
+override CONFIG_AUTOREMOVE=
+
 PKG_NAME:=tcl
 TCL_MAJOR_VERSION:=8.6
 PKG_VERSION:=${TCL_MAJOR_VERSION}.14
