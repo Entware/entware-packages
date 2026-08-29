@@ -46,7 +46,8 @@ CONFIGURE_ARGS += \
 
 CONFIGURE_VARS += \
 	ac_cv_lib_crypto_BIO_f_base64=yes \
-	ac_cv_lib_ssl_SSL_new=yes
+	ac_cv_lib_ssl_SSL_new=yes \
+	GLIB_GENMARSHAL=$(STAGING_DIR)/opt/bin/glib-genmarshal
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include/
