@@ -4,20 +4,20 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: bump version (deluge)
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pyasn1-modules
-PKG_VERSION:=0.3.0
+PKG_VERSION:=0.4.2
 PKG_RELEASE:=1
 
-PYPI_NAME:=pyasn1_modules
-PKG_HASH:=5bd01446b736eb9d31512a30d46c1ac3395d676c6f3cafa4c03eb54b9925631c
+PYPI_NAME:=pyasn1-modules
+PYPI_SOURCE_NAME:=pyasn1_modules
+PKG_HASH:=677091de870a80aae844b1ca6134f54652fa2c8c5a52aa396440ac3106e941e6
 
 PKG_LICENSE:=BSD-2-Clause
 PKG_LICENSE_FILES:=LICENSE.txt
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
