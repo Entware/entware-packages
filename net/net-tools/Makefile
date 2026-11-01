@@ -28,7 +28,7 @@ define Package/mii-tool
   SECTION:=net
   CATEGORY:=Network
   TITLE:=configure media type using MII commands
-  URL:=http://net-tools.sourceforge.net/
+  URL:=https://net-tools.sourceforge.io/
 endef
 
 define Package/mii-tool/description
@@ -42,7 +42,7 @@ define Package/net-tools-netstat
   SECTION:=net
   CATEGORY:=Network
   TITLE:=net-tools - netstat utility
-  URL:=http://net-tools.sourceforge.net/
+  URL:=https://net-tools.sourceforge.io/
   PROVIDES:=netstat
   ALTERNATIVES:=300:/opt/bin/netstat:/opt/libexec/net-tools-netstat
 endef
@@ -58,7 +58,7 @@ define Package/net-tools-route
   SECTION:=net
   CATEGORY:=Network
   TITLE:=net-tools - route utility
-  URL:=http://net-tools.sourceforge.net/
+  URL:=https://net-tools.sourceforge.io/
   PROVIDES:=route
   ALTERNATIVES:=300:/opt/sbin/route:/opt/libexec/net-tools-route
 endef
