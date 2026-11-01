@@ -7,7 +7,7 @@
 	},
 	"adguard": {
 		"url": "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
-		"rule": "feed 3 [|^]",
+		"rule": "feed || 3 [|^]",
 		"size": "L",
 		"descr": "general"
 	},
@@ -84,10 +84,16 @@
 		"descr": "tracking"
 	},
 	"games_tracking": {
-		"url": "https://raw.githubusercontent.com/KodoPengin/GameIndustry-hosts-Template/master/Main-Template/hosts",
+		"url": "https://repository.gameindustry.eu/raw/gaminghosts",
 		"rule": "feed 0.0.0.0 2",
 		"size": "S",
 		"descr": "tracking"
+	},
+	"hagezi": {
+		"url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/",
+		"rule": "feed 1",
+		"size": "VAR",
+		"descr": "compilation"
 	},
 	"hblock": {
 		"url": "https://hblock.molinero.dev/hosts_domains.txt",
@@ -95,8 +101,8 @@
 		"size": "XL",
 		"descr": "compilation"
 	},
-	"hagezi": {
-		"url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/",
+	"ipfire_dbl": {
+		"url": "https://dbl.ipfire.org/lists/",
 		"rule": "feed 1",
 		"size": "VAR",
 		"descr": "compilation"
