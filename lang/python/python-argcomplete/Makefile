@@ -8,17 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-argcomplete
-PKG_VERSION:=3.2.1
+PKG_VERSION:=3.7.2
 PKG_RELEASE:=1
 
 PYPI_NAME:=argcomplete
-PKG_HASH:=437f67fb9b058da5a090df505ef9be0297c4883993f3f56cb186ff087778cfb4
+PKG_HASH:=aad8b69a0b9969edb62db0d1752354c0d50717b10e0cbb00e2a958381b9fc6b9
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE.rst
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
-PKG_BUILD_DEPENDS:=python-setuptools-scm/host
+PKG_BUILD_DEPENDS:=python-hatchling/host python-hatch-vcs/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
