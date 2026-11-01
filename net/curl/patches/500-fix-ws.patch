@@ -4,9 +4,9 @@
 
 --- a/lib/curl_trc.h
 +++ b/lib/curl_trc.h
-@@ -175,6 +175,12 @@ void Curl_trc_ws(struct Curl_easy *data,
- #if !defined(CURL_DISABLE_WEBSOCKETS) && !defined(CURL_DISABLE_HTTP)
- #define CURL_TRC_WS    Curl_trc_ws
+@@ -130,6 +130,12 @@ extern struct curl_trc_feat Curl_trc_fea
+ void Curl_trc_ws(struct Curl_easy *data,
+                  const char *fmt, ...) CURL_PRINTF(2, 3);
  #endif
 +#if defined(USE_WEBSOCKETS) && !defined(CURL_DISABLE_HTTP)
 +static void Curl_trc_ws(struct Curl_easy *data, const char *fmt, ...)
@@ -15,5 +15,5 @@
 +}
 +#endif
  
- #endif /* !CURL_HAVE_C99 */
- 
+ #define CURL_TRC_M_is_verbose(data) \
+   Curl_trc_ft_is_verbose(data, &Curl_trc_feat_multi)

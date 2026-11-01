@@ -9,13 +9,13 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/nls.mk
 
 PKG_NAME:=curl
-PKG_VERSION:=8.15.0
-PKG_RELEASE:=2
+PKG_VERSION:=8.23.0
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/curl/curl/releases/download/curl-$(subst .,_,$(PKG_VERSION))/ \
 	https://curl.se/download/
-PKG_HASH:=6cd0a8a5b126ddfda61c94dc2c3fc53481ba7a35461cf7c5ab66aa9d6775b609
+PKG_HASH:=8dadd7d2536a314f982ad05a651b713f426bf7d02cc2c76cffb9796f2218e6c5
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
@@ -52,8 +52,6 @@ PKG_CONFIG_DEPENDS:= \
   CONFIG_LIBCURL_POP3 \
   CONFIG_LIBCURL_RTSP \
   CONFIG_LIBCURL_NO_RTSP \
-  CONFIG_LIBCURL_SMB \
-  CONFIG_LIBCURL_NO_SMB \
   CONFIG_LIBCURL_SMTP \
   CONFIG_LIBCURL_TELNET \
   CONFIG_LIBCURL_TFTP \
@@ -63,10 +61,10 @@ PKG_CONFIG_DEPENDS:= \
   CONFIG_LIBCURL_COOKIES \
   CONFIG_LIBCURL_CRYPTO_AUTH \
   CONFIG_LIBCURL_HTTP_AUTH \
+  CONFIG_LIBCURL_KERBEROS_AUTH \
   CONFIG_LIBCURL_LIBCURL_OPTION \
   CONFIG_LIBCURL_PROXY \
   CONFIG_LIBCURL_THREADED_RESOLVER \
-  CONFIG_LIBCURL_TLS_SRP \
   CONFIG_LIBCURL_UNIX_SOCKETS \
   CONFIG_LIBCURL_VERBOSE \
   CONFIG_LIBCURL_NTLM \
@@ -81,7 +79,7 @@ define Package/curl/Default
   SECTION:=net
   CATEGORY:=Network
   URL:=https://curl.se/
-  MAINTAINER:=Aleksey Vasilenko <aleksey.vasilenko@gmail.com>
+  MAINTAINER:=
 endef
 
 define Package/curl
@@ -98,6 +96,7 @@ define Package/libcurl
   DEPENDS:= +LIBCURL_WOLFSSL:libwolfssl +LIBCURL_OPENSSL:libopenssl +LIBCURL_GNUTLS:libgnutls +LIBCURL_MBEDTLS:libmbedtls
   DEPENDS += +LIBCURL_ZLIB:zlib +LIBCURL_ZSTD:libzstd +LIBCURL_THREADED_RESOLVER:libpthread +LIBCURL_LDAP:libopenldap
   DEPENDS += +LIBCURL_LIBIDN2:libidn2 +LIBCURL_SSH2:libssh2 +LIBCURL_HTTP2:libnghttp2 +LIBCURL_HTTP3:libnghttp3 +LIBCURL_HTTP3:libngtcp2 +ca-bundle
+  DEPENDS += +LIBCURL_KERBEROS_AUTH:krb5-libs
   TITLE:=A client-side URL transfer library
   MENU:=1
   ABI_VERSION:=4
@@ -138,6 +137,7 @@ CONFIGURE_ARGS += \
 	$(if $(CONFIG_LIBCURL_ZSTD),--with-zstd="$(STAGING_DIR)/opt",--without-zstd) \
 	$(if $(CONFIG_LIBCURL_HTTP2),--with-nghttp2="$(STAGING_DIR)/opt",--without-nghttp2) \
 	$(if $(CONFIG_LIBCURL_HTTP3),--with-nghttp3="$(STAGING_DIR)/opt" --with-ngtcp2="$(STAGING_DIR)/opt",--without-nghttp3 --without-ngtcp2) \
+	$(if $(CONFIG_LIBCURL_KERBEROS_AUTH),--with-gssapi="$(STAGING_DIR)/opt",--without-gssapi) \
 	\
 	$(call autoconf_bool,CONFIG_LIBCURL_DICT,dict) \
 	$(call autoconf_bool,CONFIG_LIBCURL_FILE,file) \
@@ -149,7 +149,6 @@ CONFIGURE_ARGS += \
 	$(call autoconf_bool,CONFIG_LIBCURL_LDAPS,ldaps) \
 	$(call autoconf_bool,CONFIG_LIBCURL_POP3,pop3) \
 	$(call autoconf_bool,CONFIG_LIBCURL_RTSP,rtsp) \
-	$(call autoconf_bool,CONFIG_LIBCURL_SMB,smb) \
 	$(call autoconf_bool,CONFIG_LIBCURL_SMTP,smtp) \
 	$(call autoconf_bool,CONFIG_LIBCURL_TELNET,telnet) \
 	$(call autoconf_bool,CONFIG_LIBCURL_TFTP,tftp) \
@@ -161,7 +160,6 @@ CONFIGURE_ARGS += \
 	$(call autoconf_bool,CONFIG_LIBCURL_LIBCURL_OPTION,libcurl-option) \
 	$(call autoconf_bool,CONFIG_LIBCURL_PROXY,proxy) \
 	$(call autoconf_bool,CONFIG_LIBCURL_THREADED_RESOLVER,threaded-resolver) \
-	$(call autoconf_bool,CONFIG_LIBCURL_TLS_SRP,tls-srp) \
 	$(call autoconf_bool,CONFIG_LIBCURL_UNIX_SOCKETS,unix-sockets) \
 	$(call autoconf_bool,CONFIG_LIBCURL_VERBOSE,verbose) \
 
