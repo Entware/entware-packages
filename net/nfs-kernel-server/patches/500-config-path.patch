@@ -1,6 +1,6 @@
 --- a/support/include/nfslib.h
 +++ b/support/include/nfslib.h
-@@ -25,16 +25,16 @@
+@@ -26,16 +26,16 @@
  #include "xlog.h"
  
  #ifndef _PATH_EXPORTS

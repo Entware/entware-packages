@@ -1,0 +1,28 @@
+# NETLINK_EXT_ACK since Linux 4.12
+
+--- a/support/export/cache.c
++++ b/support/export/cache.c
+@@ -1095,6 +1095,10 @@ struct export_req {
+ 	char	*path;
+ };
+ 
++#ifndef NETLINK_EXT_ACK
++#define NETLINK_EXT_ACK 11
++#endif
++
+ static struct nl_sock *nl_sock_setup(void)
+ {
+ 	struct nl_sock *sock;
+--- a/support/export/cache_flush.c
++++ b/support/export/cache_flush.c
+@@ -61,6 +61,10 @@ static int nl_send_flush(struct nl_sock
+ 	return ret;
+ }
+ 
++#ifndef NETLINK_EXT_ACK
++#define NETLINK_EXT_ACK 11
++#endif
++
+ static int cache_nl_flush(void)
+ {
+ 	struct nl_sock *sock;

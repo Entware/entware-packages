@@ -5,30 +5,28 @@
 #
 
 # Entware specifics:
-# add sqlite3 (PKG_BUILD_DEPENDS - .../support/reexport);
 # add nls.mk (libxml2);
 # add --disable-nfsdc{ld,ltrack,tl} (NETLINK_EXT_ACK since Linux 4.12);
-# remove deps lsqlite3, libnl
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nfs-kernel-server
-PKG_VERSION:=2.8.5
-PKG_RELEASE:=1
-PKG_HASH:=b13ca4a9df44186bdbe107514b22732d4243f785f95daf2fb86afc1edba15bbb
+PKG_VERSION:=2.9.1
+PKG_RELEASE:=2
+PKG_HASH:=302846343bf509f8f884c23bdbd0fe853b7f7cbb6572060a9082279d13b21a2c
 
 PKG_SOURCE:=nfs-utils-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/nfs-utils/$(PKG_VERSION)
 MAINTAINER:=John Audia <therealgraysky@proton.me>
 PKG_LICENSE:=GPL-2.0-or-later
-PKG_CPE_ID:=cpe:/a:nfs_project:nfs-utils
+PKG_CPE_ID:=cpe:/a:linux-nfs:nfs-utils
 
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/nfs-utils-$(PKG_VERSION)
 PKG_BUILD_DIR:=$(BUILD_DIR)/nfs-utils-$(PKG_VERSION)
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
-PKG_BUILD_DEPENDS:=$(PKG_NAME)/host libevent2 sqlite3
-HOST_BUILD_DEPENDS:=libtirpc/host
+PKG_BUILD_DEPENDS:=$(PKG_NAME)/host libevent2
+HOST_BUILD_DEPENDS:=libtirpc/host libnl/host
 PKG_CONFIG_DEPENDS:=CONFIG_IPV6
 
 include $(INCLUDE_DIR)/host-build.mk
@@ -39,21 +37,21 @@ define Package/nfs-kernel-server/Default
 	SECTION:=net
 	CATEGORY:=Network
 	SUBMENU:=Filesystem
-	DEPENDS:=+libblkid +libuuid +libtirpc +libxml2
-	URL:=http://nfs.sourceforge.net/
+  DEPENDS:=+libblkid +libuuid +libtirpc +libsqlite3 +libxml2 +libnl
+	URL:=https://nfs.sourceforge.net/
 endef
 
 define Package/nfs-utils/Default
 	SECTION:=utils
 	CATEGORY:=Utilities
 	SUBMENU:=Filesystem
-	URL:=http://nfs.sourceforge.net/
+	URL:=https://nfs.sourceforge.net/
 endef
 
 define Package/nfs-kernel-server
 	$(call Package/nfs-kernel-server/Default)
 	TITLE:=Kernel NFS server (NFSv3)
-	DEPENDS+= +rpcbind
+	DEPENDS+= +rpcbind +libevent2-core +libreadline
 	VARIANT:=v3
 	USERID:=nfs:nfs
 	CONFLICTS:=nfs-kernel-server-v4
@@ -79,7 +77,7 @@ endef
 define Package/nfs-utils
 	$(call Package/nfs-utils/Default)
 	TITLE:=NFS mount and umount utils (NFSv3)
-	DEPENDS:=+libtirpc
+	DEPENDS:=+libtirpc +libuuid
 	CONFLICTS:=nfs-utils-v4
 	VARIANT:=v3
 endef
@@ -91,7 +89,7 @@ endef
 define Package/nfs-utils-v4
 	$(call Package/nfs-utils/Default)
 	TITLE:=NFS mount and umount utils (NFSv4.x)
-	DEPENDS:=+libtirpc +libkeyutils +libdevmapper
+	DEPENDS:=+libtirpc +libuuid +libkeyutils +libdevmapper
 	VARIANT:=v4
 	PROVIDES:=nfs-utils
 endef
@@ -205,7 +203,7 @@ HOST_CONFIGURE_VARS += \
 	RPCSECGSS_LIBS=" " \
 	ac_cv_lib_event_core_event_base_dispatch=yes \
 	ac_cv_header_event2_event_h=yes \
-	c_cv_lib_sqlite3_sqlite3_libversion_number=yes \
+	ac_cv_lib_sqlite3_sqlite3_libversion_number=yes \
 	libsqlite3_cv_is_recent=yes \
 	ac_cv_header_libdevmapper_h=yes \
 	ac_cv_lib_devmapper_dm_task_create=yes
@@ -221,9 +219,12 @@ endef
 
 define Package/nfs-kernel-server/conffiles
 /opt/etc/exports
+/opt/etc/nfs.conf
 endef
 
-Package/nfs-kernel-server-v4/conffiles = $(Package/nfs-kernel-server/conffiles)
+define Package/nfs-kernel-server-v4/conffiles
+/opt/etc/exports
+endef
 
 define Package/nfs-utils/InstallDev
 	$(INSTALL_DIR) $(1)/opt/include
@@ -236,18 +237,20 @@ endef
 
 define Package/nfs-kernel-server/install
 	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/etc/init.d
-	$(INSTALL_DATA) ./files/nfsd.v3.exports $(1)/opt/etc/exports
+	$(INSTALL_DATA) ./files/nfsd.exports $(1)/opt/etc/exports
+	$(INSTALL_DATA) ./files/nfsd.v3.nfs.conf $(1)/opt/etc/nfs.conf
 	$(INSTALL_BIN) ./files/S57nfsd.v3 $(1)/opt/etc/init.d/S57nfsd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/statd/sm-notify $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/statd/statd $(1)/opt/sbin/rpc.statd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/nfsd/nfsd $(1)/opt/sbin/rpc.nfsd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/mountd/mountd $(1)/opt/sbin/rpc.mountd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/exportfs/exportfs $(1)/opt/sbin/
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/nfsdctl/nfsdctl $(1)/usr/sbin/
 endef
 
 define Package/nfs-kernel-server-v4/install
 	$(INSTALL_DIR) $(1)/etc/config $(1)/usr/sbin $(1)/etc/init.d
-	$(INSTALL_DATA) ./files/nfsd.v4.exports $(1)/etc/exports
+	$(INSTALL_DATA) ./files/nfsd.exports $(1)/etc/exports
 	$(INSTALL_BIN) ./files/nfsd.v4.init $(1)/etc/init.d/nfsd
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/statd/sm-notify $(1)/usr/sbin/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/utils/nfsd/nfsd $(1)/usr/sbin/rpc.nfsd
