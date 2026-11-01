@@ -3,15 +3,17 @@
 # See /LICENSE for more information.
 #
 
+# Entware specific: remove deps USE_GLIBC:libcrypt-compat
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luaposix
-PKG_VERSION:=36.3
-PKG_RELEASE:=2
+PKG_VERSION:=37.0
+PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=https://codeload.github.com/$(PKG_NAME)/$(PKG_NAME)/tar.gz/v$(PKG_VERSION)?
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_HASH:=82cd9a96c41a4a3205c050206f0564ff4456f773a8f9ffc9235ff8f1907ca5e6
+PKG_HASH:=3a0cf9fc9459ae0975afd1e24ea552decfcda2231651a0d3bd6e1f075e089e01
 PKG_MAINTAINER:=Maxim Storchak <m.storchak@gmail.com>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
@@ -26,7 +28,7 @@ define Package/luaposix
   CATEGORY:=Languages
   TITLE:=POSIX binding for LuaJIT, Lua 5.1, 5.2 and 5.3
   URL:=https://github.com/luaposix/luaposix
-  DEPENDS:= +lua +lua-bit32 #+USE_GLIBC:libcrypt-compat
+  DEPENDS:= +lua +lua-bit32
 endef
 
 define Package/luaposix/description
