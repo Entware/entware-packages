@@ -7,8 +7,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ddns-scripts
-PKG_VERSION:=2.8.2
-PKG_RELEASE:=91
+PKG_VERSION:=2.8.4
+PKG_RELEASE:=12
 
 PKG_LICENSE:=GPL-2.0
 
@@ -264,15 +264,29 @@ endef
 
 define Package/ddns-scripts-gandi
   $(call Package/ddns-scripts/Default)
-  TITLE:=Gandi API
+  TITLE:=Gandi API (Deprecated)
   DEPENDS:=ddns-scripts +curl
 endef
 
 define Package/ddns-scripts-gandi/description
-  Dynamic DNS Client scripts extension for 'gandi.net'.
+  Deprecated Dynamic DNS Client scripts extension for 'gandi.net'. This version
+  uses the deprecated API key authentication; use ddns-scripts-gandi-v2 instead.
   It requires:
   'option username' to be a valid subdomain for gandi.net
   'option password' to be a valid API key for gandi.net
+endef
+
+define Package/ddns-scripts-gandi-v2
+  $(call Package/ddns-scripts/Default)
+  TITLE:=Gandi API v2 (PAT)
+  DEPENDS:=ddns-scripts +curl
+endef
+
+define Package/ddns-scripts-gandi-v2/description
+  Dynamic DNS Client scripts extension for 'gandi.net' using Personal Access Tokens
+  It requires:
+  'option username' to be a valid subdomain for gandi.net
+  'option password' to be a valid Personal Access Token for gandi.net
 endef
 
 
@@ -290,6 +304,22 @@ define Package/ddns-scripts-beget/description
   'option password' to be a valid API key for beget.com
 endef
 
+define Package/ddns-scripts-blazingfast
+  $(call Package/ddns-scripts/Default)
+  TITLE:=Extension for blazingfast.io Anycast DNS API
+  DEPENDS:=ddns-scripts +curl +ca-bundle
+  PROVIDES:=ddns-scripts_blazingfast.io
+  MAINTAINER:=Fotios Kitsantas <fkitsantas@icloud.com>
+endef
+
+define Package/ddns-scripts-blazingfast/description
+  Dynamic DNS Client scripts extension for blazingfast.io Anycast DNS API (requires curl)
+  It requires:
+  'option username'  to be a valid blazingfast.io client area username
+  'option password'  to be the matching blazingfast.io client area password
+  'option domain'    to contain the full DNS record name to update (e.g. uk.nightmare.gr)
+  'option param_opt' to contain service_id=X zone_id=Y record_id=Z
+endef
 
 define Package/ddns-scripts-pdns
   $(call Package/ddns-scripts/Default)
@@ -318,6 +348,17 @@ define Package/ddns-scripts-scaleway/description
   'option password'  The Scaleway API token with sufficient access rights
   'option domain'    The domain to be updated
   'option param_opt' (Optional) The TTL of the RR
+endef
+
+define Package/ddns-scripts-netcup-com
+  $(call Package/ddns-scripts/Default)
+  TITLE:=Extension for netcup.com API
+  DEPENDS:=ddns-scripts +curl
+  PROVIDES:=ddns-scripts_netcup-com
+endef
+
+define Package/ddns-scripts-netcup-com/description
+  Dynamic DNS Client scripts extension for 'netcup.com API'.
 endef
 
 define Package/ddns-scripts-transip
@@ -387,6 +428,16 @@ define Package/ddns-scripts-aliyun/description
 	Dynamic DNS Client scripts extension for aliyun.com API
 endef
 
+define Package/ddns-scripts-servercow
+	$(call Package/ddns-scripts/Default)
+	TITLE:=Extension for Servercow DNS API
+	DEPENDS:=ddns-scripts +curl +openssl-util
+endef
+
+define Package/ddns-scripts-servercow/description
+	Dynamic DNS Client scripts extension for servercow.de API
+endef
+
 define Build/Configure
 endef
 
@@ -441,14 +492,17 @@ define Package/ddns-scripts-services/install
 	rm $(1)/usr/share/ddns/default/godaddy.com-v1.json
 	rm $(1)/usr/share/ddns/default/hetzner.cloud.json
 	rm $(1)/usr/share/ddns/default/namesilo.com-v1.json
+	rm $(1)/usr/share/ddns/default/netcup.com.json
 	rm $(1)/usr/share/ddns/default/digitalocean.com-v2.json
 	rm $(1)/usr/share/ddns/default/dnspod.cn.json
 	rm $(1)/usr/share/ddns/default/dnspod.cn-v3.json
 	rm $(1)/usr/share/ddns/default/no-ip.com.json
 	rm $(1)/usr/share/ddns/default/bind-nsupdate.json
+	rm $(1)/usr/share/ddns/default/blazingfast.io.json
 	rm $(1)/usr/share/ddns/default/route53-v1.json
 	rm $(1)/usr/share/ddns/default/cnkuai.cn.json
 	rm $(1)/usr/share/ddns/default/gandi.net.json
+	rm $(1)/usr/share/ddns/default/gandi.net-v2.json
 	rm $(1)/usr/share/ddns/default/beget.com.json
 	rm $(1)/usr/share/ddns/default/pdns.json
 	rm $(1)/usr/share/ddns/default/scaleway.com.json
@@ -458,6 +512,7 @@ define Package/ddns-scripts-services/install
 	rm $(1)/usr/share/ddns/default/porkbun.com-v3.json
 	rm $(1)/usr/share/ddns/default/huaweicloud.com.json
 	rm $(1)/usr/share/ddns/default/aliyun.com.json
+	rm $(1)/usr/share/ddns/default/servercow.de.json
 endef
 
 
@@ -593,6 +648,24 @@ define Package/ddns-scripts-namesilo/install
 endef
 
 define Package/ddns-scripts-namesilo/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
+
+define Package/ddns-scripts-netcup-com/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_netcup_com.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/netcup.com.json \
+		$(1)/usr/share/ddns/default
+endef
+
+define Package/ddns-scripts-netcup-com/prerm
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
 	/etc/init.d/ddns stop
@@ -761,7 +834,25 @@ define Package/ddns-scripts-gandi/install
 		$(1)/usr/share/ddns/default
 endef
 
+define Package/ddns-scripts-gandi-v2/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_gandi_net_v2.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/gandi.net-v2.json \
+		$(1)/usr/share/ddns/default
+endef
+
 define Package/ddns-scripts-gandi/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
+
+define Package/ddns-scripts-gandi-v2/prerm
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
 	/etc/init.d/ddns stop
@@ -788,6 +879,23 @@ fi
 exit 0
 endef
 
+define Package/ddns-scripts-blazingfast/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_blazingfast_io.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/blazingfast.io.json \
+		$(1)/usr/share/ddns/default/
+endef
+
+define Package/ddns-scripts-blazingfast/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
 
 define Package/ddns-scripts-pdns/install
 	$(INSTALL_DIR) $(1)/usr/lib/ddns
@@ -858,7 +966,7 @@ endef
 
 define Package/ddns-scripts-one/prerm
 #!/bin/sh
-if [-z "${IPKG_INSTROOT}" ]; then
+if [ -z "$${IPKG_INSTROOT}" ]; then
 	/etc/init.d/ddns stop
 fi
 exit 0
@@ -920,6 +1028,23 @@ fi
 exit 0
 endef
 
+define Package/ddns-scripts-servercow/install
+	$(INSTALL_DIR) $(1)/usr/lib/ddns
+	$(INSTALL_BIN) ./files/usr/lib/ddns/update_servercow_de.sh \
+		$(1)/usr/lib/ddns
+
+	$(INSTALL_DIR) $(1)/usr/share/ddns/default
+	$(INSTALL_DATA) ./files/usr/share/ddns/default/servercow.de.json \
+		$(1)/usr/share/ddns/default/
+endef
+
+define Package/ddns-scripts-servercow/prerm
+#!/bin/sh
+if [ -z "$${IPKG_INSTROOT}" ]; then
+	/etc/init.d/ddns stop
+fi
+exit 0
+endef
 
 $(eval $(call BuildPackage,ddns-scripts))
 $(eval $(call BuildPackage,ddns-scripts-services))
@@ -931,6 +1056,7 @@ $(eval $(call BuildPackage,ddns-scripts-freedns))
 $(eval $(call BuildPackage,ddns-scripts-godaddy))
 $(eval $(call BuildPackage,ddns-scripts-hetzner-cloud))
 $(eval $(call BuildPackage,ddns-scripts-namesilo))
+$(eval $(call BuildPackage,ddns-scripts-netcup-com))
 $(eval $(call BuildPackage,ddns-scripts-digitalocean))
 $(eval $(call BuildPackage,ddns-scripts-dnspod))
 $(eval $(call BuildPackage,ddns-scripts-dnspod-v3))
@@ -939,7 +1065,9 @@ $(eval $(call BuildPackage,ddns-scripts-nsupdate))
 $(eval $(call BuildPackage,ddns-scripts-route53))
 $(eval $(call BuildPackage,ddns-scripts-cnkuai))
 $(eval $(call BuildPackage,ddns-scripts-gandi))
+$(eval $(call BuildPackage,ddns-scripts-gandi-v2))
 $(eval $(call BuildPackage,ddns-scripts-beget))
+$(eval $(call BuildPackage,ddns-scripts-blazingfast))
 $(eval $(call BuildPackage,ddns-scripts-pdns))
 $(eval $(call BuildPackage,ddns-scripts-scaleway))
 $(eval $(call BuildPackage,ddns-scripts-transip))
@@ -948,3 +1076,4 @@ $(eval $(call BuildPackage,ddns-scripts-one))
 $(eval $(call BuildPackage,ddns-scripts-porkbun))
 $(eval $(call BuildPackage,ddns-scripts-huaweicloud))
 $(eval $(call BuildPackage,ddns-scripts-aliyun))
+$(eval $(call BuildPackage,ddns-scripts-servercow))

@@ -19,16 +19,11 @@ usage() {
 	cat << EOF
 
 Usage:
- $MYPROG [options] -- command
-
-Commands:
-start                Start SECTION or NETWORK or all
-stop                 Stop SECTION or NETWORK or all
+ $MYPROG [options]
 
 Parameters:
- -n NETWORK          Start/Stop sections in background monitoring NETWORK, force VERBOSE=0
  -S SECTION          SECTION to start
-                     use either -N NETWORK or -S SECTION
+                     SECTION is the UCI section name/id to start
 
  -h                  show this help and exit
  -V                  show version and exit
@@ -53,7 +48,6 @@ while getopts ":hv:dn:S:V" OPT; do
 		h)	usage; exit 0;;
 		v)	VERBOSE=$OPTARG;;
 		d)	DRY_RUN=1;;
-		n)	NETWORK=$OPTARG;;
 		S)	SECTION_ID=$OPTARG;;
 		V)	printf %s\\n "ddns-scripts $VERSION"; exit 0;;
 		:)	usage_err "option -$OPTARG missing argument";;
@@ -63,41 +57,7 @@ while getopts ":hv:dn:S:V" OPT; do
 done
 shift $((OPTIND - 1 ))	# OPTIND is 1 based
 
-[ -n "$NETWORK" -a -n "$SECTION_ID" ] && usage_err "use either option '-N' or '-S' not both"
-[ $# -eq 0 ] && usage_err "missing command"
-[ $# -gt 1 ] && usage_err "to much commands"
-
-case "$1" in
-	start)
-		if [ -n "$NETWORK" ]; then
-			start_daemon_for_all_ddns_sections "$NETWORK"
-			exit 0
-		fi
-		if [ -z "$SECTION_ID" ]; then
-			start_daemon_for_all_ddns_sections
-			exit 0
-		fi
-		;;
-	stop)
-		if [ -n "$SECTION_ID" ]; then
-			stop_section_processes "$SECTION_ID"
-			exit 0
-		fi
-		if [ -n "$NETWORK" ]; then
-			stop_daemon_for_all_ddns_sections "$NETWORK"
-			exit 0
-		else
-			stop_daemon_for_all_ddns_sections
-			exit 0
-		fi
-		exit 1
-		;;
-	kill)
-		killall dynamic_dns_updater.sh 2>/dev/null
-		exit $?
-		;;
-	*)	usage_err "unknown command - $1";;
-esac
+[ -z "$SECTION_ID" ] && usage_err "option '-S' is missing"
 
 # set file names
 PIDFILE="$ddns_rundir/$SECTION_ID.pid"	# Process ID file
@@ -214,14 +174,14 @@ ERR_LAST=$?	# save return code - equal 0 if SECTION_ID found
 	[ $VERBOSE -le 1 ] && VERBOSE=2		# force console out and logfile output
 	[ -f $LOGFILE ] && rm -f $LOGFILE	# clear logfile before first entry
 	write_log  7 "************ ************** ************** **************"
-	write_log  5 "PID '$$' started at $(eval $DATE_PROG)"
+	write_log  5 "PID '$$' started at $(date_prog)"
 	write_log  7 "ddns version  : $VERSION"
 	write_log  7 "uci configuration:${N}$(uci -q show ddns | grep '=service' | sort)"
 	write_log 14 "Service section '$SECTION_ID' not defined"
 }
 
 write_log 7 "************ ************** ************** **************"
-write_log 5 "PID '$$' started at $(eval $DATE_PROG)"
+write_log 5 "PID '$$' started at $(date_prog)"
 write_log 7 "ddns version  : $VERSION"
 write_log 7 "uci configuration:${N}$(uci -q show ddns.$SECTION_ID | sort)"
 # write_log 7 "ddns version  : $(opkg list-installed ddns-scripts | cut -d ' ' -f 3)"
@@ -325,8 +285,7 @@ if [ $LAST_TIME -eq 0 ]; then
 	write_log 7 "last update: never"
 else
 	EPOCH_TIME=$(( $(date +%s) - $CURR_TIME + $LAST_TIME ))
-	EPOCH_TIME="date -d @$EPOCH_TIME +'$ddns_dateformat'"
-	write_log 7 "last update: $(eval $EPOCH_TIME)"
+	write_log 7 "last update: $(date -d @$EPOCH_TIME +"$ddns_dateformat")"
 fi
 
 # verify Proxy server and set environment
@@ -349,7 +308,7 @@ ERR_LAST=$?
 [ $use_ipv6 -eq 1 ] && expand_ipv6 "$REGISTERED_IP" REGISTERED_IP
 
 # loop endlessly, checking ip every check_interval and forcing an updating once every force_interval
-write_log 6 "Starting main loop at $(eval $DATE_PROG)"
+write_log 6 "Starting main loop at $(date_prog)"
 while : ; do
 
 	get_current_ip CURRENT_IP		# read current IP
@@ -436,7 +395,7 @@ while : ; do
 	[ $FORCE_SECONDS -eq 0 ] && write_log 6 "Configured to run once"
 	[ $VERBOSE -gt 1 -o $FORCE_SECONDS -eq 0 ] && exit 0
 
-	write_log 6 "Rerun IP check at $(eval $DATE_PROG)"
+	write_log 6 "Rerun IP check at $(date_prog)"
 done
 # we should never come here there must be a programming error
 write_log 12 "Error in 'dynamic_dns_updater.sh - program coding error"

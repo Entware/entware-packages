@@ -8,6 +8,9 @@
 # extended and partial rewritten
 #.2014-2018 Christian Schoenebeck <christian dot schoenebeck at gmail dot com>
 #
+# 2026 Wayne King
+# Added use_api_check option for providers with proxied records (e.g., Cloudflare)
+#
 # function timeout
 # copied from http://www.ict.griffith.edu.au/anthony/software/timeout.sh
 # @author Anthony Thyssen  6 April 2011
@@ -83,7 +86,6 @@ LUCI_HELPER=$(printf %s "$MYPROG" | grep -i "luci")
 BIND_HOST=$(command -v host)
 KNOT_HOST=$(command -v khost)
 DRILL=$(command -v drill)
-HOSTIP=$(command -v hostip)
 NSLOOKUP=$(command -v nslookup)
 RESOLVEIP=$(command -v resolveip)
 jsonfilter=$(command -v jsonfilter)
@@ -118,7 +120,11 @@ ddns_loglines=$((ddns_loglines + 1))	# correct sed handling
 
 # format to show date information in log and luci-app-ddns default ISO 8601 format
 ddns_dateformat=$(uci -q get ddns.global.ddns_dateformat) || ddns_dateformat="%F %R"
-DATE_PROG="date +'$ddns_dateformat'"
+
+# Print the current date using the configured format.
+# Do not turn this into a command string that is run through "eval": the format
+# is read from UCI and a single quote inside it would start a new shell word.
+date_prog() { date +"$ddns_dateformat"; }
 
 # USE_CURL if GNU Wget and cURL installed normally Wget is used by do_transfer()
 # to change this use global option use_curl '1'
@@ -160,69 +166,6 @@ load_all_config_options()
 		config_get "$tmp_var" "$section_id" "$tmp_var"
 	done
 	return 0
-}
-
-# read's all service sections from ddns config
-# $1 = Name of variable to store
-load_all_service_sections() {
-	local __DATA=""
-	config_cb()
-	{
-		# only look for section type "service", ignore everything else
-		[ "$1" = "service" ] && __DATA="$__DATA $2"
-	}
-	config_load "ddns"
-
-	eval "$1=\"$__DATA\""
-	return
-}
-
-# starts updater script for all given sections or only for the one given
-# $1 = interface (Optional: when given only scripts are started
-# configured for that interface)
-# used by /etc/hotplug.d/iface/95-ddns on IFUP
-# and by /etc/init.d/ddns start
-start_daemon_for_all_ddns_sections()
-{
-	local event_if sections section_id configured_if
-	event_if="$1"
-
-	load_all_service_sections sections
-	for section_id in $sections; do
-		config_get configured_if "$section_id" interface "wan"
-		[ -z "$event_if" ] || [ "$configured_if" = "$event_if" ] || continue
-		/usr/lib/ddns/dynamic_dns_updater.sh -v "$VERBOSE" -S "$section_id" -- start &
-	done
-}
-
-# stop sections process incl. childs (sleeps)
-# $1 = section
-stop_section_processes() {
-	local pid_file
-	pid_file="$ddns_rundir/$1.pid"
-	[ $# -ne 1 ] && write_log 12 "Error: 'stop_section_processes()' requires exactly one parameter"
-
-	[ -e "$pid_file" ] && {
-		xargs kill < "$pid_file" 2>/dev/null && return 1
-	}
-	return 0 # nothing killed
-}
-
-# stop updater script for all defines sections or only for one given
-# $1 = interface (optional)
-# used by /etc/hotplug.d/iface/95-ddns on 'ifdown'
-# and by /etc/init.d/ddns stop
-# needed because we also need to kill "sleep" child processes
-stop_daemon_for_all_ddns_sections() {
-	local event_if sections section_id configured_if
-	event_if="$1"
-
-	load_all_service_sections sections
-	for section_id in $sections;	do
-		config_get configured_if "$section_id" interface "wan"
-		[ -z "$event_if" ] || [ "$configured_if" = "$event_if" ] || continue
-		stop_section_processes "$section_id"
-	done
 }
 
 # reports to console, logfile, syslog
@@ -677,6 +620,7 @@ do_transfer() {
 	local __ERR=0
 	local __CNT=0	# error counter
 	local __PROG  __RUNPROG
+	local __FALLBACK_RUNPROG __FALLBACK_DESC
 
 	[ $# -ne 1 ] && write_log 12 "Error in 'do_transfer()' - wrong number of parameters"
 
@@ -734,11 +678,17 @@ do_transfer() {
 			write_log 13 "cURL: libcurl compiled without https support"
 		# force network/interface-device to use for communication
 		if [ -n "$bind_network" ]; then
-			local __DEVICE
+			local __DEVICE __BINDIP __BIND_OPT __FALLBACK_BIND_OPT
 			network_get_device __DEVICE $bind_network || \
 				write_log 13 "Can not detect local device using 'network_get_device $bind_network' - Error: '$?'"
+			# set correct program to detect IP
+			[ $use_ipv6 -eq 0 ] && __RUNPROG="network_get_ipaddr" || __RUNPROG="network_get_ipaddr6"
+			eval "$__RUNPROG __BINDIP $bind_network" || \
+				write_log 13 "Can not detect current IP using '$__RUNPROG $bind_network' - Error: '$?'"
 			write_log 7 "Force communication via device '$__DEVICE'"
-			__PROG="$__PROG --interface $__DEVICE"
+			__BIND_OPT=" --interface $__DEVICE"
+			__FALLBACK_BIND_OPT=" --interface $__BINDIP"
+			__FALLBACK_DESC="IP '$__BINDIP'"
 		fi
 		# force ip version to use
 		if [ $force_ipversion -eq 1 ]; then
@@ -765,7 +715,9 @@ do_transfer() {
 			write_log 13 "cURL: libcurl compiled without Proxy support"
 		fi
 
-		__RUNPROG="$__PROG '$__URL'"	# build final command
+		__RUNPROG="$__PROG$__BIND_OPT '$__URL'"	# build final command
+		[ -n "$__FALLBACK_BIND_OPT" ] && \
+			__FALLBACK_RUNPROG="$__PROG$__FALLBACK_BIND_OPT '$__URL'"
 		__PROG="cURL"			# reuse for error logging
 
 	# uclient-fetch possibly with ssl support if /lib/libustream-ssl.so installed
@@ -825,6 +777,14 @@ do_transfer() {
 		eval $__RUNPROG			# DO transfer
 		__ERR=$?			# save error code
 		[ $__ERR -eq 0 ] && return 0	# no error leave
+		if [ -n "$__FALLBACK_RUNPROG" ]; then
+			write_log 3 "$__PROG Error: '$__ERR'"
+			write_log 7 "$(cat $ERRFILE)"		# report error
+			write_log 4 "Transfer failed - retry using $__FALLBACK_DESC"
+			__RUNPROG="$__FALLBACK_RUNPROG"
+			__FALLBACK_RUNPROG=""
+			continue
+		fi
 		[ -n "$LUCI_HELPER" ] && return 1	# no retry if called by LuCI helper script
 
 		write_log 3 "$__PROG Error: '$__ERR'"
@@ -985,8 +945,39 @@ get_registered_ip() {
 	[ $is_glue -eq 1 -a -z "$BIND_HOST" ] && write_log 14 "Lookup of glue records is only supported using BIND host"
 	write_log 7 "Detect registered/public IP"
 
+	# Ensure use_api_check defaults to 0 if not set
+	[ -z "$use_api_check" ] && use_api_check=0
+
 	# set correct regular expression
 	[ $use_ipv6 -eq 0 ] && __REGEX="$IPV4_REGEX" || __REGEX="$IPV6_REGEX"
+
+	# Attempt API check if enabled
+	if [ "$use_api_check" -eq 1 ]; then
+		local __SCRIPT
+		if [ -n "$update_script" ]; then
+			__SCRIPT="$update_script"
+		elif [ "$service_name" != "custom" ] && [ -n "$service_name" ]; then
+			local __SANITIZED
+			__SANITIZED=$(echo "$service_name" | sed 's/[.-]/_/g')
+			__SCRIPT="/usr/lib/ddns/update_${__SANITIZED}.sh"
+		fi
+		if [ -n "$__SCRIPT" ] && [ -f "$__SCRIPT" ]; then
+			write_log 7 "Using provider API for registered IP check via '$__SCRIPT'"
+			REGISTERED_IP=""
+			GET_REGISTERED_IP=1
+			. "$__SCRIPT"
+			__ERR=$?
+			unset GET_REGISTERED_IP
+			if [ $__ERR -eq 0 ] && [ -n "$REGISTERED_IP" ]; then
+				write_log 7 "Registered IP '$REGISTERED_IP' detected via provider API"
+				[ -z "$IPFILE" ] || echo "$REGISTERED_IP" > "$IPFILE"
+				eval "$1=\"$REGISTERED_IP\""
+				return 0
+			else
+				write_log 4 "API check failed (error: '$__ERR') - falling back to DNS lookup"
+			fi
+		fi
+	fi
 
 	if [ -n "$BIND_HOST" ]; then
 		__PROG="$BIND_HOST"
@@ -1021,38 +1012,12 @@ get_registered_ip() {
 
 		__RUNPROG="$__PROG >$DATFILE 2>$ERRFILE"
 		__PROG="drill"
-	elif [ -n "$HOSTIP" ]; then	# hostip package installed
-		__PROG="$HOSTIP"
-		[ $force_dnstcp -ne 0 ] && \
-			write_log 14 "hostip - no support for 'DNS over TCP'"
-
-		# is IP given as dns_server ?
-		__IP=$(echo $dns_server | grep -m 1 -o "$IPV4_REGEX")
-		[ -z "$__IP" ] && __IP=$(echo $dns_server | grep -m 1 -o "$IPV6_REGEX")
-
-		# we got NO ip for dns_server, so build command
-		[ -z "$__IP" -a -n "$dns_server" ] && {
-			__IP="\`$HOSTIP"
-			[ $use_ipv6 -eq 1 -a $force_ipversion -eq 1 ] && __IP="$__IP -6"
-			__IP="$__IP $dns_server | grep -m 1 -o"
-			[ $use_ipv6 -eq 1 -a $force_ipversion -eq 1 ] \
-				&& __IP="$__IP '$IPV6_REGEX'" \
-				|| __IP="$__IP '$IPV4_REGEX'"
-			__IP="$__IP \`"
-		}
-
-		[ $use_ipv6 -eq 1 ] && __PROG="$__PROG -6"
-		[ -n "$dns_server" ] && __PROG="$__PROG -r $__IP"
-		__RUNPROG="$__PROG $lookup_host >$DATFILE 2>$ERRFILE"
-		__PROG="hostip"
 	elif [ -n "$NSLOOKUP" ]; then	# last use BusyBox nslookup
 		NSLOOKUP_MUSL=$($(command -v nslookup) localhost 2>&1 | grep -F "(null)")	# not empty busybox compiled with musl
 		[ $force_dnstcp -ne 0 ] && \
 			write_log 14 "Busybox nslookup - no support for 'DNS over TCP'"
 		[ -n "$NSLOOKUP_MUSL" -a -n "$dns_server" ] && \
 			write_log 14 "Busybox compiled with musl - nslookup don't support the use of DNS Server"
-		[ $force_ipversion -ne 0 ] && \
-			write_log 5 "Busybox nslookup - no support to 'force IP Version' (ignored)"
 
 		__RUNPROG="$NSLOOKUP $lookup_host $dns_server >$DATFILE 2>$ERRFILE"
 		__PROG="BusyBox nslookup"
@@ -1076,8 +1041,6 @@ get_registered_ip() {
 				fi
 			elif [ -n "$DRILL" ]; then
 				__DATA=$(cat $DATFILE | awk '/^'"$lookup_host"'/ {print $5; exit}' )
-			elif [ -n "$HOSTIP" ]; then
-				__DATA=$(cat $DATFILE | grep -om1 "$__REGEX")
 			elif [ -n "$NSLOOKUP" ]; then
 				__DATA=$(cat $DATFILE | sed -ne "/^Name:/,\$ { s/^Address[0-9 ]\{0,\}: \($__REGEX\).*$/\\1/p }" )
 			fi
@@ -1135,17 +1098,17 @@ trap_handler() {
 
 	case $1 in
 		 0)	if [ $__ERR -eq 0 ]; then
-				write_log 5 "PID '$$' exit normal at $(eval $DATE_PROG)${N}"
+				write_log 5 "PID '$$' exit normal at $(date_prog)${N}"
 			else
-				write_log 4 "PID '$$' exit WITH ERROR '$__ERR' at $(eval $DATE_PROG)${N}"
+				write_log 4 "PID '$$' exit WITH ERROR '$__ERR' at $(date_prog)${N}"
 			fi ;;
-		 1)	write_log 6 "PID '$$' received 'SIGHUP' at $(eval $DATE_PROG)"
+		 1)	write_log 6 "PID '$$' received 'SIGHUP' at $(date_prog)"
 			# reload config via starting the script again
 			/usr/lib/ddns/dynamic_dns_updater.sh -v "0" -S "$__SECTIONID" -- start || true
 			exit 0 ;;	# and leave this one
-		 2)	write_log 5 "PID '$$' terminated by 'SIGINT' at $(eval $DATE_PROG)${N}";;
-		 3)	write_log 5 "PID '$$' terminated by 'SIGQUIT' at $(eval $DATE_PROG)${N}";;
-		15)	write_log 5 "PID '$$' terminated by 'SIGTERM' at $(eval $DATE_PROG)${N}";;
+		 2)	write_log 5 "PID '$$' terminated by 'SIGINT' at $(date_prog)${N}";;
+		 3)	write_log 5 "PID '$$' terminated by 'SIGQUIT' at $(date_prog)${N}";;
+		15)	write_log 5 "PID '$$' terminated by 'SIGTERM' at $(date_prog)${N}";;
 		 *)	write_log 13 "Unhandled signal '$1' in 'trap_handler()'";;
 	esac
 
