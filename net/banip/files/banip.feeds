@@ -1,7 +1,7 @@
 {
 	"asn":{
-		"url_4": "https://asn.ipinfo.app/api/text/list/",
-		"url_6": "https://asn.ipinfo.app/api/text/list/",
+		"url_4": "https://asn.ipinfo.app/api/text/list/AS{asn}",
+		"url_6": "https://asn.ipinfo.app/api/text/list/AS{asn}",
 		"rule": "feed 1",
 		"chain": "in",
 		"descr": "ASN IP segments"
@@ -45,8 +45,8 @@
 		"descr": "suspicious attacker IPs"
 	},
 	"country":{
-		"url_4": "https://www.ipdeny.com/ipblocks/data/aggregated/",
-		"url_6": "https://www.ipdeny.com/ipv6/ipaddresses/aggregated/",
+		"url_4": "https://www.ipdeny.com/ipblocks/data/aggregated/{country}-aggregated.zone",
+		"url_6": "https://www.ipdeny.com/ipv6/ipaddresses/aggregated/{country}-aggregated.zone",
 		"rule": "feed 1",
 		"chain": "in",
 		"descr": "country blocks"
@@ -74,13 +74,6 @@
 		"descr": "public DoH-Server",
 		"flag": "tcp udp 80 443"
 	},
-	"drop":{
-		"url_4": "https://www.spamhaus.org/drop/drop.txt",
-		"url_6": "https://www.spamhaus.org/drop/dropv6.txt",
-		"rule": "feed 1",
-		"chain": "in",
-		"descr": "spamhaus drop compilation"
-	},
 	"dshield":{
 		"url_4": "https://feeds.dshield.org/block.txt",
 		"rule": "feed 13",
@@ -96,7 +89,7 @@
 	"feodo":{
 		"url_4": "https://feodotracker.abuse.ch/downloads/ipblocklist.txt",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "feodo tracker"
 	},
 	"firehol1":{
@@ -168,36 +161,37 @@
 		"chain": "in",
 		"descr": "real-time IP blocklist"
 	},
-	"nixspam":{
-		"url_4": "https://www.nixspam.net/download/nixspam-ip.dump.gz",
-		"rule": "feed 1",
-		"chain": "in",
-		"descr": "iX spam protection",
-		"flag": "gz"
-	},
 	"proxy":{
 		"url_4": "https://iplists.firehol.org/files/proxylists.ipset",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "open proxies"
+	},
+	"spamhaus":{
+		"url_4": "https://www.spamhaus.org/drop/drop_v4.json",
+		"url_6": "https://www.spamhaus.org/drop/drop_v6.json",
+		"rule": "feed 4 \"",
+		"chain": "inout",
+		"descr": "Spamhaus DROP"
 	},
 	"threat":{
 		"url_4": "https://rules.emergingthreats.net/fwrules/emerging-Block-IPs.txt",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "emerging threats"
 	},
 	"threatview":{
 		"url_4": "https://threatview.io/Downloads/IP-High-Confidence-Feed.txt",
+		"url_6": "https://threatview.io/Downloads/IP-High-Confidence-Feed.txt",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "malicious IPs"
 	},
 	"tor":{
 		"url_4": "https://www.dan.me.uk/torlist/?exit",
 		"url_6": "https://www.dan.me.uk/torlist/?exit",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "tor exit nodes"
 	},
 	"turris":{
@@ -229,16 +223,18 @@
 		"flag": "gz"
 	},
 	"urlhaus":{
-		"url_4": "https://urlhaus.abuse.ch/downloads/ids/",
-		"rule": "suricata 1",
-		"chain": "in",
-		"descr": "urlhaus IDS IPs"
+		"url_4": "https://urlhaus-api.abuse.ch/v2/files/exports/{authkey}/urls_recent.txt",
+		"rule": "feed 4 /|:",
+		"chain": "out",
+		"descr": "urlhaus malware IPs",
+		"flag": "tcp udp 80 443"
 	},
 	"urlvir":{
 		"url_4": "https://iplists.firehol.org/files/urlvir.ipset",
 		"rule": "feed 1",
-		"chain": "in",
-		"descr": "malware related IPs"
+		"chain": "out",
+		"descr": "malware related IPs",
+		"flag": "tcp udp 80 443"
 	},
 	"voip":{
 		"url_4": "https://voipbl.org/update/",
@@ -249,19 +245,20 @@
 	"vpn":{
 		"url_4": "https://raw.githubusercontent.com/X4BNet/lists_vpn/refs/heads/main/output/vpn/ipv4.txt",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "vpn IPs"
 	},
 	"vpndc":{
 		"url_4": "https://raw.githubusercontent.com/X4BNet/lists_vpn/refs/heads/main/output/datacenter/ipv4.txt",
 		"rule": "feed 1",
-		"chain": "in",
+		"chain": "inout",
 		"descr": "vpn datacenter IPs"
 	},
 	"webclient":{
 		"url_4": "https://iplists.firehol.org/files/firehol_webclient.netset",
 		"rule": "feed 1",
-		"chain": "in",
-		"descr": "malware related IPs"
+		"chain": "out",
+		"descr": "malware related IPs",
+		"flag": "tcp udp 80 443"
 	}
 }

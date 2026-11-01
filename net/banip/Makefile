@@ -5,8 +5,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=banip
-PKG_VERSION:=1.8.0
-PKG_RELEASE:=1
+PKG_VERSION:=1.9.1
+PKG_RELEASE:=3
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_MAINTAINER:=Dirk Brenken <dev@brenken.org>
 
@@ -23,7 +23,7 @@ endef
 define Package/banip/description
 banIP blocks IPs via named nftables Sets.
 banIP supports many IP blocklist feeds and provides a log service to block suspicious IPs in realtime.
-Please see https://github.com/openwrt/packages/blob/master/net/banip/files/README.md for further information.
+Please see https://github.com/openwrt/packages/blob/master/net/banip/README.md for further information.
 
 endef
 
@@ -51,7 +51,7 @@ define Package/banip/install
 	$(INSTALL_BIN) ./files/banip.init $(1)/etc/init.d/banip
 
 	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_CONF) ./files/banip-functions.sh $(1)/usr/lib
+	$(INSTALL_DATA) ./files/banip-functions.sh $(1)/usr/lib
 
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/banip.conf $(1)/etc/config/banip
