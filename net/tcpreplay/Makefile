@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tcpreplay
-PKG_VERSION:=4.5.2
-PKG_RELEASE:=3
+PKG_VERSION:=4.6.1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/appneta/tcpreplay/releases/download/v$(PKG_VERSION)
-PKG_HASH:=2df15bc6d49f96a77617d137049f998193bbae95c1a31b04ca02856a24cbf384
+PKG_HASH:=14b96e3565d6e66e813000d0d510afeaecb871f2b533182c391c6ccf948c3e21
 
-PKG_LICENSE:=GPL-3.0
+PKG_LICENSE:=GPL-3.0-only
 PKG_LICENSE_FILES:=docs/LICENSE
 PKG_CPE_ID:=cpe:/a:broadcom:tcpreplay
 
@@ -33,9 +33,9 @@ define Package/tcpreplay/default
   SUBMENU:=Tcpreplay
   SECTION:=net
   CATEGORY:=Network
-  URL:=http://tcpreplay.appneta.com/
+  URL:=https://tcpreplay.appneta.com/
   MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
-  DEPENDS:=+librt +libpcap +libdnet +libbpf +libxdp +USE_MUSL:musl-fts
+  DEPENDS:=+librt +libpcap +libdnet +libbpf +libxdp +KERNEL_IO_URING:liburing +USE_MUSL:musl-fts
 endef
 
 define Package/tcpbridge
@@ -80,7 +80,7 @@ $(call Package/tcpreplay/default)
 endef
 
 define Package/tcpbridge/description
-  tcpbridge is a tool for selectively briding network traffic across two
+  tcpbridge is a tool for selectively bridging network traffic across two
   interfaces and optionally modifying the packets in between
 endef
 
@@ -127,10 +127,6 @@ define Package/tcpreplay-all/description
   to support switches, routers, and IP Flow/NetFlow appliances. 
 endef
 
-ifneq ($(CONFIG_USE_MUSL),)
-	TARGET_LDFLAGS+= -lfts
-endif
-
 CONFIGURE_VARS += \
 	ac_cv_lib_nl_nl_cache_alloc=no \
 	ac_cv_lib_nl_genl_3_genl_connect=no \
@@ -143,7 +139,11 @@ CONFIGURE_ARGS += \
 	--with-libdnet="$(STAGING_DIR)/usr" \
 	--with-libpcap="$(STAGING_DIR)/usr"
 
-TARGET_CFLAGS += -std=gnu11
+# 4.6.0's txring.h (<linux/if_ether.h>) and sendpacket.h
+# (<netinet/if_ether.h>) both define struct ethhdr on musl; have the
+# kernel header defer it to libc to avoid the redefinition.
+TARGET_CFLAGS += -std=gnu11 -D__UAPI_DEF_ETHHDR=0
+TARGET_LDFLAGS += $(if $(CONFIG_USE_MUSL),-lfts)
 
 define tcpreplayTemplate
   define Package/$(1)/install
