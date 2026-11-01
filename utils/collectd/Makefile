@@ -11,8 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=collectd
 PKG_VERSION:=5.12.0
-# libxml2
-PKG_RELEASE:=55
+PKG_RELEASE:=58
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://collectd.org/files/ \
@@ -236,8 +235,7 @@ $(call Package/collectd/Default)
   DEPENDS:= +libpthread \
 	  +zlib \
 	  +libltdl \
-	  +libgpg-error \
-	  +PACKAGE_collectd-mod-lua:liblua
+	  +libgpg-error
   MENU:=1
 endef
 
@@ -276,11 +274,6 @@ CONFIGURE_VARS+= \
 	CFLAGS="$$$$CFLAGS $(FPIC)" \
 	LDFLAGS="$$$$LDFLAGS -lm -lz" \
 	KERNEL_DIR="$(LINUX_DIR)"
-
-ifneq ($(CONFIG_PACKAGE_collectd-mod-lua),)
-CONFIGURE_VARS+= \
-	LDFLAGS="$$$$LDFLAGS -llua"
-endif
 
 ifneq ($(CONFIG_PACKAGE_COLLECTD_ENCRYPTED_NETWORK),)
 CONFIGURE_ARGS+= \
