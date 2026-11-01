@@ -8,16 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-service-identity
-PKG_VERSION:=23.1.0
+PKG_VERSION:=26.1.0
 PKG_RELEASE:=1
 
 PYPI_NAME:=service-identity
 PYPI_SOURCE_NAME:=service_identity
-PKG_HASH:=ecb33cd96307755041e978ab14f8b14e13b40f1fbd525a4dc78f46d2b986431d
+PKG_HASH:=6358c52882c96e66ac4a55eb3a72c7dd4a70763f8cc6fa4e70abde2656f4bf3b
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_BUILD_DEPENDS:=python-hatchling/host python-hatch-vcs/host python-hatch-fancy-pypi-readme/host
 
