@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tvheadend
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/tvheadend/tvheadend
-PKG_MIRROR_HASH:=48dd4296dfdd56965a70fd202eb40e0fb9e88eb5fe05e4b2544687466df0033a
-PKG_SOURCE_VERSION:=0f74b0ab0a3b96d87da04d9c778142ecfb370a1d
-PKG_SOURCE_DATE:=2025-06-04
+PKG_MIRROR_HASH:=da2a0c9f49c678e0c6f71c095e16555f3cbaf34d0a7b95b06ade7cfde0f98b9f
+PKG_SOURCE_VERSION:=547f8bfaec9307d3ba59370159df792295593f59
+PKG_SOURCE_DATE:=2026-09-24
 
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=LICENSE.md
@@ -15,28 +15,38 @@ PKG_LICENSE_FILES:=LICENSE.md
 PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 PKG_BUILD_FLAGS:=no-mips16
-PKG_BUILD_DEPENDS:=gettext-full/host
+PKG_BUILD_DEPENDS:=gettext-full/host node/host
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/nls.mk
+
+# tvheadend needs iconv //TRANSLIT to build recording file names, which musl
+# does not implement, so always build against GNU libiconv.
+# With BUILD_NLS set, nls.mk already adds these for the same prefix.
+ifneq ($(CONFIG_BUILD_NLS),y)
+	ICONV_FULL_PREFIX:=$(STAGING_DIR)/opt/lib/libiconv-full
+	TARGET_CFLAGS += -I$(ICONV_FULL_PREFIX)/include
+	TARGET_LDFLAGS += -L$(ICONV_FULL_PREFIX)/lib -Wl,-rpath-link=$(ICONV_FULL_PREFIX)/lib
+endif
 
 define Package/tvheadend
   SECTION:=multimedia
   CATEGORY:=Multimedia
   TITLE:=TV streaming server
   MENU:=1
-  USERID:=tvheadend:dvb
+  USERID:=tvheadend:dvb=49
   URL:=https://tvheadend.org
   MAINTAINER:=Marius Dinu <m95d+git@psihoexpert.ro>
   DEPENDS:= \
+	dvb-support \
 	+librt \
 	+libffi \
 	+libopenssl \
-	$(ICONV_DEPENDS) \
+	+libiconv-full \
 	+zlib \
 	+TVHEADEND_AVAHI_SUPPORT:libavahi-client \
 	+TVHEADEND_REGEX_PCRE2:libpcre2 \
-	+BUILD_PATENTED&&TVHEADEND_CSA:libdvbcsa
+	+TVHEADEND_CSA:libdvbcsa
 
 ## Transcoding | Add these to DEPENDS.
 ##	+TVHEADEND_LIBFFMPEG:libffmpeg-full \
@@ -145,9 +155,6 @@ ifeq ($(CONFIG_TVHEADEND_DVB_DDCI),)
 endif
 endif
 
-ifeq ($(CONFIG_BUILD_PATENTED),)
-	CONFIGURE_ARGS += --disable-tvhcsa --disable-dvbcsa --disable-constcw --disable-cwc --disable-capmt --disable-cccam
-else
 ifeq ($(CONFIG_TVHEADEND_CSA),)
 	CONFIGURE_ARGS += --disable-tvhcsa --disable-dvbcsa --disable-constcw --disable-cwc --disable-capmt --disable-cccam
 else
@@ -163,7 +170,6 @@ ifeq ($(CONFIG_TVHEADEND_CAPMT),)
 endif
 ifeq ($(CONFIG_TVHEADEND_CCCAM),)
 	CONFIGURE_ARGS += --disable-cccam
-endif
 endif
 endif
 
@@ -235,6 +241,7 @@ CONFIGURE_ARGS += \
 	--disable-libfdkaac \
 	--disable-libfdkaac_static \
 	--disable-pcloud_cache \
+	--enable-vue_build \
 	--enable-bundle \
 	--disable-uriparser \
 	--disable-execinfo \
@@ -252,12 +259,6 @@ CONFIGURE_ARGS += \
 ##	--disable-libfdkaac_static \
 ##	--disable-pcloud_cache \
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-	echo 'Tvheadend $(shell echo $(PKG_SOURCE_VERSION) | sed "s/^v//")~openwrt$(PKG_RELEASE)' \
-		> $(PKG_BUILD_DIR)/debian/changelog
-endef
-
 define Package/tvheadend/conffiles
 /opt/etc/tvheadend
 endef
@@ -267,8 +268,8 @@ define Package/tvheadend/install
 	$(INSTALL_BIN) ./files/S71tvheadend $(1)/opt/etc/init.d/
 #	$(INSTALL_DIR) $(1)/etc/config
 #	$(INSTALL_CONF) ./files/tvheadend.config $(1)/etc/config/tvheadend
-#	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
-#	$(INSTALL_BIN) ./files/dvb.hotplug $(1)/etc/hotplug.d/usb/50-dvb
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/dvb
+#	$(INSTALL_BIN) ./files/dvb.hotplug $(1)/etc/hotplug.d/dvb/50-dvb
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/build.linux/tvheadend $(1)/opt/bin/
 	$(INSTALL_BIN) ./files/tv_grab_wl500g_info{,_toffset} $(1)/opt/bin/

@@ -1,6 +1,6 @@
 --- a/Makefile.static
 +++ b/Makefile.static
-@@ -91,7 +91,7 @@ define DOWNLOAD
+@@ -89,7 +89,7 @@ define DOWNLOAD
  	@mkdir -p $(LIB_ROOT)/build
  	@if test -z "$${TVHEADEND_FILE_CACHE}"; then \
  		printf "WGET            $(1)\n"; \
