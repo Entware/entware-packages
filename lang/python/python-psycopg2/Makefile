@@ -8,15 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-psycopg2
-PKG_VERSION:=2.9.7
+PKG_VERSION:=2.9.13
 PKG_RELEASE:=1
 
 PYPI_NAME:=psycopg2
-PKG_HASH:=f00cc35bd7119f1fed17b85bd1007855194dde2cbd8de01ab8ebb17487440ad8
+PKG_HASH:=d36784fc2dae69523ba4b79c7d1d1b4d6e83e87836874f111262f4db940b16a6
 
-PKG_MAINTAINER:=Daniel Danzberger <daniel@dd-wrt.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=LGPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
+
+PKG_BUILD_DEPENDS:= \
+	python-setuptools/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
