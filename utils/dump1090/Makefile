@@ -10,7 +10,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dump1090
 PKG_VERSION:=10.2
-PKG_RELEASE:=1
+# rtl-sdr (librtlsdr) bumped
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_VERSION:=v$(PKG_VERSION)
