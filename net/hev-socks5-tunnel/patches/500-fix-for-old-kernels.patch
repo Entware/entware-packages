@@ -59,12 +59,12 @@ src/hev-tunnel-linux.c:47:26: error: 'IFF_MULTI_QUEUE' undeclared (first use in 
  #include <netinet/in.h>
 -#include <linux/ipv6.h>
  #include <linux/if_tun.h>
+ #include <linux/virtio_net.h>
  
- #include <hev-task.h>
-@@ -43,8 +50,11 @@ hev_tunnel_open (const char *name, int m
+@@ -60,8 +67,11 @@ hev_tunnel_open (const char *name, int m
          goto exit;
  
-     ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
+     ifr.ifr_flags = IFF_TUN | IFF_NO_PI | IFF_VNET_HDR;
 +/* IFF_MULTI_QUEUE since Linux 3.8 */
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
      if (multi_queue)

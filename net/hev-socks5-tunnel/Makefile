@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=hev-socks5-tunnel
-PKG_VERSION:=2.14.3
+PKG_VERSION:=2.19.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/heiher/hev-socks5-tunnel/releases/download/$(PKG_VERSION)
-PKG_HASH:=d517a16072eea7320b0430bdf8a152a901a3f3569ff86858729d1a80fa9d5cd0
+PKG_HASH:=6ee1db4f999708dd7fb04ff021c13b603dd2eae45791ea07493de3506778a788
 
 PKG_MAINTAINER:=Ray Wang <git@hev.cc>
 PKG_LICENSE:=MIT
@@ -47,6 +47,9 @@ define Package/hev-socks5-tunnel/install
 
 	$(INSTALL_DIR) $(1)/opt/etc/init.d/
 	$(INSTALL_BIN) ./files/S99hev-socks5-tunnel $(1)/opt/etc/init.d/
+
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
+#	$(INSTALL_BIN) ./files/90-hev-socks5-tunnel $(1)/etc/uci-defaults/90-hev-socks5-tunnel
 endef
 
 $(eval $(call BuildPackage,hev-socks5-tunnel))
