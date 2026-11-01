@@ -10,9 +10,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_URL:=https://github.com/geekman/mdns-repeater.git
 PKG_SOURCE_PROTO=git
-PKG_SOURCE_DATE:=2023-12-16
-PKG_SOURCE_VERSION:=f714ec4d8a0eee248ead29c2ae1bb37f124a568f
-PKG_MIRROR_HASH:=ccc76784483550bcbe3b65f2efee39372516c2cf5d18ef58636cf2661139c4b8
+PKG_SOURCE_DATE:=2026-07-16
+PKG_SOURCE_VERSION:=488feaf7da1a4b54de120ea00f0f3eb629cdfd8e
+PKG_MIRROR_HASH:=9fd326c4d7874ff5c7145c9bb9c11408dd31cda568aafe7d134a12cb3579bac5
 
 PKG_MAINTAINER:=Alexander Koenig <alex@lisas.de>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -28,11 +28,7 @@ define Package/mdns-repeater
   URL:=https://github.com/geekman/mdns-repeater
 endef
 
-TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
-
-define Build/Compile
-	CFLAGS="$(TARGET_CFLAGS)" CPPFLAGS="$(TARGET_CPPFLAGS)" $(MAKE) -C $(PKG_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
-endef
+MAKE_FLAGS += HGVERSION='$(VERSION)'
 
 define Package/mdns-repeater/install
 	$(INSTALL_DIR) $(1)/usr/sbin
