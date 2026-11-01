@@ -7,12 +7,12 @@
 
 include $(TOPDIR)/rules.mk
 PKG_NAME:=frr
-PKG_VERSION:=10.4.1
-PKG_RELEASE:=1
+PKG_VERSION:=10.7.1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/FRRouting/frr/tar.gz/$(PKG_NAME)-$(PKG_VERSION)?
-PKG_HASH:=8e4003eaba168626c5ea7a6735f2c85c87b04214e6f8c8f2715b21f8ae40970b
+PKG_HASH:=6aaf9d89deb94eeda6acceaa6fe48d8cd365d0908231e58f628538ff49696fc4
 
 
 PKG_MAINTAINER:=Lucian Cristian <lucian.cristian@gmail.com>
@@ -21,7 +21,7 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_NAME)-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/$(PKG_NAME)-$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_LICENSE:=GPL-2.0-only LGPL-2.1-only
-PKG_CPE_ID:=cpe:/a:ffrouting:ffrouting
+PKG_CPE_ID:=cpe:/a:frrouting:frrouting
 
 PKG_DAEMON_AVAILABLE:= \
 	babeld \
@@ -74,13 +74,14 @@ define Package/frr/Default
   CATEGORY:=Network
   SUBMENU:=Routing and Redirection
   URL:=https://www.frrouting.org/
-  DEPENDS:=frr
+  # Spelled out: apk's soname resolution would pick libyang 5.x.
+  DEPENDS:=frr +libyang-legacy
 endef
 
 define Package/frr
   $(call Package/frr/Default)
   DEPENDS:=+librt +libatomic +libcap +libncurses +libjson-c +libreadline \
-    +libyang +libprotobuf-c +FRR_OPENSSL:libopenssl +FRR_SNMP:libnetsnmp +more
+    +libyang-legacy +libprotobuf-c +FRR_OPENSSL:libopenssl +FRR_SNMP:libnetsnmp +more
   TITLE:=The FRRouting (FRR) Software Routing Suite
   MENU:=1
 endef
@@ -131,6 +132,12 @@ define BuildDaemon
 ifeq ($(1),bgpd)
 	KCONFIG:=CONFIG_TCP_MD5SIG=y
 endif
+ifeq ($(1),babeld)
+	CONFLICTS:=babeld
+endif
+ifeq ($(1),bfdd)
+	CONFLICTS:=bfdd
+endif
 	DEPENDS+=$(2) +frr-watchfrr +frr-zebra
     endef
 #	if [ "$(1)" == "bfdd" ]; then \
@@ -153,7 +160,16 @@ define Package/frr/conffiles
 /etc/frr/vtysh.conf
 endef
 
-TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed -latomic
+# frr needs the v3 ABI; its configure looks libyang up three ways
+# (PKG_CHECK_MODULES, pkg-config --modversion, AC_CHECK_LIB), so all of
+# LDFLAGS, LIBYANG_* and PKG_CONFIG_PATH point at the legacy prefix.
+TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed -latomic \
+	-L$(STAGING_DIR)/usr/lib/libyang-legacy/lib
+
+CONFIGURE_VARS += \
+	LIBYANG_CFLAGS="-I$(STAGING_DIR)/usr/lib/libyang-legacy/include" \
+	LIBYANG_LIBS="-L$(STAGING_DIR)/usr/lib/libyang-legacy/lib -lyang" \
+	PKG_CONFIG_PATH="$(STAGING_DIR)/usr/lib/libyang-legacy/lib/pkgconfig:$$$$PKG_CONFIG_PATH"
 
 define Host/Configure
 	$(Host/Configure/Default)
@@ -216,7 +232,8 @@ endef
 define Package/frr-zebra/install
 	$(INSTALL_DIR) $(1)/usr/sbin $(1)/usr/lib
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/zebra $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/libmlag_pb.so* $(1)/usr/lib/
+	# $(CP) keeps the symlink chain; INSTALL_BIN would flatten it.
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmlag_pb.so* $(1)/usr/lib/
 endef
 
 define Package/frr-pythontools/install
