@@ -5,10 +5,10 @@
 ARCH=@ARCH@
 
 ## debian codenames
-#DISTRO=oldoldstable - The previous old stable release (jessie).
-#DISTRO=oldstable - The previous stable release (stretch).
-#DISTRO=stable - The current stable release (buster).
-#DISTRO=testing - The next generation release (bullseye).
+#DISTRO=oldoldstable - The previous old stable release (bullseye).
+#DISTRO=oldstable - The previous stable release (bookworm).
+#DISTRO=stable - The current stable release (trixie).
+#DISTRO=testing - The next generation release (forky).
 #DISTRO=unstable - The unstable development release (sid).
 DISTRO=stable
 

@@ -1,6 +1,6 @@
 --- a/usr/sbin/debootstrap
 +++ b/usr/sbin/debootstrap
-@@ -14,7 +14,7 @@ if [ -z "$DEBOOTSTRAP_DIR" ]; then
+@@ -14,7 +14,7 @@ if [ -z "${DEBOOTSTRAP_DIR-}" ]; then
  	if [ -x /debootstrap/debootstrap ]; then
  		DEBOOTSTRAP_DIR=/debootstrap
  	else
@@ -11,7 +11,7 @@
  
 --- a/usr/share/debootstrap/functions
 +++ b/usr/share/debootstrap/functions
-@@ -1076,7 +1076,7 @@ extract () { (
+@@ -1143,7 +1143,7 @@ extract () { (
  ); }
  
  in_target_nofail () {
@@ -20,7 +20,7 @@
  		true
  	fi
  	return 0
-@@ -1088,7 +1088,7 @@ in_target_failmsg () {
+@@ -1155,7 +1155,7 @@ in_target_failmsg () {
  	msg="$2"
  	arg="$3"
  	shift; shift; shift
