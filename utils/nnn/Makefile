@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nnn
 PKG_VERSION:=5.1
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-v$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/jarun/nnn/tar.gz/v$(PKG_VERSION)?
@@ -30,13 +30,11 @@ define Package/nnn/description
   and file picker.
 endef
 
-ifeq ($(CONFIG_USE_MUSL),y)
-TARGET_LDFLAGS += -lfts
-endif
-
 define Package/nnn/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/nnn $(1)/opt/bin
 endef
+
+TARGET_LDFLAGS += $(if $(CONFIG_USE_MUSL),-lfts)
 
 $(eval $(call BuildPackage,nnn))
