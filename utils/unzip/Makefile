@@ -32,7 +32,7 @@ define Package/unzip
   CATEGORY:=Utilities
   DEPENDS:=
   TITLE:=De-archiver for .zip files
-  URL:=http://infozip.sourceforge.net/UnZip.html
+  URL:=https://infozip.sourceforge.net/UnZip.html
   SUBMENU:=Compression
   ALTERNATIVES:=300:/opt/bin/unzip:/opt/libexec/unzip
 endef
