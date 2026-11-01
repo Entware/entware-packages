@@ -46,7 +46,7 @@ Build failed
 
 --- a/lib/replace/replace.c
 +++ b/lib/replace/replace.c
-@@ -1088,13 +1088,18 @@ ssize_t rep_copy_file_range(int fd_in,
+@@ -1249,13 +1249,18 @@ ssize_t rep_copy_file_range(int fd_in,
  # include <sys/ioctl.h>
  #endif
  

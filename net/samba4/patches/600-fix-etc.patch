@@ -22,7 +22,7 @@
  /* There can be this many printing tdb's open, plus any locked ones. */
 --- a/source3/libads/kerberos.c
 +++ b/source3/libads/kerberos.c
-@@ -1445,7 +1445,7 @@ bool create_local_private_krb5_conf_for_
+@@ -1450,7 +1450,7 @@ bool create_local_private_krb5_conf_for_
  
  #if !defined(SAMBA4_USES_HEIMDAL)
  	if (lp_include_system_krb5_conf()) {
@@ -31,7 +31,7 @@
  	}
  #endif
  
-@@ -1541,7 +1541,7 @@ bool create_local_private_krb5_conf_for_
+@@ -1553,7 +1553,7 @@ bool create_local_private_krb5_conf_for_
  
  #if defined(OVERWRITE_SYSTEM_KRB5_CONF)
  
@@ -40,7 +40,7 @@
  	/* Insanity, sheer insanity..... */
  
  	if (strequal(realm, lp_realm())) {
-@@ -1594,7 +1594,7 @@ bool create_local_private_krb5_conf_for_
+@@ -1606,7 +1606,7 @@ bool create_local_private_krb5_conf_for_
  
  			if (symlink(fname, SYSTEM_KRB5_CONF_PATH) == -1) {
  				DEBUG(0,("create_local_private_krb5_conf_for_domain: "
@@ -51,7 +51,7 @@
  			}
 --- a/source3/param/loadparm.c
 +++ b/source3/param/loadparm.c
-@@ -4620,7 +4620,7 @@ const char *lp_printcapname(void)
+@@ -4626,7 +4626,7 @@ const char *lp_printcapname(void)
  	}
  
  	if (sDefault.printing == PRINT_BSD)
@@ -62,7 +62,7 @@
  }
 --- a/source3/torture/test_posix.c
 +++ b/source3/torture/test_posix.c
-@@ -131,7 +131,7 @@ bool run_posix_ls_wildcard_test(int dumm
+@@ -130,7 +130,7 @@ bool run_posix_ls_wildcard_test(int dumm
  	const char *symlnk_in_share = "symlnk_in_share";
  	const char *symlnk_dst_in_share = file;
  	const char *symlnk_outside_share = "symlnk_outside_share";
@@ -71,7 +71,7 @@
  	struct posix_test_entry entries[] = {
  		{
  			.name = file,
-@@ -322,7 +322,7 @@ bool run_posix_ls_single_test(int dummy)
+@@ -321,7 +321,7 @@ bool run_posix_ls_single_test(int dummy)
  	const char *symlnk_in_share = "symlnk_in_share";
  	const char *symlnk_dst_in_share = file;
  	const char *symlnk_outside_share = "symlnk_outside_share";
@@ -80,7 +80,7 @@
  	struct posix_test_entry entries[] = {
  		{
  			.name = file,
-@@ -536,7 +536,7 @@ bool run_posix_readlink_test(int dummy)
+@@ -535,7 +535,7 @@ bool run_posix_readlink_test(int dummy)
  	const char *symlnk_in_share = "symlnk_in_share";
  	const char *symlnk_dst_in_share = file;
  	const char *symlnk_outside_share = "symlnk_outside_share";
@@ -89,7 +89,7 @@
  	struct posix_test_entry entries[] = {
  		{
  			.name = symlnk_dangling,
-@@ -688,7 +688,7 @@ bool run_posix_stat_test(int dummy)
+@@ -687,7 +687,7 @@ bool run_posix_stat_test(int dummy)
  	const char *symlnk_in_share = "symlnk_in_share";
  	const char *symlnk_dst_in_share = file;
  	const char *symlnk_outside_share = "symlnk_outside_share";
@@ -146,7 +146,7 @@
  	    /* add_entropy will hash the buf */
 --- a/third_party/heimdal/lib/hx509/cert.c
 +++ b/third_party/heimdal/lib/hx509/cert.c
-@@ -135,7 +135,7 @@ SYSCONFDIR "/hx509.conf" PATH_SEP
+@@ -136,7 +136,7 @@ SYSCONFDIR "/hx509.conf" PATH_SEP
  "%{COMMON_APPDATA}/Heimdal/hx509.conf" PATH_SEP
  "%{WINDOWS}/hx509.ini"
  #else /* _WIN32 */

@@ -1,6 +1,6 @@
 --- a/lib/param/loadparm.c
 +++ b/lib/param/loadparm.c
-@@ -2860,7 +2860,7 @@ struct loadparm_context *loadparm_init(T
+@@ -2979,7 +2979,7 @@ struct loadparm_context *loadparm_init(T
  				  "tls priority",
  				  "NORMAL:-VERS-SSL3.0");
  
