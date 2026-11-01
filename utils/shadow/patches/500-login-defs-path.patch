@@ -1,6 +1,6 @@
 --- a/lib/getdef.c
 +++ b/lib/getdef.c
-@@ -169,7 +169,7 @@ static const char* vendordir = NULL;
+@@ -181,7 +181,7 @@ static const char* vendordir = NULL;
  static const char* sysconfdir = "/etc";
  #else
  #ifndef LOGINDEFS
@@ -109,16 +109,7 @@
  ENV_PATH	PATH=/bin:/usr/bin
  
  #
-@@ -230,7 +230,7 @@ SU_WHEEL_ONLY	no
- #
- # If compiled with cracklib support, sets the path to the dictionaries
- #
--CRACKLIB_DICTPATH	/var/cache/cracklib/cracklib_dict
-+CRACKLIB_DICTPATH	/opt/var/cache/cracklib/cracklib_dict
- 
- #
- # Min/max values for automatic uid selection in useradd(8)
-@@ -386,14 +386,14 @@ DEFAULT_HOME	yes
+@@ -439,14 +439,14 @@ NONEXISTENT	/nonexistent
  # If this file exists and is readable, login environment will be
  # read from it.  Every line should be in the form name=value.
  #

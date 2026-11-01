@@ -1,7 +1,7 @@
 --- a/lib/defines.h
 +++ b/lib/defines.h
-@@ -299,20 +299,20 @@ char *strchr (), *strrchr (), *strtok ()
- 	(strncpy((A), (B), sizeof(A) - 1), (A)[sizeof(A) - 1] = '\0')
+@@ -84,19 +84,19 @@
+ #define WEEK (7*DAY)
  
  #ifndef PASSWD_FILE
 -#define PASSWD_FILE "/etc/passwd"
@@ -13,15 +13,14 @@
 +#define GROUP_FILE "/opt/etc/group"
  #endif
  
- #ifndef SHADOW_FILE
--#define SHADOW_FILE "/etc/shadow"
-+#define SHADOW_FILE "/opt/etc/shadow"
+ #ifndef SUBUID_FILE
+-#define SUBUID_FILE "/etc/subuid"
++#define SUBUID_FILE "/opt/etc/subuid"
  #endif
  
- #ifdef SHADOWGRP
- #ifndef SGROUP_FILE
--#define SGROUP_FILE "/etc/gshadow"
-+#define SGROUP_FILE "/opt/etc/gshadow"
- #endif
+ #ifndef SUBGID_FILE
+-#define SUBGID_FILE "/etc/subgid"
++#define SUBGID_FILE "/opt/etc/subgid"
  #endif
  
+ /*

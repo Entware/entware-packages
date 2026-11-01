@@ -1,0 +1,271 @@
+--- a/lib/age.c
++++ b/lib/age.c
+@@ -26,7 +26,7 @@
+ #ident "$Id$"
+ 
+ #ifndef PASSWD_PROGRAM
+-#define PASSWD_PROGRAM "/bin/passwd"
++#define PASSWD_PROGRAM "/opt/bin/passwd"
+ #endif
+ /*
+  * expire - force password change if password expired
+--- a/lib/getdef.c
++++ b/lib/getdef.c
+@@ -178,7 +178,7 @@ static const char* vendordir = VENDORDIR
+ #else
+ static const char* vendordir = NULL;
+ #endif
+-static const char* sysconfdir = "/etc";
++static const char* sysconfdir = "/opt/etc";
+ #else
+ #ifndef LOGINDEFS
+ #define LOGINDEFS "/opt/etc/login.defs"
+--- a/lib/limits.c
++++ b/lib/limits.c
+@@ -40,7 +40,7 @@
+ 
+ 
+ #ifndef LIMITS_FILE
+-#define LIMITS_FILE "/etc/limits"
++#define LIMITS_FILE "/opt/etc/limits"
+ #endif
+ #define LOGIN_ERROR_RLIMIT	1
+ #define LOGIN_ERROR_LOGIN	2
+--- a/lib/nscd.c
++++ b/lib/nscd.c
+@@ -20,7 +20,7 @@
+ int nscd_flush_cache (const char *service)
+ {
+ 	int status, code;
+-	const char *cmd = "/usr/sbin/nscd";
++	const char *cmd = "/opt/sbin/nscd";
+ 	const char *spawnedArgs[] = {"nscd", "-i", service, NULL};
+ 	const char *spawnedEnv[] = {NULL};
+ 
+--- a/lib/nss.c
++++ b/lib/nss.c
+@@ -22,7 +22,7 @@
+ #include "string/strtok/stpsep.h"
+ 
+ 
+-#define NSSWITCH "/etc/nsswitch.conf"
++#define NSSWITCH "/opt/etc/nsswitch.conf"
+ 
+ // NSS plugin handling for subids
+ // If nsswitch has a line like
+--- a/lib/port.h
++++ b/lib/port.h
+@@ -29,7 +29,7 @@
+  * PORT_DAY - Day of the week to a bit value (0 = Sunday).
+  */
+ 
+-#define	PORTS	"/etc/porttime"
++#define	PORTS	"/opt/etc/porttime"
+ #define	PORT_IDS	64
+ #define	PORT_TTY	64
+ #define	PORT_TIMES	24
+--- a/lib/setupenv.c
++++ b/lib/setupenv.c
+@@ -157,7 +157,7 @@ void setup_env (struct passwd *info)
+ 
+ 	if (NULL == cp) {
+ 		/* not specified, use a minimal default */
+-		addenv ((info->pw_uid == 0) ? "PATH=/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/bin:/usr/bin", NULL);
++		addenv ((info->pw_uid == 0) ? "PATH=/opt/sbin:/opt/bin:/opt/usr/sbin:/opt/usr/bin:/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/opt/bin:/opt/usr/bin:/bin:/usr/bin", NULL);
+ 	} else if (strchr(cp, '=')) {
+ 		/* specified as name=value (PATH=...) */
+ 		addenv (cp, NULL);
+--- a/lib/shadow/gshadow/gshadow.h
++++ b/lib/shadow/gshadow/gshadow.h
+@@ -16,7 +16,7 @@
+ 
+ 
+ #ifndef _PATH_GSHADOW
+-# define _PATH_GSHADOW  "/etc/gshadow"
++# define _PATH_GSHADOW  "/opt/etc/gshadow"
+ #endif
+ 
+ 
+--- a/lib/sssd.c
++++ b/lib/sssd.c
+@@ -26,7 +26,7 @@ sssd_flush_cache(int dbflags)
+ 	int          status, code, rv;
+ 	char         *p;
+ 	char         *sss_cache_args = NULL;
+-	const char   *cmd = "/usr/sbin/sss_cache";
++	const char   *cmd = "/opt/sbin/sss_cache";
+ 	const char   *spawnedArgs[] = {"sss_cache", NULL, NULL};
+ 	const char   *spawnedEnv[] = {NULL};
+ 	struct stat  sb;
+--- a/src/chsh.c
++++ b/src/chsh.c
+@@ -39,7 +39,7 @@
+ 
+ 
+ #ifndef SHELLS_FILE
+-#define SHELLS_FILE "/etc/shells"
++#define SHELLS_FILE "/opt/etc/shells"
+ #endif
+ 
+ #ifdef HAVE_VENDORDIR
+--- a/src/groupadd.c
++++ b/src/groupadd.c
+@@ -564,7 +564,7 @@ int main (int argc, char **argv)
+ 	 */
+ 	process_flags (argc, argv, &flags);
+ 
+-	if (run_parts ("/etc/shadow-maint/groupadd-pre.d", group_name,
++	if (run_parts ("/opt/etc/shadow-maint/groupadd-pre.d", group_name,
+ 			Prog)) {
+ 		exit(1);
+ 	}
+@@ -587,7 +587,7 @@ int main (int argc, char **argv)
+ 
+ 	grp_update ();
+ 	close_files (&flags);
+-	if (run_parts ("/etc/shadow-maint/groupadd-post.d", group_name,
++	if (run_parts ("/opt/etc/shadow-maint/groupadd-post.d", group_name,
+ 			Prog)) {
+ 		exit(1);
+ 	}
+--- a/src/groupdel.c
++++ b/src/groupdel.c
+@@ -395,7 +395,7 @@ int main (int argc, char **argv)
+ 		group_busy (group_id);
+ 	}
+ 
+-	if (run_parts ("/etc/shadow-maint/groupdel-pre.d", group_name,
++	if (run_parts ("/opt/etc/shadow-maint/groupdel-pre.d", group_name,
+ 			Prog)) {
+ 		exit(1);
+ 	}
+@@ -410,7 +410,7 @@ int main (int argc, char **argv)
+ 
+ 	close_files (&flags);
+ 
+-	if (run_parts ("/etc/shadow-maint/groupdel-post.d", group_name,
++	if (run_parts ("/opt/etc/shadow-maint/groupdel-post.d", group_name,
+ 			Prog)) {
+ 		exit(1);
+ 	}
+--- a/src/login_nopam.c
++++ b/src/login_nopam.c
+@@ -72,7 +72,7 @@
+ 
+  /* Path name of the access control file. */
+ #ifndef	TABLE
+-#define TABLE	"/etc/login.access"
++#define TABLE	"/opt/etc/login.access"
+ #endif
+ 
+ static bool list_match (char *list, const char *item, bool (*match_fn) (char *, const char *));
+--- a/src/su.c
++++ b/src/su.c
+@@ -928,7 +928,7 @@ static void set_environment (struct pass
+ 
+ 	cp = getdef_str ((pw->pw_uid == 0) ? "ENV_SUPATH" : "ENV_PATH");
+ 	if (NULL == cp) {
+-		addenv ((pw->pw_uid == 0) ? "PATH=/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/bin:/usr/bin", NULL);
++		addenv ((pw->pw_uid == 0) ? "PATH=/opt/sbin:/opt/bin:/opt/usr/sbin:/opt/usr/bin:/sbin:/bin:/usr/sbin:/usr/bin" : "PATH=/opt/bin:/opt/usr/bin:/bin:/usr/bin", NULL);
+ 	} else if (strchr(cp, '=')) {
+ 		addenv (cp, NULL);
+ 	} else {
+--- a/src/suauth.c
++++ b/src/suauth.c
+@@ -29,7 +29,7 @@
+ 
+ 
+ #ifndef SUAUTHFILE
+-#define SUAUTHFILE "/etc/suauth"
++#define SUAUTHFILE "/opt/etc/suauth"
+ #endif
+ 
+ #define	NOACTION	0
+--- a/src/useradd.c
++++ b/src/useradd.c
+@@ -80,14 +80,14 @@
+ 
+ 
+ #ifndef SKEL_DIR
+-#define SKEL_DIR "/etc/skel"
++#define SKEL_DIR "/opt/etc/skel"
+ #endif
+ #ifndef USRSKELDIR
+-#define USRSKELDIR "/usr/etc/skel"
++#define USRSKELDIR "/opt/usr/etc/skel"
+ #endif
+ #ifndef USER_DEFAULTS_FILE
+-#define USER_DEFAULTS_FILE "/etc/default/useradd"
+-#define NEW_USER_FILE "/etc/default/nuaddXXXXXX"
++#define USER_DEFAULTS_FILE "/opt/etc/default/useradd"
++#define NEW_USER_FILE "/opt/etc/default/nuaddXXXXXX"
+ #endif
+ 
+ /*
+@@ -109,8 +109,8 @@ static const char Prog[] = "useradd";
+ static gid_t def_group = 1000;
+ static const char *def_groups = "";
+ static const char *def_gname = "other";
+-static const char *def_home = "/home";
+-static const char *def_shell = "/bin/bash";
++static const char *def_home = "/opt/home";
++static const char *def_shell = "/bin/sh";
+ static const char *def_template = SKEL_DIR;
+ static const char *def_usrtemplate = USRSKELDIR;
+ static const char *def_create_mail_spool = "yes";
+@@ -1376,6 +1376,7 @@ static void process_flags (int argc, cha
+ 				}
+ 				if (!streq(optarg, "")
+ 				     && '*'  != optarg[0]
++				     && !streq(optarg, "/opt/sbin/nologin")
+ 				     && !streq(optarg, "/sbin/nologin")
+ 				     && !streq(optarg, "/usr/sbin/nologin")
+ 				     && (   stat(optarg, &st) != 0
+@@ -2504,7 +2505,7 @@ int main (int argc, char **argv)
+ 	process_flags (argc, argv, &flags);
+ 	process_selinux = !flags.chroot && !flags.prefix;
+ 
+-	if (run_parts ("/etc/shadow-maint/useradd-pre.d", user_name,
++	if (run_parts ("/opt/etc/shadow-maint/useradd-pre.d", user_name,
+ 			"useradd")) {
+ 		exit(1);
+ 	}
+@@ -2675,7 +2676,7 @@ int main (int argc, char **argv)
+ 		create_mail (&flags);
+ 	}
+ 
+-	if (run_parts ("/etc/shadow-maint/useradd-post.d", user_name,
++	if (run_parts ("/opt/etc/shadow-maint/useradd-post.d", user_name,
+ 			"useradd")) {
+ 		exit(1);
+ 	}
+--- a/src/userdel.c
++++ b/src/userdel.c
+@@ -965,7 +965,7 @@ int main (int argc, char **argv)
+ 	{
+ 		const struct passwd *pwd;
+ 
+-		if (run_parts ("/etc/shadow-maint/userdel-pre.d", user_name,
++		if (run_parts ("/opt/etc/shadow-maint/userdel-pre.d", user_name,
+ 				"userdel")) {
+ 			exit(1);
+ 		}
+@@ -1136,7 +1136,7 @@ int main (int argc, char **argv)
+ 		user_cancel (user_name);
+ 	close_files (&flags);
+ 
+-	if (run_parts ("/etc/shadow-maint/userdel-post.d", user_name, "userdel")) {
++	if (run_parts ("/opt/etc/shadow-maint/userdel-post.d", user_name, "userdel")) {
+ 		exit(1);
+ 	}
+ 
+--- a/src/usermod.c
++++ b/src/usermod.c
+@@ -1189,6 +1189,7 @@ process_flags(int argc, char **argv, str
+ 				}
+ 				if (!streq(optarg, "")
+ 				     && '*'  != optarg[0]
++				     && !streq(optarg, "/opt/sbin/nologin")
+ 				     && !streq(optarg, "/sbin/nologin")
+ 				     && !streq(optarg, "/usr/sbin/nologin")
+ 				     && (   stat(optarg, &st) != 0
