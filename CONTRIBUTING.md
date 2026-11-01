@@ -11,20 +11,57 @@ guidelines:
   be updated regularly with supported versions.
 - Have no dependencies outside the OpenWrt core packages or this repository
   feed.
-- The compilation has been successfully tested with the appropriate includes and dependencies. 
+- The compilation has been successfully tested with the appropriate includes and dependencies.
   Additionally, if language support is relevant to your package, please enable the "Compile with full language support" option found under "Global Build Settings" in "menuconfig" and conduct further tests.
 - Most important -- the packaged software is tested to work as expected!
+
+### Pointers to the guidelines the LLM reviewers use
+
+If you have questions about what is expected of a pull request, and there is
+no specific documentation for your case, or the comments from a reviewer seem
+at odds with the documentation you have found, it can be useful to refer to the
+prompts given to the automated LLM reviewer.
+
+- [Project-wide LLM review guidelines](https://github.com/openwrt/actions-shared-workflows/tree/main/llm-review-prompts)
+- [Packages repository-specific LLM review addendum](https://github.com/openwrt/packages/blob/master/.github/llm-review-rules.md)
+
+## AI policy
+
+> [!WARNING]
+> You **must** disclose any LLM usage in your pull request, description or
+> commit messages.
+
+We support the use of LLMs for coding, but we hold a high bar for all
+contributions, and we expect a human in the loop who genuinely understands the
+work an LLM produces on their behalf.
+
+> [!IMPORTANT]
+> Don't rely on LLMs to write the whole thing for you when communicating with
+> the maintainers, and don't post wall-of-text comments.
+
+We expect comments on our projects to be written by humans. The readers are
+humans, and we'd like to hear from you, not from a model. We may hide or remove
+any comments that we believe are LLM-generated.
+
+If you're using an LLM to edit or – as a non-native English speaker – to
+translate your comments, keep them short, review before posting, and make sure
+they say what you mean.
+
+> [!CAUTION]
+> Do not use autonomous agents for contributing to our projects.
+
+We will close any pull requests that we believe were created autonomously.
 
 ## Package Sources (archives and repositories)
 
 - <strong>PKG_SOURCE</strong> should reference the smallest available archive. In order of
-  preference: 
-  1. xz (most compressed), 
-  1. bzip2, gz and zip. 
+  preference:
+  1. xz (most compressed),
+  1. bzip2, gz and zip.
   1. As a last resort downloads from source repositories can be used.
 - <strong>PKG_SOURCE_URL</strong> should link to an official release archive. Use of `https://`
-  is preferred. 
-  
+  is preferred.
+
   If a source archive is not available, a locally generated
   archive fetched using git, svn, cvs or in rare circumstances, hg or bzr.
 - Convenience macros for popular mirrors are defined. Using these macros will
@@ -70,6 +107,78 @@ guidelines:
   PKG_RELEASE.
 - Avoid reuse of <strong>PKG_NAME</strong> in call, define and eval lines to improve
   readability.
+
+### Patches
+
+Patches live in `<package>/patches/`, are managed with quilt, and are expected
+in a specific shape. A patch that applies cleanly can still be sent back, so it
+is worth getting all three parts right before opening the pull request.
+
+#### Header
+
+A patch that a pull request adds or changes needs a `git am` compatible
+header, so that it can be applied to an upstream tree without editing. All four
+lines are required, and their absence is a hard failure in the formality check.
+Much of the tree predates that check and lacks them, so a neighbouring patch is
+not a safe model to copy:
+
+```
+From <hash> Mon Sep 17 00:00:00 2001
+From: Joe D. Hacker <jdh@jdhs-email-provider.org>
+Date: Tue, 9 Jun 2026 04:33:35 +0000
+Subject: [PATCH] setup.py: fix cross-compilation on macOS hosts
+```
+
+The `Mon Sep 17 00:00:00 2001` date is a fixed sentinel `git format-patch`
+emits verbatim — do not replace it with a real date. `Date:` is the one most
+often left out.
+
+#### Body
+
+Below the header, before the diff, explain what the patch changes and why, and
+end with a `Signed-off-by` line matching the author.
+
+Say where the change stands with respect to upstream. If it has been sent
+upstream, or is a backport, link the issue, pull request or commit; an
+`Upstream-Status:` line is also fine. If it will never go upstream — a
+cross-compile fix, a toolchain or path adjustment, a musl workaround — say so
+and why. The patch file is the only place a later maintainer will look when
+deciding whether a version bump has made it redundant.
+
+This is not a demand for prose on every patch. A one- or two-line change whose
+intent is obvious from the diff needs only a subject, and a patch with no
+upstream to go to needs no reference.
+
+#### Refreshing
+
+Always generate and update the diff with the buildroot's `refresh` target,
+never by hand and never with `git diff` or `git format-patch`:
+
+```
+make package/foopkg/{clean,prepare} QUILT=1
+make package/foopkg/refresh
+```
+
+`refresh` only works on a build directory that was unpacked under quilt; on one
+left over from an ordinary build it stops with "The source directory was not
+unpacked using quilt". The first command is what puts it in that state.
+
+It runs quilt as
+`QUILT_DIFF_OPTS="-p" quilt refresh -p ab --no-index --no-timestamps`, and each
+of those options matters:
+
+- `-p ab` gives the usual `a/` and `b/` path prefixes.
+- `--no-index` drops the `Index:` line, which carries no information here.
+- `--no-timestamps` drops the timestamps from the `---` and `+++` lines. They
+  are the working copy's mtimes, so leaving them in makes an otherwise
+  unchanged patch differ between contributors and produces a noisy diff on
+  every refresh.
+- `QUILT_DIFF_OPTS="-p"` passes `-p` to `diff`, so each `@@` hunk header names
+  the enclosing function or section. This is what makes a patch readable in
+  review, and it is the difference most often missed.
+
+The target preserves whatever header and description already sit above the
+diff, so refreshing an existing patch will not cost you its text.
 
 ### Commits in your pull-requests should
 
@@ -195,22 +304,56 @@ To simplify review and require less human resources, a CI tests all packages.
 Passing CI tests are not a hard requirement but a good indicator what the
 Buildbots will think about the proposed patch.
 
-The CI builds modified packages for multiple architectures using the latest
-snapshot SDK. For supported architectures (`aarch64_generic`,
-`arm_cortex-a15_neon-vfpv4`, `i386_pentium4` and `x86_64`) an additional
-runtime test is executed. A running OpenWrt is simulated which tries to install
-created packages and runs a script called `test.sh` located next to the package
-Makefile. The script is executed with the two arguments `PKG_NAME` and
-`PKG_VERSION`. The `PKG_NAME` can be used to distinguish package variants, e.g.
-`foobar` vs. `foobar-full`. The `PKG_VERSION` can be used for a trivial test
-checking if `foobar --version` prints the correct version.
+The CI builds modified packages for multiple
+architectures using the latest snapshot SDK. For supported architectures
+(`aarch64_generic`, `arm_cortex-a15_neon-vfpv4`, `i386_pentium-mmx`,
+`mips_24kc` and `x86_64`) an additional runtime test is executed inside a
+Docker container with QEMU user-mode emulation, simulating a running OpenWrt
+system.
+
+### Generic tests
+
+The CI automatically runs a set of **generic tests** on every installed
+package:
+
+- **Executable check** — verifies that files installed in standard executable
+  paths (`/usr/bin/`, `/usr/sbin/`, etc.) are actually executable.
+- **Version check** — attempts to detect the package version by running each
+  executable with common flags (`--version`, `-V`, `--help`, etc.) and checking
+  the output for `PKG_VERSION`.
+- **Hardcoded path check** — scans ELF binaries for leftover build directory
+  paths (`/build_dir/`).
+- **Strip check** — warns if ELF binaries are not stripped.
+- **Linked library check** — verifies that all shared library dependencies are
+  present on the system.
+- **SONAME check** — for libraries in standard library paths, verifies that the
+  SONAME is set correctly and the corresponding symlink exists.
+
+### Test scripts
+
+In addition to the generic tests, package maintainers can provide up to three
+optional shell scripts placed next to the package Makefile:
+
+#### `test.sh` — Functional test
+
+A package-specific functional test script that runs **in addition** to the
+generic tests. This is useful for verifying functionality that the generic
+checks cannot cover (e.g. importing a Python module, encrypting/decrypting
+data, or testing a specific command-line workflow). The following environment
+variables are available:
+
+| Variable      | Description                                            |
+| ------------- | ------------------------------------------------------ |
+| `PKG_NAME`    | Package name including variant (e.g. `foobar-full`)    |
+| `PKG_VERSION` | Upstream version without the OpenWrt release suffix    |
+| `CI_HELPERS`  | Path to `ci_helpers.sh` providing colored output utils |
 
 The following snippet shows a script that tests different binaries depending on
-what IPK package was installed. The `gpsd` Makefile produces both a `gpsd` and
-a `gpsd-clients` IPK packages.
+what package was installed. The `gpsd` Makefile produces both a `gpsd` and
+a `gpsd-clients` package.
 
 ```shell
- #!/bin/sh
+#!/bin/sh
 
 case "$1" in
     "gpsd")
@@ -220,4 +363,48 @@ case "$1" in
         cgps -V 2>&1 | grep "$2"
         ;;
 esac
+```
+
+#### `test-version.sh` — Version check override
+
+When the generic version check cannot detect the version automatically (e.g.
+the binary does not support `--version` or reports it in a non-standard way),
+a `test-version.sh` script can override the version check logic. When this
+script is present, the generic version detection is skipped entirely and the
+script is responsible for verifying the version.
+
+The script receives `PKG_NAME` and `PKG_VERSION` as environment variables and
+should use a `case` statement to handle individual sub-packages. Packages that
+have no executable or cannot report their version should `exit 0`. Unknown
+packages should `exit 1`.
+
+```shell
+#!/bin/sh
+
+# shellcheck shell=busybox
+
+case "$PKG_NAME" in
+tor)
+    tor --version | grep -F "$PKG_VERSION"
+    ;;
+tor-geoip)
+    # Data-only package, no version to check
+    exit 0
+    ;;
+*)
+    echo "Untested package: $PKG_NAME" >&2
+    exit 1
+    ;;
+esac
+```
+
+#### `pre-test.sh` — Pre-test setup
+
+A script that runs **before** the package is installed. This can be used to
+install additional dependencies required for testing that are not part of the
+package itself.
+
+```shell
+#!/bin/sh
+apk add openssl-util
 ```
