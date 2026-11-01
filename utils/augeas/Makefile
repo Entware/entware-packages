@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=augeas
 PKG_VERSION:=1.14.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/hercules-team/augeas/releases/download/release-$(PKG_VERSION)
@@ -18,7 +18,7 @@ PKG_HASH:=368bfdd782e4b9c7163baadd621359c82b162734864b667051ff6bcb57b9edff
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
-PKG_MAINTAINER:=Jan Pavlinec <jan.pavlinec1@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:augeas:augeas
@@ -30,7 +30,7 @@ define Package/augeas
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=A configuration editing tool
-  URL:=http://augeas.net
+  URL:=https://augeas.net
   DEPENDS:=+libxml2 +libreadline +libncurses
 endef
 
@@ -46,7 +46,7 @@ define Package/augeas-lenses
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=Augeas lenses
-  URL:=http://augeas.net
+  URL:=https://augeas.net
   DEPENDS:=+augeas
 endef
 
@@ -61,7 +61,7 @@ define Package/augeas-lenses-tests
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=Augeas lenses tests
-  URL:=http://augeas.net
+  URL:=https://augeas.net
   DEPENDS:=+augeas
 endef
 
@@ -87,7 +87,7 @@ endef
 
 define Package/augeas-lenses/install
 	$(INSTALL_DIR) $(1)/usr/share/augeas/lenses/dist
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/augeas/lenses/dist/* $(1)/usr/share/augeas/lenses/dist/
+	$(CP) $(PKG_INSTALL_DIR)/usr/share/augeas/lenses/dist/*.aug $(1)/usr/share/augeas/lenses/dist/
 endef
 
 define Package/augeas-lenses-tests/install
