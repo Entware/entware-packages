@@ -1,15 +1,14 @@
 #
 # Copyright (C) 2011-2013 Entware
 # Copyright (C) 2018 Jakub Tymejczyk <jakub.tymejczyk.pl>
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
 #
+# SPDX-License-Identifier: GPL-2.0-only
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mosh
 PKG_VERSION:=1.4.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://mosh.org/
@@ -31,7 +30,11 @@ define Package/mosh/Default
   CATEGORY:=Network
   SUBMENU:=SSH
   TITLE:=Mosh mobile shell
-  DEPENDS:=+libncursesw +libopenssl +protobuf
+  DEPENDS:= \
+    +libatomic \
+    +libncursesw \
+    +libopenssl \
+    +protobuf
   URL:=https://mosh.org/
 endef
 
@@ -67,7 +70,6 @@ $(call Package/mosh/Default)
     +perlbase-xsloader
 endef
 
-
 define Package/mosh/Default/description
  Mosh is a remote terminal application that allows roaming, supports
  intermittent connectivity, and provides intelligent local echo and line
@@ -102,22 +104,22 @@ CONFIGURE_VARS += \
 	TINFO_CFLAGS="-I$(STAGING_DIR)/opt/include" \
 	TINFO_LDFLAGS="-L$(STAGING_DIR)/opt/lib -lncursesw"
 
-TARGET_CXXFLAGS += -std=c++11
-TARGET_LDFLAGS += -lncursesw
+TARGET_CXXFLAGS += -std=c++17
+TARGET_LDFLAGS += -latomic -lncurses
 
 define Package/mosh-client/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mosh-client $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mosh-client $(1)/opt/bin/
 endef
 
 define Package/mosh-server/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mosh-server $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mosh-server $(1)/opt/bin/
 endef
 
 define Package/mosh-full/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mosh $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mosh $(1)/opt/bin/
 	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/mosh
 endef
 
