@@ -4,15 +4,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pika
-PKG_VERSION:=1.3.2
+PKG_VERSION:=1.4.4
 PKG_RELEASE:=1
 
 PYPI_NAME:=pika
-PKG_HASH:=b2a327ddddf8570b4965b3576ac77091b850262d34ce8c1d8cb4e4146aa4145f
+PKG_HASH:=8cfc8b33a5cb16e733bd60cffca9732c0d1d761ecd80a89f34ed7df2cd38d6d6
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_BUILD_DEPENDS:=python-setuptools/host
 
