@@ -67,7 +67,8 @@ PYTHON3_VARS = \
 	_python_exec_prefix="/opt" \
 	$(CARGO_PKG_CONFIG_VARS) \
 	PYO3_CROSS_LIB_DIR="$(PYTHON3_LIB_DIR)" \
-	SETUPTOOLS_RUST_CARGO_PROFILE="$(CARGO_PKG_PROFILE)"
+	SETUPTOOLS_RUST_CARGO_PROFILE="$(CARGO_PKG_PROFILE)" \
+	CS_GNU_LIBC_VERSION="$(call qstrip,$(CONFIG_LIBC)) $(call qstrip,$(CONFIG_LIBC_VERSION))"
 
 # $(1) => directory of python script
 # $(2) => python script and its arguments
@@ -295,6 +296,7 @@ define Py3Build/Install/Default
 	$(call Python3/Run, \
 		$(PKG_BUILD_DIR), \
 		-m installer \
+			--overwrite-existing \
 			--destdir "$(PKG_INSTALL_DIR)" \
 			--no-compile-bytecode \
 			--prefix /opt \
