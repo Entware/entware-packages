@@ -12,9 +12,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://code.videolan.org/videolan/x264.git
-PKG_SOURCE_DATE:=2024-05-13
-PKG_SOURCE_VERSION:=4613ac3c15fd75cebc4b9f65b7fb95e70a3acce1
-PKG_MIRROR_HASH:=ac55224b0b4eb459d3b594b6014aa97a48c8a3d603fc68959debef833fbeaf58
+PKG_SOURCE_DATE:=2025-09-10
+PKG_SOURCE_VERSION:=0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee
+PKG_MIRROR_HASH:=03c13f100cf6bd3c3d309f410be159794103ae2ee73f82f33e4b871d718b1fcd
 
 PKG_MAINTAINER:=Adrian Panella <ianchi74@outlook.com>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -30,8 +30,6 @@ MAKE_FLAGS:=$(filter-out LD=%,$(MAKE_FLAGS)) LD="$(TARGET_CC) -o"
 
 # Instead of blacklisting a boatload of platforms just enable
 # optimization where it makes sense (matters) ie ARMv7+ and x86_64
-
-# Entware specific: uses yasm (Minimum version is nasm-2.13)
 
 ifneq ($(findstring cortex-a,$(CONFIG_CPU_TYPE)),)
   CONFIGURE_ARGS += --enable-lto
