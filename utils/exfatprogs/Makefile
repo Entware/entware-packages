@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=exfatprogs
-PKG_VERSION:=1.2.9
+PKG_VERSION:=1.4.3
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://github.com/exfatprogs/exfatprogs/releases/download/$(PKG_VERSION)
-PKG_HASH:=d9a42197c6ff9e6a8e923789413008e317415cf7a4ab85c486c5ffcaf49ca175
+PKG_HASH:=57226a8ec1bfbce06d68a42cde8cd980414a9457882e691fbce4a4f86c8d5f08
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0-only
@@ -23,6 +23,7 @@ define Package/exfatprogs/Default
   CATEGORY:=Utilities
   SUBMENU:=Filesystem
   URL:=https://github.com/exfatprogs/exfatprogs
+  DEPENDS:=+libblkid +USE_MUSL:musl-fts
 endef
 
 define Package/exfat-mkfs
@@ -38,6 +39,8 @@ endef
 CONFIGURE_ARGS += \
 	--enable-shared \
 	--disable-static
+
+TARGET_LDFLAGS += $(if $(CONFIG_USE_MUSL),-lfts)
 
 define Package/exfat-mkfs/install
 	$(INSTALL_DIR) $(1)/opt/sbin
