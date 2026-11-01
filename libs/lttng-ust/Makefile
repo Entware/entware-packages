@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=lttng-ust
-PKG_VERSION:=2.13.9
+PKG_VERSION:=2.15.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://lttng.org/files/$(PKG_NAME)/
-PKG_HASH:=2ad6d69a54a1d924c18a4aa7a233db104e3cc332bcdd240e196bf7adbed3f712
+PKG_HASH:=37c9b58ea7aa7bc47d6630b52ba1a48ebce095b9a196eab4ddd273d78301792d
 
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=LGPL-2.1 GPL-2.0
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:lttng:ust
