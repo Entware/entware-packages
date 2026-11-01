@@ -7,13 +7,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pillow
-PKG_VERSION:=12.0.0
+PKG_VERSION:=12.3.0
 PKG_RELEASE:=1
 
-PYPI_NAME:=pillow
-PKG_HASH:=87d4f8125c9988bfbed67af47dd7a953e2fc7b0cc1e7800ec6d2080d490bb353
+PYPI_NAME:=Pillow
+PYPI_SOURCE_NAME:=pillow
+PKG_HASH:=3b8182a766685eaa002637e28b4ec8d6b18819a0c71f579bf0dbaa5830297cce
 
-PKG_BUILD_DEPENDS:=python-pybind11/host python-setuptools/host
+PKG_BUILD_DEPENDS:=python-setuptools/host
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=HPND
@@ -39,16 +40,15 @@ define Package/python3-pillow/description
 endef
 
 PYTHON3_PKG_BUILD_CONFIG_SETTINGS += \
-	--build-option=build_ext \
-	--build-option=--enable-zlib \
-	--build-option=--enable-jpeg \
-	--build-option=--enable-webp \
-	--build-option=--enable-tiff \
-	--build-option=--enable-freetype \
-	--build-option=--disable-lcms \
-	--build-option=--disable-jpeg2000 \
-	--build-option=--disable-imagequant \
-	--build-option=--disable-platform-guessing
+	zlib=enable \
+	jpeg=enable \
+	webp=enable \
+	tiff=enable \
+	freetype=enable \
+	lcms=disable \
+	jpeg2000=disable \
+	imagequant=disable \
+	platform-guessing=disable
 
 $(eval $(call Py3Package,python3-pillow))
 $(eval $(call BuildPackage,python3-pillow))
