@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=acme-common
-PKG_VERSION:=1.5.1
+PKG_VERSION:=1.5.3
 
 PKG_MAINTAINER:=Toke Høiland-Jørgensen <toke@toke.dk>
 PKG_LICENSE:=GPL-3.0-only
@@ -28,30 +28,29 @@ ACME client wrapper common files.
 endef
 
 define Package/acme-common/conffiles
-/etc/config/acme
-/etc/acme
-/etc/ssl/acme
+/opt/etc/acme
+/opt/etc/ssl/acme
 endef
 
 define Package/acme-common/install
-	$(INSTALL_DIR) $(1)/etc/acme
-	$(INSTALL_DIR) $(1)/etc/ssl/acme
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/acme.config $(1)/etc/config/acme
-	$(INSTALL_DIR) $(1)/usr/lib/acme
-	$(INSTALL_DATA) ./files/functions.sh $(1)/usr/lib/acme
-	$(INSTALL_BIN) ./files/acme-notify.sh $(1)/usr/lib/acme/notify
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/acme.init $(1)/etc/init.d/acme
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_DATA) ./files/acme.uci-defaults $(1)/etc/uci-defaults/acme
-	$(INSTALL_DIR) $(1)/etc/hotplug.d/acme
+	$(INSTALL_DIR) $(1)/opt/etc/acme
+	$(INSTALL_DIR) $(1)/opt/etc/ssl/acme
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/acme.config $(1)/etc/config/acme
+	$(INSTALL_DIR) $(1)/opt/lib/acme
+	$(INSTALL_DATA) ./files/functions.sh $(1)/opt/lib/acme
+#	$(INSTALL_BIN) ./files/acme-notify.sh $(1)/usr/lib/acme/notify
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/acme.init $(1)/etc/init.d/acme
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
+#	$(INSTALL_DATA) ./files/acme.uci-defaults $(1)/etc/uci-defaults/acme
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/acme
 endef
 
-define Package/acme-common/prerm
-#!/bin/sh
-sed -i '\|/etc/init.d/acme|d' /etc/crontabs/root
-endef
+#define Package/acme-common/prerm
+##!/bin/sh
+#sed -i '\|/etc/init.d/acme|d' /etc/crontabs/root
+#endef
 
 define Build/Configure
 endef
