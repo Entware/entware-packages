@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fwknop
 PKG_VERSION:=2.6.11
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://www.cipherdyne.org/fwknop/download
@@ -49,7 +49,7 @@ define Package/fwknopd
   TITLE+= Daemon
   DEPENDS:=+iptables +libfko +!FWKNOPD_NFQ_CAPTURE:libpcap \
 	+FWKNOPD_NFQ_CAPTURE:libnetfilter-queue +FWKNOPD_NFQ_CAPTURE:libnfnetlink \
-	+FWKNOP_GPG:gnupg +FWKNOP_GPG:libgpgme
+	+FWKNOPD_GPG:gnupg2 +FWKNOPD_GPG:gnupg2-utils +FWKNOPD_GPG:libgpgme
 endef
 
 define Package/fwknopd/description
@@ -72,7 +72,7 @@ define Package/fwknop
   CATEGORY:=Network
   SUBMENU:=Firewall
   TITLE+= Client
-  DEPENDS:=+libfko +FWKNOPD_GPG:gnupg +FWKNOPD_GPG:libgpgme
+  DEPENDS:=+libfko +FWKNOPD_GPG:gnupg2 +FWKNOPD_GPG:gnupg2-utils +FWKNOPD_GPG:libgpgme
 endef
 
 define Package/fwknop/description
@@ -86,7 +86,7 @@ define Package/libfko
   CATEGORY:=Libraries
   SUBMENU:=Firewall
   TITLE+= Library
-  DEPENDS:=+FWKNOPD_GPG:gnupg +FWKNOPD_GPG:libgpgme
+  DEPENDS:=+FWKNOPD_GPG:gnupg2 +FWKNOPD_GPG:gnupg2-utils +FWKNOPD_GPG:libgpgme
 endef
 
 define Package/libfko/description
@@ -98,6 +98,7 @@ endef
 CONFIGURE_ARGS += \
 	--$(if $(CONFIG_FWKNOPD_NFQ_CAPTURE),en,dis)able-nfq-capture \
 	--with$(if $(CONFIG_FWKNOPD_GPG),,out)-gpgme \
+	$(if $(CONFIG_FWKNOPD_GPG),--with-gpg=/opt/bin/gpg) \
 	--with-iptables=/opt/sbin/iptables
 
 define Build/InstallDev
