@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=arp-scan
 PKG_VERSION:=1.10.0
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/royhills/arp-scan/tar.gz/$(PKG_VERSION)?
@@ -17,6 +17,7 @@ PKG_HASH:=204b13487158b8e46bf6dd207757a52621148fdd1d2467ebd104de17493bab25
 
 PKG_MAINTAINER:=Sergey Urushkin <urusha.v1.0@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
+PKG_LICENSE_FILES:=COPYING
 
 PKG_FIXUP:=autoreconf
 
@@ -51,6 +52,7 @@ define Package/arp-scan/install
 endef
 
 define Package/arp-scan/postinst
+#!/bin/sh
 cat <<EOF
 
 Please install the arp-scan-database package in order to let arp-scan
@@ -79,8 +81,9 @@ define Package/arp-scan-database/install
 endef
 
 define Package/arp-scan-database/postrm
-	$(RM) -rf $(1)/opt/share/arp-scan
-	$(RM) -rf $(1)/opt/etc/arp-scan
+#!/bin/sh
+rm -rf /opt/share/arp-scan
+rm -rf /opt/etc/arp-scan
 endef
 
 $(eval $(call BuildPackage,arp-scan-database))
