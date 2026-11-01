@@ -1,22 +1,24 @@
-# SPDX-License-Identifier: GPL-2.0-only
+# Copyright (C) 2006-2026 OpenWrt.org
 #
-# Copyright (C) 2006-2025 OpenWrt.org
+# SPDX-License-Identifier: GPL-2.0-only
+
+# Entware specific: no prefix r before $(PKG_RELEASE)
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sqlite
-PKG_VERSION:=3.51.2
-PKG_SRC_VERSION:=3510200
+PKG_VERSION:=3.54.1
+PKG_SRC_VERSION:=3540100
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-autoconf-$(PKG_SRC_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.sqlite.org/2026/
-PKG_HASH:=fbd89f866b1403bb66a143065440089dd76100f2238314d92274a082d4f2b7bb
+PKG_HASH:=926ef8d3eab93fbf6e06011901273eec076b25594a4e1cdadd50c987f4f6d64e
 
 PKG_CPE_ID:=cpe:/a:sqlite:sqlite
 PKG_LICENSE:=blessing
 PKG_LICENSE_FILES:=LICENSE.md
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-autoconf-$(PKG_SRC_VERSION)
 PKG_BUILD_PARALLEL:=1
