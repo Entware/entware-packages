@@ -1,6 +1,6 @@
---- a/gcc/gcc.c
-+++ b/gcc/gcc.c
-@@ -978,7 +978,9 @@ proper position among the other output f
+--- a/gcc/gcc.cc
++++ b/gcc/gcc.cc
+@@ -992,7 +992,9 @@ proper position among the other output f
  #endif
  
  #ifndef LINK_SSP_SPEC
