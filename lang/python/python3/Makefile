@@ -17,9 +17,9 @@ PKG_VERSION:=$(PYTHON3_VERSION).$(PYTHON3_VERSION_MICRO)
 
 PKG_SOURCE:=Python-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://www.python.org/ftp/python/$(PKG_VERSION)
-PKG_HASH:=ed5ef34cda36cfa2f3a340f07cac7e7814f91c7f3c411f6d3562323a866c5c66
+PKG_HASH:=3b48dac8fb59f62eaa67ac83c1eb12bda1b7a08406dd286e252c11a66be27f81
 
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>, Alexandru Ardelean <ardeleanalex@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=Python-2.0.1 0BSD
 PKG_LICENSE_FILES:=LICENSE Doc/copyright.rst Doc/license.rst Modules/_ctypes/darwin/LICENSE Modules/_ctypes/libffi_osx/LICENSE Modules/expat/COPYING
 PKG_CPE_ID:=cpe:/a:python:python
@@ -36,13 +36,13 @@ PKG_BUILD_PARALLEL:=1
 HOST_BUILD_PARALLEL:=1
 # LTO is handled here individually, see --with-lto below
 # "no-lto" prevents CONFIG_USE_LTO to add additional and interfering flags
-PKG_BUILD_FLAGS:=no-lto
+PKG_BUILD_FLAGS:=no-mips16 no-lto
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/Python-$(PKG_VERSION)
 HOST_BUILD_DIR:=$(BUILD_DIR_HOST)/Python-$(PKG_VERSION)
 
 PKG_BUILD_DEPENDS:=bluez python3/host python-build/host python-installer/host python-wheel/host
-HOST_BUILD_DEPENDS:=bzip2/host libffi/host
+HOST_BUILD_DEPENDS:=bzip2/host libffi/host ncurses/host readline/host
 
 include $(INCLUDE_DIR)/host-build.mk
 include $(INCLUDE_DIR)/package.mk
@@ -71,7 +71,7 @@ endef
 define Package/libpython3
 $(call Package/python3/Default)
   TITLE+= core library
-  DEPENDS:=+libpthread +libatomic
+  DEPENDS:=$(ATOMIC64_DEPENDS)
   ABI_VERSION:=$(PYTHON3_VERSION)
 endef
 
@@ -97,7 +97,7 @@ endef
 define Package/python3-light
 $(call Package/python3/Default)
   TITLE+= light installation
-  DEPENDS:=+python3-base +libbz2 +zlib # +USE_GLIBC:libcrypt-compat
+  DEPENDS:=+python3-base +libbz2 +zlib +libzstd
 endef
 
 define Package/python3-light/config
@@ -302,16 +302,33 @@ Package/python3/install:=:
 ifeq ($(HOST_OS),Linux)
 HOST_LDFLAGS += \
 	-Wl,--no-as-needed -lrt
+
+HOST_MAKE_VARS += \
+	TMPDIR=/tmp
 endif
 
 # Would be nice to be able to do this, but hosts are very fiddly
 # HOST_MAKE_VARS += \
 # 	PYTHONSTRICTEXTENSIONBUILD=1
 
-# Bypass configure test
+# Bypass configure test. Force the curses header checks that can only
+# ever resolve against the build host's own distro packages to "no" so
+# those stay out; leave ac_cv_header_ncursesw_{ncurses,panel}_h alone so
+# configure picks up the SDK's own wide-char ncurses consistently with
+# what its pkg-config-based ncursesw/panelw detection already reports.
+# ac_cv_header_ncursesw_curses_h stays forced: host ncurses is built
+# with --without-curses-h, so staging_dir/hostpkg/include/ncursesw/
+# deliberately has no curses.h of its own for this to genuinely resolve
+# against - a real, non-forced "yes" here could only come from the
+# build host's own /usr/include/ncursesw/curses.h.
 HOST_CONFIGURE_VARS += \
-	py_cv_module__tkinter=n/a
-#	ac_cv_working_openssl_hashlib=yes
+	LIBREADLINE_LIBS='-L$(STAGING_DIR_HOSTPKG)/lib -lreadline -lncurses' \
+	py_cv_module__tkinter=n/a \
+	ac_cv_working_openssl_hashlib=yes \
+	ac_cv_header_curses_h=no \
+	ac_cv_header_ncurses_h=no \
+	ac_cv_header_panel_h=no \
+	ac_cv_header_ncursesw_curses_h=no
 
 ifeq ($(HOST_OS),Darwin)
 HOST_CONFIGURE_VARS += \
@@ -321,7 +338,6 @@ HOST_MAKE_VARS += \
 endif
 
 HOST_CONFIGURE_ARGS += \
-	--with-readline=no \
 	--enable-optimizations \
 	--disable-test-modules \
 	--with-ensurepip=upgrade \
@@ -331,9 +347,8 @@ HOST_CONFIGURE_ARGS += \
 	--with-system-expat \
 	--without-cxx-main
 
-# ncurses and uuid have seemingly unsolvable issues with pkgconfig
+# uuid has seemingly unsolvable issues with pkgconfig
 HOST_CFLAGS += \
-	-I$(STAGING_DIR_HOSTPKG)/include/ncursesw \
 	-I$(STAGING_DIR_HOST)/include/uuid
 
 define Host/Configure

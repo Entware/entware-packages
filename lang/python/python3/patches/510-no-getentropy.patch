@@ -1,11 +1,11 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -5255,7 +5255,7 @@ fi
+@@ -5361,7 +5361,7 @@ fi
  # header definition prevents usage - autoconf doesn't use the headers), or
  # raise an error if used at runtime. Force these symbols off.
  if test "$ac_sys_system" != "iOS" ; then
 -  AC_CHECK_FUNCS([getentropy getgroups system])
 +  AC_CHECK_FUNCS([getgroups system])
  fi
- 
- AC_CHECK_DECL([dirfd],
+ # In addition, macOS introduced dup3 and pipe2 in macOS 27, late in the
+ # lifetime of this version of Python. Rather than adding weaklinking
