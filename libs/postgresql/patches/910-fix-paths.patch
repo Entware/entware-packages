@@ -1,6 +1,6 @@
 --- a/contrib/pg_trgm/trgm_regexp.c
 +++ b/contrib/pg_trgm/trgm_regexp.c
-@@ -2193,7 +2193,7 @@ printSourceNFA(regex_t *regex, TrgmColor
+@@ -2198,7 +2198,7 @@ printSourceNFA(regex_t *regex, TrgmColor
  
  	{
  		/* dot -Tpng -o /tmp/source.png < /tmp/source.gv */
@@ -9,7 +9,7 @@
  
  		fprintf(fp, "%s", buf.data);
  		fclose(fp);
-@@ -2255,7 +2255,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
+@@ -2260,7 +2260,7 @@ printTrgmNFA(TrgmNFA *trgmNFA)
  
  	{
  		/* dot -Tpng -o /tmp/transformed.png < /tmp/transformed.gv */
@@ -18,7 +18,7 @@
  
  		fprintf(fp, "%s", buf.data);
  		fclose(fp);
-@@ -2346,7 +2346,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
+@@ -2351,7 +2351,7 @@ printTrgmPackedGraph(TrgmPackedGraph *pa
  
  	{
  		/* dot -Tpng -o /tmp/packed.png < /tmp/packed.gv */
@@ -40,7 +40,7 @@
  	/* No luck, so search for the best-matching timezone file */
 --- a/src/bin/psql/command.c
 +++ b/src/bin/psql/command.c
-@@ -4112,7 +4112,7 @@ do_edit(const char *filename_arg, PQExpB
+@@ -4738,7 +4738,7 @@ do_edit(const char *filename_arg, PQExpB
  		const char *tmpdir = getenv("TMPDIR");
  
  		if (!tmpdir)
@@ -51,7 +51,7 @@
  		int			ret;
 --- a/src/include/pg_config_manual.h
 +++ b/src/include/pg_config_manual.h
-@@ -206,7 +206,7 @@
+@@ -190,7 +190,7 @@
   * support them yet.
   */
  #ifndef WIN32
@@ -72,7 +72,7 @@
  	add_include_path(include_path);
 --- a/src/test/regress/pg_regress.c
 +++ b/src/test/regress/pg_regress.c
-@@ -500,7 +500,7 @@ static const char *
+@@ -501,7 +501,7 @@ static const char *
  make_temp_sockdir(void)
  {
  	char	   *template = psprintf("%s/pg_regress-XXXXXX",
