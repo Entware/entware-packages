@@ -30,7 +30,23 @@ In file included from mibgroup/iwlib.h:33,
         ^~~~~~
 
 --
+mibgroup/host/hr_filesys.c:752:5: error: a label can only be part of a statement and a declaration is not a statement
+     const char    **cpp;
+     ^~~~~
 
+---
+
+--- a/agent/mibgroup/host/hr_filesys.c
++++ b/agent/mibgroup/host/hr_filesys.c
+@@ -718,7 +718,7 @@ static const char *HRFS_ignores[] = {
+ int
+ Get_Next_HR_FileSys(void)
+ {
+-next:
++next: ;
+ #ifdef HAVE_GETFSSTAT
+     if (HRFS_index >= fscount)
+         return -1;
 --- a/agent/mibgroup/iwlib.h
 +++ b/agent/mibgroup/iwlib.h
 @@ -29,9 +29,9 @@
@@ -46,4 +62,3 @@ In file included from mibgroup/iwlib.h:33,
  #include <sys/time.h>		/* struct timeval */
  #include <unistd.h>
  
-
