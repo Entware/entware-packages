@@ -8,16 +8,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pip
-PKG_VERSION:=23.3.1
+PKG_VERSION:=26.2.1
 PKG_RELEASE:=1
 
 PYPI_NAME:=pip
-PKG_HASH:=1fcaa041308d01f14575f6d0d2ea4b75a3e2871fe4f9c694976f908768e14174
+PKG_HASH:=f6ad667e89a1fe78046c8f13232b247200f5258d7828f3f7883d660878e0813f
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE.txt
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_CPE_ID:=cpe:/a:pypa:pip
+
+PKG_BUILD_DEPENDS:=python-setuptools/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
@@ -43,9 +45,8 @@ endef
 
 define Py3Package/python3-pip/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/pip$(PYTHON3_VERSION) $(1)/opt/bin/
-	$(LN) pip$(PYTHON3_VERSION) $(1)/opt/bin/pip3
-	$(LN) pip$(PYTHON3_VERSION) $(1)/opt/bin/pip
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/pip3 $(1)/opt/bin/
+	$(LN) pip3 $(1)/opt/bin/pip
 
 	$(INSTALL_DIR) $(1)/opt/etc
 	$(INSTALL_DATA) ./files/pip.conf $(1)/opt/etc/
