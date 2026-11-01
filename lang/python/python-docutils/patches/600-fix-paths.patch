@@ -1,16 +1,16 @@
 --- a/docutils/frontend.py
 +++ b/docutils/frontend.py
-@@ -434,6 +434,7 @@ class OptionParser(optparse.OptionParser
+@@ -660,6 +660,7 @@ class OptionParser(optparse.OptionParser
      """
  
-     standard_config_files = [
+     standard_config_files: ClassVar[list[str]] = [
 +        '/opt/etc/docutils.conf',       # Entware
          '/etc/docutils.conf',           # system-wide
          './docutils.conf',              # project-specific
          '~/.docutils']                  # user-specific
 --- a/docutils/writers/_html_base.py
 +++ b/docutils/writers/_html_base.py
-@@ -248,7 +248,7 @@ class HTMLTranslator(nodes.NodeVisitor):
+@@ -256,7 +256,7 @@ class HTMLTranslator(writers.DoctreeTran
      # Template for the MathJax script in the header:
      mathjax_script = '<script type="text/javascript" src="%s"></script>\n'
  
@@ -19,7 +19,7 @@
      """
      URL of the MathJax javascript library.
  
-@@ -260,7 +260,7 @@ class HTMLTranslator(nodes.NodeVisitor):
+@@ -268,7 +268,7 @@ class HTMLTranslator(writers.DoctreeTran
      __ https://docutils.sourceforge.io/docs/user/config.html#math-output
  
      The fallback tries a local MathJax installation at
