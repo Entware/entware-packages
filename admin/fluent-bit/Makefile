@@ -1,16 +1,18 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fluent-bit
-PKG_VERSION:=4.2.0
-PKG_RELEASE:=1
+PKG_VERSION:=5.0.8
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/fluent/fluent-bit.git
 PKG_SOURCE_VERSION=v$(PKG_VERSION)
-PKG_MIRROR_HASH:=cad2d94cf7a720a3910c781f80187e2c399aa8acbfa1046aa7445a4d1495fafd
+PKG_MIRROR_HASH:=e512206f301abee2f326a62faeaae258d1a2b3a5d698d6c4dc45909d0a9e0dca
 
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
+PKG_CPE_ID:=cpe:/a:treasuredata:fluent_bit
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
@@ -20,7 +22,7 @@ define Package/fluent-bit
   CATEGORY:=Administration
   TITLE:=Fast and Lightweight Logs and Metrics processor
   URL:=https://fluentbit.io/
-  DEPENDS:= +libyaml +libopenssl +libcurl +libstdcpp +libatomic +musl-fts +flex +bison \
+  DEPENDS:= +libyaml +libopenssl +libcurl +libstdcpp +libatomic +USE_MUSL:musl-fts +flex +bison \
 	    +libsasl2
 endef
 
@@ -33,8 +35,10 @@ define Package/fluent-bit/conffiles
 /etc/fluent-bit/parsers.conf
 endef
 
-TARGET_LDFLAGS +=-lfts -latomic
+TARGET_LDFLAGS += $(if $(CONFIG_USE_MUSL),-lfts) -latomic
 
+# Force native __thread TLS: GCC 14 makes upstream's C-TLS probe fail (undeclared
+# __tls_get_addr), and its pthread_key fallback segfaults on musl at startup.
 CMAKE_OPTIONS+= \
 	-DFLB_RELEASE=Yes \
 	-DEXCLUDE_FROM_ALL=true \
@@ -43,9 +47,11 @@ CMAKE_OPTIONS+= \
 	-DFLB_BACKTRACE=No \
 	-DFLB_WASM=No \
 	-DFLB_LUAJIT=No \
+	-DFLB_CORO_STACK_SIZE=65536 \
 	-DWITH_SASL=No \
 	-DWITH_ZLIB=No \
-	-DWITH_ZSTD=No
+	-DWITH_ZSTD=No \
+	-DFLB_HAVE_C_TLS=Yes
 
 define Package/fluent-bit/install
 	$(INSTALL_DIR) $(1)/usr/sbin
@@ -53,6 +59,9 @@ define Package/fluent-bit/install
 
 	$(INSTALL_DIR) $(1)/etc/fluent-bit
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/conf/parsers.conf $(1)/etc/fluent-bit/parsers.conf
+
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/fluent-bit.init $(1)/etc/init.d/fluent-bit
 endef
 
 $(eval $(call BuildPackage,fluent-bit))
