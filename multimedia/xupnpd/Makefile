@@ -1,7 +1,9 @@
+# Entware specific: remove deps USE_GLIBC:libcrypt-compat
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xupnpd
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/clark15b/xupnpd
@@ -10,7 +12,7 @@ PKG_SOURCE_VERSION:=2bc1e741e0efe04cb3150430ff25410093618b4f
 PKG_MIRROR_HASH:=00ba72ed3d394220cc564319d29b79c20e482d904e81aa7563b17349e918f94f
 
 PKG_MAINTAINER:=Álvaro Fernández Rojas <noltari@gmail.com>
-PKG_LICENSE:=GPLv2
+PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 
 include $(INCLUDE_DIR)/package.mk
@@ -28,9 +30,9 @@ endef
 define Package/xupnpd
   SECTION:=multimedia
   CATEGORY:=Multimedia
-  DEPENDS:= +liblua +libopenssl #+USE_GLIBC:libcrypt-compat
+  DEPENDS:= +liblua +libopenssl
   TITLE:=eXtensible UPnP agent
-  URL:=http://xupnpd.org/
+  URL:=https://github.com/clark15b/xupnpd
 endef
 
 define Package/xupnpd/conffiles
