@@ -9,10 +9,10 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ulogd
 PKG_VERSION:=2.0.9
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_SOURCE_URL:=https://netfilter.org/projects/ulogd/files/
+PKG_SOURCE_URL:=https://netfilter.org/pub/ulogd/
 PKG_HASH:=523a651fe0a9f25b0cd87d5d35fc37d9382e7eecfcf61e48d5505ff3cf80eda5
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
@@ -35,7 +35,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/ulogd/Default
   SECTION:=net
   CATEGORY:=Network
-  URL:=https://www.netfilter.org/projects/ulogd/index.html
+  URL:=https://netfilter.org/projects/ulogd/
 endef
 
 define Package/ulogd
@@ -127,31 +127,28 @@ CONFIGURE_ARGS += \
 	--enable-nflog
 
 ifneq ($(DEVELOPER)$(CONFIG_PACKAGE_ulogd-mod-dbi),)
-	CONFIGURE_ARGS += --with-dbi \
-		--with-dbi-inc=$(STAGING_DIR)/opt/include/dbi \
-		--with-dbi-lib=$(STAGING_DIR)/opt/lib
+	CONFIGURE_ARGS += --enable-dbi
 else
-	CONFIGURE_ARGS += --without-dbi
+	CONFIGURE_ARGS += --disable-dbi
 endif
 
 ifneq ($(DEVELOPER)$(CONFIG_PACKAGE_ulogd-mod-mysql),)
-	CONFIGURE_ARGS += \
-		--with-mysql-inc=$(STAGING_DIR)/opt/include/mysql \
-		--with-mysql-lib=$(STAGING_DIR)/opt/lib/mysql
+	CONFIGURE_ARGS += --enable-mysql \
+					  --with-mysql-config=$(STAGING_DIR)/opt/bin/mysql_config
 else
-	CONFIGURE_ARGS += --without-mysql
+	CONFIGURE_ARGS += --disable-mysql
 endif
 
 ifneq ($(DEVELOPER)$(CONFIG_PACKAGE_ulogd-mod-pgsql),)
-	CONFIGURE_ARGS += --with-pgsql="$(STAGING_DIR)/opt"
+	CONFIGURE_ARGS += --enable-pgsql
 else
-	CONFIGURE_ARGS += --without-pgsql
+	CONFIGURE_ARGS += --disable-pgsql
 endif
 
 ifneq ($(CONFIG_PACKAGE_ulogd-mod-sqlite),)
-	CONFIGURE_ARGS += --with-sqlite="$(STAGING_DIR)/opt"
+	CONFIGURE_ARGS += --enable-sqlite3
 else
-	CONFIGURE_ARGS += --without-sqlite
+	CONFIGURE_ARGS += --disable-sqlite3
 endif
 
 define Package/ulogd/install
