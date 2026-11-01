@@ -9,22 +9,23 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xz
-PKG_VERSION:=5.8.2
-PKG_RELEASE:=1
+PKG_VERSION:=5.8.4
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://github.com/tukaani-project/xz/releases/download/v$(PKG_VERSION) \
 		@SF/lzmautils
-PKG_HASH:=60345d7c0b9c8d7ffa469e96898c300def3669f5047fc76219b819340839f3d8
+PKG_HASH:=3340ae48f88665abc78d71dc43446fb3f7e70b48fd59844ac0e14958cef6e00b
 
-PKG_MAINTAINER:=
-PKG_LICENSE:=Public-Domain LGPL-2.1-or-later 0BSD
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
+PKG_LICENSE:=LGPL-2.1-or-later 0BSD
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:tukaani:xz
 
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
 PKG_BUILD_FLAGS:=lto
+PKG_CONFIG_DEPENDS:=CONFIG_SMALL_FLASH
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -76,7 +77,7 @@ endef
 TARGET_LDFLAGS += -Wl,--gc-sections
 
 CONFIGURE_ARGS += \
-	--enable-small \
+	$(if $(CONFIG_SMALL_FLASH),--enable-small) \
 	--enable-assume-ram=4 \
 	--disable-assembler \
 	--disable-debug \
@@ -102,6 +103,9 @@ define Build/InstallDev
 	$(CP) \
 		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/liblzma.pc \
 		$(1)/opt/lib/pkgconfig/
+	$(SED) \
+		's,^libdir=.*,libdir=$$$${exec_prefix}/lib,;s,^includedir=.*,includedir=$$$${prefix}/include,' \
+		$(1)/opt/lib/pkgconfig/liblzma.pc
 endef
 
 define Package/xz-utils/install
