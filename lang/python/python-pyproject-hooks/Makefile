@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-pyproject-hooks
-PKG_VERSION:=1.2.0
+PKG_VERSION:=1.3.3
 PKG_RELEASE:=1
 
 PYPI_NAME:=pyproject_hooks
-PKG_HASH:=1e859bd5c40fae9448642dd871adf459e5e2084186e8d2c2a79a824c970da1f8
+PKG_HASH:=defda19b854fa0d3bd4f76ea4ddcba8abd7dcfcdd585a6690ade050744fc5f43
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_HOST_ONLY:=1
 HOST_BUILD_DEPENDS:= \
