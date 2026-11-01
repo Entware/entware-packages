@@ -1,24 +1,24 @@
 --- a/common/homedir.c
 +++ b/common/homedir.c
-@@ -566,7 +566,7 @@ unix_rootdir (enum wantdir_values wantdi
-                   log_info ("error reading symlink '%s': %s\n",
-                             MYPROC_SELF_EXE, gpg_strerror (err));
-                   xfree  (buffer);
--                  buffer = xstrconcat (name, "/bin/gpgconf", NULL);
-+                  buffer = xstrconcat (name, "/opt/bin/gpgconf", NULL);
-                   log_info ("trying fallback '%s'\n", buffer);
-                 }
-               break;
-@@ -605,7 +605,7 @@ unix_rootdir (enum wantdir_values wantdi
-         {
-           /* Strip one part and expect the file below a bin dir.  */
-           *p = 0;
--          p = xstrconcat (buffer, "/bin/gpgconf.ctl", NULL);
-+          p = xstrconcat (buffer, "/opt/bin/gpgconf.ctl", NULL);
-           xfree (buffer);
-           buffer = p;
-         }
-@@ -1092,13 +1092,13 @@ _gnupg_socketdir_internal (int skip_chec
+@@ -887,7 +887,7 @@ unix_myproc_self (int with_fallback)
+               log_info ("error reading symlink '%s': %s\n",
+                         MYPROC_SELF_EXE, gpg_strerror (err));
+               xfree  (buffer);
+-              buffer = xstrconcat (name, "/bin/gpgconf", NULL);
++              buffer = xstrconcat (name, "/opt/bin/gpgconf", NULL);
+               log_info ("trying fallback '%s'\n", buffer);
+             }
+           break;
+@@ -958,7 +958,7 @@ unix_rootdir (enum wantdir_values wantdi
+ 
+       /* Strip one part and expect the file below a bin dir.  */
+       *p = 0;
+-      p = xstrconcat (buffer, "/bin/gpgconf.ctl", NULL);
++      p = xstrconcat (buffer, "/opt/bin/gpgconf.ctl", NULL);
+       xfree (buffer);
+       buffer = p;
+       parse_gpgconf_ctl (buffer);
+@@ -1322,13 +1322,13 @@ _gnupg_socketdir_internal (int skip_chec
  
    static const char * const bases[] = {
  #ifdef USE_RUN_GNUPG_USER_SOCKET
@@ -38,7 +38,7 @@
    int i;
 --- a/common/sysutils.c
 +++ b/common/sysutils.c
-@@ -1530,7 +1530,7 @@ gnupg_chuid (const char *user, int silen
+@@ -1743,7 +1743,7 @@ gnupg_chuid (const char *user, int silen
  
    /* If we need to switch set PATH to a standard value and make sure
     * GNUPGHOME is not set. */
@@ -91,7 +91,7 @@
    estream_t in;
 --- a/dirmngr/certcache.c
 +++ b/dirmngr/certcache.c
-@@ -705,11 +705,11 @@ load_certs_from_system (void)
+@@ -706,11 +706,11 @@ load_certs_from_system (void)
  #ifdef DEFAULT_TRUST_STORE_FILE
      { DEFAULT_TRUST_STORE_FILE }
  #else
@@ -110,7 +110,7 @@
    int idx;
 --- a/dirmngr/dirmngr.c
 +++ b/dirmngr/dirmngr.c
-@@ -1249,13 +1249,13 @@ main (int argc, char **argv)
+@@ -1299,13 +1299,13 @@ main (int argc, char **argv)
            log_info (_("Note: '%s' is not considered an option\n"), argv[i]);
      }
  
@@ -129,7 +129,7 @@
      {
 --- a/dirmngr/dns.c
 +++ b/dirmngr/dns.c
-@@ -5547,7 +5547,7 @@ struct dns_resolv_conf *dns_resconf_loca
+@@ -5549,7 +5549,7 @@ struct dns_resolv_conf *dns_resconf_loca
  			goto error;
  	}
  
@@ -138,7 +138,7 @@
  		if (error != ENOENT)
  			goto error;
  	}
-@@ -10606,7 +10606,7 @@ static struct dns_resolv_conf *resconf(v
+@@ -10608,7 +10608,7 @@ static struct dns_resolv_conf *resconf(v
  	}
  
  	if (!MAIN.nssconf.count) {
@@ -149,7 +149,7 @@
  			MAIN.nssconf.path[MAIN.nssconf.count++] = path;
 --- a/dirmngr/dns-stuff.c
 +++ b/dirmngr/dns-stuff.c
-@@ -554,7 +554,7 @@ libdns_init (ctrl_t ctrl)
+@@ -555,7 +555,7 @@ libdns_init (ctrl_t ctrl)
            goto leave;
          }
  
@@ -160,7 +160,7 @@
        if (err)
 --- a/g10/photoid.c
 +++ b/g10/photoid.c
-@@ -406,7 +406,7 @@ get_default_photo_command(void)
+@@ -401,7 +401,7 @@ get_default_photo_command(void)
        return "xdg-open %I";
      }
    else
@@ -391,7 +391,7 @@
      # but not root
 --- a/tools/gpg-mail-tube.c
 +++ b/tools/gpg-mail-tube.c
-@@ -714,7 +714,7 @@ get_vsd_gpgbin (void)
+@@ -776,7 +776,7 @@ get_vsd_gpgbin (void)
        if (!pend || p+1 == pend)
          continue;
        *pend = 0;
@@ -402,7 +402,7 @@
    if (gpgbin && gnupg_access (gpgbin, X_OK))
 --- a/tools/gpg-wks-server.c
 +++ b/tools/gpg-wks-server.c
-@@ -311,7 +311,7 @@ main (int argc, char **argv)
+@@ -314,7 +314,7 @@ main (int argc, char **argv)
      opt.gpg_program = xstrdup (gnupg_module_name (GNUPG_MODULE_NAME_GPG));
  
    if (!opt.directory)
