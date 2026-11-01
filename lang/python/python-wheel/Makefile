@@ -8,15 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-wheel
-PKG_VERSION:=0.45.1
+PKG_VERSION:=0.48.0
 PKG_RELEASE:=1
 
 PYPI_NAME:=wheel
-PKG_HASH:=661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729
+PKG_HASH:=94800765601e9171bf5d58d066e640662842bcedcbab982b2c90787a2c987322
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE.txt
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
+PKG_CPE_ID:=cpe:/a:wheel_project:wheel
 
 PKG_HOST_ONLY:=1
 HOST_BUILD_DEPENDS:=python3/host python-build/host python-installer/host python-flit-core/host
@@ -33,7 +34,7 @@ define Package/python3-wheel
   SUBMENU:=Python
   TITLE:=A built-package format for Python
   URL:=https://github.com/pypa/wheel
-  DEPENDS:=+python3-light +python3-email +python3-logging +python3-setuptools
+  DEPENDS:=+python3-light +python3-urllib +python3-logging +python3-packaging +python3-setuptools
   BUILDONLY:=1
 endef
 
