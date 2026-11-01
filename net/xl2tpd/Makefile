@@ -30,7 +30,7 @@ define Package/xl2tpd
   SECTION:=net
   CATEGORY:=Network
   TITLE:=An L2TP (Layer 2 Tunneling Protocol) daemon
-  URL:=http://www.xelerance.com/software/xl2tpd/
+  URL:=https://github.com/xelerance/xl2tpd
   SUBMENU:=VPN
   DEPENDS:=+ppp +resolveip
 endef
