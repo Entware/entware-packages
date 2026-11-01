@@ -1,0 +1,33 @@
+--- a/sysdep/autoconf.h.in
++++ b/sysdep/autoconf.h.in
+@@ -19,7 +19,7 @@
+ #undef CONFIG_BMP
+ 
+ /* Bridge protocol */
+-#undef CONFIG_BRIDGE
++/* #undef CONFIG_BRIDGE */
+ 
+ /* EVPN protocol */
+ #undef CONFIG_EVPN
+--- a/configure
++++ b/configure
+@@ -5604,7 +5604,7 @@ else
+     linux*)
+       sysdesc=linux
+       default_iproutedir="/etc/iproute2"
+-      proto_bridge=bridge
++      proto_bridge=
+       ;;
+     freebsd*)
+       sysdesc=bsd
+--- a/configure.ac
++++ b/configure.ac
+@@ -235,7 +235,7 @@ else
+     linux*)
+       sysdesc=linux
+       default_iproutedir="/etc/iproute2"
+-      proto_bridge=bridge
++      proto_bridge=
+       ;;
+     freebsd*)
+       sysdesc=bsd

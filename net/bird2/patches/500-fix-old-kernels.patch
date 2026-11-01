@@ -1,0 +1,180 @@
+--- a/sysdep/linux/netlink.c
++++ b/sysdep/linux/netlink.c
+@@ -13,6 +13,11 @@
+ #include <sys/uio.h>
+ #include <errno.h>
+ 
++/* RTAX_CC_ALGO since Linux 4.0 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ #undef LOCAL_DEBUG
+ 
+ #include "nest/bird.h"
+@@ -239,6 +244,7 @@ nl_request_dump_neigh(int af, int bridge
+     .ndm.ndm_family = af,
+   };
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,16,0)
+   if (bridge_id)
+   {
+     req.rta.rta_type = NDA_MASTER;
+@@ -246,6 +252,7 @@ nl_request_dump_neigh(int af, int bridge
+     req.master_id = bridge_id;
+     req.nh.nlmsg_len = NLMSG_ALIGN(req.nh.nlmsg_len) + req.rta.rta_len;
+   }
++#endif /* NDA_MASTER since Linux 3.16 */
+ 
+   send(nl_scan.fd, &req, req.nh.nlmsg_len, 0);
+   nl_scan.last_hdr = NULL;
+@@ -392,12 +399,15 @@ static struct nl_want_attrs ifinfo_attr_
+   [IFLA_INFO_DATA]= { 1, 0, 0 },
+ };
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,3,0)
+ #define BIRD_IFLA_BR_MAX (IFLA_BR_VLAN_FILTERING+1)
+ 
+ static struct nl_want_attrs ifla_br_attr_want[BIRD_IFLA_BR_MAX] = {
+   [IFLA_BR_VLAN_FILTERING] = { 1, 1, sizeof(u8) },
+ };
++#endif /* IFLA_BR_VLAN_FILTERING since Linux 4.3 */
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,12,0)
+ #define BIRD_IFLA_VXLAN_MAX (IFLA_VXLAN_LOCAL6+1)
+ 
+ static struct nl_want_attrs ifla_vxlan_attr_want[BIRD_IFLA_VXLAN_MAX] = {
+@@ -406,8 +416,14 @@ static struct nl_want_attrs ifla_vxlan_a
+   [IFLA_VXLAN_LOCAL]	= { 1, 1, sizeof(ip4_addr) },
+   [IFLA_VXLAN_LOCAL6]	= { 1, 1, sizeof(ip6_addr) },
+ };
++#endif
++/* IFLA_VXLAN_ID since Linux 3.7 */
++/* IFLA_VXLAN_LEARNING since Linux 3.7 */
++/* IFLA_VXLAN_LOCAL since Linux 3.7 */
++/* IFLA_VXLAN_LOCAL6 since Linux 3.12 */
+ 
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ #define BIRD_IFBRIDGE_MAX (IFLA_BRIDGE_VLAN_TUNNEL_INFO+1)
+ 
+ static struct nl_want_attrs ifbridge_attr_want[BIRD_IFBRIDGE_MAX] UNUSED = {
+@@ -422,6 +438,7 @@ static struct nl_want_attrs ifbridge_vla
+   [IFLA_BRIDGE_VLAN_TUNNEL_VID]		= { 1, 1, sizeof(u16) },
+   [IFLA_BRIDGE_VLAN_TUNNEL_FLAGS]	= { 1, 1, sizeof(u16) },
+ };
++#endif /* IFLA_BRIDGE_VLAN_TUNNEL_{FLAGS,ID,INFO} since Linux 4.11 */
+ 
+ 
+ #define BIRD_IFA_MAX  (IFA_FLAGS+1)
+@@ -517,6 +534,7 @@ static struct nl_want_attrs rtm_attr_wan
+ #endif
+ 
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ #define BIRD_NDA_MAX  (NDA_SRC_VNI+1)
+ 
+ static struct nl_want_attrs ndm_attr_want[BIRD_NDA_MAX] = {
+@@ -527,6 +545,7 @@ static struct nl_want_attrs ndm_attr_wan
+   [NDA_MASTER]	  = { 1, 1, sizeof(u32) },
+   [NDA_SRC_VNI]	  = { 1, 1, sizeof(u32) },
+ };
++#endif /* NDA_SRC_VNI since Linux 4.11 */
+ 
+ 
+ static int
+@@ -592,10 +611,12 @@ static inline mac_addr rta_get_mac(struc
+ static inline ip_addr rta_get_via(struct rtattr *a)
+ {
+   struct rtvia *v = RTA_DATA(a);
++#ifdef HAVE_MPLS_KERNEL
+   switch(v->rtvia_family) {
+     case AF_INET:  return ipa_from_ip4(ip4_ntoh(*(ip4_addr *) v->rtvia_addr));
+     case AF_INET6: return ipa_from_ip6(ip6_ntoh(*(ip6_addr *) v->rtvia_addr));
+   }
++#endif
+   return IPA_NONE;
+ }
+ 
+@@ -929,7 +950,9 @@ err:
+   return NULL;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
+ STATIC_ASSERT(EA_KRT_METRICS + RTAX_CC_ALGO == EA_KRT_CONGCTL);
++#endif /* RTAX_CC_ALGO since Linux 4.0 */
+ 
+ static void
+ nl_add_metrics(struct nlmsghdr *h, uint bufsize, u32 *metrics, const char *cc_algo, int max)
+@@ -939,9 +962,11 @@ nl_add_metrics(struct nlmsghdr *h, uint
+ 
+   for (t = 1; t < max; t++)
+     if (metrics[0] & (1 << t))
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
+       if (t == RTAX_CC_ALGO)
+         nl_add_attr_str(h, bufsize, t, cc_algo);
+       else
++#endif /* RTAX_CC_ALGO since Linux 4.0 */
+         nl_add_attr_u32(h, bufsize, t, metrics[t]);
+ 
+   nl_close_attr(h, a);
+@@ -962,6 +987,7 @@ nl_parse_metrics(struct rtattr *hdr, u32
+     if (a->rta_type >= max)
+       continue;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
+     if (a->rta_type == RTAX_CC_ALGO)
+     {
+       *cc_algo = rta_get_str(a);
+@@ -974,6 +1000,7 @@ nl_parse_metrics(struct rtattr *hdr, u32
+       metrics[a->rta_type] = 0;
+     }
+     else
++#endif /* RTAX_CC_ALGO since Linux 4.0 */
+     {
+       if (RTA_PAYLOAD(a) != 4)
+ 	return -1;
+@@ -1039,6 +1066,7 @@ nl_parse_link(struct nlmsghdr *h, int sc
+     if (li[IFLA_INFO_KIND])
+       kind = RTA_DATA(li[IFLA_INFO_KIND]);
+ 
++#ifdef CONFIG_BRIDGE
+     if (!bstrcmp(kind, "bridge") && li[IFLA_INFO_DATA])
+     {
+       ea_set_attr_u32(&f.attrs->eattrs, tmp_linpool, EA_IFACE_TYPE, 0, EAF_TYPE_INT, IF_TYPE_BRIDGE);
+@@ -1080,6 +1108,7 @@ nl_parse_link(struct nlmsghdr *h, int sc
+ 	ea_set_attr_data(&f.attrs->eattrs, tmp_linpool, EA_IFACE_VXLAN_IP_ADDR, 0, EAF_TYPE_IP_ADDRESS, &addr, sizeof(addr));
+       }
+     }
++#endif
+   }
+ 
+   ifi = if_find_by_index(i->ifi_index);
+@@ -1566,9 +1595,11 @@ nl_send_route(struct krt_proto *p, rte *
+     int id = ea->id - EA_KRT_METRICS;
+     metrics[0] |= 1 << id;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
+     if (id == RTAX_CC_ALGO)
+       cc_algo = ea->u.ptr->data;
+     else
++#endif /* RTAX_CC_ALGO since Linux 4.0 */
+       metrics[id] = ea->u.data;
+   }
+ 
+@@ -2016,6 +2047,7 @@ nl_parse_route(struct nl_parse_state *s,
+ 		.u.data = metrics[t],
+ 	      };
+ 	    }
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
+           else if (t == RTAX_CC_ALGO)
+ 	    {
+ 	      struct adata *ad = lp_alloc_adata(s->pool, strlen(cc_algo) + 1);
+@@ -2027,6 +2059,7 @@ nl_parse_route(struct nl_parse_state *s,
+ 		.u.ptr = ad,
+ 	      };
+ 	    }
++#endif /* RTAX_CC_ALGO since Linux 4.0 */
+ 	  else
+ 	    {
+ 	      ea->attrs[n++] = (eattr) {

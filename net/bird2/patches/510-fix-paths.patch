@@ -1,0 +1,11 @@
+--- a/client/birdc.c
++++ b/client/birdc.c
+@@ -146,7 +146,7 @@ input_help(int arg, int key UNUSED)
+ void
+ history_init(void)
+ {
+-  const char *homedir = "/var/tmp";
++  const char *homedir = "/opt/var/tmp";
+   history_file = malloc(strlen(homedir) + sizeof(HISTORY));
+   if (!history_file)
+     die("couldn't alloc enough memory for history file name");
