@@ -11,7 +11,7 @@
        list(APPEND LIB_ARCH_LIST "${dir}")
 --- a/vendored-meson/meson/mesonbuild/linkers/linkers.py
 +++ b/vendored-meson/meson/mesonbuild/linkers/linkers.py
-@@ -1592,7 +1592,7 @@ class AIXDynamicLinker(PosixDynamicLinke
+@@ -1600,7 +1600,7 @@ class AIXDynamicLinker(PosixDynamicLinke
          if len(sys_path) == 0:
              # get_compiler_system_lib_dirs doesn't support our compiler.
              # Use the default system library path
