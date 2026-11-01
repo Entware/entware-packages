@@ -15,7 +15,7 @@ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://downloads.uls.co.za/rp-pppoe/
 PKG_HASH:=41ac34e5db4482f7a558780d3b897bdbb21fae3fef4645d2852c3c0c19d81cea
 
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=LGPL-2.0-or-later
 PKG_LICENSE_FILES:=doc/LICENSE
 PKG_CPE_ID:=cpe:/a:roaring_penguin:pppoe
@@ -90,18 +90,6 @@ $(call Package/rp-pppoe/Default/description)
  This package contains pppoe-server.
 endef
 
-define Package/rp-pppoe-sniff
-  $(call Package/rp-pppoe/Default)
-  DEPENDS:=+ppp @BROKEN
-  TITLE+= sniffer
-endef
-
-define Package/rp-pppoe-sniff/description
-$(call Package/rp-pppoe/Default/description)
-
- This package contains pppoe-sniff.
-endef
-
 TARGET_CFLAGS += -I$(PKG_BUILD_DIR)/src/libevent -isystem $(PKG_BUILD_DIR)/missing-headers -D_BSD_SOURCE
 CONFIGURE_PATH := ./src
 CONFIGURE_ARGS += ac_cv_path_PPPD=/usr/sbin/pppd --enable-plugin=$(STAGING_DIR)/usr/include/
@@ -138,12 +126,6 @@ define Package/rp-pppoe-server/install
 	$(INSTALL_DATA) ./files/pppoe-server.default $(1)/etc/uci-defaults/
 endef
 
-define Package/rp-pppoe-sniff/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/pppoe-sniff $(1)/usr/sbin/
-endef
-
 $(eval $(call BuildPackage,rp-pppoe-common))
 $(eval $(call BuildPackage,rp-pppoe-relay))
 $(eval $(call BuildPackage,rp-pppoe-server))
-$(eval $(call BuildPackage,rp-pppoe-sniff))
