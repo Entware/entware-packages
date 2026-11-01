@@ -9,7 +9,7 @@
  ## To send all messages to stderr:
  #Log debug stderr
  
-@@ -249,6 +249,4 @@ DataDirectory @LOCALSTATEDIR@/lib/tor
+@@ -253,6 +253,4 @@ DataDirectory @LOCALSTATEDIR@/lib/tor
  ## folder will be parsed following lexical order. Files starting with a dot are ignored. Files
  ## on subfolders are ignored.
  ## The %include option can be used recursively.
