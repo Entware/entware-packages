@@ -8,17 +8,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=less
-PKG_VERSION:=685
+PKG_VERSION:=704
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:= @GNU/less \
-	http://www.greenwoodsoftware.com/less
-PKG_HASH:=2701041e767e697ee420ce0825641cedc8f20b51576abe99d92c1666d332e9dc
+	https://www.greenwoodsoftware.com/less
+PKG_HASH:=20a0b0a2bb2525fa53c7eee9beb854b4c9cf172eabb209af7020743547bfe9fb
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_CPE_ID:=cpe:/a:gnu:less
 
 PKG_INSTALL:=1
@@ -30,7 +30,7 @@ define Package/less
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=Pager program similar to more
-  URL:=http://www.greenwoodsoftware.com/less/
+  URL:=https://www.greenwoodsoftware.com/less/
   ALTERNATIVES:=200:/opt/bin/less:/opt/libexec/less-gnu
   DEPENDS:=+libncursesw
   PROVIDES:=less-wide
