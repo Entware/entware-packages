@@ -4,10 +4,10 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pbr
-PKG_VERSION:=1.2.1
-PKG_RELEASE:=87
+PKG_VERSION:=1.2.2
+PKG_RELEASE:=20
 PKG_LICENSE:=AGPL-3.0-or-later
-PKG_MAINTAINER:=Stan Grishin <stangri@melmac.ca>
+PKG_MAINTAINER:=Stan Grishin <stangri@melmac.ca>, Erik Conijn <egc112@msn.com>
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -16,7 +16,7 @@ define Package/pbr
   CATEGORY:=Network
   SUBMENU:=Routing and Redirection
   TITLE:=Policy Based Routing Service with nft/nft set support
-  URL:=https://github.com/stangri/pbr/
+  URL:=https://github.com/mossdef-org/pbr/
   PKGARCH:=all
   DEPENDS:= \
 	+ip-full \
