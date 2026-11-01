@@ -8,16 +8,16 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=bluez
-PKG_VERSION:=5.86
+PKG_VERSION:=5.87
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/bluetooth/
-PKG_HASH:=99f144540c6070591e4c53bcb977eb42664c62b7b36cb35a29cf72ded339621d
+PKG_HASH:=26bdcf2cebd7310c6f598850606b037ef0c515fe6608ebc54d22c50c4c32b35f
 
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_CPE_ID:=cpe:/a:bluez:bluez
 
 PKG_BUILD_PARALLEL:=1
@@ -116,18 +116,9 @@ endef
 define Package/bluez-utils/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/bdaddr $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/bluemoon $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/btattach $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/ciptool $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hciattach $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hciconfig $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hcidump $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hcitool $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/hex2hcd $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/l2ping $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/l2test $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/rctest $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/rfcomm $(1)/opt/bin/
+	$(INSTALL_BIN) \
+		$(PKG_INSTALL_DIR)/opt/bin/{bluemoon,btattach,ciptool,hciattach,hciconfig,hcitool,hex2hcd,l2ping,l2test,rctest,rfcomm} \
+		$(1)/opt/bin/
 endef
 
 define Package/bluez-utils-btmon/install
@@ -137,17 +128,14 @@ endef
 
 define Package/bluez-utils-extra/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tools/btmgmt $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/mpris-proxy $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/sdptool $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/attrib/gatttool $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/{tools/btmgmt,attrib/gatttool} $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/{mpris-proxy,sdptool} $(1)/opt/bin/
 endef
 
 define Package/bluez-daemon/install
 	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/bluetooth/bluetoothd $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/bluetooth/{bluetoothd,obexd} $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/bluetoothctl $(1)/opt/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/bluetooth/obexd $(1)/opt/bin/
 	$(INSTALL_DIR) $(1)/opt/etc/dbus-1/system.d/
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/src/bluetooth.conf $(1)/opt/etc/dbus-1/system.d/bluetooth.conf
 	$(INSTALL_DIR) $(1)/opt/etc/bluetooth

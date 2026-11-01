@@ -27,7 +27,7 @@ profiles/audio/media.c:3383:12: note: each undeclared identifier is reported onl
  #define MEDIA_INTERFACE "org.bluez.Media1"
  #define MEDIA_ENDPOINT_INTERFACE "org.bluez.MediaEndpoint1"
  #define MEDIA_PLAYER_INTERFACE "org.mpris.MediaPlayer2.Player"
-@@ -3564,7 +3569,9 @@ static gboolean supported_uuids(const GD
+@@ -3577,7 +3582,9 @@ static gboolean supported_uuids(const GD
  static bool probe_tx_timestamping(struct media_adapter *adapter)
  {
  	struct ifreq ifr = {};
@@ -37,7 +37,7 @@ profiles/audio/media.c:3383:12: note: each undeclared identifier is reported onl
  	int sk = -1;
  
  	/* TX timestamping requires support from BlueZ in order to not mistake
-@@ -3577,8 +3584,10 @@ static bool probe_tx_timestamping(struct
+@@ -3590,8 +3597,10 @@ static bool probe_tx_timestamping(struct
  
  	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "hci%u",
  				btd_adapter_get_index(adapter->btd_adapter));
@@ -48,7 +48,7 @@ profiles/audio/media.c:3383:12: note: each undeclared identifier is reported onl
  
  	/* Check kernel reports some support for TX timestamping for L2CAP. If
  	 * yes then kernel version is new enough to have TX timestamping
-@@ -3591,7 +3600,9 @@ static bool probe_tx_timestamping(struct
+@@ -3604,7 +3613,9 @@ static bool probe_tx_timestamping(struct
  		goto error;
  	close(sk);
  
