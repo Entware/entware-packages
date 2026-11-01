@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=expat
-PKG_VERSION:=2.7.4
+PKG_VERSION:=2.8.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/libexpat/libexpat/releases/download/R_$(subst .,_,$(PKG_VERSION))
-PKG_HASH:=461ecc8aa98ab1a68c2db788175665d1a4db640dc05bf0e289b6ea17122144ec
+PKG_HASH:=b8ece2437692dad44d851c4532723390a5a330990007706be9c8d2b90d294f36
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING
@@ -40,7 +40,7 @@ CMAKE_OPTIONS += \
 	-DEXPAT_BUILD_DOCS=OFF \
 	-DEXPAT_DTD=OFF \
 	-DEXPAT_NS=OFF \
-	-DEXPAT_DEV_URANDOM=OFF
+	-DEXPAT_DEV_URANDOM=ON
 
 # XXX Entware specifics:
 # * Linux (including <3.17)/BSD/macOS (including <10.7) (/dev/urandom): XML_DEV_URANDOM
