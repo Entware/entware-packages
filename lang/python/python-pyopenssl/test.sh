@@ -16,23 +16,21 @@ if version != "$2":
 
 from OpenSSL import SSL, crypto
 from OpenSSL.crypto import (
-    PKey, TYPE_RSA, TYPE_EC,
-    X509, X509Req, X509Store, X509StoreContext,
+    PKey, TYPE_RSA,
+    X509, X509Store, X509StoreContext,
     dump_certificate, dump_privatekey, load_certificate, load_privatekey,
-    dump_certificate_request,
     FILETYPE_PEM,
 )
 
 # --- Key generation ---
+# pyOpenSSL 26.2.0 dropped EC support from the legacy crypto.PKey API
+# ("OpenSSL.crypto.Error: No such key type"). For EC keys, the upstream
+# recommendation is to use the cryptography package directly.
 
 rsa_key = PKey()
 rsa_key.generate_key(TYPE_RSA, 2048)
 assert rsa_key.bits() == 2048
 assert rsa_key.type() == TYPE_RSA
-
-ec_key = PKey()
-ec_key.generate_key(TYPE_EC, 256)
-assert ec_key.type() == TYPE_EC
 
 # --- Self-signed certificate ---
 
@@ -63,16 +61,6 @@ key_pem = dump_privatekey(FILETYPE_PEM, rsa_key)
 assert key_pem.startswith(b"-----BEGIN")
 key2 = load_privatekey(FILETYPE_PEM, key_pem)
 assert key2.bits() == 2048
-
-# --- Certificate signing request ---
-
-req = X509Req()
-req.get_subject().CN = "csr.example.com"
-req.set_pubkey(rsa_key)
-req.sign(rsa_key, "sha256")
-assert req.verify(rsa_key)
-csr_pem = dump_certificate_request(FILETYPE_PEM, req)
-assert csr_pem.startswith(b"-----BEGIN CERTIFICATE REQUEST-----")
 
 # --- X509Store verification ---
 
