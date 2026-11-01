@@ -27,7 +27,7 @@
  #endif
  
  /* Define if you have FFTW library */
-@@ -1114,12 +1114,12 @@
+@@ -1117,12 +1117,12 @@
  
  /* Directory where ImageMagick architecture headers live. */
  #ifndef MAGICKCORE_INCLUDEARCH_PATH
@@ -42,7 +42,7 @@
  #endif
  
  /* ImageMagick is formally installed under prefix */
-@@ -1152,7 +1152,7 @@
+@@ -1155,7 +1155,7 @@
  
  /* Directory where architecture-dependent files live. */
  #ifndef MAGICKCORE_LIBRARY_ABSOLUTE_PATH
@@ -51,7 +51,7 @@
  #endif
  
  /* Subdirectory of lib where ImageMagick architecture dependent files are
-@@ -1304,7 +1304,7 @@
+@@ -1307,7 +1307,7 @@
  
  /* Directory where architecture-independent configuration files live. */
  #ifndef MAGICKCORE_SHARE_PATH
@@ -64,7 +64,7 @@
 +++ b/MagickCore/version.h
 @@ -44,7 +44,7 @@ extern "C" {
  #define MagickAuthoritativeLicense  \
-   "https://imagemagick.org/script/license.php"
+   "https://imagemagick.org/license/"
  #define MagickAuthoritativeURL  "https://imagemagick.org"
 -#define MagickHomeURL  "file:///usr/share/doc/ImageMagick-7/index.html"
 +#define MagickHomeURL  "file:///opt/share/doc/ImageMagick-7/index.html"
@@ -75,7 +75,7 @@
 +++ b/MagickCore/version.h.in
 @@ -44,7 +44,7 @@ extern "C" {
  #define MagickAuthoritativeLicense  \
-   "https://imagemagick.org/script/license.php"
+   "https://imagemagick.org/license/"
  #define MagickAuthoritativeURL  "https://imagemagick.org"
 -#define MagickHomeURL  "file://@DOCUMENTATION_PATH@/index.html"
 +#define MagickHomeURL  "file:///opt/share/doc/ImageMagick-7/index.html"
