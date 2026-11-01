@@ -1,15 +1,24 @@
-commit 4fa6e1225f9920286c761fbb3c570bb40d5cc46c (HEAD -> master, origin/master, origin/HEAD)
-Author: Andrey Zotikov <andrey.zotikov@gmail.com>
-Date:   Fri Feb 6 09:18:55 2026 +0300
+commit 0d5f51b58e878508ff2df6189b98c6511c33ae51 (HEAD -> master, origin/master, origin/HEAD)
+Author: Sander van Deijck <sander@vandeijck.com>
+Date:   Fri Oct 30 16:06:32 2026 +0100
 
-    haproxy: update config (maxconn, nbthread, ssl)
+    udns: update to 0.7
     
-    Configuration changes:
+    udns is maintained again: 0.5 (March 2024) and 0.6 (July 2024) were the
+    first releases in ten years, and 0.7 followed in October 2026.
     
-    - max connections adjusted
-    - ulimit-n disabled
-    - nbprocs removed
-    - nbthread added
-    - ssl params added
+    0.7 fixes several bugs in DNS name parsing, among them a heap buffer
+    overflow: a reply whose first name contained a compression pointer
+    made dns_stdrr_size() undersize a buffer that dns_stdrr_finish()
+    then wrote past. It also fixes dns_cancel() leaking the cancelled
+    query.
     
-    Signed-off-by: Andrey Zotikov <andrey.zotikov@gmail.com>
+    0.5 and 0.6 fix repeated queries for non-existing domains and the
+    inet_ntop()/inet_pton() checks, among others.
+    
+    The autotools patch only needs its AC_INIT version bumped; the set of
+    source files is unchanged.
+    
+    Release notes: https://www.corpit.ru/mjt/udns/NEWS
+    
+    Signed-off-by: Sander van Deijck <sander@vandeijck.com>
