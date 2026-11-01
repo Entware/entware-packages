@@ -19,7 +19,7 @@ PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 include $(INCLUDE_DIR)/package.mk
 
 PKG_FIXUP:=autoreconf
-PKG_LICENSE:=GPL-2.0+
+PKG_LICENSE:=GPL-2.0-or-later
 
 define Package/igmpproxy
   SECTION:=net
@@ -27,7 +27,7 @@ define Package/igmpproxy
   SUBMENU:=Routing and Redirection
   DEPENDS:=+USE_GLIBC:librt
   TITLE:=Multicast Routing Daemon
-  URL:=http://sourceforge.net/projects/igmpproxy
+  URL:=https://github.com/pali/igmpproxy
 endef
 
 define Package/igmpproxy/description
