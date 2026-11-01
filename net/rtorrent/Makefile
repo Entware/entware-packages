@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=rtorrent
 PKG_VERSION:=0.15.5
-PKG_RELEASE:=1
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/rakshasa/rtorrent
@@ -37,7 +37,7 @@ define Package/rtorrent/Default
   CATEGORY:=Network
   TITLE:=BitTorrent client for ncurses
   URL:=https://github.com/rakshasa/rtorrent
-  DEPENDS:=+libcurl +libncurses +libatomic +libopenssl +libstdcpp +zlib
+  DEPENDS:=+libcurl +libncurses $(ATOMIC64_DEPENDS) +libopenssl +libstdcpp +zlib
 endef
 
 define Package/rtorrent/Default/description
@@ -60,6 +60,7 @@ endef
 define Package/rtorrent-rpc
 $(call Package/rtorrent/Default)
   VARIANT:=rpc
+  CONFLICTS:=rtorrent
   DEPENDS+=+xmlrpc-c-server
   TITLE+=(with rpc support)
 endef
@@ -80,8 +81,6 @@ ifeq ($(BUILD_VARIANT),rpc)
 CONFIGURE_ARGS += --with-xmlrpc-c
 endif
 
-# checking for XMLRPC-C... failed
-# configure: error: Could not compile XMLRPC-C test.
 CONFIGURE_VARS += \
 	ax_cv_cxx_compile_cxx17=yes
 
