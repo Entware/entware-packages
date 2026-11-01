@@ -21,7 +21,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/setserial
   SECTION:=utils
   CATEGORY:=Utilities
-  URL:=http://setserial.sourceforge.net/
+  URL:=https://setserial.sourceforge.net/
   TITLE:=Serial port attribute utility
   ALTERNATIVES:=300:/opt/bin/setserial:/opt/libexec/setserial
 endef
