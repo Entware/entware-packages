@@ -1,0 +1,15 @@
+before:	Tag: cp314-cp314-manylinux_2_31_aarch64 (libc ver. from host)
+after:	Tag: cp314-cp314-manylinux_2_27_aarch64
+---
+
+--- a/src/poetry/core/_vendor/packaging/_manylinux.py
++++ b/src/poetry/core/_vendor/packaging/_manylinux.py
+@@ -93,7 +93,7 @@ def _glibc_version_string_confstr() -> s
+     # https://github.com/python/cpython/blob/fcf1d003bf4f0100c/Lib/platform.py#L175-L183
+     try:
+         # Should be a string like "glibc 2.17".
+-        version_string: str | None = os.confstr("CS_GNU_LIBC_VERSION")
++        version_string: str | None = os.environ.get("CS_GNU_LIBC_VERSION")
+         assert version_string is not None
+         _, version = version_string.rsplit()
+     except (AssertionError, AttributeError, OSError, ValueError):
