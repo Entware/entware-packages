@@ -1,0 +1,23 @@
+include/haproxy/openssl-compat.h:574:10: fatal error: linux/tls.h: No such file or directory
+ #include <linux/tls.h>
+          ^~~~~~~~~~~~~
+compilation terminated.
+
+---
+
+--- a/include/haproxy/openssl-compat.h
++++ b/include/haproxy/openssl-compat.h
+@@ -568,7 +568,12 @@ static inline unsigned long ERR_peek_err
+ 	*(cb) = (void (*) (void))ctx->tlsext_status_cb
+ #endif
+ 
+-#ifdef USE_KTLS
++/* <linux/tls.h> since Linux 4.13 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
++#if defined USE_KTLS && LINUX_VERSION_CODE >= KERNEL_VERSION(4,13,0)
+ 
+ #ifdef __linux__
+ #include <linux/tls.h>
