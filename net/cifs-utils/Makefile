@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cifs-utils
-PKG_VERSION:=6.11
-PKG_RELEASE:=2
+PKG_VERSION:=7.7
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://download.samba.org/pub/linux-cifs/cifs-utils/
-PKG_HASH:=b859239a3f204f8220d3e54ed43bf8109e1ef202042dd87ba87492f8878728d9
+PKG_HASH:=2f8aae9aa5ddd73fbaf4d61e2e5e19ef54124cbf2810b626820050e7bd2f6606
 
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=COPYING
 PKG_CPE_ID:=cpe:/a:samba:cifs-utils
@@ -31,7 +31,7 @@ define Package/cifsmount
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Filesystem
-  DEPENDS:=+kmod-fs-cifs
+  DEPENDS:=+kmod-fs-cifs +libtalloc
   TITLE:=CIFS mount
   URL:=https://wiki.samba.org/index.php/LinuxCIFS_utils
 endef
@@ -39,7 +39,7 @@ endef
 define Package/smbinfo
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=+kmod-fs-cifs
+  DEPENDS:=+kmod-fs-cifs +libtalloc +python3-light
   TITLE:=SMB info
   URL:=https://wiki.samba.org/index.php/LinuxCIFS_utils
 endef
@@ -59,7 +59,7 @@ CONFIGURE_ARGS += \
 CONFIGURE_ARGS += \
 	ac_cv_lib_cap_ng_capng_clear=no
 
-TARGET_CFLAGS += $(FPIC) -ffunction-sections
+TARGET_CFLAGS += $(FPIC) -ffunction-sections -I$(STAGING_DIR)/usr/include
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed
 
 define Build/InstallDev
