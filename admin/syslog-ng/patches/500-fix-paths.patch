@@ -1,21 +1,15 @@
 --- a/contrib/syslog-ng-debun
 +++ b/contrib/syslog-ng-debun
-@@ -1,5 +1,5 @@
- #!/bin/sh
--#!/bin/bash
-+#!/opt/bin/bash
- 
- ### syslog-ng-debun: syslog debug bundle generator
- ### Written/Copyright: Gyorgy Pasztor <pasztor@linux.gyakg.u-szeged.hu>, (c) 2014-2016.
-@@ -49,11 +49,11 @@ netstatnlp () { netstat -nlp ; }
+@@ -48,12 +48,12 @@ netstatnlp () { netstat -nlp ; }
  netstatlunp () { netstat -lunp ; }
  netstatpunt () { netstat -punt ; }
  netstatpn () { netstat -pn ; }
 -netstatsu="netstat -su"
 -binprefix=/opt/syslog-ng
--absscldirs="/usr/share/syslog-ng/include/scl"
 +netstatsu="netstat -u"
 +binprefix=/opt
+ user_binprefix=
+-absscldirs="/usr/share/syslog-ng/include/scl"
 +absscldirs="/opt/share/syslog-ng/include/scl"
  relscldirs="share/include/scl share/syslog-ng/include/scl"
 -workdir=/tmp
@@ -23,7 +17,7 @@
  lsof="lsof -p"
  no_lsof_fallback() { echo "No lsof in path."; }
  pscmd="ps auxwwwwwf"
-@@ -64,7 +64,7 @@ dfk="df -k"
+@@ -65,7 +65,7 @@ dfk="df -k"
  dfh="df -h"
  dfi="df -i"
  duks="du -ks"
@@ -32,7 +26,7 @@
  lddcmd="ldd"
  topcmd () { top -b -n 1 -c >"${1}"; }
  opensslcmd="openssl"
-@@ -89,7 +89,7 @@ getsyslogpids () { pidof syslog-ng ; }
+@@ -90,7 +90,7 @@ getsyslogpids () { pidof syslog-ng ; }
  os_hash_helper () { find . '!' \( -name debun.manifest -o -name syslog-ng.debun.txt \) -type f -print0 | xargs -0 md5sum ; }
  dfk_parser () { tail -1 | while read FS ALL USED AVAIL UPERC MP; do if echo ${AVAIL} | ${grepq} '%'; then echo ${USED} ; else echo ${AVAIL} ; fi done ; }
  trace="strace -s256 -ff -ttT -f"
@@ -41,7 +35,22 @@
  service_stop="${initfile} stop"
  service_start="${initfile} start"
  service_status="${initfile} status"
-@@ -417,7 +417,7 @@ acquire_network_info () {
+@@ -113,12 +113,12 @@ Usage: syslog-ng-debun [OPTIONS]
+ General Options:
+   -r		Run actual information gathering
+   -h		Show this help page
+-  -R [dir]	Syslog-ng's alternate install dir, instead of /opt/syslog-ng
++  -R [dir]	Syslog-ng's alternate install dir, instead of /opt
+   -W [dir]	Work dir, where debug bundle will be placed
+   -l		"light" collect: Don't get data, which may disturb your sense about
+ 		privacy, like process tree, fstab, etc. If you use with -d, then it
+ 		will also enlighten that's params: $default_ldebug_params
+-  -K		Include the private keys in the /etc/syslog-ng or /opt/syslog-ng/etc directory
++  -K		Include the private keys in the /opt/etc/syslog-ng or /opt/etc directory
+ 
+ Debug mode options:
+   -d		Debug with params: $default_debug_params
+@@ -469,7 +469,7 @@ acquire_network_info () {
  		printf "Failed\n"
  	fi
  	printf "Getting DNS resolution-related information: "
@@ -50,28 +59,23 @@
  	[ -f /etc/resolv.conf ] && cp /etc/resolv.conf ${tmpdir}/sys.resolv.conf
  	[ -f /etc/hosts ] && cp /etc/hosts ${tmpdir}/sys.hosts
  	printf "Done\n"
-@@ -933,13 +933,13 @@ acquire_running_syslog_config() {
+@@ -1035,11 +1035,11 @@ fhs_apply_binprefix_override () {
  }
  
  fhs_set_linux () {
+-	fhs_set_paths_from_prefix /usr
++	fhs_set_paths_from_prefix /opt
+ 
 -	confdir=/etc/syslog-ng
 -	vardir=/var/lib/syslog-ng
 -	piddir=/var/lib/syslog-ng
--	syslogbin=/usr/sbin/syslog-ng
--	syslogngctlbin=/usr/sbin/syslog-ng-ctl
--	syslogngquerybin=/usr/sbin/syslog-ng-query
--	syslogrealbin=/usr/sbin/syslog-ng
 +	confdir=/opt/etc
 +	vardir=/opt/var
 +	piddir=/opt/var/run/syslog-ng
-+	syslogbin=/opt/sbin/syslog-ng
-+	syslogngctlbin=/opt/sbin/syslog-ng-ctl
-+	syslogngquerybin=/opt/sbin/syslog-ng-query
-+	syslogrealbin=/opt/sbin/syslog-ng
  }
  
  fhs_set_unix () {
-@@ -1152,7 +1152,7 @@ detect_env_linux () {
+@@ -1356,7 +1356,7 @@ detect_env_linux () {
  		dist="SUSE LINUX"
  	else
  		echo "Unknown or unsupported Linux distribution!"
@@ -80,12 +84,13 @@
  	fi
  }
  
-@@ -1165,7 +1165,7 @@ detect_env () {
- 	if [ -x /opt/syslog-ng/bin/loggen ] ; then
- 		syslogfhs=unix
- 		echo "Unix-like FHS detected"
--	elif [ -d /etc/syslog-ng/ ]; then
-+	elif [ -x /opt/bin/loggen ]; then
- 		syslogfhs=linux
- 		echo "Linux-type FHS detected"
- 	else
+@@ -1383,6 +1383,9 @@ detect_env () {
+ 			elif [ -d /etc/syslog-ng/ ]; then
+ 				syslogfhs=linux
+ 				echo "Linux-type FHS detected"
++			elif [ -x /opt/bin/loggen ]; then
++				syslogfhs=linux
++				echo "Linux-type FHS detected"
+ 			else
+ 				syslogfhs=unknown
+ 				confdir=/nonexistent
