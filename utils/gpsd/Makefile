@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gpsd
 PKG_VERSION:=3.26.1
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SAVANNAH/$(PKG_NAME)
@@ -45,6 +45,7 @@ define Package/gpsd
   SECTION:=utils
   CATEGORY:=Utilities
   TITLE:=An interface daemon for GPS receivers
+  USERID:=gpsd:gpsd:dialout=20
   DEPENDS+= +gpsd-utils
 endef
 
@@ -141,6 +142,7 @@ define Package/gpsd/install
 	$(INSTALL_BIN) ./files/S62gpsd $(1)/opt/etc/init.d/
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/gpsd $(1)/opt/sbin/
+#	$(INSTALL_BIN) ./files/usr/sbin/gpsd-wrapper $(1)/usr/sbin/
 
 #	$(INSTALL_DIR) $(1)/etc/gpsd
 #	$(INSTALL_BIN) ./files/etc/gpsd/device-hook $(1)/etc/gpsd/
@@ -153,7 +155,7 @@ define Package/gpsd-clients/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) \
 		$(PKG_INSTALL_DIR)/opt/bin/cgps \
-		$(PKG_INSTALL_DIR)/opt/bin/gps{ctl,decode,mon,pipe} \
+		$(PKG_INSTALL_DIR)/opt/bin/gps{2udp,ctl,decode,mon,pipe} \
 		$(PKG_INSTALL_DIR)/opt/bin/gpxlogger \
 		$(PKG_INSTALL_DIR)/opt/bin/lcdgps \
 		$(1)/opt/bin/
