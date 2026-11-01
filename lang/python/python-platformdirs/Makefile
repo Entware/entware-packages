@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-platformdirs
-PKG_VERSION:=4.1.0
+PKG_VERSION:=4.12.4
 PKG_RELEASE:=1
 
 PYPI_NAME:=platformdirs
-PKG_HASH:=906d548203468492d432bcb294d4bc2fff751bf84971fbb2c10918cc206ee420
+PKG_HASH:=63743c02414e755de4e31b8f68125c1407495b86c5a006e203c01ff8b9924250
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_BUILD_DEPENDS:=python-hatchling/host python-hatch-vcs/host
 
