@@ -5,12 +5,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libinput
-PKG_VERSION:=1.28.1
-PKG_RELEASE:=1
+PKG_VERSION:=1.31.3
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://gitlab.freedesktop.org/$(PKG_NAME)/$(PKG_NAME)/-/archive/$(PKG_VERSION)
-PKG_HASH:=a13f8c9a7d93df3c85c66afd135f0296701d8d32f911991b7aa4273fdd6a42a3
+PKG_HASH:=b6749bf6f1890f6631c0a70a027c35fec9d2e096a39f720548896e41474a9854
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=MIT
@@ -40,6 +40,7 @@ MESON_ARGS += \
 	-Depoll-dir=no \
 	-Dlibwacom=true \
 	-Ddebug-gui=false \
+	-Dlua-plugins=disabled \
 	-Dtests=false \
 	-Dzshcompletiondir=no
 
