@@ -1,0 +1,11 @@
+--- a/util-src/pposix.c
++++ b/util-src/pposix.c
+@@ -883,7 +883,7 @@ static int lc_atomic_append(lua_State *L
+ }
+ 
+ static int lc_remove_blocks(lua_State *L) {
+-#if defined(__linux__)
++#if defined(__linux__) && defined(FALLOC_FL_COLLAPSE_RANGE)
+ 	int err;
+ 
+ 	FILE *f = *(FILE **) luaL_checkudata(L, 1, LUA_FILEHANDLE);
