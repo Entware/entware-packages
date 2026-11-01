@@ -11,7 +11,7 @@
    if (xdg_data_home != NULL || home != NULL)
 --- a/glib/gcharset.c
 +++ b/glib/gcharset.c
-@@ -503,7 +503,7 @@ unalias_lang (char *lang)
+@@ -505,7 +505,7 @@ unalias_lang (char *lang)
    if (g_once_init_enter_pointer (&alias_table))
      {
        GHashTable *table = g_hash_table_new (g_str_hash, g_str_equal);
@@ -22,7 +22,7 @@
  
 --- a/glib/gspawn-posix.c
 +++ b/glib/gspawn-posix.c
-@@ -1404,7 +1404,7 @@ fork_exec (gboolean              interme
+@@ -1408,7 +1408,7 @@ fork_exec (gboolean              interme
         * * what to search if PATH is unset. POSIX may, dunno.
         * */
  
@@ -42,7 +42,7 @@
      }
  #else
    if G_LIKELY (original_path == NULL)
-@@ -1680,7 +1680,7 @@ g_get_os_info (const gchar *key_name)
+@@ -1692,7 +1692,7 @@ g_get_os_info (const gchar *key_name)
    else
      return NULL;
  #elif defined (G_OS_UNIX)
@@ -51,7 +51,7 @@
    gsize i;
    gchar *buffer = NULL;
    gchar *result = NULL;
-@@ -2695,7 +2695,7 @@ g_build_system_data_dirs (void)
+@@ -2602,7 +2602,7 @@ g_build_system_data_dirs (void)
     */
  #ifndef G_OS_WIN32
    if (!data_dirs || !data_dirs[0])

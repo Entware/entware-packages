@@ -1,15 +1,17 @@
 --- a/glib/gtimezone.c
 +++ b/glib/gtimezone.c
-@@ -512,13 +512,13 @@ zone_identifier_illumos (void)
- static const gchar *
- zone_info_base_dir (void)
+@@ -560,15 +560,15 @@ zone_info_base_dir (void)
  {
--  if (g_file_test ("/usr/share/zoneinfo", G_FILE_TEST_IS_DIR))
+   GStatBuf buf;
+ 
+-  if (g_lstat ("/usr/share/zoneinfo", &buf) == 0 && S_ISDIR (buf.st_mode))
 -    return "/usr/share/zoneinfo";     /* Most distros */
-+  if (g_file_test ("/opt/share/zoneinfo", G_FILE_TEST_IS_DIR))
++  if (g_lstat ("/opt/share/zoneinfo", &buf) == 0 && S_ISDIR (buf.st_mode))
 +    return "/opt/share/zoneinfo";     /* Most distros */
    else if (g_file_test ("/usr/share/lib/zoneinfo", G_FILE_TEST_IS_DIR))
      return "/usr/share/lib/zoneinfo"; /* Illumos distros */
+   else if (g_file_test ("/var/db/timezone/zoneinfo", G_FILE_TEST_IS_DIR))
+     return "/var/db/timezone/zoneinfo"; /* macOS */
  
    /* need a better fallback case */
 -  return "/usr/share/zoneinfo";
@@ -17,31 +19,17 @@
  }
  
  static gchar *
-@@ -533,13 +533,13 @@ zone_identifier_unix (void)
-   struct stat file_status;
+@@ -584,8 +584,8 @@ zone_identifier_unix (void)
+     tzdir = zone_info_base_dir ();
  
    /* Resolve the actual timezone pointed to by /etc/localtime. */
--  resolved_identifier = g_file_read_link ("/etc/localtime", &read_link_err);
-+  resolved_identifier = g_file_read_link ("/opt/etc/localtime", &read_link_err);
+-  if (g_lstat ("/etc/localtime", &buf) == 0 && S_ISLNK (buf.st_mode))
+-    resolved_identifier = resolve_symlink_to_zoneinfo ("/etc/localtime", tzdir);
++  if (g_lstat ("/opt/etc/localtime", &buf) == 0 && S_ISLNK (buf.st_mode))
++    resolved_identifier = resolve_symlink_to_zoneinfo ("/opt/etc/localtime", tzdir);
  
-   if (resolved_identifier != NULL)
+   if (resolved_identifier == NULL)
      {
-       if (!g_path_is_absolute (resolved_identifier))
-         {
--          gchar *absolute_resolved_identifier = g_build_filename ("/etc", resolved_identifier, NULL);
-+          gchar *absolute_resolved_identifier = g_build_filename ("/opt/etc", resolved_identifier, NULL);
-           g_free (resolved_identifier);
-           resolved_identifier = g_steal_pointer (&absolute_resolved_identifier);
-         }
-@@ -604,7 +604,7 @@ zone_identifier_unix (void)
-   else
-     {
-       /* Resolve relative path */
--      canonical_path = g_canonicalize_filename (resolved_identifier, "/etc");
-+      canonical_path = g_canonicalize_filename (resolved_identifier, "/opt/etc");
-       g_free (resolved_identifier);
-       resolved_identifier = g_steal_pointer (&canonical_path);
-     }
 @@ -665,7 +665,7 @@ zone_info_unix (const gchar *identifier,
        if (resolved_identifier == NULL)
          goto out;
