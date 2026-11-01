@@ -1,6 +1,6 @@
 --- a/scapy/data.py
 +++ b/scapy/data.py
-@@ -607,7 +607,7 @@ else:
+@@ -615,7 +615,7 @@ else:
      ETHER_TYPES = load_ethertypes("/etc/ethertypes")
      MANUFDB = load_manuf(
          select_path(
