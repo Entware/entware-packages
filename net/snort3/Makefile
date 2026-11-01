@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=snort3
-PKG_VERSION:=3.10.2.0
+PKG_VERSION:=3.12.2.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/snort3/snort3/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=5a7bad8c0c0c87ee12c74932c6cafbfb28c44abed4055a2862d222ff270a384e
+PKG_HASH:=43000d6b0e0307bc1a735874d00deb61e8b6a96d074f8cc9b2fe2cde0058720b
 
 PKG_MAINTAINER:=W. Michael Petullo <mike@flyn.org>, John Audia <therealgraysky@proton.me>
 PKG_LICENSE:=GPL-2.0-only
@@ -32,7 +32,7 @@ define Package/snort3
     +PACKAGE_vectorscan:vectorscan
   USERID:=snort=975:snort=975
   TITLE:=Lightweight Network Intrusion Detection System
-  URL:=http://www.snort.org/
+  URL:=https://snort.org/
   MENU:=1
 endef
 
