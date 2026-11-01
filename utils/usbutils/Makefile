@@ -4,45 +4,40 @@
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
 #
-# Entware specific: ALTERNATIVES
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=usbutils
-PKG_VERSION:=017
+PKG_VERSION:=020
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/usb/usbutils
-PKG_HASH:=a6a25ffdcf9103e38d7a44732aca17073f4e602b92e4ae55625231a82702e05b
+PKG_HASH:=20287d68fcd9ebb50a05ba0645a4af7583bd8dfc7307215ba121e4bc6d057aa1
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_LICENSE:=GPL-2.0-only
-PKG_LICENSE_FILES:=COPYING
+PKG_LICENSE_FILES:=LICENSES/GPL-2.0-only.txt
 
-PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/meson.mk
 
 define Package/usbutils
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+libusb-1.0 +libudev +librt +libpthread +usbids
+  DEPENDS:=+libusb-1.0 +libudev +usbids
   TITLE:=USB devices listing utilities
   URL:=http://www.linux-usb.org/
-  ALTERNATIVES:=300:/opt/bin/lsusb:/opt/libexec/lsusb
+  ALTERNATIVES:=200:/opt/bin/lsusb:/opt/libexec/lsusb-usbutils
 endef
 
-CONFIGURE_ARGS+= \
-	--datadir=/opt/share/hwdata
-
 define Package/usbutils/install
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/usbreset $(1)/opt/bin/
-	$(INSTALL_DIR) $(1)/opt/libexec
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lsusb $(1)/opt/libexec/
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/lsusb $(1)/opt/libexec/lsusb-usbutils
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/openwrt-build/usbreset $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,usbutils))
