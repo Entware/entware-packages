@@ -1,0 +1,37 @@
+iface-linux.c:236:22: error: 'IFA_FLAGS' undeclared (first use in this function); did you mean 'IFA_LABEL'?
+                 case IFA_FLAGS:
+                      ^~~~~~~~~
+                      IFA_LABEL
+
+---
+
+--- a/avahi-core/iface-linux.c
++++ b/avahi-core/iface-linux.c
+@@ -42,6 +42,11 @@
+ #define IFA_RTA(r)  ((struct rtattr*)(((char*)(r)) + NLMSG_ALIGN(sizeof(struct ifaddrmsg))))
+ #endif
+ 
++/* IFA_FLAGS since Linux 3.14 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ static int netlink_list_items(AvahiNetlink *nl, uint16_t type, unsigned *ret_seq) {
+     struct nlmsghdr *n;
+     struct rtgenmsg *gen;
+@@ -233,6 +238,7 @@ static void netlink_callback(AvahiNetlin
+ 
+                     break;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0)
+                 case IFA_FLAGS:
+                     if (RTA_PAYLOAD(a) != sizeof(flags))
+                         return;
+@@ -240,6 +246,7 @@ static void netlink_callback(AvahiNetlin
+                     memcpy(&flags, RTA_DATA(a), RTA_PAYLOAD(a));
+ 
+                     break;
++#endif
+ 
+                 default:
+                     ;
