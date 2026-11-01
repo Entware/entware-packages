@@ -1,5 +1,4 @@
 menu "Select fwupd options"
-	depends on PACKAGE_fwupd-libs
 
 config FWUPD_FIRMWARE_PACKAGER
 	bool "firmware packager"
@@ -19,29 +18,17 @@ config FWUPD_LVFS
 	help
 	  Compile and install LVFS remote
 
-config FWUPD_CBOR
-	bool "CBOR"
+config FWUPD_GNUTLS
+	bool "gnutls"
 	default n
 	help
-	  Compile fwupd with cbor protocol support
+	  Compile fwupd with GnuTLS support
 
-config FWUPD_LZMA
-	bool "LZMA"
-	default n
-	help
-	  Compile fwupd with LZMA support
-
-config FWUPD_CURL
-	bool "curl"
-	default n
-	help
-	  Compile fwupd with curl support
-
-config FWUPD_LIBARCHIVE
-	bool "libarchive"
+config FWUPD_OPENSSL
+	bool "openssl"
 	default y
 	help
-	  Compile fwupd with libarchive support
+	  Compile fwupd with OpenSSL support
 
 config FWUPD_LIBDRM
 	bool "libdrm"
@@ -49,16 +36,16 @@ config FWUPD_LIBDRM
 	help
 	  Compile fwupd with libdrm support
 
+config FWUPD_PLUGIN_DEVLINK
+	bool "devlink plugin"
+	default y
+	help
+	  Compile fwupd with devlink plugin
+
 config FWUPD_PLUGIN_MODEMMANAGER
 	bool "ModemManager plugin"
 	default y
 	help
 	  Compile fwupd with ModemManager plugin
-
-config FWUPD_PLUGIN_FASTBOOT
-	bool "fastboot plugin"
-	default y
-	help
-	  Compile fwupd with fastboot plugin
 
 endmenu
