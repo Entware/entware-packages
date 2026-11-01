@@ -8,15 +8,15 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-idna
-PKG_VERSION:=3.11
+PKG_VERSION:=3.18
 PKG_RELEASE:=1
 
 PYPI_NAME:=idna
-PKG_HASH:=795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902
+PKG_HASH:=ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848
 
 PKG_LICENSE:=BSD-3-Clause
 PKG_LICENSE_FILES:=LICENSE.md
-PKG_MAINTAINER:=Jeffery To <jeffery.to@gmail.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 
 PKG_BUILD_DEPENDS:= \
 	python3/host \
