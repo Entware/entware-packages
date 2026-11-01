@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cryptsetup
-PKG_VERSION:=2.8.0
+PKG_VERSION:=2.8.8
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@KERNEL/linux/utils/cryptsetup/v$(subst $(space),.,$(wordlist 1, 2, $(subst .,$(space),$(PKG_VERSION))))
-PKG_HASH:=cc9e2d37c25a871cea37520b28d532207b0c1670fb10fc54d68071f63f5243a2
+PKG_HASH:=3acfa685f2dd7fcc832e0b77bc7093aa7da554a51ce8dafbb4138eaa854eee35
 
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=GPL-2.0-or-later LGPL-2.1-or-later
@@ -35,7 +35,7 @@ define Package/cryptsetup
   SUBMENU:=Encryption
   TITLE:=Cryptsetup
   DEPENDS:=$(ICONV_DEPENDS) $(INTL_DEPENDS) +libblkid +libuuid +libpopt +lvm2 \
-           +libdevmapper +libjson-c
+           +libdevmapper +libjson-c +libopenssl
   URL:=https://gitlab.com/cryptsetup/cryptsetup/
 endef
 
@@ -89,7 +89,8 @@ CONFIGURE_ARGS += \
 	--disable-udev \
 	--with-default-luks-format=LUKS2 \
 	--with-luks2-lock-path=/opt/var/run/cryptsetup \
-	--with-crypto_backend=kernel
+	--with-crypto_backend=openssl \
+	--disable-kernel_crypto
 
 ifeq ($(CONFIG_PACKAGE_cryptsetup-ssh),)
 CONFIGURE_ARGS += --disable-ssh-token
@@ -99,7 +100,6 @@ CONFIGURE_VARS += \
 	LIBSSH_CFLAGS="-I$(STAGING_DIR)/opt/include" \
 	LIBSSH_LIBS="-L$(STAGING_DIR)/opt/lib -lssh"
 
-TARGET_CFLAGS += -D_LARGEFILE64_SOURCE
 TARGET_LDFLAGS += -Wl,--gc-sections $(if $(INTL_FULL),-lintl)
 
 define Build/InstallDev
