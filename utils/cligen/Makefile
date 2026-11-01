@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=cligen
-PKG_VERSION:=7.6.0
-PKG_RELEASE:=1
+PKG_VERSION:=7.8.0
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/clicon/$(PKG_NAME)/tar.gz/$(PKG_VERSION)?
-PKG_HASH:=547e9df4017fa7bc1fd88abbd6680ab2383b8d14b272ee04cb950ad5da04889d
+PKG_HASH:=ca4be82ccbb06159bcff80b2e3222ee57271f40e6ed51a0c00f92f1fbf6daad0
 
 PKG_MAINTAINER:=Olof Hagsand <olof@hagsand.se>, Philip Prindeville <philipp@redfish-solutions.com>
 PKG_LICENSE:=Apache-2.0
@@ -28,7 +28,7 @@ define Package/cligen
   CATEGORY:=Utilities
   URL:=https://www.cligen.se
   TITLE:=CLIgen is a Command-Line Interface generator
-  DEPENDS:=libxml2
+  DEPENDS:=+libxml2
 endef
 
 define Package/cligen/description
