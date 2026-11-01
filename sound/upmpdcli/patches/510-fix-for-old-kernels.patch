@@ -1,21 +1,21 @@
 --- a/src/pathut.cpp
 +++ b/src/pathut.cpp
-@@ -1156,7 +1156,12 @@ bool path_samefile(const std::string& p1
- #endif
- }
- 
--#if defined(STATX_TYPE)
+@@ -1304,7 +1304,12 @@ bool path_samefile(const std::string& p1
+ // It causes problems with containers builds built with statx support but running on older kernels
+ // so it is now disabled by default. Set the ENABLE_STATX flag if needed (only recoll does it at the
+ // moment).
+-#if defined(STATX_TYPE) && defined(ENABLE_STATX)
 +/* statx since Linux 4.11 */
 +#ifndef LINUX_VERSION_CODE
 +#include <linux/version.h>
 +#endif
 +
-+#if defined(STATX_TYPE) && LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
++#if defined(STATX_TYPE) && defined(ENABLE_STATX) && LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
  
  #include <sys/syscall.h>
  
-@@ -1209,6 +1214,7 @@ static int lstatx(const char *filename,
- #define STATXCALL statx
+@@ -1370,6 +1375,7 @@ static int fstatx(int fd, struct statx *
+ #define FSTATXCALL fstatx
  #define LSTATXCALL lstatx
  
 +/* statx since Linux 4.11 */
