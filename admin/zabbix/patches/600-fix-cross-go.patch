@@ -1,0 +1,26 @@
+--- a/src/go/Makefile.am
++++ b/src/go/Makefile.am
+@@ -4,8 +4,8 @@ EXTRA_DIST = .
+ 
+ BUILD_TIME=`date +%H:%M:%S`
+ BUILD_DATE=`date +"%b %_d %Y"`
+-GOOS=`go env GOOS`
+-GOARCH=`go env GOARCH`
++#GOOS=`go env GOOS`
++#GOARCH=`go env GOARCH`
+ PKG=golang.zabbix.com/agent2/pkg/version
+ NEW_FROM_REV=""
+ 
+--- a/src/go/Makefile.in
++++ b/src/go/Makefile.in
+@@ -399,8 +399,8 @@ top_srcdir = @top_srcdir@
+ EXTRA_DIST = .
+ BUILD_TIME = `date +%H:%M:%S`
+ BUILD_DATE = `date +"%b %_d %Y"`
+-GOOS = `go env GOOS`
+-GOARCH = `go env GOARCH`
++#GOOS = `go env GOOS`
++#GOARCH = `go env GOARCH`
+ PKG = golang.zabbix.com/agent2/pkg/version
+ NEW_FROM_REV = ""
+ GOLDFLAGS = -X '${PKG}.compileDate=${BUILD_DATE}' -X \

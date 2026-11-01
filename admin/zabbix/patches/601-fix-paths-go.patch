@@ -1,0 +1,139 @@
+--- a/src/go/cmd/zabbix_web_service/config.go
++++ b/src/go/cmd/zabbix_web_service/config.go
+@@ -20,7 +20,7 @@ type serviceOptions struct {
+ 	ListenPort          string `conf:"optional,range=1024:32767,default=10053"`
+ 	AllowedIP           string `conf:"optional"`
+ 	LogType             string `conf:"optional,default=file"`
+-	LogFile             string `conf:"optional,default=/tmp/zabbix_web_service.log"`
++	LogFile             string `conf:"optional,default=/opt/var/log/zabbix_web_service.log"`
+ 	LogFileSize         int    `conf:"optional,range=0:1024,default=1"`
+ 	Timeout             int    `conf:"optional,range=1:30,default=10"`
+ 	DebugLevel          int    `conf:"range=0:5,default=3"`
+--- a/src/go/conf/zabbix_agent2.conf
++++ b/src/go/conf/zabbix_agent2.conf
+@@ -8,7 +8,7 @@
+ #
+ # Mandatory: no
+ # Default:
+-# PidFile=/tmp/zabbix_agent2.pid
++# PidFile=/opt/var/run/zabbix_agent2.pid
+ 
+ ### Option: LogType
+ #	Specifies where log messages are written to:
+@@ -25,7 +25,7 @@
+ #
+ # Mandatory: yes, if LogType is set to file, otherwise no
+ # Default:
+-# LogFile=/tmp/zabbix_agent2.log
++# LogFile=/opt/var/log/zabbix_agent2.log
+ 
+ ### Option: LogFileSize
+ #	Maximum size of log file in MB.
+@@ -290,7 +290,7 @@ Hostname=Zabbix server
+ #	Path to unix socket for external plugin communications.
+ #
+ # Mandatory: no
+-# Default:/tmp/agent.plugin.sock
++# Default:/opt/var/run/agent.plugin.sock
+ # PluginSocket=
+ 
+ ####### USER-DEFINED MONITORED PARAMETERS #######
+@@ -334,7 +334,7 @@ Hostname=Zabbix server
+ # Default:
+ # ControlSocket=
+ 
+-ControlSocket=/tmp/agent.sock
++ControlSocket=/opt/var/run/agent.sock
+ 
+ ### Option: EnableProfiler
+ #	Whether periodic Go profiling is enabled on agent startup.
+@@ -581,12 +581,12 @@ Include=./zabbix_agent2.d/plugins.d/*.co
+ 
+ ### Option: Include
+ #	You may include individual files or all files in a directory in the configuration file.
+-#	Installing Zabbix will create include directory in /usr/local/etc, unless modified during the compile time.
++#	Installing Zabbix will create include directory in /opt/etc, unless modified during the compile time.
+ #
+ # Mandatory: no
+ # Default:
+ # Include=
+ 
+-# Include=/usr/local/etc/zabbix_agent2.userparams.conf
+-# Include=/usr/local/etc/zabbix_agent2.conf.d/
+-# Include=/usr/local/etc/zabbix_agent2.conf.d/*.conf
++# Include=/opt/etc/zabbix_agent2.userparams.conf
++# Include=/opt/etc/zabbix_agent2.conf.d/
++# Include=/opt/etc/zabbix_agent2.conf.d/*.conf
+--- a/src/go/conf/zabbix_web_service.conf
++++ b/src/go/conf/zabbix_web_service.conf
+@@ -18,7 +18,7 @@
+ #
+ # Mandatory: yes, if LogType is set to file, otherwise no
+ # Default:
+-# LogFile=/tmp/zabbix_web_service.log
++# LogFile=/opt/var/log/zabbix_web_service.log
+ 
+ ### Option: LogFileSize
+ #	Maximum size of log file in MB.
+--- a/src/go/internal/agent/options_nix.go
++++ b/src/go/internal/agent/options_nix.go
+@@ -18,7 +18,7 @@ package agent
+ 
+ type AgentOptions struct {
+ 	LogType                    string   `conf:"optional,default=file"`
+-	LogFile                    string   `conf:"optional,default=/tmp/zabbix_agent2.log"`
++	LogFile                    string   `conf:"optional,default=/opt/var/log/zabbix_agent2.log"`
+ 	LogFileSize                int      `conf:"optional,range=0:1024,default=1"`
+ 	DebugLevel                 int      `conf:"optional,range=0:5,default=3"`
+ 	PidFile                    string   `conf:"optional"`
+@@ -47,7 +47,7 @@ type AgentOptions struct {
+ 	ControlSocket              string   `conf:"optional"`
+ 	Alias                      []string `conf:"optional"`
+ 	EnableProfiler             int      `conf:"optional,range=0:1,default=0"`
+-	ProfilerDir                string   `conf:"optional,default=/tmp/zabbix_agent2_profiles"`
++	ProfilerDir                string   `conf:"optional,default=/opt/tmp/zabbix_agent2_profiles"`
+ 	ProfilerMaxFilesPerProfile int      `conf:"optional,range=1:100,default=10"`
+ 	ProfilerInterval           int      `conf:"optional,range=1:86400,default=3600"`
+ 	TLSConnect                 string   `conf:"optional"`
+@@ -67,7 +67,7 @@ type AgentOptions struct {
+ 	TLSCipherAll               string   `conf:"optional"`
+ 	TLSCipherAll13             string   `conf:"optional"`
+ 	ExternalPluginTimeout      int      `conf:"optional,name=PluginTimeout,range=1:30"`
+-	ExternalPluginsSocket      string   `conf:"optional,name=PluginSocket,default=/tmp/agent.plugin.sock"`
++	ExternalPluginsSocket      string   `conf:"optional,name=PluginSocket,default=/opt/var/run/agent.plugin.sock"`
+ 	ForceActiveChecksOnStart   int      `conf:"optional,range=0:1,default=0"`
+ 	HeartbeatFrequency         int      `conf:"optional,range=0:3600,default=60"`
+ 
+--- a/src/go/pkg/pidfile/pidfile_nix.go
++++ b/src/go/pkg/pidfile/pidfile_nix.go
+@@ -25,7 +25,7 @@ import (
+ 
+ func createPidFile(pid int, path string) (file *os.File, err error) {
+ 	if path == "" {
+-		path = "/tmp/zabbix_agent2.pid"
++		path = "/opt/var/run/zabbix_agent2.pid"
+ 	}
+ 
+ 	flockT := syscall.Flock_t{
+--- a/src/go/vendor/github.com/go-sql-driver/mysql/dsn.go
++++ b/src/go/vendor/github.com/go-sql-driver/mysql/dsn.go
+@@ -112,7 +112,7 @@ func (cfg *Config) normalize() error {
+ 		case "tcp":
+ 			cfg.Addr = "127.0.0.1:3306"
+ 		case "unix":
+-			cfg.Addr = "/tmp/mysql.sock"
++			cfg.Addr = "/opt/var/run/mysqld/mysqld.sock"
+ 		default:
+ 			return errors.New("default addr for network '" + cfg.Net + "' unknown")
+ 		}
+--- a/src/go/vendor/github.com/godbus/dbus/v5/conn_unix.go
++++ b/src/go/vendor/github.com/godbus/dbus/v5/conn_unix.go
+@@ -6,7 +6,7 @@ import (
+ 	"os"
+ )
+ 
+-const defaultSystemBusAddress = "unix:path=/var/run/dbus/system_bus_socket"
++const defaultSystemBusAddress = "unix:path=/opt/var/run/dbus/system_bus_socket"
+ 
+ func getSystemBusPlatformAddress() string {
+ 	address := os.Getenv("DBUS_SYSTEM_BUS_ADDRESS")

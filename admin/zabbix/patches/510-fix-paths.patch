@@ -1,0 +1,122 @@
+--- a/src/libs/zbxsysinfo/common/zbxsysinfo_common.c
++++ b/src/libs/zbxsysinfo/common/zbxsysinfo_common.c
+@@ -26,9 +26,9 @@
+ #include "zbxstr.h"
+ 
+ #if !defined(_WINDOWS)
+-#	define VFS_TEST_FILE "/etc/passwd"
++#	define VFS_TEST_FILE "/opt/etc/passwd"
+ #	define VFS_TEST_REGEXP "root"
+-#	define VFS_TEST_DIR  "/var/log"
++#	define VFS_TEST_DIR  "/opt/var/log"
+ #else
+ #	define VFS_TEST_FILE "c:\\windows\\win.ini"
+ #	define VFS_TEST_REGEXP "fonts"
+--- a/src/libs/zbxsysinfo/linux/software.c
++++ b/src/libs/zbxsysinfo/linux/software.c
+@@ -32,7 +32,7 @@
+ #define SW_OS_FULL			"/proc/version"
+ #define SW_OS_SHORT			"/proc/version_signature"
+ #define SW_OS_NAME			"/etc/issue.net"
+-#define SW_OS_NAME_RELEASE		"/etc/os-release"
++#define SW_OS_NAME_RELEASE		"/opt/etc/os-release"
+ #define SW_OS_OPTION_PRETTY_NAME	"PRETTY_NAME"
+ 
+ #define TIME_FMT	"%a %b %e %H:%M:%S %Y"
+--- a/src/zabbix_agent/zabbix_agentd.c
++++ b/src/zabbix_agent/zabbix_agentd.c
+@@ -208,7 +208,7 @@ static const char	*help_message[] = {
+ #ifdef _WINDOWS
+ 	"Example: zabbix_agentd -c C:\\zabbix\\zabbix_agentd.conf",
+ #else
+-	"Example: zabbix_agentd -c /etc/zabbix/zabbix_agentd.conf",
++	"Example: zabbix_agentd -c /opt/etc/zabbix_agentd.conf",
+ #endif
+ 	NULL	/* end of text */
+ };
+@@ -695,7 +695,7 @@ static void	set_defaults(void)
+ 		config_load_module_path = zbx_strdup(config_load_module_path, DEFAULT_LOAD_MODULE_PATH);
+ 
+ 	if (NULL == config_pid_file)
+-		config_pid_file = (char *)"/tmp/zabbix_agentd.pid";
++		config_pid_file = (char *)"/opt/var/run/zabbix-agentd/zabbix_agentd.pid";
+ #endif
+ 	if (NULL == log_file_cfg.log_type_str)
+ 		log_file_cfg.log_type_str = zbx_strdup(log_file_cfg.log_type_str, ZBX_OPTION_LOGTYPE_FILE);
+--- a/src/zabbix_proxy/proxy.c
++++ b/src/zabbix_proxy/proxy.c
+@@ -543,19 +543,19 @@ static void	zbx_set_defaults(void)
+ 		zbx_config_dbhigh->config_dbhost = zbx_strdup(zbx_config_dbhigh->config_dbhost, "localhost");
+ 
+ 	if (NULL == zbx_config_snmptrap_file)
+-		zbx_config_snmptrap_file = zbx_strdup(zbx_config_snmptrap_file, "/tmp/zabbix_traps.tmp");
++		zbx_config_snmptrap_file = zbx_strdup(zbx_config_snmptrap_file, "/opt/tmp/zabbix_traps.tmp");
+ 
+ 	if (NULL == zbx_config_pid_file)
+-		zbx_config_pid_file = zbx_strdup(zbx_config_pid_file, "/tmp/zabbix_proxy.pid");
++		zbx_config_pid_file = zbx_strdup(zbx_config_pid_file, "/opt/var/run/zabbix_proxy.pid");
+ 
+ 	if (NULL == zbx_config_tmpdir)
+-		zbx_config_tmpdir = zbx_strdup(zbx_config_tmpdir, "/tmp");
++		zbx_config_tmpdir = zbx_strdup(zbx_config_tmpdir, "/opt/tmp");
+ 
+ 	if (NULL == zbx_config_fping_location)
+-		zbx_config_fping_location = zbx_strdup(zbx_config_fping_location, "/usr/sbin/fping");
++		zbx_config_fping_location = zbx_strdup(zbx_config_fping_location, "/opt/sbin/fping");
+ #ifdef HAVE_IPV6
+ 	if (NULL == zbx_config_fping6_location)
+-		zbx_config_fping6_location = zbx_strdup(zbx_config_fping6_location, "/usr/sbin/fping6");
++		zbx_config_fping6_location = zbx_strdup(zbx_config_fping6_location, "/opt/sbin/fping6");
+ #endif
+ 	if (NULL == config_externalscripts)
+ 		config_externalscripts = zbx_strdup(config_externalscripts, DEFAULT_EXTERNAL_SCRIPTS_PATH);
+@@ -579,7 +579,7 @@ static void	zbx_set_defaults(void)
+ 		log_file_cfg.log_type_str = zbx_strdup(log_file_cfg.log_type_str, ZBX_OPTION_LOGTYPE_FILE);
+ 
+ 	if (NULL == config_socket_path)
+-		config_socket_path = zbx_strdup(config_socket_path, "/tmp");
++		config_socket_path = zbx_strdup(config_socket_path, "/opt/tmp");
+ 
+ 	if (0 != config_forks[ZBX_PROCESS_TYPE_IPMIPOLLER])
+ 		config_forks[ZBX_PROCESS_TYPE_IPMIMANAGER] = 1;
+--- a/src/zabbix_server/server.c
++++ b/src/zabbix_server/server.c
+@@ -647,10 +647,10 @@ static void	zbx_set_defaults(void)
+ 		zbx_config_dbhigh->config_dbhost = zbx_strdup(zbx_config_dbhigh->config_dbhost, "localhost");
+ 
+ 	if (NULL == zbx_config_snmptrap_file)
+-		zbx_config_snmptrap_file = zbx_strdup(zbx_config_snmptrap_file, "/tmp/zabbix_traps.tmp");
++		zbx_config_snmptrap_file = zbx_strdup(zbx_config_snmptrap_file, "/opt/tmp/zabbix_traps.tmp");
+ 
+ 	if (NULL == zbx_config_pid_file)
+-		zbx_config_pid_file = zbx_strdup(zbx_config_pid_file, "/tmp/zabbix_server.pid");
++		zbx_config_pid_file = zbx_strdup(zbx_config_pid_file, "/opt/var/run/zabbix-server/zabbix_server.pid");
+ 
+ 	if (NULL == zbx_config_alert_scripts_path)
+ 		zbx_config_alert_scripts_path = zbx_strdup(zbx_config_alert_scripts_path, DEFAULT_ALERT_SCRIPTS_PATH);
+@@ -659,13 +659,13 @@ static void	zbx_set_defaults(void)
+ 		CONFIG_LOAD_MODULE_PATH = zbx_strdup(CONFIG_LOAD_MODULE_PATH, DEFAULT_LOAD_MODULE_PATH);
+ 
+ 	if (NULL == zbx_config_tmpdir)
+-		zbx_config_tmpdir = zbx_strdup(zbx_config_tmpdir, "/tmp");
++		zbx_config_tmpdir = zbx_strdup(zbx_config_tmpdir, "/opt/tmp");
+ 
+ 	if (NULL == zbx_config_fping_location)
+-		zbx_config_fping_location = zbx_strdup(zbx_config_fping_location, "/usr/sbin/fping");
++		zbx_config_fping_location = zbx_strdup(zbx_config_fping_location, "/opt/sbin/fping");
+ #ifdef HAVE_IPV6
+ 	if (NULL == zbx_config_fping6_location)
+-		zbx_config_fping6_location = zbx_strdup(zbx_config_fping6_location, "/usr/sbin/fping6");
++		zbx_config_fping6_location = zbx_strdup(zbx_config_fping6_location, "/opt/sbin/fping6");
+ #endif
+ 	if (NULL == config_externalscripts)
+ 		config_externalscripts = zbx_strdup(config_externalscripts, DEFAULT_EXTERNAL_SCRIPTS_PATH);
+@@ -688,7 +688,7 @@ static void	zbx_set_defaults(void)
+ 		log_file_cfg.log_type_str = zbx_strdup(log_file_cfg.log_type_str, ZBX_OPTION_LOGTYPE_FILE);
+ 
+ 	if (NULL == CONFIG_SOCKET_PATH)
+-		CONFIG_SOCKET_PATH = zbx_strdup(CONFIG_SOCKET_PATH, "/tmp");
++		CONFIG_SOCKET_PATH = zbx_strdup(CONFIG_SOCKET_PATH, "/opt/tmp");
+ 
+ 	if (0 != config_forks[ZBX_PROCESS_TYPE_IPMIPOLLER])
+ 		config_forks[ZBX_PROCESS_TYPE_IPMIMANAGER] = 1;

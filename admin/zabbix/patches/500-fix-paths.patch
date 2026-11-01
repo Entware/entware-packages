@@ -1,14 +1,11 @@
 --- a/conf/zabbix_agentd.conf
 +++ b/conf/zabbix_agentd.conf
-@@ -3,11 +3,12 @@
- 
- ############ GENERAL PARAMETERS #################
+@@ -10,8 +10,12 @@
+ # Default:
+ # PidFile=/tmp/zabbix_agentd.pid
  
 -# Zabbix always creates a PidFile. Make sure it is where we want it.
 -PidFile=/var/run/zabbix-agent/zabbix_agentd.pid
--
--# use syslog
--LogType=system
 +### Option: PidFile
 +#	Name of PID file.
 +#
@@ -18,22 +15,24 @@
  
  ### Option: LogType
  #	Specifies where log messages are written to:
-@@ -24,7 +25,8 @@ LogType=system
- #
- # Mandatory: yes, if LogType is set to file, otherwise no
+@@ -23,8 +27,7 @@ PidFile=/var/run/zabbix-agent/zabbix_age
  # Default:
--# LogFile=
-+
+ # LogType=file
+ 
+-# Use syslog
+-LogType=system
 +LogFile=/opt/var/log/zabbix-agent/zabbix_agentd.log
  
- ### Option: LogFileSize
- #	Maximum size of log file in MB.
-@@ -540,4 +542,4 @@ User=zabbix-agent
- 
+ ### Option: LogFile
+ #	Log file name for LogType 'file' parameter.
+@@ -557,5 +560,5 @@ User=zabbix-agent
  # Include=/usr/local/etc/zabbix_agentd.userparams.conf
+ # Include=/usr/local/etc/zabbix_agentd.conf.d/
  # Include=/usr/local/etc/zabbix_agentd.conf.d/*.conf
--Include=/etc/zabbix_agentd.conf.d/
-+Include=/opt/etc/zabbix_agentd.conf.d/
+-Include=/usr/share/zabbix_agentd.openwrt-params.d/
+-Include=/etc/zabbix_agentd.conf.d/*.conf
++Include=/opt/share/zabbix_agentd.openwrt-params.d/
++Include=/opt/etc/zabbix_agentd.conf.d/*.conf
 --- a/conf/zabbix_server.conf
 +++ b/conf/zabbix_server.conf
 @@ -27,7 +27,6 @@
@@ -53,15 +52,7 @@
  
  ### Option: LogFileSize
  #	Maximum size of log file in MB.
-@@ -46,7 +45,6 @@ LogType=system
- # Range: 0-1024
- # Default:
- # LogFileSize=1
--LogFileSize=0
- 
- ### Option: DebugLevel
- #	Specifies debug level:
-@@ -71,7 +69,7 @@ LogFileSize=0
+@@ -70,7 +69,7 @@ LogType=system
  
  # Although procd does not require a pid file, zabbix uses the pidfile to
  # shut down correctly on receipt of a TERM or INT signal.
@@ -70,6 +61,15 @@
  
  ### Option: SocketDir
  #	IPC socket directory.
+@@ -616,7 +615,7 @@ Timeout=4
+ # Mandatory: no
+ # Default:
+ # FpingLocation=/usr/sbin/fping
+-FpingLocation=/usr/bin/fping
++FpingLocation=/opt/bin/fping
+ 
+ ### Option: Fping6Location
+ #	Location of fping6.
 --- a/ui/locale/add_new_language.sh
 +++ b/ui/locale/add_new_language.sh
 @@ -1,4 +1,4 @@
