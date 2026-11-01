@@ -1,5 +1,5 @@
 
-# Copyright (C) 2006-2016 OpenWrt.org
+# Copyright (C) 2006-2026 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -8,33 +8,39 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=nut
-PKG_VERSION:=2.8.4
-PKG_RELEASE:=1
+PKG_VERSION:=2.8.5
+PKG_RELEASE:=6
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://www.networkupstools.org/source/2.8/
-PKG_HASH:=a2fe55bc2d90b4a848d6ff8bac361e6d1c97f899a545219cad707d17a27ff127
+PKG_HASH:=18bf32e59eb764b13da3c4fa70384926d7fa584cb31d2fe7f137a570633eeec1
 PKG_LICENSE:=GPL-2.0-or-later GPL-3.0-or-later GPL-1.0-or-later Artistic-1.0-Perl
 PKG_LICENSE_FILES:=LICENSE-GPL2 LICENSE-GPL3 COPYING
 PKG_FIXUP:=autoreconf
 
+PKG_MAINTAINER:=Daniel F. Dickinson <dfdpublic@wildtechgarden.ca>
+
 PKG_INSTALL:=1
 
 PKG_CONFIG_DEPENDS:= \
-	CONFIG_NUT_DRIVER_SNMP \
-	CONFIG_NUT_DRIVER_USB \
-	CONFIG_NUT_DRIVER_SERIAL \
-	CONFIG_NUT_DRIVER_NEON \
-	CONFIG_NUT_SSL \
-	CONFIG_PACKAGE_nut-web-cgi
+  CONFIG_PACKAGE_nut-web-cgi \
+  CONFIG_NUT_DRIVER_NEON \
+  CONFIG_NUT_DRIVER_SERIAL \
+  CONFIG_NUT_DRIVER_SNMP \
+  CONFIG_NUT_DRIVER_USB \
+  CONFIG_NUT_SSL \
+  CONFIG_NUT_SSL_CERTVERIFY \
+  CONFIG_NUT_SSL_NSS
 
 include $(INCLUDE_DIR)/package.mk
+# .../bin/ld.bfd: cannot find -lintl: No such file or directory
+include $(INCLUDE_DIR)/nls.mk
 
 define Package/nut/Default
-	SECTION:=net
-	CATEGORY:=Network
-	URL:=http://www.networkupstools.org/
-	TITLE:=Network UPS Tools (NUT)
+  SECTION:=net
+  CATEGORY:=Network
+  URL:=https://networkupstools.org/
+  TITLE:=Network UPS Tools (NUT)
 endef
 
 define Package/nut/description/Default
@@ -46,8 +52,8 @@ changes.
 endef
 
 define Package/nut
-	$(call Package/nut/Default)
-	MENU:=1
+  $(call Package/nut/Default)
+  MENU:=1
 endef
 
 define Package/nut/description
@@ -55,7 +61,7 @@ $(call Package/nut/description/Default)
 endef
 
 define Package/nut/config
-	source "$(SOURCE)/Config.in"
+  source "$(SOURCE)/Config.in"
 endef
 
 define Package/nut/install
@@ -67,27 +73,50 @@ define Package/nut-server/install
 	$(INSTALL_DIR) $(1)/opt/etc/nut
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/init.d
+#	$(INSTALL_DIR) $(1)/lib/functions/nut
 	$(INSTALL_DIR) $(1)/opt/share/nut
 	$(INSTALL_BIN) ./files/S15upsd $(1)/opt/etc/init.d/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsd $(1)/opt/sbin
+#	$(INSTALL_DATA) ./files/nut-server-config.sh.functions $(1)/lib/functions/nut/nut-server-config.sh
+#	$(INSTALL_DATA) ./files/nut-server-service.sh.functions $(1)/lib/functions/nut/nut-server-service.sh
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsd $(1)/opt/sbin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/cmdvartab $(1)/opt/share/nut/
 #	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/ups.conf.sample $(1)/opt/etc/nut/ups.conf
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.conf.sample $(1)/opt/etc/nut/upsd.conf
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.users.sample $(1)/opt/etc/nut/upsd.users
+#	$(INSTALL_CONF) ./files/nut_server $(1)/etc/config/nut_server
+#	ln -sf ../../var/etc/nut/upsd.users  $(1)/etc/nut/upsd.users
+#	ln -sf ../../var/etc/nut/upsd.conf $(1)/etc/nut/upsd.conf
 	# Driver common portion
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsdrvctl $(1)/opt/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/share/nut/driver.list $(1)/opt/share/nut/
+#	ln -sf ../../var/etc/nut/ups.conf $(1)/etc/nut/ups.conf
+#	# Mangle libhid.usermap into a format (hotplug shell script) useful for OpenWrt
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/tty
+#	$(INSTALL_BIN) ./files/nut-serial.hotplug $(1)/etc/hotplug.d/tty/40-nut-serial
+#	$(CP) ./files/libhid-ups.hotplug $(PKG_BUILD_DIR)/30-libhid-ups
+#	$(CP) $(PKG_INSTALL_DIR)/etc/hotplug/usb/libhid.usermap $(PKG_BUILD_DIR)/libhid-ups.parsed-usermap
+#	$(SED) '/^$$$$/d' \
+#		-e '/^#/d' \
+#		-E -e 's:^[^ ][^ ]*  *0x0003  *0x0{0,3}([^ ][^ ]*)  *0x0{0,3}*([^ ][^ ]*).*:\1/\2/* | \\:' \
+#		$(PKG_BUILD_DIR)/libhid-ups.parsed-usermap
+#	$(SED) 's^### insert libhid-ups.parsed-usermap content here ###^\ncat "$(PKG_BUILD_DIR)/libhid-ups.parsed-usermap"^e' $(PKG_BUILD_DIR)/30-libhid-ups
+#	$(INSTALL_BIN) $(PKG_BUILD_DIR)/30-libhid-ups $(1)/etc/hotplug.d/usb/30-libhid-ups
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
+#	$(INSTALL_DATA) ./files/nut-server.default $(1)/etc/uci-defaults/90_nut-server
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/ups.conf.sample $(1)/opt/etc/nut/ups.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.conf.sample $(1)/opt/etc/nut/upsd.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsd.users.sample $(1)/opt/etc/nut/upsd.users
 endef
 
 define Package/nut-common
-	$(call Package/nut/Default)
-	TITLE+= (common)
-	DEPENDS:= nut \
-		+NUT_DRIVER_SNMP:libnetsnmp \
-		+NUT_DRIVER_USB:libusb-compat \
-		+NUT_DRIVER_NEON:libneon \
-		+NUT_SSL:libopenssl
+  $(call Package/nut/Default)
+  TITLE+= (common)
+  DEPENDS:=nut \
+    +NUT_DRIVER_SNMP:libnetsnmp \
+    +NUT_DRIVER_USB:libusb-compat \
+    +NUT_DRIVER_NEON:libneon \
+    +NUT_SSL:libopenssl \
+    +NUT_SSL_NSS:libnss \
+    +NUT_SSL_NSS:nss-utils
 endef
 
 define Package/nut-common/description
@@ -97,20 +126,33 @@ endef
 
 define Package/nut-common/conffiles
 /opt/etc/nut/nut.conf
+/opt/etc/nut/cert_db/
 endef
 
 define Package/nut-common/install
 	$(INSTALL_DIR) $(1)/opt/etc/nut
 	$(INSTALL_DIR) $(1)/opt/lib
+#	$(INSTALL_DIR) $(1)/lib/functions/nut
+	$(INSTALL_DIR) $(1)/opt/share/nut
+#	$(INSTALL_DATA) ./files/nut-common.sh.functions $(1)/lib/functions/nut/nut-common.sh
+#	$(INSTALL_DATA) ./files/nut-service.sh.functions $(1)/lib/functions/nut/nut-service.sh
 	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libupsclient.so* $(1)/opt/lib/
+#	ln -sf /var/etc/nut/nut.conf $(1)/etc/nut/nut.conf
+	$(if $(CONFIG_NUT_SSL),printf "%s" "openssl" >$(PKG_BUILD_DIR)/ssl_backend)
+	$(if $(CONFIG_NUT_SSL_NSS),printf "%s" "nss" >$(PKG_BUILD_DIR)/ssl_backend)
+	$(if $(CONFIG_NUT_SSL)$(CONFIG_NUT_SSL_NSS),,printf "%s" "none" >$(PKG_BUILD_DIR)/ssl_backend)
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/ssl_backend $(1)/opt/share/nut/ssl_backend
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
+#	$(INSTALL_DATA) ./files/nut-common.default $(1)/etc/uci-defaults/89_nut-common
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/nut.conf.sample $(1)/opt/etc/nut/nut.conf
 endef
 
 define Package/nut-server
-	$(call Package/nut/Default)
-	TITLE+= (server)
-	DEPENDS:=nut +nut-common
-	USERID:=nut=113:nut=113
+  $(call Package/nut/Default)
+  TITLE+= (server)
+  DEPENDS:=nut \
+    +nut-common
+  USERID:=nut=113:nut=113
 endef
 
 define Package/nut-server/description
@@ -130,9 +172,10 @@ endef
 
 define Package/nut-upsmon
   $(call Package/nut/Default)
-	TITLE+= (monitor)
-	DEPENDS:=nut +nut-common
-	USERID:=nutmon=114:nutmon=114
+  TITLE+= (monitor)
+  DEPENDS:=nut \
+    +nut-common
+  USERID:=nutmon=114:nutmon=114
 endef
 
 define Package/nut-upsmon/description
@@ -142,28 +185,41 @@ part of UPS monitoring--shutting down the system when the power goes
 out. It can call out to other helper programs for notification purposes
 during power events. upsmon can monitor multiple systems using a single
 process. Every UPS that is defined in the upsmon.conf configuration file
-is assigned a power value and a type (slave or master).
+is assigned a power value and a type (secondary or primary).
+endef
+
+#define Package/nut-upsmon/conffiles
+#/etc/config/nut_monitor
+#/etc/nut/upsmon.conf
+#endef
+
+define Package/nut-upsmon/install
+	$(INSTALL_DIR) $(1)/opt/etc/nut
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_DIR) $(1)/opt/etc/init.d
+#	$(INSTALL_DIR) $(1)/lib/functions/nut
+#	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/S15upsmon $(1)/opt/etc/init.d/
+#	$(INSTALL_DATA) ./files/nut-monitor-config.sh.functions $(1)/lib/functions/nut/nut-monitor-config.sh
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsmon $(1)/opt/sbin/
+#	$(INSTALL_BIN) ./files/nutshutdown $(1)/usr/sbin/nutshutdown
+#	$(INSTALL_DATA) ./files/nut-monitor-migrate.default $(1)/etc/uci-defaults/80-nut-monitor-migrate
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/nut_monitor $(1)/etc/config/nut_monitor
+#	ln -sf /var/etc/nut/upsmon.conf $(1)/etc/nut/upsmon.conf
+#	$(INSTALL_DATA) ./files/nut-upsmon.default $(1)/etc/uci-defaults/90_nut-upsmon	$(INSTALL_DATA) ./files/nut-upsmon.default $(1)/etc/uci-defaults/90_nut-upsmon
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsmon.conf.sample $(1)/opt/etc/nut/upsmon.conf
 endef
 
 define Package/nut-upsmon/conffiles
 /opt/etc/nut/upsmon.conf
 endef
 
-define Package/nut-upsmon/install
-	$(INSTALL_DIR) $(1)/opt/etc/nut
-	$(INSTALL_DIR) $(1)/opt/sbin
-	$(INSTALL_DIR) $(1)/opt/etc/init.d
-	$(INSTALL_BIN) ./files/S15upsmon $(1)/opt/etc/init.d/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upsmon $(1)/opt/sbin/
-#	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsmon.conf.sample $(1)/opt/etc/nut/upsmon.conf
-endef
-
 define Package/nut-upsmon-sendmail-notify
-	$(call Package/nut/Default)
-	TITLE+= (upsmon with notifications via sendmail)
-	DEPENDS:=nut +nut-upsmon
-	CONFLICTS:=nut-upssched
+  $(call Package/nut/Default)
+  TITLE+= (upsmon with notifications via sendmail)
+  DEPENDS:=nut +nut-upsmon
+  CONFLICTS:=nut-upssched
 endef
 
 define Package/nut-upsmon-sendmail-notify/description
@@ -171,16 +227,17 @@ $(call Package/nut/description/Default)
 upsmon with default notification via sendmail
 endef
 
-#define Package/nut-upsmon-sendmail-notify/install
-#	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/uci-defaults
-#	$(INSTALL_BIN) ./files/nut-sendmail-notify $(1)/usr/bin/
-#	$(INSTALL_DATA) ./files/nut-sendmail-notify.default $(1)/etc/uci-defaults/nut-sendmail-notify
-#endef
+define Package/nut-upsmon-sendmail-notify/install
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/nut-sendmail-notify $(1)/usr/bin/
+	$(INSTALL_DATA) ./files/nut-sendmail-notify.default $(1)/etc/uci-defaults/81-nut-sendmail-notify
+	$(INSTALL_DATA) ./files/nut-notify-exec.default $(1)/etc/uci-defaults/71-nut-notify-exec
+endef
 
 define Package/nut-upsc
-	$(call Package/nut/Default)
-	TITLE+= (upsc command)
-	DEPENDS:=nut +nut-common
+  $(call Package/nut/Default)
+  TITLE+= (upsc command)
+  DEPENDS:=nut +nut-common
 endef
 
 define Package/nut-upsc/description
@@ -196,9 +253,9 @@ define Package/nut-upsc/install
 endef
 
 define Package/nut-upslog
-	$(call Package/nut/Default)
-	TITLE+= (logging client)
-	DEPENDS:=nut +nut-common
+  $(call Package/nut/Default)
+  TITLE+= (logging client)
+  DEPENDS:=nut +nut-common
 endef
 
 define Package/nut-upslog/description
@@ -213,9 +270,9 @@ define Package/nut-upslog/install
 endef
 
 define Package/nut-upscmd
-	$(call Package/nut/Default)
-	TITLE+= (controller)
-	DEPENDS:=nut +nut-common
+  $(call Package/nut/Default)
+  TITLE+= (controller)
+  DEPENDS:=nut +nut-common
 endef
 
 define Package/nut-upscmd/description
@@ -233,9 +290,9 @@ define Package/nut-upscmd/install
 endef
 
 define Package/nut-upsrw
-	$(call Package/nut/Default)
-	TITLE+= (variable editor)
-	DEPENDS:=nut +nut-common
+  $(call Package/nut/Default)
+  TITLE+= (variable editor)
+  DEPENDS:=nut +nut-common
 endef
 
 define Package/nut-upsrw/description
@@ -254,9 +311,9 @@ define Package/nut-upsrw/install
 endef
 
 define Package/nut-upssched
-	$(call Package/nut/Default)
-	TITLE+= (helper for triggering events from upsmon)
-	DEPENDS:=nut +nut-common +nut-upsmon
+  $(call Package/nut/Default)
+  TITLE+= (helper for triggering events from upsmon)
+  DEPENDS:=nut +nut-common +nut-upsmon
 endef
 
 define Package/nut-upssched/description
@@ -276,15 +333,22 @@ define Package/nut-upssched/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_DIR) $(1)/opt/sbin
 	$(INSTALL_DIR) $(1)/opt/etc/nut
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/upssched-cmd $(1)/opt/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/upssched $(1)/opt/sbin/
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upssched.conf.sample $(1)/opt/etc/nut/upssched.conf
+#	$(INSTALL_DATA) ./files/nut-sched.default $(1)/etc/uci-defaults/80-nut-upssched
+#	$(INSTALL_DATA) ./files/nut-notify-exec.default $(1)/etc/uci-defaults/70-nut-notify-exec
+endef
+
+define Package/nut-upssched/conffiles
+/etc/nut/upssched.conf
 endef
 
 define Package/nut-web-cgi
-	$(call Package/nut/Default)
-	TITLE+= Web CGI interface
-	DEPENDS:=nut +nut-common +PACKAGE_nut-web-cgi:libgd +PACKAGE_nut-web-cgi:libtiff
+  $(call Package/nut/Default)
+  TITLE+= Web CGI interface
+  DEPENDS:=nut +nut-common +PACKAGE_nut-web-cgi:libgd
 endef
 
 define Package/nut-web-cgi/description
@@ -305,17 +369,25 @@ define Package/nut-web-cgi/install
 	$(INSTALL_DIR) $(1)/opt/share/www/cgi-bin $(1)/opt/share/www/nut
 	$(INSTALL_DIR) $(1)/opt/etc/nut
 	$(CP) $(PKG_INSTALL_DIR)/opt/html/* $(1)/opt/share/www/nut/
+#	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/cgi-bin/* $(1)/opt/share/www/cgi-bin/
-	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/hosts.conf.sample $(1)/opt/etc/nut/hosts.conf
+#	$(INSTALL_CONF) ./files/add_nut_httpd_conf.default $(1)/etc/uci-defaults/add_nut_httpd_conf
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats.html.sample $(1)/opt/etc/nut/upsstats.html
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsstats-single.html.sample $(1)/opt/etc/nut/upsstats-single.html
+#	$(INSTALL_DIR) $(1)/etc/config
+#	$(INSTALL_CONF) ./files/nut_cgi $(1)/etc/config/nut_cgi
+#	$(INSTALL_DIR) $(1)/etc/init.d
+#	$(INSTALL_BIN) ./files/nut-cgi.init $(1)/etc/init.d/nut-cgi
+#	ln -sf /var/etc/nut/hosts.conf $(1)/etc/nut/hosts.conf
+#	ln -sf /var/etc/nut/upsset.conf $(1)/etc/nut/upsset.conf
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/hosts.conf.sample $(1)/opt/etc/nut/hosts.conf
 	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/nut/upsset.conf.sample $(1)/opt/etc/nut/upsset.conf
 endef
 
 define Package/nut-avahi-service
-	$(call Package/nut/Default)
-	TITLE+= (Avahi service)
-	DEPENDS:=nut +avahi-daemon
+  $(call Package/nut/Default)
+  TITLE+= (Avahi service)
+  DEPENDS:=nut +avahi-daemon
 endef
 
 define Package/nut-avahi-service/description
@@ -323,43 +395,43 @@ This package contains the service definition for announcing the
 attached UPS via mDNS/DNS-SD.
 endef
 
-define Package/nut-avahi-service/conffiles
-/opt/etc/avahi/services/nut.service
-endef
-
 define Package/nut-avahi-service/install
 	$(INSTALL_DIR) $(1)/opt/etc/avahi/services
 	$(INSTALL_CONF) ./files/nut.service $(1)/opt/etc/avahi/services/
+endef
+
+define Package/nut-avahi-service/conffiles
+/opt/etc/avahi/services/nut.service
 endef
 
 # Dealing with all of the drivers is very repetitive, but the previous
 # maintainer had a neat solution which just needed some tweaking.
 define DriverPackage
         define Package/nut-driver-$(2)
-		$(call Package/nut/Default)
-		TITLE:=$(2) (NUT $(1) driver)
-		DEPENDS:=nut +nut-server
-		$(if $(filter $(1),snmp),DEPENDS+= @NUT_DRIVER_SNMP)
-		$(if $(filter $(1),usb),DEPENDS+= @NUT_DRIVER_USB)
-		$(if $(filter $(1),serial),DEPENDS+= @NUT_DRIVER_SERIAL)
-                $(if $(filter $(1),neon),DEPENDS+= @NUT_DRIVER_NEON)
+          $(call Package/nut/Default)
+          TITLE:=$(2) (NUT $(1) driver)
+          DEPENDS:=nut +nut-server
+          $(if $(filter $(1),snmp),DEPENDS+= @NUT_DRIVER_SNMP)
+          $(if $(filter $(1),usb),DEPENDS+= @NUT_DRIVER_USB)
+          $(if $(filter $(1),serial),DEPENDS+= @NUT_DRIVER_SERIAL)
+          $(if $(filter $(1),neon),DEPENDS+= @NUT_DRIVER_NEON)
         endef
-	# Deliberately empty description in order to trigger a build failure.
-	# It should be overridden by the list below, and when updating to a
-	# new version of nut we will need to provide descriptions for any new
-	# drivers.
+        # Deliberately empty description in order to trigger a build failure.
+        # It should be overridden by the list below, and when updating to a
+        # new version of nut we will need to provide descriptions for any new
+        # drivers.
         define Package/nut-driver-$(2)/description
 
         endef
         define Package/nut-driver-$(2)/install
-		$(INSTALL_DIR) $$(1)/opt/lib/nut
-		$(CP) $$(PKG_INSTALL_DIR)/opt/lib/nut/$(2) $$(1)/opt/lib/nut/
-		$(if $(filter $(2),clone),$(CP) $$(PKG_INSTALL_DIR)/opt/lib/nut/$(2)-outlet $$(1)/opt/lib/nut/)
+		$(INSTALL_DIR) $$(1)/opt/libexec/nut
+		$(CP) $$(PKG_INSTALL_DIR)/opt/libexec/nut/$(2) $$(1)/opt/libexec/nut/
+		$(if $(filter $(2),clone),$(CP) $$(PKG_INSTALL_DIR)/opt/libexec/nut/$(2)-outlet $$(1)/opt/libexec/nut/)
         endef
 endef
 define DriverDescription
         define Package/nut-driver-$(2)/description
-		$(3)
+        $(3)
         endef
 endef
 # These lists are lifted *directly* from drivers/Makefile.am in the nut
@@ -375,7 +447,7 @@ SERIAL_DRIVERLIST = al175 bcmxcp belkin belkinunv bestfcom	\
  gamatronic genericups isbmex liebert liebert-esp2 liebert-gxe masterguard metasys	\
  mge-utalk microdowell microsol-apc mge-shut nutdrv_hashx oneac optiups powercom powervar_cx_ser rhino	\
  safenet nutdrv_siemens-sitop solis tripplite tripplitesu upscode2 victronups powerpanel \
- blazer_ser ivtscd apcsmart apcsmart-old riello_ser sms_ser bicker_ser ve-direct \
+ blazer_ser ivtscd apcsmart apcsmart-old riello_ser sms_ser bicker_ser ve-direct meanwell_ntu \
  nutdrv_qx
 SERIAL_DRIVERLIST += nhs_ser
 SNMP_DRIVERLIST = snmp-ups
@@ -401,158 +473,170 @@ $(foreach d,$(USB_LIBUSB_DRIVERLIST),$(eval $(call DriverPackage,usb,$(d))))
 $(foreach d,$(NEONXML_DRIVERLIST),$(eval $(call DriverPackage,neon,$(d))))
 
 $(eval $(call DriverDescription,software,dummy-ups,\
-	Driver for multi-purpose UPS emulation))
+  Driver for multi-purpose UPS emulation))
 $(eval $(call DriverDescription,software,clone,\
-	UPS driver clone))
+  UPS driver clone))
 $(eval $(call DriverDescription,software,failover,\
-	UPS Failover Driver))
+  UPS Failover Driver))
 $(eval $(call DriverDescription,software,apcupsd-ups,\
-	Driver for apcupsd client access))
+  Driver for apcupsd client access))
 $(eval $(call DriverDescription,serial,al175,\
-	Driver for Eltek UPS models with AL175 alarm module))
+  Driver for Eltek UPS models with AL175 alarm module))
 $(eval $(call DriverDescription,serial,bcmxcp,\
-	Driver for UPSes supporting the serial BCM/XCP protocol))
+  Driver for UPSes supporting the serial BCM/XCP protocol))
 $(eval $(call DriverDescription,serial,belkin,\
-	Driver for Belkin serial UPS equipment))
+  Driver for Belkin serial UPS equipment))
 $(eval $(call DriverDescription,serial,belkinunv,\
-	Driver for Belkin "Universal UPS" and compatible))
+  Driver for Belkin "Universal UPS" and compatible))
 $(eval $(call DriverDescription,serial,bestfcom,\
-	Driver for Best Power Fortress/Ferrups))
+  Driver for Best Power Fortress/Ferrups))
 $(eval $(call DriverDescription,serial,bestfortress,\
-	Driver for old Best Fortress UPS equipment))
+  Driver for old Best Fortress UPS equipment))
 $(eval $(call DriverDescription,serial,bestuferrups,\
-	Driver for Best Power Micro-Ferrups))
+  Driver for Best Power Micro-Ferrups))
 $(eval $(call DriverDescription,serial,bestups,\
-	Driver for Best Power / SOLA (Phoenixtec protocol) UPS equipment))
+  Driver for Best Power / SOLA (Phoenixtec protocol) UPS equipment))
 $(eval $(call DriverDescription,serial,etapro,\
-	Driver for ETA UPS equipment))
+  Driver for ETA UPS equipment))
 $(eval $(call DriverDescription,serial,everups,\
-	Driver for Ever UPS models))
+  Driver for Ever UPS models))
 $(eval $(call DriverDescription,serial,gamatronic,\
-	Driver for Gamatronic UPS equipment))
+  Driver for Gamatronic UPS equipment))
 $(eval $(call DriverDescription,serial,genericups,\
-	Driver for contact-closure UPS equipment))
+  Driver for contact-closure UPS equipment))
 $(eval $(call DriverDescription,serial,isbmex,\
-	Driver for ISBMEX UPS equipment))
+  Driver for ISBMEX UPS equipment))
 $(eval $(call DriverDescription,serial,liebert,\
-	Driver for Liebert contact-closure UPS equipment))
+  Driver for Liebert contact-closure UPS equipment))
 $(eval $(call DriverDescription,serial,liebert-esp2,\
-	Driver for Liebert UPS, using the ESP-II serial protocol))
+  Driver for Liebert UPS, using the ESP-II serial protocol))
 $(eval $(call DriverDescription,serial,liebert-gxe,\
-	Driver for Liebert GXE series UPS, using the YDN23 serial protocol))
+  Driver for Liebert GXE series UPS, using the YDN23 serial protocol))
 $(eval $(call DriverDescription,serial,masterguard,\
-	Driver for Masterguard UPS equipment))
+  Driver for Masterguard UPS equipment))
 $(eval $(call DriverDescription,serial,metasys,\
-	Driver for Meta System UPS equipment))
+  Driver for Meta System UPS equipment))
 $(eval $(call DriverDescription,serial,mge-utalk,\
-	Driver for MGE UPS SYSTEMS UTalk protocol equipment))
+  Driver for MGE UPS SYSTEMS UTalk protocol equipment))
 $(eval $(call DriverDescription,serial,microdowell,\
-	Driver for Microdowell Enterprise UPS series))
+  Driver for Microdowell Enterprise UPS series))
 $(eval $(call DriverDescription,serial,microsol-apc,\
-	Driver for APC Back-UPS BR UPS equipment))
+  Driver for APC Back-UPS BR UPS equipment))
 $(eval $(call DriverDescription,serial,mge-shut,\
-	Driver for SHUT Protocol UPS equipment))
+  Driver for SHUT Protocol UPS equipment))
 $(eval $(call DriverDescription,serial,nutdrv_hashx,\
-	Driver for #* protocol serial based UPS equipment))
+  Driver for #* protocol serial based UPS equipment))
 $(eval $(call DriverDescription,serial,oneac,\
-	Driver for Oneac UPS equipment))
+  Driver for Oneac UPS equipment))
 $(eval $(call DriverDescription,serial,optiups,\
-	Driver for Opti-UPS (Viewsonic) UPS and Zinto D (ONLINE-USV) equipment))
+  Driver for Opti-UPS (Viewsonic) UPS and Zinto D (ONLINE-USV) equipment))
 $(eval $(call DriverDescription,serial,powercom,\
-	Driver for serial Powercom/Trust/Advice UPS equipment))
+  Driver for serial Powercom/Trust/Advice UPS equipment))
 $(eval $(call DriverDescription,serial,powervar_cx_ser,\
-	Driver for Powervar UPM Series UPS equipment with Serial connection))
+  Driver for Powervar UPM Series UPS equipment with Serial connection))
 $(eval $(call DriverDescription,serial,rhino,\
-	Driver for Brazilian Microsol RHINO UPS equipment))
+  Driver for Brazilian Microsol RHINO UPS equipment))
 $(eval $(call DriverDescription,serial,safenet,\
-	Driver for SafeNet compatible UPS equipment))
+  Driver for SafeNet compatible UPS equipment))
 $(eval $(call DriverDescription,serial,nutdrv_siemens-sitop,\
-	Driver for the Siemens SITOP UPS500 series UPS))
+  Driver for the Siemens SITOP UPS500 series UPS))
 $(eval $(call DriverDescription,serial,solis,\
-	Driver for Brazilian Microsol SOLIS UPS equipment))
+  Driver for Brazilian Microsol SOLIS UPS equipment))
 $(eval $(call DriverDescription,serial,tripplite,\
-	Driver for Tripp-Lite SmartPro UPS equipment))
+  Driver for Tripp-Lite SmartPro UPS equipment))
 $(eval $(call DriverDescription,serial,tripplitesu,\
-	Driver for Tripp-Lite SmartOnline (SU) UPS equipment))
+  Driver for Tripp-Lite SmartOnline (SU) UPS equipment))
 $(eval $(call DriverDescription,serial,upscode2,\
-	Driver for UPScode II compatible UPS equipment))
+  Driver for UPScode II compatible UPS equipment))
 $(eval $(call DriverDescription,serial,victronups,\
-	Driver for IMV/Victron UPS unit Match, Match Lite, NetUps))
+  Driver for IMV/Victron UPS unit Match, Match Lite, NetUps))
 $(eval $(call DriverDescription,serial,powerpanel,\
-	Driver for PowerPanel Plus compatible UPS equipment))
+  Driver for PowerPanel Plus compatible UPS equipment))
 $(eval $(call DriverDescription,serial,blazer_ser,\
-	Driver for Megatec/Q1 protocol serial based UPS equipment))
+  Driver for Megatec/Q1 protocol serial based UPS equipment))
 $(eval $(call DriverDescription,serial,ivtscd,\
-	Driver for the IVT Solar Controller Device))
+  Driver for the IVT Solar Controller Device))
 $(eval $(call DriverDescription,serial,apcsmart,\
-	Driver for American Power Conversion Smart Protocol UPS equipment))
+  Driver for American Power Conversion Smart Protocol UPS equipment))
 $(eval $(call DriverDescription,serial,apcsmart-old,\
-	Driver for American Power Conversion Smart Protocol UPS equipment))
+  Driver for American Power Conversion Smart Protocol UPS equipment))
 $(eval $(call DriverDescription,serial,riello_ser,\
-	Driver for Riello UPS Protocol UPS equipment))
+  Driver for Riello UPS Protocol UPS equipment))
 $(eval $(call DriverDescription,serial,sms_ser,\
-	Driver for SMS UPS Protocol 1Phase.))
+  Driver for SMS UPS Protocol 1Phase.))
 $(eval $(call DriverDescription,serial,bicker_ser,\
-	Driver for Bicker DC UPS via serial port connections))
+  Driver for Bicker DC UPS via serial port connections))
 $(eval $(call DriverDescription,serial,ve-direct,\
-	Driver for Victron UPS unit running on VE.Direct serial protocol))
+  Driver for Victron UPS unit running on VE.Direct serial protocol))
+$(eval $(call DriverDescription,serial,meanwell_ntu,\
+  Driver for Mean Well NTU series equipment with serial port))
 $(eval $(call DriverDescription,serial,nhs_ser,\
-	Driver for NHS Nobreaks, senoidal line, with serial port))
+  Driver for NHS Nobreaks - senoidal line - with serial port))
 $(eval $(call DriverDescription,snmp,snmp-ups,\
-	Multi-MIB Driver for SNMP UPS equipment))
+  Multi-MIB Driver for SNMP UPS equipment))
 $(eval $(call DriverDescription,usb,usbhid-ups,\
-	Driver for USB/HID UPS equipment))
+  Driver for USB/HID UPS equipment))
 $(eval $(call DriverDescription,usb,bcmxcp_usb,\
-	Experimental driver for UPSes supporting the BCM/XCP protocol over USB))
+  Experimental driver for UPSes supporting the BCM/XCP protocol over USB))
 $(eval $(call DriverDescription,usb,tripplite_usb,\
-	Driver for older Tripp Lite USB UPSes (not PDC HID)))
+  Driver for older Tripp Lite USB UPSes (not PDC HID)))
 $(eval $(call DriverDescription,usb,blazer_usb,\
-	Driver for Megatec/Q1 protocol USB based UPS equipment))
+  Driver for Megatec/Q1 protocol USB based UPS equipment))
 $(eval $(call DriverDescription,usb,richcomm_usb,\
-	Driver for UPS equipment using Richcomm dry-contact to USB solution))
+  Driver for UPS equipment using Richcomm dry-contact to USB solution))
 $(eval $(call DriverDescription,usb,riello_usb,\
-	Driver for Riello UPS Protocol UPS equipment via USB))
+  Driver for Riello UPS Protocol UPS equipment via USB))
 $(eval $(call DriverDescription,usb,powervar_cx_usb,\
-	Driver for Powervar GTS and UPM Series UPS equipment with USB connection))
+  Driver for Powervar GTS and UPM Series UPS equipment with USB connection))
 $(eval $(call DriverDescription,usb,nutdrv_atcl_usb,\
-	Driver for ATCL FOR UPS equipment))
+  Driver for ATCL FOR UPS equipment))
 $(eval $(call DriverDescription,usb,nutdrv_qx,\
-	Driver for Q* protocol serial and USB based UPS equipment))
+  Driver for Q* protocol serial and USB based UPS equipment))
 $(eval $(call DriverDescription,neon,netxml-ups,\
-        Driver for NetXML based UPS equipment))
+  Driver for NetXML based UPS equipment))
 
 CONFIGURE_VARS += \
-	ac_cv_path_AR=$(TARGET_AR)
+  ac_cv_path_AR=$(TARGET_AR)
 
+# as flagged by Qwen 3.6 27B, --without-ssl also disables NSS so only use it
+# to disable all SSL backends. This can be verified in the applicable
+# upstream code which disables _all_ ssl when --with-ssl=no or the equivalent
+# --without-ssl is used. See:
+# https://github.com/networkupstools/nut/blob/26177060be94a738bf2d612441af264c90ac37a9/configure.ac#L2930
 CONFIGURE_ARGS += \
-	--sysconfdir=/opt/etc/nut \
-	--datadir=/opt/share/nut \
-	--with-dev \
-	--$(if $(CONFIG_NUT_DRIVER_USB),with,without)-usb \
-	--without-avahi \
-	--$(if $(CONFIG_NUT_DRIVER_SNMP),with,without)-snmp $(if $(CONFIG_NUT_DRIVER_SNMP),--with-snmp-libs="$(TARGET_LDFLAGS) -lnetsnmp") \
-	--$(if $(CONFIG_NUT_DRIVER_SERIAL),with,without)-serial \
-	--without-doc \
-        --$(if $(CONFIG_NUT_DRIVER_NEON),with,without)-neon \
-	--without-powerman \
-	--without-wrap \
-	--with-hotplug-dir=/opt/etc/hotplug \
-	--with$(if $(CONFIG_PACKAGE_nut-web-cgi),,out)-cgi \
-	--without-ipmi \
-	--without-freeipmi \
-	--without-linux-i2c \
-	--$(if $(CONFIG_NUT_SSL),with,without)-ssl $(if $(CONFIG_NUT_SSL),--with-openssl) \
-	--without-libltdl \
-	--enable-docs-changelog=no \
-	--without-macosx_ups \
-	--without-nut_monitor \
-	--with-statepath=/opt/var/run \
-	--with-pidpath=/opt/var/run \
-	--with-drvpath=/opt/lib/nut \
-	--with-user=root \
-	--with-group=root \
-	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-includes="-I$(STAGING_DIR)/opt/include") \
-	$(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="-L$(STAGING_DIR)/opt/lib -lgd -lfreetype -ljpeg -lpng16 -ltiff -lwebp -lz")
+  --sysconfdir=/opt/etc \
+  --with-confdir=/opt/etc/nut \
+  --datadir=/opt/share/nut \
+  --with-dev \
+  --$(if $(CONFIG_NUT_DRIVER_USB),with,without)-usb \
+  --without-avahi \
+  --$(if $(CONFIG_NUT_DRIVER_SNMP),with,without)-snmp \
+  --$(if $(CONFIG_NUT_DRIVER_SERIAL),with,without)-serial \
+  --without-doc \
+  --$(if $(CONFIG_NUT_DRIVER_NEON),with,without)-neon \
+  --without-powerman \
+  --without-wrap \
+  --with-hotplug-dir=/etc/hotplug \
+  --with$(if $(CONFIG_PACKAGE_nut-web-cgi),,out)-cgi \
+  --without-ipmi \
+  --without-freeipmi \
+  --without-linux-i2c \
+  $(if $(CONFIG_NUT_SSL),--with-ssl=openssl) \
+  $(if $(CONFIG_NUT_SSL_NSS),--with-ssl=nss,--without-nss) \
+  $(if $(CONFIG_NUT_SSL),,$(if $(CONFIG_NUT_SSL_NSS),,--without-ssl)) \
+  $(if $(CONFIG_NUT_SSL)$(CONFIG_NUT_SSL_NSS),$(if $(CONFIG_NUT_SSL_CERTVERIFY),--with-ssl-client-validation,--without-ssl-client-validation)) \
+  --without-libltdl \
+  --enable-docs-changelog=no \
+  --without-macosx_ups \
+  --without-nut_monitor \
+  --with-statepath=/opt/var/run/nut \
+  --with-pidpath=/opt/var/run \
+  --with-drvpath=/opt/libexec/nut \
+  --with-user=root \
+  --with-group=root \
+  --with-udev-dir=/opt/lib/udev \
+  $(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-includes="`pkg-config --cflags gdlib`") \
+  $(if $(CONFIG_PACKAGE_nut-web-cgi),--with-gd-libs="`pkg-config --libs gdlib`")
 
 TARGET_CXXFLAGS += -std=c++98
 
