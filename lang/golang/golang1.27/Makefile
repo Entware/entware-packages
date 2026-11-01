@@ -6,19 +6,18 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=golang1.26
-GO_VERSION_MAJOR_MINOR:=1.26
-GO_VERSION_PATCH:=0
+PKG_NAME:=golang1.27
+GO_VERSION_MAJOR_MINOR:=1.27
+GO_VERSION_PATCH:=3
 GO_VERSION_RC:=
 GO_BOOTSTRAP_VERSION:=bootstrap
-PKG_HASH:=c9132a8a1f6bd2aa4aad1d74b8231d95274950483a4950657ee6c56e6e817790
+PKG_HASH:=6e7749035cf360f06b2575d162ea79df9fda8ef671889e5c375f8e50777f26bb
 
 PKG_VERSION:=$(GO_VERSION_MAJOR_MINOR)$(if $(GO_VERSION_RC),.0)$(if $(GO_VERSION_PATCH),.$(GO_VERSION_PATCH))
 PKG_FILE_VERSION:=$(GO_VERSION_MAJOR_MINOR)$(if $(GO_VERSION_RC),rc$(GO_VERSION_RC))$(if $(GO_VERSION_PATCH),.$(GO_VERSION_PATCH))
 PKG_RELEASE:=1
 
 GO_SOURCE_URLS:=https://go.dev/dl/ \
-                https://dl.google.com/go/ \
                 https://golang.google.cn/dl/ \
                 https://mirrors.nju.edu.cn/golang/ \
                 https://mirrors.ustc.edu.cn/golang/
