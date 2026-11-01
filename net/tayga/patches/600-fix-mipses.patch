@@ -28,7 +28,7 @@ make[3]: *** [Makefile:36: all] Error 1
 
 --- a/tayga.h
 +++ b/tayga.h
-@@ -243,7 +243,11 @@ struct map_dynamic {
+@@ -242,7 +242,11 @@ struct map_dynamic {
  	struct free_addr free;
  };
  
