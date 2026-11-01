@@ -1,13 +1,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-jmespath
-PKG_VERSION:=1.0.1
-PKG_RELEASE:=1
+PKG_VERSION:=1.1.0
+PKG_RELEASE:=2
 
 PYPI_NAME:=jmespath
-PKG_HASH:=90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe
+PKG_HASH:=472c87d80f36026ae83c6ddd0f1d05d4e510134ed462851fd5f754c8c3cbb88d
 
-PKG_MAINTAINER:=Daniel Danzberger <daniel@dd-wrt.com>
+PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE.txt
 
@@ -29,7 +29,6 @@ JMESPath (pronounced “james path”) allows you to declaratively specify
 how to extract elements from a JSON document.
 endef
 
-# XXX Entware specific: skip bite-code
 define Py3Package/python3-jmespath/install
 	$(INSTALL_DIR) $(1)/opt/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/jp.py $(1)/opt/bin/jp
