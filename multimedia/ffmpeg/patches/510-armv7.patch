@@ -1,0 +1,19 @@
+libavutil/pixelutils.c: In function 'av_pixelutils_get_sad_fn':
+libavutil/pixelutils.c:102:5: error: implicit declaration of function 'ff_pixelutils_sad_init_arm'; did you mean 'av_pixelutils_get_sad_fn'? [-Werror=implicit-function-declaration]
+     ff_pixelutils_sad_init_arm(sad, aligned);
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+     av_pixelutils_get_sad_fn
+
+---
+
+--- a/libavutil/pixelutils.c
++++ b/libavutil/pixelutils.c
+@@ -98,7 +98,7 @@ av_pixelutils_sad_fn av_pixelutils_get_s
+ 
+ #if ARCH_AARCH64 && HAVE_NEON
+     ff_pixelutils_sad_init_aarch64(sad, aligned);
+-#elif ARCH_ARM
++#elif ARCH_ARM && HAVE_ARMV6
+     ff_pixelutils_sad_init_arm(sad, aligned);
+ #elif ARCH_MIPS && HAVE_MSA
+     ff_pixelutils_sad_init_mips(sad, aligned);
