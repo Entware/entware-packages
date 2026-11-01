@@ -1,5 +1,5 @@
 #!/bin/sh /etc/rc.common
-# Copyright 2019-2023 Stan Grishin (stangri@melmac.ca)
+# Copyright 2019-2026 Stan Grishin (stangri@melmac.ca)
 # shellcheck disable=SC1091,SC3043,SC3060
 
 # shellcheck disable=SC2034
@@ -25,8 +25,13 @@ readonly PROG=/usr/sbin/https-dns-proxy
 readonly BOOTSTRAP_CF='1.1.1.1,1.0.0.1,2606:4700:4700::1111,2606:4700:4700::1001'
 readonly BOOTSTRAP_GOOGLE='8.8.8.8,8.8.4.4,2001:4860:4860::8888,2001:4860:4860::8844'
 readonly DEFAULT_BOOTSTRAP="${BOOTSTRAP_CF},${BOOTSTRAP_GOOGLE}"
+# Cloudflare/Google servers by family, used as bootstrap fallback when a forced
+# IP family has no compatible server in the instance's configured bootstrap_dns.
+readonly DEFAULT_BOOTSTRAP4='1.1.1.1,1.0.0.1,8.8.8.8,8.8.4.4'
+readonly DEFAULT_BOOTSTRAP6='2606:4700:4700::1111,2606:4700:4700::1001,2001:4860:4860::8888,2001:4860:4860::8844'
 readonly canaryDomainsMozilla='use-application-dns.net'
 readonly canaryDomainsiCloud='mask.icloud.com mask-h2.icloud.com'
+readonly NOTRACK_NFT_FILE='/usr/share/nftables.d/ruleset-post/20-https-dns-proxy-notrack.nft'
 
 # Silence "Command failed: Not found" for redundant procd service delete calls
 __UBUS_BIN="$(command -v ubus || echo /bin/ubus)"
@@ -46,6 +51,8 @@ canary_domains_mozilla=
 dnsmasq_config_update=
 force_dns=
 force_dns_port=
+notrack_dns=
+notrack_ports=
 force_dns_src_interface=
 procd_trigger_wan6=
 global_listen_addr=
@@ -54,7 +61,7 @@ global_polling_interval=
 global_proxy_server=
 global_force_http1=
 global_force_http3=
-global_force_ipv6=
+global_force_ip_family=
 global_max_idle_time=
 global_conn_loss_time=
 global_ca_certs_file=
@@ -67,7 +74,6 @@ global_log_limit=
 
 dnsmasq_restart() { /etc/init.d/dnsmasq restart >/dev/null 2>&1; }
 is_alnum() { case "$1" in (*[![:alnum:]_\ @]*|"") return 1;; esac; }
-is_fw4_restart_needed() { [ "$(uci_get "$packageName" 'config' 'force_dns' '1')" = '1' ]; }
 is_mac_address() { expr "$1" : '[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]:[0-9A-F][0-9A-F]$' >/dev/null; }
 is_integer() { case "$1" in ''|*[!0-9]*) return 1;; esac; [ "$1" -ge 1 ] && [ "$1" -le 65535 ] || return 1; return 0; }
 is_ipv4() { expr "$1" : '[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$' >/dev/null; }
@@ -89,7 +95,7 @@ is_port_listening() {
 is_resolver_working() { 
 	local heartbeat_domain heartbeat_sleep_timeout heartbeat_wait_timeout
 	config_load "$packageName"
-	config_get heartbeat_domain        'config' 'heartbeat_domain'        'heartbeat.melmac.ca'
+	config_get heartbeat_domain        'config' 'heartbeat_domain'        'heartbeat.mossdef.org'
 	config_get heartbeat_sleep_timeout 'config' 'heartbeat_sleep_timeout' '10'
 	config_get heartbeat_wait_timeout  'config' 'heartbeat_wait_timeout'  '30'
 	[ "$heartbeat_domain" = '-' ] && return 0
@@ -112,7 +118,7 @@ output_ok() { output "$_OK_"; }
 output_okn() { output "${_OK_}\\n"; }
 output_fail() { output "$_FAIL_"; }
 output_failn() { output "${_FAIL_}\\n"; }
-str_contains() { [ "${1//$2}" != "$1" ]; }
+str_contains() { [ "${1//${2}}" != "$1" ]; }
 str_contains_word() { echo "$1" | grep -qw "$2"; }
 uci_add_list_if_new() {
 	local PACKAGE="$1"
@@ -131,8 +137,47 @@ uci_changes() {
 	local CONFIG="$2"
 	local OPTION="$3"
 	[ -s "${UCI_CONFIG_DIR:-/etc/config/}${PACKAGE}" ] && \
-	[ -n "$(/sbin/uci ${UCI_CONFIG_DIR:+-c $UCI_CONFIG_DIR} changes "$PACKAGE${CONFIG:+.$CONFIG}${OPTION:+.$OPTION}")" ]
+	[ -n "$(/sbin/uci ${UCI_CONFIG_DIR:+-c ${UCI_CONFIG_DIR}} changes "$PACKAGE${CONFIG:+.${CONFIG}}${OPTION:+.${OPTION}}")" ]
 }
+notrack_nft() {
+	command -v nft >/dev/null 2>&1 || return 0
+	case "$1" in
+		update)
+			local port_set="$2"
+			local new_content existing_content
+			if [ -z "$port_set" ]; then
+				notrack_nft remove
+				return
+			fi
+			new_content="$(cat <<-EOF
+				add table inet https_dns_proxy_notrack
+				flush table inet https_dns_proxy_notrack
+				add chain inet https_dns_proxy_notrack raw_output { type filter hook output priority raw; policy accept; }
+				add rule inet https_dns_proxy_notrack raw_output meta l4proto { tcp, udp } th dport { ${port_set} } ip daddr 127.0.0.0/8 notrack
+				add rule inet https_dns_proxy_notrack raw_output meta l4proto { tcp, udp } th sport { ${port_set} } ip saddr 127.0.0.0/8 notrack
+			EOF
+			)"
+			existing_content="$(cat "$NOTRACK_NFT_FILE" 2>/dev/null)"
+			if [ "$new_content" != "$existing_content" ]; then
+				if ! mkdir -p "${NOTRACK_NFT_FILE%/*}"; then
+					logger -t "$packageName" "Failed to create ${NOTRACK_NFT_FILE%/*}; skipping notrack rules"
+					return 1
+				fi
+				if ! echo "$new_content" > "$NOTRACK_NFT_FILE"; then
+					logger -t "$packageName" "Failed to write $NOTRACK_NFT_FILE; skipping notrack rules"
+					return 1
+				fi
+			fi
+			[ -s "$NOTRACK_NFT_FILE" ] && nft -c -f "$NOTRACK_NFT_FILE"
+		;;
+		remove)
+			rm -f "$NOTRACK_NFT_FILE"
+			nft delete table inet https_dns_proxy_notrack >/dev/null 2>&1
+			! nft list table inet https_dns_proxy_notrack >/dev/null 2>&1 && [ ! -s "$NOTRACK_NFT_FILE" ]
+		;;
+	esac
+}
+
 version() { echo "$PKG_VERSION"; }
 
 xappend() { PROG_param="$PROG_param $1"; }
@@ -182,14 +227,24 @@ append_boot() {
 	[ -z "$_loctmp" ] && return 0
 	IFS=" ,"
 	for i in $_loctmp; do
-		if { [ -z "$force_ipv6" ] && is_ipv4 "$i"; } || \
-			{ [ -n "$force_ipv6" ] && is_ipv6 "$i"; }; then
-			[ -z "$_newtmp" ] && _newtmp="$i" || _newtmp="${_newtmp},${i}"
-		fi
+		case "$force_ip_family" in
+			ipv4) is_ipv4 "$i" || continue;;
+			ipv6) is_ipv6 "$i" || continue;;
+		esac
+		[ -z "$_newtmp" ] && _newtmp="$i" || _newtmp="${_newtmp},${i}"
 	done
 	IFS="$_old_ifs"
+	# A forced family with no compatible bootstrap server configured would leave the
+	# proxy unable to resolve the resolver host; fall back to the Cloudflare/Google
+	# servers of the forced family so bootstrap still works.
+	if [ -z "$_newtmp" ]; then
+		case "$force_ip_family" in
+			ipv4) _newtmp="$DEFAULT_BOOTSTRAP4";;
+			ipv6) _newtmp="$DEFAULT_BOOTSTRAP6";;
+		esac
+	fi
 	[ -n "$_newtmp" ] && xappend "$switch $_newtmp"
-	[ -z "$force_ipv6" ] && xappend '-4'
+	[ "$force_ip_family" = 'ipv4' ] && xappend '-4'
 }
 
 boot() {
@@ -203,10 +258,11 @@ load_package_config() {
 	config_get_bool canary_domains_icloud  'config' 'canary_domains_icloud' '1'
 	config_get_bool canary_domains_mozilla 'config' 'canary_domains_mozilla' '1'
 	config_get_bool force_dns              'config' 'force_dns' '1'
+	config_get_bool notrack_dns            'config' 'notrack_dns' '1'
 	config_get_bool procd_trigger_wan6     'config' 'procd_trigger_wan6' '0'
 	config_get_bool global_force_http1     'config' 'force_http1' '0'
 	config_get_bool global_force_http3     'config' 'force_http3' '0'
-	config_get_bool global_force_ipv6      'config' 'force_ipv6_resolvers' '0'
+	config_get global_force_ip_family      'config' 'force_ip_family' 'auto'
 	config_get dnsmasq_config_update       'config' 'dnsmasq_config_update' '*'
 	config_get force_dns_port              'config' 'force_dns_port' '53 853'
 	config_get force_dns_src_interface     'config' 'force_dns_src_interface' 'lan'
@@ -224,22 +280,22 @@ load_package_config() {
 	config_get global_statistic_interval   'config' 'statistic_interval' '0'
 	config_get global_log_limit            'config' 'log_limit' '0'
 	config_get global_source_addr          'config' 'source_addr'
-	[ "$canary_domains_icloud" = '1' ]  && canaryDomains="${canaryDomains:+$canaryDomains }${canaryDomainsiCloud}"
-	[ "$canary_domains_mozilla" = '1' ] && canaryDomains="${canaryDomains:+$canaryDomains }${canaryDomainsMozilla}"
+	[ "$canary_domains_icloud" = '1' ]  && canaryDomains="${canaryDomains:+${canaryDomains} }${canaryDomainsiCloud}"
+	[ "$canary_domains_mozilla" = '1' ] && canaryDomains="${canaryDomains:+${canaryDomains} }${canaryDomainsMozilla}"
 	[ "$force_dns" = '1' ]              || unset force_dns
+	[ "$notrack_dns" = '1' ]            || unset notrack_dns
 	[ "$procd_trigger_wan6" = '1' ]     || unset procd_trigger_wan6
 }
 
 start_instance() {
 	local cfg="$1" param="$2"
 	local PROG_param
-	local listen_addr listen_port force_ipv6 p url iface
+	local listen_addr listen_port force_ip_family p url iface
 
 	config_get url             "$cfg" 'resolver_url'
 	config_get listen_addr     "$cfg" 'listen_addr' "$global_listen_addr"
 	config_get listen_port     "$cfg" 'listen_port' "$port"
-	config_get_bool force_ipv6 "$cfg" 'force_ipv6_resolvers' "$global_force_ipv6"
-	[ "$force_ipv6" = '1' ] || unset force_ipv6
+	config_get force_ip_family "$cfg" 'force_ip_family' "$global_force_ip_family"
 
 	append_parm "$cfg" 'resolver_url'       '-r'
 	append_parm "$cfg" 'listen_addr'        '-a' "$global_listen_addr"        '127.0.0.1'
@@ -267,6 +323,7 @@ start_instance() {
 		config_foreach dnsmasq_doh_server 'dnsmasq' 'add' "${listen_addr}" "${listen_port}"
 		config_foreach dnsmasq_instance_append_force_dns_port 'dnsmasq'
 	elif is_alnum "$dnsmasq_config_update"; then
+		config_load 'dhcp'
 		for i in $dnsmasq_config_update; do
 			dnsmasq_doh_server "@dnsmasq[$i]" 'add' "${listen_addr}" "${listen_port}" || \
 				dnsmasq_doh_server "${i}" 'add' "${listen_addr}" "${listen_port}"
@@ -321,6 +378,7 @@ start_instance() {
 # shellcheck disable=SC2181
 	if [ "$?" -eq 0 ]; then
 		output_ok
+		notrack_ports="${notrack_ports:+${notrack_ports}, }${listen_port}"
 		port="$((port+1))"
 	else
 		output_fail
@@ -335,7 +393,7 @@ start_service() {
 
 	[ "$param" = 'on_boot' ] && hdp_boot_flag='true' && return 0
 
-	output "Starting $serviceName instances ${param:+$param }"
+	output "Starting $serviceName instances ${param:+${param} }"
 	load_package_config "$param"
 	dhcp_backup 'create'
 	config_load "$packageName"
@@ -352,7 +410,7 @@ start_service() {
 	fi
 	case "$param" in
 		on_boot|on_config_update|on_hotplug)
-			output "Restarting dnsmasq ${param:+$param }"
+			output "Restarting dnsmasq ${param:+${param} }"
 			if dnsmasq_restart; then
 				output_okn
 			else
@@ -360,6 +418,16 @@ start_service() {
 			fi
 		;;
 	esac
+	if [ -n "$notrack_dns" ] && [ -n "$notrack_ports" ]; then
+		output "Updating notrack rules "
+		if notrack_nft update "$notrack_ports"; then
+			output_okn
+		else
+			output_failn
+		fi
+	else
+		notrack_nft remove
+	fi
 #	if ! is_resolver_working; then
 #		rc_procd stop_service 'on_failed_health_check' && service_stopped 'on_failed_health_check'
 #	fi
@@ -369,13 +437,14 @@ stop_service() {
 	local param="$1"
 	local canaryDomains
 	local _error=
-	output "Stopping $serviceName ${param:+$param }"
+	output "Stopping $serviceName ${param:+${param} }"
 	load_package_config "$param"
 	dhcp_backup 'restore'
 	if uci_changes 'dhcp'; then
 		uci_commit 'dhcp'
 		dnsmasq_restart || _error=1
 	fi
+	notrack_nft remove || _error=1
 # shellcheck disable=SC2015
 	[ -z "$_error" ] && output_okn || output_failn
 }
@@ -395,7 +464,7 @@ service_triggers() {
 			network_find_wan6 wan6
 			wan6="${wan6:-wan6}"
 		fi
-		output "Setting trigger${wan6:+s} for $wan ${wan6:+$wan6 }"
+		output "Setting trigger${wan6:+s} for $wan ${wan6:+${wan6} }"
 		for i in $wan $wan6; do
 			procd_add_interface_trigger "interface.*" "$i" "/etc/init.d/${packageName}" reload 'on_interface_trigger' && output_ok || output_fail
 		done
@@ -404,19 +473,25 @@ service_triggers() {
 	fi
 }
 
-service_started() { [ -n "$force_dns" ] && procd_set_config_changed firewall; }
-service_stopped() { [ -n "$force_dns" ] && procd_set_config_changed firewall; }
+# These run for their side effect only (flag the firewall for reconfig). Force a
+# 0 return so a falsy test doesn't become the exit code of start/reload/restart —
+# force_dns/notrack_dns are empty in this scope, so without this restart exits 1
+# even on a successful start. See issue #11.
+service_started() { { [ -n "$force_dns" ] || [ -n "$notrack_dns" ]; } && procd_set_config_changed firewall; return 0; }
+service_stopped() { { [ -n "$force_dns" ] || [ -n "$notrack_dns" ]; } && procd_set_config_changed firewall; return 0; }
 restart() { reload "$@"; }
 
 dnsmasq_instance_append_force_dns_port() {
 	local cfg="$1" instance_port
-	[ -n "$(uci_get 'dhcp' "$cfg")" ] || return 1
+	[ "$(uci_get 'dhcp' "$cfg")" = "dnsmasq" ] || return 1
 	config_get instance_port "$cfg" 'port' '53'
-		str_contains_word "$force_dns_port" "$instance_port" || force_dns_port="${force_dns_port:+$force_dns_port }${instance_port}"
+	[ "$instance_port" = "0" ] && return 0
+	str_contains_word "$force_dns_port" "$instance_port" || force_dns_port="${force_dns_port:+${force_dns_port} }${instance_port}"
 }
 
 dnsmasq_doh_server() {
 	local cfg="$1" param="$2" address="${3:-127.0.0.1}" port="$4" i
+	[ "$(uci_get 'dhcp' "$cfg")" = "dnsmasq" ] || return 1
 	case "$param" in
 		add)
 			if [ -n "$force_dns" ]; then
@@ -447,7 +522,7 @@ dnsmasq_doh_server() {
 dhcp_backup() {
 	_dnsmasq_create_server_backup() {
 		local cfg="$1" i
-		[ -n "$(uci_get 'dhcp' "$cfg")" ] || return 1
+		[ "$(uci_get 'dhcp' "$cfg")" = "dnsmasq" ] || return 1
 	#	uci_remove 'dhcp' "$cfg" 'doh_server' # this removes outdated doh_server entries, but causes unnecessary dnsmasq restarts
 		if [ -z "$(uci_get 'dhcp' "$cfg" 'doh_backup_noresolv')" ]; then
 			if [ -z "$(uci_get 'dhcp' "$cfg" 'noresolv')" ]; then
@@ -473,7 +548,7 @@ dhcp_backup() {
 # shellcheck disable=SC2317
 	_dnsmasq_restore_server_backup() {
 		local cfg="$1" i
-		[ -n "$(uci_get 'dhcp' "$cfg")" ] || return 0
+		[ "$(uci_get 'dhcp' "$cfg")" = "dnsmasq" ] || return 0
 		if [ -n "$(uci_get 'dhcp' "$cfg" 'doh_backup_noresolv')" ]; then
 			if [ "$(uci_get 'dhcp' "$cfg" 'doh_backup_noresolv')" = "-1" ]; then
 				uci_remove 'dhcp' "$cfg" 'noresolv'
