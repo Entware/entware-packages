@@ -1,6 +1,6 @@
 --- a/setuptools/_vendor/platformdirs/unix.py
 +++ b/setuptools/_vendor/platformdirs/unix.py
-@@ -48,7 +48,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+@@ -51,7 +51,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
      def _site_data_dirs(self) -> list[str]:
          path = os.environ.get("XDG_DATA_DIRS", "")
          if not path.strip():
@@ -9,7 +9,7 @@
          return [self._append_app_name_and_version(p) for p in path.split(os.pathsep)]
  
      @property
-@@ -79,7 +79,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+@@ -82,7 +82,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
      def _site_config_dirs(self) -> list[str]:
          path = os.environ.get("XDG_CONFIG_DIRS", "")
          if not path.strip():
@@ -18,7 +18,7 @@
          return [self._append_app_name_and_version(p) for p in path.split(os.pathsep)]
  
      @property
-@@ -109,7 +109,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+@@ -112,7 +112,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
      @property
      def site_cache_dir(self) -> str:
          """:return: cache directory shared by users, e.g. ``/var/cache/$appname/$version``"""
@@ -27,7 +27,7 @@
  
      @property
      def user_state_dir(self) -> str:
-@@ -178,7 +178,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+@@ -181,7 +181,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
                  if not Path(path).exists():
                      path = f"/tmp/runtime-{getuid()}"  # noqa: S108
              else:
@@ -36,7 +36,7 @@
          return self._append_app_name_and_version(path)
  
      @property
-@@ -200,7 +200,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
+@@ -203,7 +203,7 @@ class Unix(PlatformDirsABC):  # noqa: PL
              if sys.platform.startswith(("freebsd", "openbsd", "netbsd")):
                  path = "/var/run"
              else:
