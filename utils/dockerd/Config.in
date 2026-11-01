@@ -22,8 +22,6 @@ config DOCKER_OPTIONAL_FEATURES
 	bool "Enable optional kernel support for Docker"
 	default n
 	depends on PACKAGE_dockerd
-	select KERNEL_MEMCG_SWAP_ENABLED
-	select KERNEL_CFQ_GROUP_IOSCHED
 	select KERNEL_CGROUP_PERF
 	select KERNEL_CGROUP_HUGETLB
 	help
@@ -61,7 +59,7 @@ menu "Network"
 		bool "Includes ftp/tftp client kernel modules"
 		default n
 		select PACKAGE_kmod-nf-nathelper
-		select PACKAGE_kmod-nf-nathelper-extra
+		select PACKAGE_kmod-nf-nathelper-tftp
 endmenu
 
 menu "Storage"
