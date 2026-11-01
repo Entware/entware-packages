@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netavark
-PKG_VERSION:=1.12.2
+PKG_VERSION:=2.1.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/containers/netavark/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=d1e5a7e65b825724fd084b0162084d9b61db8cda1dad26de8a07be1bd6891dbc
+PKG_HASH:=96677048168ddd1abe313e4c2e17f1cace72b60ee1bac8ca12a4bd7dfcadfbbb
 
 PKG_MAINTAINER:=Oskari Rauta <oskari.rauta@gmail.com>
 PKG_LICENSE:=Apache-2.0
@@ -23,7 +23,7 @@ include ../../lang/rust/rust-package.mk
 define Package/netavark
   SECTION:=net
   CATEGORY:=Network
-  DEPENDS:=$(RUST_ARCH_DEPENDS)
+  DEPENDS:=$(RUST_ARCH_DEPENDS) +nftables-json +kmod-nft-nat
   TITLE:=A container network stack
   URL:=https://github.com/containers/netavark
 endef
@@ -34,7 +34,8 @@ define Package/netavark/description
 endef
 
 CARGO_PKG_VARS += \
-	PROTOC=$(STAGING_DIR_HOSTPKG)/bin/protoc
+	PROTOC=$(STAGING_DIR_HOSTPKG)/bin/protoc \
+	NETAVARK_DEFAULT_FW=nftables
 
 define Package/netavark/install
 	$(INSTALL_DIR) $(1)/etc/config $(1)/usr/lib/podman
@@ -42,5 +43,5 @@ define Package/netavark/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/bin/netavark-dhcp-proxy-client $(1)/usr/lib/podman/
 endef
 
-$(eval $(call RustBinPackage,netavark))
-$(eval $(call BuildPackage,netavark))
+#$(eval $(call RustBinPackage,netavark))
+#$(eval $(call BuildPackage,netavark))
