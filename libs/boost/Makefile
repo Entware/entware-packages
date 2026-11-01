@@ -11,13 +11,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=boost
-PKG_VERSION:=1.90.0
-PKG_SOURCE_VERSION:=1_90_0
+PKG_VERSION:=1.92.0
+PKG_SOURCE_VERSION:=1_92_0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)_$(PKG_SOURCE_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://archives.boost.io/release/$(PKG_VERSION)/source @SF/$(PKG_NAME)/$(PKG_NAME)/$(PKG_VERSION)
-PKG_HASH:=49551aff3b22cbc5c5a9ed3dbc92f0e23ea50a0f7325b0d198b705e8ee3fc305
+PKG_HASH:=5c1d40cb8e19adbf740a4ec2da35b3e58f3f5804b1dce44deb53df72193cbc6c
 
 PKG_MAINTAINER:=Carlos M. Ferreira <carlosmf.pt@gmail.com>
 PKG_LICENSE:=BSL-1.0
@@ -42,44 +42,44 @@ define Package/boost/Default
 endef
 
 define Package/boost/description
-This package provides the Boost v1.90.0 libraries.
-Boost is a set of free, peer-reviewed, portable C++ source libraries.
+  This package provides the Boost v1.92.0 libraries.
+  Boost is a set of free, peer-reviewed, portable C++ source libraries.
 
-This package provides the following run-time libraries:
- - atomic
- - charconv
- - chrono
- - cobalt
- - container
- - context
- - contract
- - coroutine and coroutine2 (Coroutine is deprecated - use Coroutine2)
- - date_time
- - exception
- - filesystem
- - fiber
- - graph
- - - graph-parallel
- - iostreams
- - json
- - locale
- - log
- - math
- - nowide
- - program_options
- - python3
- - random
- - regex
- - serialization and wserialization
- - stackstrace
- - thread
- - timer
- - type_erasure
- - url
- - wave
-
-There are many more header-only libraries supported by Boost.
-See more at http://www.boost.org/doc/libs/1_90_0/
+  This package provides the following run-time libraries:
+   - atomic
+   - charconv
+   - chrono
+   - cobalt
+   - container
+   - context
+   - contract
+   - coroutine and coroutine2 (Coroutine is deprecated - use Coroutine2)
+   - date_time
+   - exception
+   - filesystem
+   - fiber
+   - graph
+   - - graph-parallel
+   - iostreams
+   - json
+   - locale
+   - log
+   - math
+   - nowide
+   - program_options
+   - python3
+   - random
+   - regex
+   - serialization and wserialization
+   - stackstrace
+   - thread
+   - timer
+   - type_erasure
+   - url
+   - wave
+  
+  There are many more header-only libraries supported by Boost.
+  See more at https://www.boost.org/libraries/1.92.0/grid/
 endef
 
 PKG_BUILD_DEPENDS:=boost/host
@@ -116,22 +116,6 @@ define Package/boost
 endef
 
 define Package/boost/config
-	# Invisible config dependency
-	config boost-context-exclude
-		bool
-		default y if (TARGET_arc770 || TARGET_archs38)
-		default n
-
-	config boost-coroutine-exclude
-		bool
-		default y if boost-context-exclude
-		default n
-
-	config boost-fiber-exclude
-		bool
-		default y if boost-coroutine-exclude
-		default n
-
 	menu "Select Boost Options"
 		depends on PACKAGE_boost
 		comment "Boost compilation options."
@@ -284,9 +268,6 @@ define Package/boost/config
 		config PACKAGE_boost-$(lib)
 			prompt "Boost $(lib) $(if $(findstring python3,$(lib)),$(paren_left)v$(BOOST_PYTHON3_VER)$(paren_right) ,)library."
 			default m if ALL
-			$(if $(findstring fiber,$(lib)),depends on !boost-fiber-exclude,)\
-			$(if $(findstring context,$(lib)),depends on !boost-context-exclude,)
-			$(if $(findstring coroutine,$(lib)),depends on !boost-coroutine-exclude,)
 		)
 	endmenu
 endef
@@ -297,7 +278,7 @@ define Package/boost-test
 	$(call Package/boost/Default)
 	TITLE+= (test)
 	HIDDEN:=1
-	DEPENDS+=+boost-timer
+	DEPENDS+=+boost-timer +boost-regex
 endef
 
 define Build/Configure
@@ -336,18 +317,20 @@ define DefineBoostLibrary
 endef
 
 $(eval $(call DefineBoostLibrary,atomic))
-$(eval $(call DefineBoostLibrary,charconv)) # Entware specific: no 128-bit float support, not all architectures support it
+# Entware specific: no 128-bit float support, not all architectures support it
+$(eval $(call DefineBoostLibrary,charconv))
 $(eval $(call DefineBoostLibrary,chrono))
-#$(eval $(call DefineBoostLibrary,cobalt,container context date_time,,,libopenssl)) # cxx_std_20; Entware specific: GCC-8.x
+# Entware specific: GCC-8.x; cxx_std_20
+#$(eval $(call DefineBoostLibrary,cobalt,container context date_time,,,libopenssl))
 $(eval $(call DefineBoostLibrary,container))
-$(eval $(call DefineBoostLibrary,context,chrono ,,!boost-context-exclude))
+$(eval $(call DefineBoostLibrary,context,chrono))
 $(eval $(call DefineBoostLibrary,contract,atomic chrono container date_time thread))
-$(eval $(call DefineBoostLibrary,coroutine,chrono context thread,,!boost-coroutine-exclude))
-$(eval $(call DefineBoostLibrary,date_time))
+$(eval $(call DefineBoostLibrary,coroutine,chrono context thread))
+$(eval $(call DefineBoostLibrary,date_time,container))
 #$(eval $(call DefineBoostLibrary,exception,,))
-$(eval $(call DefineBoostLibrary,fiber,coroutine filesystem,,!boost-fiber-exclude))
+$(eval $(call DefineBoostLibrary,fiber,coroutine filesystem regex))
 $(eval $(call DefineBoostLibrary,filesystem,atomic))
-$(eval $(call DefineBoostLibrary,graph))
+$(eval $(call DefineBoostLibrary,graph,atomic chrono container date_time math random serialization thread))
 $(eval $(call DefineBoostLibrary,iostreams,random regex,,,zlib liblzma libbz2 libzstd))
 $(eval $(call DefineBoostLibrary,json,container))
 $(eval $(call DefineBoostLibrary,locale,chrono thread charconv,,,icu))
@@ -359,7 +342,7 @@ $(eval $(call DefineBoostLibrary,program_options,container))
 $(eval $(call DefineBoostLibrary,python3,container graph,,,python3-base))
 $(eval $(call DefineBoostLibrary,random))
 $(eval $(call DefineBoostLibrary,regex,,,,icu))
-$(eval $(call DefineBoostLibrary,serialization))
+$(eval $(call DefineBoostLibrary,serialization,atomic chrono container date_time thread))
 $(eval $(call DefineBoostLibrary,wserialization,serialization))
 $(eval $(call DefineBoostLibrary,stacktrace))
 $(eval $(call DefineBoostLibrary,thread,chrono atomic container date_time))
