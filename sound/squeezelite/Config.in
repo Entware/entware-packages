@@ -1,0 +1,65 @@
+config SQUEEZELITE_AAC
+	bool "AAC codec support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		AAC codec support
+
+config SQUEEZELITE_DSD
+	bool "DSD playback over PCM (DoP)"
+	depends on PACKAGE_squeezelite-custom
+	help
+		Include support for DSD over PCM for compatible DAC
+
+config SQUEEZELITE_FLAC
+	bool "FLAC codec support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		FLAC codec support
+
+config SQUEEZELITE_MP3_MAD
+	bool "MP3 codec support (libmad)"
+	depends on PACKAGE_squeezelite-custom
+	help
+		MP3 codec support (libmad)
+
+config SQUEEZELITE_MP3_MPG123
+	bool "MP3 codec support (libmpg123)"
+	depends on PACKAGE_squeezelite-custom
+	help
+		MP3 codec support (libmpg123)
+
+config SQUEEZELITE_OPUS
+	bool "Opus codec support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		Opus codec support
+
+config SQUEEZELITE_RESAMPLE
+	bool "Resample support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		Include support for resampling using libsoxr
+
+config SQUEEZELITE_SSL
+	bool "SSL/TLS support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		Include SSL/TLS support for use with e.g. https media URLs
+
+config SQUEEZELITE_VORBIS
+	bool "Vorbis codec support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		Vorbis codec support
+
+config SQUEEZELITE_VORBIS_TREMOR
+	bool "Vorbis codec support (Tremor)"
+	depends on PACKAGE_squeezelite-custom
+	help
+		Vorbis codec support (Tremor (libvorbisidec))
+
+config SQUEEZELITE_WMA_ALAC
+	bool "WMA/ALAC decode support"
+	depends on PACKAGE_squeezelite-custom
+	help
+		WMA and ALAC codec support

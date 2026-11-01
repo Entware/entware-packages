@@ -6,13 +6,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=squeezelite
-PKG_VERSION:=2.0.0.1518
-PKG_RELEASE:=1
+PKG_VERSION:=2.0.0.1584
+PKG_RELEASE:=2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/ralph-irving/squeezelite
-PKG_SOURCE_VERSION:=ed3c82052db4846e8e0da01c5bf8db130db00dee
-PKG_MIRROR_HASH:=34cc25e0a5b7e425acc9e39c16cbef775ce268eea1b558c8f4694584471ce2ee
+PKG_SOURCE_VERSION:=e1028f3cd058789c12b765d68b82e8b3b0b43a7b
+PKG_MIRROR_HASH:=a4c5dcd8f4628a4234136cb68ad1cd31c95007ef13d1877da5bd19c2554246e2
 
 PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -38,6 +38,7 @@ define Package/squeezelite-full
     VARIANT:=full
     DEPENDS+= +libfaad2 +libffmpeg-audio-dec +libflac +libmpg123 \
               +libopenssl +libopusfile +libsoxr +libvorbis
+  CONFLICTS:=squeezelite-dynamic squeezelite-custom
 endef
 
 define Package/squeezelite-dynamic
@@ -45,6 +46,7 @@ define Package/squeezelite-dynamic
     TITLE+= (dynamic)
     VARIANT:=dynamic
     DEPENDS+= +libmpg123
+  CONFLICTS:=squeezelite-custom
 endef
 
 define Package/squeezelite-custom
@@ -60,79 +62,15 @@ define Package/squeezelite-custom
               +SQUEEZELITE_RESAMPLE:libsoxr \
               +SQUEEZELITE_SSL:libopenssl \
               +SQUEEZELITE_VORBIS:libvorbis \
-              +SQUEEZELITE_VORBIS_TREMOR:libvorbisidec \
-              +SQUEEZELITE_WMA_ALAC:libffmpeg-audio-dec
+              +SQUEEZELITE_VORBIS_TREMOR:libvorbisidec
+ifeq ($(CONFIG_SQUEEZELITE_WMA_ALAC),y)
+    DEPENDS+= +libffmpeg-audio-dec
+endif
     MENU:=1
 endef
 
 define Package/squeezelite-custom/config
-	if PACKAGE_squeezelite-custom
-		config SQUEEZELITE_AAC
-		    bool "AAC codec support"
-		    help
-			AAC codec support
-		    default n
-
-		config SQUEEZELITE_DSD
-		    bool "DSD playback over PCM (DoP)"
-		    help
-			Include support for DSD over PCM for compatible DAC
-		    default n
-
-		config SQUEEZELITE_FLAC
-		    bool "FLAC codec support"
-		    help
-			FLAC codec support
-		    default n
-
-		config SQUEEZELITE_MP3_MAD
-		    bool "MP3 codec support (libmad)"
-		    help
-			MP3 codec support (libmad)
-		    default n
-
-		config SQUEEZELITE_MP3_MPG123
-		    bool "MP3 codec support (libmpg123)"
-		    help
-			MP3 codec support (libmpg123)
-		    default n
-
-		config SQUEEZELITE_OPUS
-		    bool "Opus codec support"
-		    help
-			Opus codec support
-		    default n
-
-		config SQUEEZELITE_RESAMPLE
-		    bool "Resample support"
-		    help
-			Include support for resampling using libsoxr
-		    default n
-
-		config SQUEEZELITE_SSL
-		    bool "SSL/TLS support"
-		    help
-			Include SSL/TLS support for use with e.g. https media URLs
-		    default n
-
-		config SQUEEZELITE_VORBIS
-		    bool "Vorbis codec support"
-		    help
-			Vorbis codec support
-		    default n
-
-		config SQUEEZELITE_VORBIS_TREMOR
-		    bool "Vorbis codec support (Tremor)"
-		    help
-			Vorbis codec support (Tremor (libvorbisidec))
-		    default n
-
-		config SQUEEZELITE_WMA_ALAC
-		    bool "WMA/ALAC decode support"
-		    help
-			WMA and ALAC codec support
-		    default n
-	endif
+    source "$(SOURCE)/Config.in"
 endef
 
 define Package/squeezelite/description/default
