@@ -2,7 +2,7 @@ define Package/perlbase-template
 SUBMENU:=Perl
 SECTION:=lang
 CATEGORY:=Languages
-URL:=http://www.cpan.org/
+URL:=https://www.cpan.org/
 DEPENDS:=perl
 endef
 
@@ -42,12 +42,6 @@ endef
 define Package/perlbase-archive/install
 $(call perlmod/Install,$(1),Archive,)
 $(call perlmod/InstallBaseTests,$(1),cpan/Archive-Tar/bin cpan/Archive-Tar/t)
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ptar $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ptardiff $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/ptargrep $(1)/opt/bin/
-	# Entware specific: fix exec path in scripts
-	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/*
 endef
 
 $(eval $(call BuildPackage,perlbase-archive))
@@ -1140,9 +1134,6 @@ define Package/perlbase-pod/install
 $(call perlmod/Install,$(1),Pod,Pod/Usage.pm)
 $(call perlmod/Install/NoStrip,$(1),Pod/Usage.pm,)
 $(call perlmod/InstallBaseTests,$(1),cpan/Pod-Checker/t cpan/Pod-Escapes/t cpan/Pod-Perldoc/t cpan/Pod-Simple/t cpan/Pod-Usage/scripts cpan/Pod-Usage/t cpan/podlators/t ext/Pod-Functions/Functions.pm ext/Pod-Functions/t ext/Pod-Html/t lib/Pod/t)
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/pod2man $(1)/opt/bin/
-	$(CP) $(PKG_INSTALL_DIR)/opt/bin/pod2text $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,perlbase-pod))
@@ -1381,10 +1372,6 @@ define Package/perlbase-test/install
 $(call perlmod/Install,$(1),Test Test2 Test.pm Test2.pm ok.pm,Test/Builder.pm Test/More.pm Test/Tutorial.pod Test2/Transition.pod)
 $(call perlmod/Install/NoStrip,$(1),Test/Builder.pm Test/More.pm,)
 $(call perlmod/InstallBaseTests,$(1),cpan/Test-Harness/t cpan/Test-Simple/t dist/Test/t)
-	$(INSTALL_DIR) $(1)/opt/bin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/prove $(1)/opt/bin
-	# Entware specific: fix exec path in scripts
-	$(SED) 's,^#!.*perl,#!/opt/bin/perl,' $(1)/opt/bin/prove
 endef
 
 $(eval $(call BuildPackage,perlbase-test))

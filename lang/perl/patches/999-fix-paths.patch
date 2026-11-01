@@ -1,0 +1,13 @@
+WTF? creats a symlink in /usr/bin
+
+--- a/installperl
++++ b/installperl
+@@ -39,7 +39,7 @@ use Getopt::Long qw(:config nogetopt_com
+ 
+ require './Porting/pod_lib.pl';
+ 
+-my $mainperldir = "/usr/bin";
++my $mainperldir = "/opt/bin";
+ my $exe_ext = $Config{exe_ext};
+ 
+ # Allow "make install PERLNAME=something_besides_perl":
