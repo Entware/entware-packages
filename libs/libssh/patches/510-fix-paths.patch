@@ -1,22 +1,32 @@
 --- a/DefineOptions.cmake
 +++ b/DefineOptions.cmake
-@@ -52,11 +52,11 @@ if (WITH_ABI_BREAK)
+@@ -71,7 +71,7 @@ if (WITH_ABI_BREAK)
+     set(WITH_SYMBOL_VERSIONING ON)
  endif (WITH_ABI_BREAK)
  
- if (NOT GLOBAL_BIND_CONFIG)
--  set(GLOBAL_BIND_CONFIG "/etc/ssh/libssh_server_config")
-+  set(GLOBAL_BIND_CONFIG "/opt/etc/ssh/libssh_server_config")
- endif (NOT GLOBAL_BIND_CONFIG)
+-set(GLOBAL_CONF_DIR "/etc/ssh")
++set(GLOBAL_CONF_DIR "/opt/etc/ssh")
+ if (WIN32)
+     # Use PROGRAMDATA on Windows
+     if (DEFINED ENV{PROGRAMDATA})
+--- a/src/bind.c
++++ b/src/bind.c
+@@ -236,9 +236,9 @@ int ssh_bind_listen(ssh_bind sshbind)
+         sshbind->rsakey == NULL &&
+         sshbind->ed25519key == NULL) {
  
- if (NOT GLOBAL_CLIENT_CONFIG)
--  set(GLOBAL_CLIENT_CONFIG "/etc/ssh/ssh_config")
-+  set(GLOBAL_CLIENT_CONFIG "/opt/etc/ssh/ssh_config")
- endif (NOT GLOBAL_CLIENT_CONFIG)
+-        sshbind->ecdsakey = strdup("/etc/ssh/ssh_host_ecdsa_key");
+-        sshbind->rsakey = strdup("/etc/ssh/ssh_host_rsa_key");
+-        sshbind->ed25519key = strdup("/etc/ssh/ssh_host_ed25519_key");
++        sshbind->ecdsakey = strdup("/opt/etc/ssh/ssh_host_ecdsa_key");
++        sshbind->rsakey = strdup("/opt/etc/ssh/ssh_host_rsa_key");
++        sshbind->ed25519key = strdup("/opt/etc/ssh/ssh_host_ed25519_key");
+     }
  
- if (FUZZ_TESTING)
+     if (sshbind->rsa == NULL &&
 --- a/src/config.c
 +++ b/src/config.c
-@@ -603,13 +603,13 @@ ssh_config_make_absolute(ssh_session ses
+@@ -650,13 +650,13 @@ ssh_config_make_absolute(ssh_session ses
      /* relative path */
      if (global) {
          /* Parsing global config */
@@ -34,7 +44,7 @@
              return NULL;
 --- a/src/dh-gex.c
 +++ b/src/dh-gex.c
-@@ -314,7 +314,7 @@ error:
+@@ -315,7 +315,7 @@ error:
  
  #ifdef WITH_SERVER
  
@@ -43,29 +53,9 @@
  /* 2     "Safe" prime; (p-1)/2 is also prime. */
  #define SAFE_PRIME 2
  /* 0x04  Probabilistic Miller-Rabin primality tests. */
---- a/src/options.c
-+++ b/src/options.c
-@@ -861,7 +861,7 @@ int ssh_options_set(ssh_session session,
-             SAFE_FREE(session->opts.global_knownhosts);
-             if (v == NULL) {
-                 session->opts.global_knownhosts =
--                    strdup("/etc/ssh/ssh_known_hosts");
-+                    strdup("/opt/etc/ssh/ssh_known_hosts");
-                 if (session->opts.global_knownhosts == NULL) {
-                     ssh_set_error_oom(session);
-                     return -1;
-@@ -1900,7 +1900,7 @@ int ssh_options_apply(ssh_session sessio
- 
-     if ((session->opts.exp_flags & SSH_OPT_EXP_FLAG_GLOBAL_KNOWNHOSTS) == 0) {
-         if (session->opts.global_knownhosts == NULL) {
--            tmp = strdup("/etc/ssh/ssh_known_hosts");
-+            tmp = strdup("/opt/etc/ssh/ssh_known_hosts");
-         } else {
-             tmp = ssh_path_expand_escape(session,
-                                          session->opts.global_knownhosts);
 --- a/src/socket.c
 +++ b/src/socket.c
-@@ -924,11 +924,11 @@ ssh_execute_command(const char *command,
+@@ -1149,11 +1149,11 @@ ssh_execute_command(const char *command,
      if (shell == NULL || shell[0] == '\0') {
          /* Fall back to the /bin/sh only if the bash is not available. But there are
           * issues with dash or whatever people tend to link to /bin/sh */

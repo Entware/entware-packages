@@ -12,7 +12,7 @@
  
 --- a/src/libcrypto.c
 +++ b/src/libcrypto.c
-@@ -54,7 +54,7 @@
+@@ -56,7 +56,7 @@
  #include <openssl/provider.h>
  #endif /* OPENSSL_VERSION_NUMBER */
  #include <openssl/rand.h>
@@ -21,7 +21,7 @@
  #include <openssl/engine.h>
  #endif
  
-@@ -98,7 +98,7 @@ void ssh_reseed(void){
+@@ -100,7 +100,7 @@ void ssh_reseed(void){
  }
  
  #if defined(WITH_PKCS11_URI)
@@ -41,7 +41,7 @@
  #include <openssl/engine.h>
  #endif
  #include <openssl/err.h>
-@@ -2744,7 +2744,7 @@ int pki_uri_import(const char *uri_name,
+@@ -2870,7 +2870,7 @@ int pki_uri_import(const char *uri_name,
  #if OPENSSL_VERSION_NUMBER < 0x30000000L && HAVE_OPENSSL_ECC
      EC_KEY *ecdsa = NULL;
  #endif
