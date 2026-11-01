@@ -1,6 +1,6 @@
 --- a/django/conf/__init__.py
 +++ b/django/conf/__init__.py
-@@ -185,7 +185,7 @@ class Settings:
+@@ -299,7 +299,7 @@ class Settings:
          if hasattr(time, "tzset") and self.TIME_ZONE:
              # When we can, attempt to validate the timezone. If we can't find
              # this file, no check happens and it's harmless.
