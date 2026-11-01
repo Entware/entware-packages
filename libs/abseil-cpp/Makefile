@@ -45,17 +45,17 @@ CMAKE_OPTIONS += \
 	-DABSL_ENABLE_INSTALL=ON \
 	-DABSL_USE_GOOGLETEST_HEAD=OFF
 
-TARGET_CFLAGS += $(FPIC)
+TARGET_CXXFLAGS += $(FPIC)
 
 define Package/abseil-cpp/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/*.a $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/opt/lib/*.a $(1)/opt/lib/
 endef
 
 define Build/InstallDev
 	$(call Build/InstallDev/cmake,$(1))
-	$(SED) 's,/usr/include,$$$${prefix}/include,g' $(1)/usr/lib/pkgconfig/absl_*.pc
-	$(SED) 's,/usr/lib,$$$${exec_prefix}/lib,g' $(1)/usr/lib/pkgconfig/absl_*.pc
+	$(SED) 's,/opt/include,$$$${prefix}/include,g' $(1)/opt/lib/pkgconfig/absl_*.pc
+	$(SED) 's,/opt/lib,$$$${exec_prefix}/lib,g' $(1)/opt/lib/pkgconfig/absl_*.pc
 endef
 
 $(eval $(call BuildPackage,abseil-cpp))
