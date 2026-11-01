@@ -8,13 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xfrpc
-PKG_VERSION:=4.04.856
-PKG_RELEASE:=1
+PKG_VERSION:=5.09.982
+PKG_RELEASE:=2
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/liudf0716/xfrpc
-PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_MIRROR_HASH:=6015d9e92652594eea6349421158cace65b5994e8eb30612a6f8f0e5baf1b2ce
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/liudf0716/xfrpc/tar.gz/$(PKG_VERSION)?
+PKG_HASH:=62fa59540bcfea04289b67fdb37916904f4dac62ac799ddf8cd634949a556edc
 
 PKG_MAINTAINER:=Dengfeng Liu <liudf0716@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
@@ -22,6 +21,8 @@ PKG_LICENSE_FILES:=COPYING
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
+
+CMAKE_OPTIONS += -DUSE_WOLFSSL=OFF
 
 define Package/xfrpc
   SUBMENU:=Web Servers/Proxies
