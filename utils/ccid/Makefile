@@ -8,21 +8,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ccid
-PKG_VERSION:=1.6.2
+PKG_VERSION:=1.8.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=https://ccid.apdu.fr/files/
-PKG_HASH:=41958410950157e622f9d91c9e78c7b708db74e22f71190c581d24d20564d449
+PKG_HASH:=d74294e23d436546c3e719c95a4da180b17f5e7ffdd36efca53f75351cb0de75
 PKG_MAINTAINER:=Daniel Golle <daniel@makrotopia.org>
 PKG_LICENSE:=LGPL-2.1-or-later
 PKG_LICENSE_FILES:=COPYING
 
-PKG_FIXUP:=libtool
-PKG_INSTALL:=1
 PKG_BUILD_DEPENDS:=zlib
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/meson.mk
 
 define Package/ccid
   SECTION:=libs
@@ -37,13 +36,10 @@ define Package/ccid/description
   (Integrated Circuit(s) Card Devices).
 endef
 
-TARGET_CFLAGS += $(FPIC)
-
-TARGET_LDFLAGS += "-lpthread"
-
-CONFIGURE_ARGS += \
-	--enable-embedded \
-	--enable-usbdropdir=/opt/lib/pcsc/drivers
+MESON_ARGS += \
+	-Ddefault_library=shared \
+	-Dembedded=true \
+	-Dudev-rules=false
 
 define Package/ccid/install
 	$(INSTALL_DIR) $(1)/opt/lib/pcsc
