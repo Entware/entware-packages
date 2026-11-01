@@ -1,0 +1,33 @@
+In file included from ../src/lib/dhcp/pkt_filter_lpf.cc:16:
+../src/lib/dhcp/pkt_filter_lpf.cc:119:60: error: 'SKF_AD_VLAN_TAG_PRESENT' was not declared in this scope
+     BPF_STMT(BPF_LD + BPF_B + BPF_ABS, (u_int)SKF_AD_OFF + SKF_AD_VLAN_TAG_PRESENT),
+                                                            ^~~~~~~~~~~~~~~~~~~~~~~
+../src/lib/dhcp/pkt_filter_lpf.cc:119:60: note: suggested alternative: 'SKF_AD_NLATTR_NEST'
+ninja: build stopped: subcommand failed.
+
+---
+
+--- a/src/lib/dhcp/pkt_filter_lpf.cc
++++ b/src/lib/dhcp/pkt_filter_lpf.cc
+@@ -17,6 +17,11 @@
+ #include <linux/if_ether.h>
+ #include <linux/if_packet.h>
+ 
++/* SKF_AD_VLAN_TAG_PRESENT since Linux 3.8 */
++#ifndef LINUX_VERSION_CODE
++#include <linux/version.h>
++#endif
++
+ namespace {
+ 
+ using namespace isc::dhcp;
+@@ -116,7 +121,9 @@ struct sock_filter dhcp_sock_filter [] =
+     // automatically by the kernel when presented to the vlan interface.
+     // Parent interface should not see this packet.
+     // #12
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0)
+     BPF_STMT(BPF_LD + BPF_B + BPF_ABS, (u_int)SKF_AD_OFF + SKF_AD_VLAN_TAG_PRESENT),
++#endif /* SKF_AD_VLAN_TAG_PRESENT since Linux 3.8 */
+ 
+     // If this packet contains vlan tag drop the packet.
+     // #13
