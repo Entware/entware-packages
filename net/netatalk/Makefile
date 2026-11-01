@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netatalk
-PKG_VERSION:=4.3.2
+PKG_VERSION:=4.6.1
 PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
 PKG_SOURCE_URL:=@SF/netatalk
-PKG_HASH:=2977b4fd113182f0cc183337ba23d5701fb2be4e0dfcec7ee575b4d73a738d3a
+PKG_HASH:=c97412f7f4bbbbfa922664f52b9d6a5f75282b99a52fe0463134bb477fea715e
 
 PKG_MAINTAINER:=Antonio Pastor <antonio.pastor@gmail.com>
 PKG_LICENSE:=GPL-2.0-or-later
@@ -30,8 +30,8 @@ define Package/netatalk/Default
   SUBMENU:=Filesystem
   TITLE:=Apple Filing Protocol
   PROVIDES:=netatalk
-  URL:=http://netatalk.sourceforge.net
-  DEPENDS:=+libevent2 +libdb47 +libgcrypt +iniparser
+  URL:=https://netatalk.io
+  DEPENDS:=+libevent2 +libdb47 +libgcrypt +iniparser $(ATOMIC64_DEPENDS)
 endef
 
 define Package/netatalk-small
@@ -96,21 +96,19 @@ MESON_ARGS += \
 	-Dwith-bdb-path="$(STAGING_DIR)/usr/" \
 	-Dwith-unicode-data-path="$(STAGING_DIR_HOST)/share/gnulib/tests/uniname/" \
 	-Dwith-libgcrypt-path="$(STAGING_DIR)/usr/" \
-	-Dwith-afpstats=false \
 	-Dwith-cups=false \
 	-Dwith-quota=false \
 	-Dwith-spotlight=false \
 	-Dwith-cracklib=false \
+	-Dwith-libunwind=false \
 	-Dwith-tests=false \
 	-Dwith-testsuite=false \
 	-Dwith-dtrace=false \
 	-Dwith-debug=false \
-	-Dwith-shell-check=false \
 	-Dwith-init-style=none \
 
 ifeq ($(BUILD_VARIANT),small)
 MESON_ARGS += \
-	-Dwith-cnid-default-backend=dbd \
 	-Dwith-cnid-backends=dbd \
 	-Dwith-appletalk=false \
 	-Dwith-zeroconf=false \
@@ -126,7 +124,6 @@ endif
 
 ifeq ($(BUILD_VARIANT),appletalk)
 MESON_ARGS += \
-	-Dwith-cnid-default-backend=dbd \
 	-Dwith-cnid-backends=dbd \
 	-Dwith-appletalk=true \
 	-Dwith-zeroconf=false \
@@ -141,6 +138,8 @@ MESON_ARGS += \
 endif
 
 ifeq ($(BUILD_VARIANT),full)
+NETATALK_ICONV_LDFLAG:=-Wl,-rpath-link=$(STAGING_DIR)/usr/lib/libiconv-full/lib
+TARGET_LDFLAGS += $(if $(CONFIG_PACKAGE_NETATALK_ICONV),$(NETATALK_ICONV_LDFLAG))
 MESON_ARGS += \
 	-Dwith-appletalk=$(if $(CONFIG_PACKAGE_NETATALK_APPLETALK),true,false) \
 	-Dwith-zeroconf=$(if $(CONFIG_PACKAGE_NETATALK_ZEROCONF),true,false) \
@@ -155,17 +154,14 @@ MESON_ARGS += \
 
 ifdef CONFIG_PACKAGE_NETATALK_DBDBACK
 MESON_ARGS += \
-	-Dwith-cnid-default-backend=dbd \
 	-Dwith-cnid-backends=dbd
 endif
 ifdef CONFIG_PACKAGE_NETATALK_SQLITEBACK
 MESON_ARGS += \
-	-Dwith-cnid-default-backend=sqlite \
 	-Dwith-cnid-backends=sqlite
 endif
 ifdef CONFIG_PACKAGE_NETATALK_BOTHBACK
 MESON_ARGS += \
-	-Dwith-cnid-default-backend=dbd \
 	-Dwith-cnid-backends=dbd,sqlite
 endif
 endif
