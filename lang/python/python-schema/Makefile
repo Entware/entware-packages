@@ -5,15 +5,17 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=python-schema
-PKG_VERSION:=0.7.5
-PKG_RELEASE:=1
+PKG_VERSION:=0.7.8
+PKG_RELEASE:=2
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com> 
 
 PYPI_NAME:=schema
-PKG_HASH:=f06717112c61895cabc4707752b88716e8420a8819d71404501e114f91043197
+PKG_HASH:=e86cc08edd6fe6e2522648f4e47e3a31920a76e82cce8937535422e310862ab5
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE-MIT
+
+PKG_BUILD_DEPENDS:=python-setuptools/host
 
 include ../pypi.mk
 include $(INCLUDE_DIR)/package.mk
@@ -25,7 +27,7 @@ define Package/python3-schema
   SUBMENU:=Python
   URL:=https://github.com/keleshev/schema
   TITLE:=Simple data validation library
-  DEPENDS:=+python3-light +python3-contextlib2
+  DEPENDS:=+python3-light
 endef
 
 define Package/python3-schema/description
