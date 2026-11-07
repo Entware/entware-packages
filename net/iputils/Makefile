@@ -12,7 +12,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=iputils
 PKG_VERSION:=20190709
-PKG_RELEASE:=1c
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/iputils/iputils/tar.gz/s$(PKG_VERSION)?
@@ -40,6 +40,7 @@ MESON_ARGS += \
 	-DBUILD_ARPING=true \
 	-DBUILD_CLOCKDIFF=true \
 	-DBUILD_TRACEPATH=true \
+	-DBUILD_TRACEROUTE6=true \
 	-DBUILD_TFTPD=true
 
 define Package/iputils/Default
@@ -133,6 +134,26 @@ ifdef CONFIG_TRACEPATH_LEGACY_SYMLINKS
 endif
 endef
 
+### traceroute6
+
+define Package/iputils-traceroute6
+  $(call Package/iputils/Default)
+  TITLE:=iputils-traceroute6
+  DEPENDS+= @IPV6
+  ALTERNATIVES:=300:/opt/bin/traceroute6:/opt/libexec/iputils-traceroute6
+endef
+
+define Package/iputils-traceroute6/description
+  Program traceroute6 from iputils.
+  Traces path to a network host (IPv6).
+endef
+
+define Package/iputils-traceroute6/install
+	$(INSTALL_DIR) $(1)/opt/libexec
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/traceroute6 \
+		$(1)/opt/libexec/iputils-traceroute6
+endef
+
 ### tftp
 
 define Package/iputils-tftpd
@@ -153,4 +174,5 @@ $(eval $(call BuildPackage,iputils-ping))
 $(eval $(call BuildPackage,iputils-arping))
 $(eval $(call BuildPackage,iputils-clockdiff))
 $(eval $(call BuildPackage,iputils-tracepath))
+$(eval $(call BuildPackage,iputils-traceroute6))
 $(eval $(call BuildPackage,iputils-tftpd))
