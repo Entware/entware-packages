@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tor-hs
 PKG_VERSION:=0.1.0
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Alexandru Ardelean <ardeleanalex@gmail.com>, Sergey Ponomarev <stokito@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later

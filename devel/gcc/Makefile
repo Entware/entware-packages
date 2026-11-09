@@ -27,7 +27,7 @@ PKG_NAME:=gcc
 GCC_VERSION:=$(call qstrip,$(CONFIG_GCC_VERSION))
 PKG_VERSION:=$(firstword $(subst +, ,$(GCC_VERSION)))
 GCC_MAJOR_VERSION:=$(word 1,$(subst ., ,$(PKG_VERSION)))
-PKG_RELEASE:=8
+PKG_RELEASE:=9
 GCC_DIR:=$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_SOURCE_URL:=@GNU/gcc/gcc-$(PKG_VERSION)
