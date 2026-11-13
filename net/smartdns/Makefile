@@ -6,12 +6,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=smartdns
-PKG_VERSION:=46.1
+PKG_VERSION:=48.4
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-Release$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/pymumu/smartdns/tar.gz/refs/tags/Release$(PKG_VERSION)?
-PKG_HASH:=6307503fa409b9c6b87556d1b1f8eaf99c7be5b06a9d479ec3589c875391a6b3
+PKG_HASH:=b07abba99e921f262ba47588e12f5b36dd849f79c0145542440eb6b7eed80553
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-Release$(PKG_VERSION)
 
 PKG_MAINTAINER:=Nick Peng <pymumu@gmail.com>
@@ -43,6 +43,7 @@ endef
 
 define Package/smartdns/conffiles
 /opt/etc/smartdns/smartdns.conf
+/opt/etc/smartdns/daemon_opts.conf
 endef
 
 define Package/smartdns/install
@@ -57,6 +58,7 @@ define Package/smartdns/install
 #	$(INSTALL_CONF) $(PKG_BUILD_DIR)/package/openwrt/domain-block.list $(1)/etc/smartdns/domain-block.list
 #	$(INSTALL_CONF) $(PKG_BUILD_DIR)/package/openwrt/domain-forwarding.list $(1)/etc/smartdns/domain-forwarding.list
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/etc/smartdns/smartdns.conf $(1)/opt/etc/smartdns
+	$(INSTALL_CONF) ./files/daemon_opts.conf $(1)/opt/etc/smartdns
 endef
 
 $(eval $(call BuildPackage,smartdns))

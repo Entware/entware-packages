@@ -1,0 +1,10 @@
+--- a/src/dns_server/server_udp.c
++++ b/src/dns_server/server_udp.c
+@@ -23,7 +23,6 @@
+ #include "server_socket.h"
+ 
+ #include <errno.h>
+-#include <linux/in.h>
+ #include <netinet/in.h>
+ #include <string.h>
+ #include <sys/epoll.h>
