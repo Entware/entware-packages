@@ -1,0 +1,34 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -2469,6 +2469,8 @@ AC_CHECK_DECLS([be32enc, be32dec], [], [
+         #include <endian.h>
+ ])
+ 
++AC_CHECK_MEMBERS([struct tc_ratespec.linklayer], [], [], [[#include <linux/pkt_sched.h>]])
++
+ dnl --------------------------------------
+ dnl checking for clock_time monotonic struct and call
+ dnl --------------------------------------
+--- a/zebra/tc_netlink.c
++++ b/zebra/tc_netlink.c
+@@ -32,6 +32,10 @@
+ #include "zebra/zebra_trace.h"
+ #include "lib/netlink_parser.h"
+ 
++/* Stable netlink attribute IDs, missing from older Linux UAPI headers. */
++#define TCA_HTB_RATE64 6
++#define TCA_HTB_CEIL64 7
++
+ #define TC_FREQ_DEFAULT (100)
+ 
+ /* some magic number */
+@@ -77,7 +81,9 @@ static void tc_calc_rate_table(struct tc
+ 
+ 	ratespec->cell_align = -1;
+ 	ratespec->cell_log = cell_log;
++#ifdef HAVE_STRUCT_TC_RATESPEC_LINKLAYER
+ 	ratespec->linklayer = TC_LINKLAYER_ETHERNET;
++#endif
+ }
+ 
+ static int tc_flower_get_inet_prefix(const struct prefix *prefix,

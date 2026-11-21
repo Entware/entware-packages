@@ -42,30 +42,30 @@ define Package/libyang-legacy/description
   with libyang 5.x (libyang.so.5), whose SONAME differs.
 
   Build-time consumers should point CMAKE_PREFIX_PATH (or PKG_CONFIG_PATH)
-  at $$$$(STAGING_DIR)/usr/lib/libyang-legacy so that the legacy headers,
+  at $$$$(STAGING_DIR)/opt/lib/libyang-legacy so that the legacy headers,
   library and pkg-config file are picked up in preference to libyang 5.x.
 endef
 
-# Staged under a self-contained /usr/lib/libyang-legacy prefix, with a
+# Staged under a self-contained /opt/lib/libyang-legacy prefix, with a
 # sysroot-relative .pc prefix so pkg-config does not double-prepend.
 define Build/InstallDev
-	$(INSTALL_DIR) $(1)/usr/lib/libyang-legacy/include
-	$(CP) $(PKG_INSTALL_DIR)/usr/include/libyang \
-		$(1)/usr/lib/libyang-legacy/include/
-	$(INSTALL_DIR) $(1)/usr/lib/libyang-legacy/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libyang.so* \
-		$(1)/usr/lib/libyang-legacy/lib/
-	$(INSTALL_DIR) $(1)/usr/lib/libyang-legacy/lib/pkgconfig
-	sed -e 's|^prefix=.*|prefix=/usr/lib/libyang-legacy|' \
+	$(INSTALL_DIR) $(1)/opt/lib/libyang-legacy/include
+	$(CP) $(PKG_INSTALL_DIR)/opt/include/libyang \
+		$(1)/opt/lib/libyang-legacy/include/
+	$(INSTALL_DIR) $(1)/opt/lib/libyang-legacy/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libyang.so* \
+		$(1)/opt/lib/libyang-legacy/lib/
+	$(INSTALL_DIR) $(1)/opt/lib/libyang-legacy/lib/pkgconfig
+	sed -e 's|^prefix=.*|prefix=/opt/lib/libyang-legacy|' \
 	    -e 's|^libdir=.*|libdir=$${prefix}/lib|' \
 	    -e 's|^includedir=.*|includedir=$${prefix}/include|' \
-		$(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libyang.pc \
-		> $(1)/usr/lib/libyang-legacy/lib/pkgconfig/libyang.pc
+		$(PKG_INSTALL_DIR)/opt/lib/pkgconfig/libyang.pc \
+		> $(1)/opt/lib/libyang-legacy/lib/pkgconfig/libyang.pc
 endef
 
 define Package/libyang-legacy/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libyang.so.3* $(1)/usr/lib/
+	$(INSTALL_DIR) $(1)/opt/lib
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libyang.so.3* $(1)/opt/lib/
 endef
 
 $(eval $(call BuildPackage,libyang-legacy))

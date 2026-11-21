@@ -118,8 +118,8 @@ endef
 ##should test file exists and link in frr folder
 #define Package/frr/postinst
 ##!/bin/sh
-#if [ -f /etc/quagga/ospfd.conf ]; then
-#    ls to /etc/frr
+#if [ -f /opt/etc/quagga/ospfd.conf ]; then
+#    ls to /opt/etc/frr
 #    sed enable ospfd daemon
 #fi
 #exit 0
@@ -144,32 +144,32 @@ endif
 #	export HAVE_BFDD == 1 ; fi
 
     define Package/frr-$(1)/install
-	$(INSTALL_DIR) $$(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/$(1) $$(1)/usr/sbin/; \
+	$(INSTALL_DIR) $$(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/$(1) $$(1)/opt/sbin/; \
 	if [ "$(1)" == "nhrpd" ]; then \
-	$(INSTALL_DIR) $$(1)/usr/lib; \
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfrrcares.so* $$(1)/usr/lib/; fi
+	$(INSTALL_DIR) $$(1)/opt/lib; \
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libfrrcares.so* $$(1)/opt/lib/; fi
     endef
 
     $$(eval $$(call BuildPackage,frr-$(1)))
 endef
 
 define Package/frr/conffiles
-/etc/frr/daemons
-/etc/frr/frr.conf
-/etc/frr/vtysh.conf
+/opt/etc/frr/daemons
+/opt/etc/frr/frr.conf
+/opt/etc/frr/vtysh.conf
 endef
 
 # frr needs the v3 ABI; its configure looks libyang up three ways
 # (PKG_CHECK_MODULES, pkg-config --modversion, AC_CHECK_LIB), so all of
 # LDFLAGS, LIBYANG_* and PKG_CONFIG_PATH point at the legacy prefix.
 TARGET_LDFLAGS += -Wl,--gc-sections,--as-needed -latomic \
-	-L$(STAGING_DIR)/usr/lib/libyang-legacy/lib
+	-L$(STAGING_DIR)/opt/lib/libyang-legacy/lib
 
 CONFIGURE_VARS += \
-	LIBYANG_CFLAGS="-I$(STAGING_DIR)/usr/lib/libyang-legacy/include" \
-	LIBYANG_LIBS="-L$(STAGING_DIR)/usr/lib/libyang-legacy/lib -lyang" \
-	PKG_CONFIG_PATH="$(STAGING_DIR)/usr/lib/libyang-legacy/lib/pkgconfig:$$$$PKG_CONFIG_PATH"
+	LIBYANG_CFLAGS="-I$(STAGING_DIR)/opt/lib/libyang-legacy/include" \
+	LIBYANG_LIBS="-L$(STAGING_DIR)/opt/lib/libyang-legacy/lib -lyang" \
+	PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/libyang-legacy/lib/pkgconfig:$$$$PKG_CONFIG_PATH"
 
 define Host/Configure
 	$(Host/Configure/Default)
@@ -190,7 +190,6 @@ endef
 
 CONFIGURE_ARGS+= \
 	--with-clippy=$(STAGING_DIR_HOSTPKG)/bin/clippy \
-	--prefix=/usr \
 	--enable-vtysh \
 	--enable-zebra \
 	--enable-shared \
@@ -200,8 +199,8 @@ CONFIGURE_ARGS+= \
 	--disable-ospfclient \
 	--disable-doc \
 	--disable-backtrace \
-	--localstatedir=/var/run/frr \
-	--sysconfdir=/etc/frr/ \
+	--localstatedir=/opt/var/run/frr \
+	--sysconfdir=/opt/etc/frr/ \
 	$(if $(CONFIG_FRR_OPENSSL),--with-crypto=openssl,) \
 	$(if $(CONFIG_FRR_SNMP),--enable-snmp,) \
 	$(foreach m,$(PKG_DAEMON_AVAILABLE), \
@@ -209,38 +208,35 @@ CONFIGURE_ARGS+= \
 
 
 define Package/frr/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/frrcommon.sh $(1)/usr/sbin/
-	$(INSTALL_BIN) ./files/frr $(1)/etc/init.d/
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/etc/frr
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/vtysh $(1)/usr/bin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/mgmtd $(1)/usr/sbin/
-	$(INSTALL_CONF) ./files/vtysh.conf $(1)/etc/frr/
-	$(INSTALL_DIR) $(1)/usr/lib $(1)/etc/frr
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfrr.so* $(1)/usr/lib/
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmgmt_be_nb.so* $(1)/usr/lib/
-	$(if $(CONFIG_FRR_SNMP),$(CP) $(PKG_INSTALL_DIR)/usr/lib/libfrrsnmp.so* $(1)/usr/lib/,)
-	$(INSTALL_CONF) ./files/{frr.conf,daemons} $(1)/etc/frr/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/var/run/frr
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/etc/frr
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/bin/vtysh $(1)/opt/bin/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/mgmtd $(1)/opt/sbin/
+	$(INSTALL_CONF) ./files/vtysh.conf $(1)/opt/etc/frr/
+	$(INSTALL_DIR) $(1)/opt/lib $(1)/opt/etc/frr
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libfrr.so* $(1)/opt/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libmgmt_be_nb.so* $(1)/opt/lib/
+	$(if $(CONFIG_FRR_SNMP),$(CP) $(PKG_INSTALL_DIR)/opt/lib/libfrrsnmp.so* $(1)/opt/lib/,)
+	$(INSTALL_CONF) ./files/{frr.conf,daemons} $(1)/opt/etc/frr/
 endef
 
 define Package/frr-watchfrr/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) ./files/watchfrr.sh $(1)/usr/sbin/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/watchfrr $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/watchfrr $(1)/opt/sbin/
 endef
 
 define Package/frr-zebra/install
-	$(INSTALL_DIR) $(1)/usr/sbin $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/zebra $(1)/usr/sbin/
+	$(INSTALL_DIR) $(1)/opt/sbin $(1)/opt/lib
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/zebra $(1)/opt/sbin/
 	# $(CP) keeps the symlink chain; INSTALL_BIN would flatten it.
-	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmlag_pb.so* $(1)/usr/lib/
+	$(CP) $(PKG_INSTALL_DIR)/opt/lib/libmlag_pb.so* $(1)/opt/lib/
 endef
 
 define Package/frr-pythontools/install
-	$(INSTALL_DIR) $(1)/usr/lib/frr $(1)/usr/sbin $(1)/etc/frr
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/*.py $(1)/usr/lib/frr/
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/frr-reload $(1)/usr/sbin/
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/tools/etc/frr/support_bundle_commands.conf $(1)/etc/frr/
+	$(INSTALL_DIR) $(1)/opt/lib/frr $(1)/opt/sbin $(1)/opt/etc/frr
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/*.py $(1)/opt/lib/frr/
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/frr-reload $(1)/opt/sbin/
+	$(INSTALL_CONF) $(PKG_BUILD_DIR)/tools/etc/frr/support_bundle_commands.conf $(1)/opt/etc/frr/
 endef
 
 $(eval $(call HostBuild))
