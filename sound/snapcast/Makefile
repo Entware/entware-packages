@@ -52,6 +52,7 @@ include $(INCLUDE_DIR)/cmake.mk
 # optional ones follow their config symbol. Client-only desktop backends other
 # than ALSA are unavailable on OpenWrt and stay off.
 CMAKE_OPTIONS += \
+	-DCMAKE_CXX_STANDARD_LIBRARIES=-lstdc++fs \
 	-DBUILD_TESTS=OFF \
 	-DBUILD_WITH_ALSA=$(if $(CONFIG_SNAPCAST_ALSA),ON,OFF) \
 	-DBUILD_WITH_AVAHI=$(if $(CONFIG_SNAPCAST_AVAHI),ON,OFF) \
@@ -84,6 +85,7 @@ define Package/snapcast/Default
 	+SNAPCAST_SSL:libopenssl \
 	+libatomic \
 	+libogg \
+	+libpthread \
 	+libstdcpp
 endef
 
@@ -191,32 +193,18 @@ define Package/snapclient/description
 endef
 
 define Package/snapserver/conffiles
-/etc/config/snapserver
-/etc/snapserver.conf
-endef
-
-define Package/snapclient/conffiles
-/etc/config/snapclient
+/opt/etc/snapserver.conf
 endef
 
 define Package/snapserver/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/snapserver $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/snapserver.init $(1)/etc/init.d/snapserver
-	$(INSTALL_CONF) $(PKG_BUILD_DIR)/server/etc/snapserver.conf $(1)/etc/snapserver.conf
-	$(SED) 's/.*doc_root *=/#doc_root =/' $(1)/etc/snapserver.conf
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/snapserver.conf $(1)/etc/config/snapserver
+	$(INSTALL_DIR) $(1)/opt/bin $(1)/opt/etc $(1)/opt/var/lib/snapserver
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/snapserver $(1)/opt/bin/
+	$(INSTALL_CONF) $(PKG_INSTALL_DIR)/opt/etc/snapserver.conf $(1)/opt/etc/
 endef
 
 define Package/snapclient/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/snapclient $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/snapclient.init $(1)/etc/init.d/snapclient
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/snapclient.conf $(1)/etc/config/snapclient
+	$(INSTALL_DIR) $(1)/opt/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/snapclient $(1)/opt/bin/
 endef
 
 $(eval $(call BuildPackage,snapserver))

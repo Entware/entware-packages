@@ -1,0 +1,88 @@
+--- a/server/snapserver.cpp
++++ b/server/snapserver.cpp
+@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
+     {
+         ServerSettings settings;
+         std::string pcmSource = "pipe:///tmp/snapfifo?name=default";
+-        std::string config_file = "/etc/snapserver.conf";
++        std::string config_file = "/opt/etc/snapserver.conf";
+ 
+         OptionParser op("Allowed options");
+         auto helpSwitch = op.add<Switch>("h", "help", "Produce help message, use -hh to show options from config file");
+@@ -344,7 +344,7 @@ int main(int argc, char* argv[])
+             namespace fs = std::filesystem;
+             auto make_absolute = [](const fs::path& filename)
+             {
+-                const fs::path cert_path = "/etc/snapserver/certs/";
++                const fs::path cert_path = "/opt/etc/snapserver/certs/";
+                 if (filename.is_absolute())
+                     return filename;
+                 if (fs::exists(filename))
+@@ -428,7 +428,7 @@ int main(int argc, char* argv[])
+                 throw std::invalid_argument("user must not be empty");
+ 
+             if (settings.server.data_dir.empty())
+-                settings.server.data_dir = "/var/lib/snapserver";
++                settings.server.data_dir = "/opt/var/lib/snapserver";
+             Config::instance().init(settings.server.data_dir, settings.server.user, settings.server.group);
+ 
+             daemon = std::make_unique<Daemon>(settings.server.user, settings.server.group, settings.server.pid_file);
+--- a/server/config.cpp
++++ b/server/config.cpp
+@@ -49,14 +49,14 @@ void Config::init(const std::string& roo
+     if (!root_directory.empty())
+         dir = root_directory;
+     else if (home == nullptr)
+-        dir = "/var/lib/snapserver/";
++        dir = "/opt/var/lib/snapserver/";
+     else
+         dir = string{home} + "/.config/snapserver/";
+ 
+     if (!dir.empty() && (dir.back() != '/'))
+         dir += "/";
+ 
+-    // if (dir.find("/var/lib/snapserver") == string::npos)
++    // if (dir.find("/opt/var/lib/snapserver") == string::npos)
+     //     dir += ".config/snapserver/";
+ 
+     int status = utils::file::mkdirRecursive(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+--- a/server/control_session_http.cpp
++++ b/server/control_session_http.cpp
+@@ -56,7 +56,7 @@ static constexpr const char* UNCONFIGURE
+     "    This webserver is a websocket endpoint for control clients (ws://<i>host</i>:1780/jsonrpc) and streaming clients"
+     "    (ws://<i>host</i>:1780/stream), but it can also host simple web pages. To serve a web page, you must configure the"
+     "    document root in the snapserver configuration file <b>snapserver.conf</b>, usually located in"
+-    "    <b>/etc/snapserver.conf</b>"
++    "    <b>/opt/etc/snapserver.conf</b>"
+     "  </p>"
+     "  <p>"
+     "    The Snapserver installation should include a copy of <a href=\"https://github.com/snapcast/snapweb\">Snapweb</a>,"
+--- a/server/etc/snapserver.conf
++++ b/server/etc/snapserver.conf
+@@ -39,7 +39,7 @@
+ 
+ # directory where persistent data is stored (server.json)
+ # if empty, data dir will be
+-#  - "/var/lib/snapserver/" when running as daemon
++#  - "/opt/var/lib/snapserver/" when running as daemon
+ #  - "$HOME/.config/snapserver/" when not running as daemon
+ #datadir =
+ 
+@@ -53,7 +53,7 @@
+ #
+ [ssl]
+ # Certificate files are either specified by their full or relative path. Certificates with
+-# relative path are searched for in the current path and in "/etc/snapserver/certs"
++# relative path are searched for in the current path and in "/opt/etc/snapserver/certs"
+ 
+ # Certificate file in PEM format
+ #certificate =
+@@ -107,7 +107,7 @@
+ 
+ # serve a website from the doc_root location
+ # disabled if commented or empty
+-doc_root = /usr/share/snapserver/snapweb
++#doc_root = /usr/share/snapserver/snapweb
+ 
+ # Hostname or IP under which clients can reach this host
+ # used to serve cached cover art
