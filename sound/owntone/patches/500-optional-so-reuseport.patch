@@ -1,0 +1,23 @@
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -512,13 +512,15 @@ net_bind_impl(short unsigned *port, int
+       if (ret < 0)
+ 	continue;
+ 
++#ifdef SO_REUSEPORT
+       // Makes us able to attach multiple threads to the same port
+       if (reuseport)
+-	ret = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
+-      else
+-	ret = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &no, sizeof(no));
+-      if (ret < 0)
+-	continue;
++	{
++	  ret = setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
++	  if (ret < 0 && errno != ENOPROTOOPT)
++	    continue;
++	}
++#endif
+ 
+       // TODO libevent sets this, we do the same?
+       ret = setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, &yes, sizeof(yes));

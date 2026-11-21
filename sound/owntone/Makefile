@@ -48,7 +48,7 @@ define Package/owntone/description
 endef
 
 define Package/owntone/conffiles
-/etc/owntone.conf
+/opt/etc/owntone.conf
 endef
 
 CONFIGURE_ARGS += \
@@ -62,16 +62,14 @@ CONFIGURE_ARGS += \
 TARGET_CFLAGS += $(FPIC)
 
 define Package/owntone/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/owntone $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/owntone.conf $(1)/etc/owntone.conf
-	$(INSTALL_DIR) $(1)/usr/lib/owntone
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/owntone/* $(1)/usr/lib/owntone/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/owntone.init $(1)/etc/init.d/owntone
-	$(INSTALL_DIR) $(1)/usr/share/owntone
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/owntone/htdocs $(1)/usr/share/owntone
+	$(INSTALL_DIR) $(1)/opt/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/sbin/owntone $(1)/opt/sbin/
+	$(INSTALL_DIR) $(1)/opt/etc
+	$(INSTALL_CONF) ./files/owntone.conf $(1)/opt/etc/owntone.conf
+	$(INSTALL_DIR) $(1)/opt/lib/owntone
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/opt/lib/owntone/* $(1)/opt/lib/owntone/
+	$(INSTALL_DIR) $(1)/opt/share/owntone
+	$(CP) $(PKG_INSTALL_DIR)/opt/share/owntone/htdocs $(1)/opt/share/owntone
 endef
 
 $(eval $(call BuildPackage,owntone))
