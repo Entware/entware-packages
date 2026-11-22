@@ -1,0 +1,101 @@
+--- a/src/monit.h
++++ b/src/monit.h
+@@ -610,6 +610,7 @@ typedef struct SystemInfo_T {
+                 } usage;
+         } memory;
+         struct {
++                bool available;
+                 bool initialized;
+                 struct Paging_T previous;
+                 struct Paging_T current;
+--- a/src/process/SystemInfo.c
++++ b/src/process/SystemInfo.c
+@@ -68,6 +68,8 @@ bool SystemInfo_update(void) {
+                 goto error1;
+         }
+ 
++        System_Info.paging.previous = System_Info.paging.current;
++        System_Info.paging.available = true;
+         if (! used_system_memory_sysdep(&System_Info)) {
+                 Log_error("'%s' statistic error -- memory usage data collection failed\n", Run.system->name);
+                 goto error2;
+@@ -75,25 +77,17 @@ bool SystemInfo_update(void) {
+         System_Info.memory.usage.percent  = System_Info.memory.size > 0ULL ? (100. * (double)System_Info.memory.usage.bytes / (double)System_Info.memory.size) : 0.;
+         System_Info.swap.usage.percent = System_Info.swap.size > 0ULL ? (100. * (double)System_Info.swap.usage.bytes / (double)System_Info.swap.size) : 0.;
+ 
+-        System_Info.paging.previous.in.value = System_Info.paging.current.in.value;
+-        System_Info.paging.previous.out.value = System_Info.paging.current.out.value;
+-        System_Info.paging.previous.timestamp = System_Info.paging.current.timestamp;
+-        System_Info.paging.current.timestamp = Time_now();
+-        time_t pageinTimestampDelta = System_Info.paging.current.timestamp - System_Info.paging.previous.timestamp;
+-        if (pageinTimestampDelta > 0) {
+-                if (System_Info.paging.previous.in.value && System_Info.paging.current.in.value) {
+-                        System_Info.paging.average.in = Num_udelta(System_Info.paging.previous.in.value, System_Info.paging.current.in.value) / pageinTimestampDelta;
+-                } else {
+-                        System_Info.paging.average.in = 0;
+-                }
+-                if (System_Info.paging.previous.out.value && System_Info.paging.current.out.value) {
+-                        System_Info.paging.average.out = Num_udelta(System_Info.paging.previous.out.value, System_Info.paging.current.out.value) / pageinTimestampDelta;
+-                } else {
+-                        System_Info.paging.average.out = 0;
++        if (System_Info.paging.available) {
++                System_Info.paging.current.timestamp = Time_now();
++                time_t delta = System_Info.paging.current.timestamp - System_Info.paging.previous.timestamp;
++                if (System_Info.paging.previous.timestamp && delta > 0) {
++                        System_Info.paging.average.in = Num_udelta(System_Info.paging.previous.in.value, System_Info.paging.current.in.value) / delta;
++                        System_Info.paging.average.out = Num_udelta(System_Info.paging.previous.out.value, System_Info.paging.current.out.value) / delta;
++                        System_Info.paging.initialized = true;
+                 }
++        } else {
++                memset(&System_Info.paging, 0, sizeof(System_Info.paging));
+         }
+-        if (System_Info.paging.previous.timestamp && System_Info.paging.current.timestamp)
+-                System_Info.paging.initialized = true;
+ 
+         if (! used_system_cpu_sysdep(&System_Info)) {
+                 Log_error("'%s' statistic error -- cpu usage data collection failed\n", Run.system->name);
+@@ -116,13 +110,7 @@ error2:
+         System_Info.swap.usage.bytes = 0ULL;
+         System_Info.swap.usage.percent = 0.;
+         System_Info.swap.size = 0ULL;
+-        System_Info.paging.current.in.value = 0ULL;
+-        System_Info.paging.current.out.value = 0ULL;
+-        System_Info.paging.previous.in.value = 0ULL;
+-        System_Info.paging.previous.out.value = 0ULL;
+-        System_Info.paging.average.in = 0ULL;
+-        System_Info.paging.average.out = 0ULL;
+-        System_Info.paging.initialized = false;
++        memset(&System_Info.paging, 0, sizeof(System_Info.paging));
+ error3:
+         System_Info.cpu.usage.user = 0.;
+         System_Info.cpu.usage.system = 0.;
+--- a/src/process/sysdep_LINUX.c
++++ b/src/process/sysdep_LINUX.c
+@@ -727,18 +727,15 @@ bool used_system_memory_sysdep(SystemInf
+         si->swap.size = swap_total * 1024;
+         si->swap.usage.bytes = (swap_total - swap_free) * 1024;
+ 
+-        // Paging
+-        if (! file_readProc(buf, sizeof(buf), "vmstat", -1, NULL)) {
+-                Log_error("system statistic error -- cannot read /proc/vmstat\n");
+-                return false;
+-        }
+-        if (! (ptr = strstr(buf, "pswpin ")) || sscanf(ptr + 7, "%llu", &(si->paging.current.in.value)) != 1) {
+-                Log_error("system statistic error -- cannot get pswpin amount\n");
+-                return false;
+-        }
+-        if (! (ptr = strstr(ptr, "pswpout ")) || sscanf(ptr + 8, "%llu", &(si->paging.current.out.value)) != 1) {
+-                Log_error("system statistic error -- cannot get pswpout amount\n");
+-                return false;
++        unsigned long long page_in, page_out;
++        char *in, *out;
++        si->paging.available =
++                file_readProc(buf, sizeof(buf), "vmstat", -1, NULL) &&
++                (in = strstr(buf, "pswpin ")) && sscanf(in + 7, "%llu", &page_in) == 1 &&
++                (out = strstr(buf, "pswpout ")) && sscanf(out + 8, "%llu", &page_out) == 1;
++        if (si->paging.available) {
++                si->paging.current.in.value = page_in;
++                si->paging.current.out.value = page_out;
+         }
+ 
+         return true;
