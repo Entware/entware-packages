@@ -3,5 +3,5 @@ set multibuffer         # Open multiple files
 set linenumbers         # show line numbers Alt+N to toggle
 
 ## Syntax highlighting ##
-include /usr/share/nano/*.nanorc
+include /opt/share/nano/*.nanorc
 
